@@ -1,0 +1,7 @@
+Dependencias a instalar en caso que no exista el package.json
+
+npm install express --save
+npm install mongoose -save
+
+Para la gestion de roles
+https://blog.soshace.com/implementing-role-based-access-control-in-a-node-js-application/
