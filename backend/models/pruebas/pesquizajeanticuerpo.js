@@ -1,8 +1,7 @@
 //requerido
 var mongoose = required('mongoose');
 
-var Examen = required('../examen.js');
-
+var Examen = required('../examen').Examen;
 var Schema = mongoose.Schema;
 
 //conexion del mongo a la bd
