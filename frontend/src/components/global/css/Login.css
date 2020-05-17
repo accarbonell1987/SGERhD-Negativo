@@ -1,0 +1,37 @@
+.headerrow {
+    background: #2e3642;
+    height: 120px;
+    padding: 10px 0 10px 0;
+    border-radius: 10px;
+}
+
+.headerimage {
+    height: 100px !important;
+    width: auto !important;
+}
+
+.contentrow {
+    margin-top: 10px;
+}
+
+.contentrowcolumn {
+    padding: 20px 50px 0 50px !important;
+}
+
+.contentrowbutton {
+    margin: 50px 0 0 0;
+    background: #2e3642;
+    height: 55px;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+body {
+    background: #dfdfdf !important;
+}
+
+.allcolumn {
+    background: #ffffff;
+    border-radius: 10px;
+}
+
