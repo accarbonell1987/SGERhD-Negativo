@@ -1,15 +1,25 @@
+//Importaciones
 import React, { Component } from 'react'
 import { Button, Form, Grid, Header, Image } from 'semantic-ui-react'
 
+//CSS
 import './global/css/Login.css';
 
-class Login extends Component {
+//Definicion de la Clase
+class PageLogin extends Component {
 
-  // constructor (props) {
-  //   super(props);
-  //   this.state = {
-  //   }
-  // }
+  constructor (props) {
+    super(props);
+
+    this.state = {
+    }
+
+    this.handleAutenticarClick = this.handleAutenticarClick.bind(this);
+  }
+
+  handleAutenticarClick = () => {
+    this.props.modifyLoginState();
+  }
 
   render() {
     return (
@@ -40,7 +50,7 @@ class Login extends Component {
               </Grid>
             </Grid.Row>
             <Grid.Row className='contentrowbutton'>
-              <Button content='Ingresar' primary />
+              <Button content='Ingresar' icon='check' primary onClick={this.handleAutenticarClick} />
             </Grid.Row>
           </Form>
         </Grid.Column>
@@ -49,4 +59,4 @@ class Login extends Component {
   }
 }
 
-export default Login
+export default PageLogin

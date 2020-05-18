@@ -14,7 +14,7 @@ var db = mongoose.connection;
 
 db.on('error', console.error.bind(console, 'MongoDB error en conexion:'));
 
-//definiendo el esquemas
+//definiendo esquemas
 var logacceso_schema = new Schema({
     fecha: { type: Date, required: true },
     usuario: { type: Schema.Types.ObjectId, ref: 'Usuario' },
