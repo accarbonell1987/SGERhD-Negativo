@@ -7,7 +7,6 @@ import './global/css/Login.css';
 
 //Definicion de la Clase
 class PageLogin extends Component {
-
   constructor (props) {
     super(props);
 

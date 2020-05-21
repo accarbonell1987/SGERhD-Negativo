@@ -11,16 +11,16 @@
 }
 
 .contentrow {
-    margin-top: 15px;
+    margin-top: 10px;
+    margin-bottom: 20px;
 }
 
 .contentrowcolumn {
-    margin-top: 5px !important;
-    padding: 20px 50px 0 50px !important;
+    padding: 10px 50px 0 50px !important;
 }
 
 .contentrowbutton {
-    margin: 30px 0 0 0 !important;
+    margin: 50px 0 0 0;
     background: #2e3642;
     height: 55px;
     padding: 10px;
@@ -36,3 +36,14 @@ body {
     border-radius: 10px;
 }
 
+h1 {
+    margin: 0 !important;
+}
+
+h3 {
+    margin: 0 !important;
+}
+
+.ui.massive.label {
+    margin-bottom: 10px;
+}
