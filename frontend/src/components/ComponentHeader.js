@@ -6,7 +6,7 @@ import { Icon, Button, Header, Image } from 'semantic-ui-react'
 import './global/css/Header.css';
 
 //Definicion de la Clase
-class PageHeader extends Component {
+class ComponentHeader extends Component {
   constructor(props) {
     super(props);
 
@@ -38,4 +38,4 @@ class PageHeader extends Component {
   }
 }
 
-export default PageHeader;
+export default ComponentHeader;

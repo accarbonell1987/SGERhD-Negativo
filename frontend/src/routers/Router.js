@@ -1,8 +1,8 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
-import ComponentDashboard from '../components/PageDashboard';
-import ComponentPageNotFound from '../components/PageNotFound';
+import ComponentDashboard from '../components/ComponentDashboard';
+import ComponentPageNotFound from '../components/ComponentNotFound';
 
 const Router = () => (
     <BrowserRouter>

@@ -7,7 +7,7 @@ import Swal from 'sweetalert2'
 import './global/css/Login.css';
 
 //Definicion de la Clase
-class PageLogin extends Component {
+class ComponentLogin extends Component {
   constructor (props) {
     super(props);
 
@@ -21,8 +21,7 @@ class PageLogin extends Component {
   }
 
   handleAutenticarClick = (evt) => {
-    const endpoint = process.env.REACT_APP_API_PATH+'api/usuario/autenticar';
-    fetch(endpoint, {
+    fetch(this.props.endpoint + 'api/usuario/autenticar', {
       method: 'POST', //metodo
       body: JSON.stringify(this.state), //datos
       headers: {
@@ -39,9 +38,11 @@ class PageLogin extends Component {
         this.props.modifyLoginState();
       }else{
         Swal.fire({ position: 'center', icon: 'error', title: 'Usuario o contraseña incorrecto', showConfirmButton: false, timer: 3000 }); //mostrar mensaje
+        this.setState({ contraseña: '' });
       }
     }).catch(err => {
       Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 3000 }); //mostrar mensaje de error
+      this.setState({ contraseña: '' });
     });
 
     evt.preventDefault();
@@ -79,7 +80,8 @@ class PageLogin extends Component {
                         name='contraseña'
                         icon='lock'
                         iconPosition='left'
-                        label='Contraseña'
+                        label='contraseña'
+                        value={this.state.contraseña}
                         type='password'
                         onChange = {this.handleChange}
                     />
@@ -96,4 +98,4 @@ class PageLogin extends Component {
   }
 }
 
-export default PageLogin
+export default ComponentLogin

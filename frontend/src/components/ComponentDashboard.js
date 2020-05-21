@@ -5,13 +5,14 @@ import React, { Component } from 'react';
 import './global/css/Content.css';
 
 //Componentes
-import ComponentHeader from './PageHeader';
-import ComponentContent from './PageContent';
-import ComponentFooter from './PageFooter';
-import ComponentLogin from './PageLogin';
+import ComponentHeader from './ComponentHeader';
+import ComponentContent from './ComponentContent';
+import ComponentFooter from './ComponentFooter';
+import ComponentLogin from './ComponentLogin';
+import ComponentMenu from './ComponentMenu';
 
 //Definicion de la clase
-class PageDashboard extends Component {
+class ComponentDashboard extends Component {
 
   constructor(props){
     super(props);
@@ -20,7 +21,8 @@ class PageDashboard extends Component {
       autenticado: false,
       logintime: '',
       usuario: '',
-      rol: ''
+      rol: '',
+      endpoint: process.env.REACT_APP_API_PATH
     };
   }
 
@@ -36,17 +38,18 @@ class PageDashboard extends Component {
     if (this.state.autenticado) {
       return (
         <div className="Dashboard">
-          <ComponentHeader modifyLoginState = {this.modifyLoginState}/>
+          <ComponentHeader modifyLoginState = {this.modifyLoginState} endpoint = {this.state.endpoint} />
+          <ComponentMenu endpoint = {this.state.endpoint} />
           <ComponentContent />
           <ComponentFooter />
         </div>
       )
     }else{
       return (
-        <ComponentLogin modifyLoginState = {this.modifyLoginState} />
+        <ComponentLogin modifyLoginState = {this.modifyLoginState} endpoint = {this.state.endpoint} />
       )
     }
   }
 }
 
-export default PageDashboard;
+export default ComponentDashboard;

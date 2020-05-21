@@ -6,7 +6,7 @@ import { Grid } from 'semantic-ui-react'
 import './global/css/NotFound.css';
 
 //Defincion de la clase
-const PageNotFound = () => (
+const ComponentNotFound = () => (
   <Grid textAlign='center' verticalAlign='middle' style={{ height: '100vh' }} className='allgrid'>
     <Grid.Column style={{ maxWidth: 350 }} className='allcolumn'>
       <Grid.Row className='contentrow'>
@@ -21,4 +21,4 @@ const PageNotFound = () => (
   </Grid>
 );
 
-export default PageNotFound;
+export default ComponentNotFound;

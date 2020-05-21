@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 import './global/css/Content.css';
 
 //Defincion de la clase
-class PageContent extends Component {
+class ComponentContent extends Component {
   render() {
     return (
       <div className="Content">
@@ -16,4 +16,4 @@ class PageContent extends Component {
   }
 }
 
-export default PageContent;
+export default ComponentContent;

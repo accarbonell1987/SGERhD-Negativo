@@ -6,7 +6,7 @@ import { Button } from 'semantic-ui-react'
 import './global/css/Footer.css';
 
 //Defincion de la clase
-class PageFooter extends Component {
+class ComponentFooter extends Component {
   render() {
     return (
       <div className="footer">
@@ -24,4 +24,4 @@ class PageFooter extends Component {
   }
 }
 
-export default PageFooter;
+export default ComponentFooter;

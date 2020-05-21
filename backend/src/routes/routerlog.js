@@ -10,11 +10,7 @@ const Logs = require('../models/models').logaceso;
 router.get('/log', async (req, res) => {
     try {
         const logs = await Logs.find();
-        res.json({
-            status: 'OK',
-            message: 'Obtenidos',
-            data: logs
-        });
+        res.json({ status: 'OK', message: 'Obtenidos', data: logs });
     } catch(err) {
         res.json({ message: err });
     }
@@ -24,11 +20,7 @@ router.get('/log', async (req, res) => {
 router.get('/log/:id', async (req, res) => {
     try {
         const log = await Logs.findById(req.params.id);
-        res.json({
-            status: 'OK',
-            message: 'Obtenido',
-            data: log
-        });
+        res.json({ status: 'OK', message: 'Obtenido', data: log });
     } catch(err) {
         res.json({ message: err });
     }
@@ -41,11 +33,7 @@ router.post('/log', async (req, res) => {
     
     try {
         const saved = await log.save();
-        res.json({
-            status: 'OK',
-            message: 'Insertado',
-            data: saved
-        });
+        res.json({ status: 'OK', message: 'Insertado', data: saved });
     } catch(err) {
         res.json({ message: err });
     };
@@ -56,12 +44,7 @@ router.post('/log', async (req, res) => {
 router.delete('/log/:id', async (req, res) => {
     try {
         const removed = await Logs.findByIdAndRemove(req.params.id);
-        
-        res.json({
-            status: 'OK',
-            message: 'Eliminado',
-            data: removed
-        });
+        res.json({ status: 'OK', message: 'Eliminado', data: removed });
     } catch(err) {
         res.json({ message: err });
     }
@@ -70,10 +53,7 @@ router.delete('/log/:id', async (req, res) => {
 //PATCH - por id - {json}
 router.patch('/log/:id', async (req, res) => {
     try {
-        res.json({
-            status: 'Undefined',
-            message: 'No permitido'
-        });
+        res.json({ status: 'Undefined', message: 'No permitido' });
     } catch(err) {
         res.json({ message: err });
     }
