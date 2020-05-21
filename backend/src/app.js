@@ -3,17 +3,19 @@ var express = require('express');
 var morgan = require('morgan');
 var bodyParser = require('body-parser');
 var path = require('path');
+var cors = require('cors');
 
 // var session_middleware = require('./middlewares/sessions');
 
 var app = express();
 
 //Settings
-app.set('port', process.env.PORT || 3000); //en caso que exista un puerto definido se usa sino, uso 3000
+app.set('port', process.env.PORT || 4000); //en caso que exista un puerto definido se usa sino, uso 3000
 app.set('json spaces', 2);
 
 //Middlewares
 app.use(morgan('dev'));
+app.use(cors());
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 

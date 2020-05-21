@@ -17,21 +17,23 @@ class PageDashboard extends Component {
     super(props);
 
     this.state = {
-      isLoggedIn: false,
-      username: '',
-      role: ''
+      autenticado: false,
+      logintime: '',
+      usuario: '',
+      rol: ''
     };
   }
 
   //modificar el valor del login
-  modifyLoginState = () => {
-    this.setState({
-      isLoggedIn: !this.state.isLoggedIn
-    });
+  modifyLoginState = (evt) => {
+    this.setState({ autenticado: !this.state.autenticado });
+    this.setState({ logintime: this.state.autenticado ? Date.now : '' });
+    
+    console.log(this.state.logintime);
   }
 
   render() {
-    if (this.state.isLoggedIn) {
+    if (this.state.autenticado) {
       return (
         <div className="Dashboard">
           <ComponentHeader modifyLoginState = {this.modifyLoginState}/>

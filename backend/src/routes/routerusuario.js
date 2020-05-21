@@ -13,7 +13,7 @@ router.get('/usuario', async (req, res) => {
         res.json({
             status: 'OK',
             message: 'Obtenidos',
-            data: usuario
+            data: usuarios
         });
     } catch(err) {
         res.json({ message: err });
@@ -55,16 +55,16 @@ router.post('/usuario', async (req, res) => {
 //POST - {json}
 router.post('/usuario/autenticar', async (req, res) => {
     try {
-        await Usuario.findOne({ nombre: req.body.nombre, contraseña: req.body.contraseña}, 
-            (err, doc) => {
-                res.json({ 
-                    status: 'OK',
-                    message: 'Autenticado'
-                })
-            }
-        );
+        await Usuario.findOne({ nombre: req.body.nombre, contraseña: req.body.contraseña})
+            .then(doc => {
+                if (doc === null) res.json({ status: 'FAILED', message: '', data: doc });
+                else res.json({ status: 'OK', message: 'Autenticado', data: doc });
+            })
+            .catch(err => {
+                res.json({ status: 'FAILED', message: err });
+            });
     } catch(err) {
-        res.json({ message: err });
+        res.json({ status: 'FAILED', message: err });
     };
 });
 
