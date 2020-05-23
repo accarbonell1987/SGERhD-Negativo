@@ -21,6 +21,8 @@ class ComponentLogin extends Component {
   }
 
   handleAutenticarClick = (evt) => {
+    evt.preventDefault();
+
     fetch(this.props.endpoint + 'api/usuario/autenticar', {
       method: 'POST', //metodo
       body: JSON.stringify(this.state), //datos
@@ -44,8 +46,6 @@ class ComponentLogin extends Component {
       Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 3000 }); //mostrar mensaje de error
       this.setState({ contraseña: '' });
     });
-
-    evt.preventDefault();
   };
 
   handleChange = (evt) => {

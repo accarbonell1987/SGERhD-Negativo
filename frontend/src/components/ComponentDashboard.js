@@ -18,12 +18,10 @@ class ComponentDashboard extends Component {
   
   cambiarOpcionMenu = (opcion) => {
     this.setState({ opcionmenu: opcion});
-    console.log('cambiarOpcionMenu -> '+opcion);
   }
 
   render() {
     if (this.props.autenticado) {
-      console.log('render -> '+this.state.opcionmenu);
       return (
         <div className="Dashboard">
           <ComponentHeader modificarLoginState = {this.props.modificarLoginState} endpoint = {this.props.endpoint} />
