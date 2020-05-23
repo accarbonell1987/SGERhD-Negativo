@@ -18,11 +18,11 @@ class ComponentDashboard extends Component {
     super(props);
 
     this.state = {
-      autenticado: false,
+      autenticado: true,
       logintime: '',
       usuario: '',
       rol: '',
-      endpoint: process.env.REACT_APP_API_PATH
+      endpoint: process.env.REACT_APP_API_PATH_LOCAL
     };
   }
 

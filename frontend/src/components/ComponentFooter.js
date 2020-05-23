@@ -11,7 +11,9 @@ class ComponentFooter extends Component {
     return (
       <div className="footer">
         <div className='footercopyright'>
-          <h4>&copy; 2020 - Sistema de Gestion de Embarazadas RhD-Negativo</h4>
+          <p>
+            &copy; 2020 - Sistema de Gestion de Embarazadas RhD-Negativo
+          </p>
         </div>
         <div className='footersocial'>
           <Button circular icon='facebook' inverted size='small'/>

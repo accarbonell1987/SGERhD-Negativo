@@ -22,32 +22,24 @@ class ComponentMenu extends Component {
     const { activeItem } = this.state
 
     return (
-      <Menu icon='labeled'>
-        <Menu.Item
-          name='gamepad'
-          active={activeItem === 'gamepad'}
-          onClick={this.handleItemClick}
-        >
-          <Icon name='gamepad' />
-          Games
+      <Menu icon='labeled' inverted  className='menu-div' size='small'>
+        <Menu.Item name='usuarios' active={activeItem === 'usuarios'} onClick={this.handleItemClick} >
+          <Icon name='users' /> Usuarios
         </Menu.Item>
-
-        <Menu.Item
-          name='video camera'
-          active={activeItem === 'video camera'}
-          onClick={this.handleItemClick}
-        >
-          <Icon name='video camera' />
-          Channels
+        <Menu.Item name='historiaclinica' active={activeItem === 'historiaclinica'} onClick={this.handleItemClick} >
+          <Icon name='clipboard' /> Historia Clinica
         </Menu.Item>
-
-        <Menu.Item
-          name='video play'
-          active={activeItem === 'video play'}
-          onClick={this.handleItemClick}
-        >
-          <Icon name='video play' />
-          Videos
+        <Menu.Item name='paciente' active={activeItem === 'paciente'} onClick={this.handleItemClick} >
+          <Icon name='wheelchair' /> Paciente
+        </Menu.Item>
+        <Menu.Item name='examen' active={activeItem === 'examen'} onClick={this.handleItemClick} >
+          <Icon name='clipboard list' /> Exámen
+        </Menu.Item>
+        <Menu.Item name='transfusiones' active={activeItem === 'transfusiones'} onClick={this.handleItemClick} >
+          <Icon name='tint' /> Transfusiones
+        </Menu.Item>
+        <Menu.Item name='embarazo' active={activeItem === 'embarazo'} onClick={this.handleItemClick} >
+          <Icon name='heartbeat' /> Embarazo
         </Menu.Item>
       </Menu>
     );

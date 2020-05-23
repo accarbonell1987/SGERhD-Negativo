@@ -4,6 +4,7 @@ const router = express.Router();
 
 //Modelos
 const Usuario = require('../models/models').usuario;
+const Log = require('../models/models').logaceso;
 
 //Rutas
 //GET - Todos
@@ -43,10 +44,18 @@ router.post('/usuario', async (req, res) => {
 //POST - {json}
 router.post('/usuario/autenticar', async (req, res) => {
     try {
+        var autenticado = false;
+
         await Usuario.findOne({ nombre: req.body.nombre, contraseña: req.body.contraseña})
             .then(doc => {
                 if (doc === null) res.json({ status: 'FAILED', message: '', data: doc });
-                else res.json({ status: 'OK', message: 'Autenticado', data: doc });
+                else {
+                    //salvando el log cada vez que me autentico
+                    const log = new Log({fecha: Date.now(), usuario: doc._id });
+                    log.save();
+
+                    res.json({ status: 'OK', message: 'Autenticado', data: doc });
+                }
             })
             .catch(err => {
                 res.json({ status: 'FAILED', message: err });
