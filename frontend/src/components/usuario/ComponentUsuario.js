@@ -11,13 +11,16 @@ class ComponentUsuarioListar extends Component {
   state = {
     usuarios: [],
     openModal: false,
-    usuario : {
-      nombre: '',
-      contraseña: '',
-      repetircontraseña: '',
-      email: '',
-      rol: ''
-    }
+    nombre: '',
+    contraseña: '',
+    repetircontraseña: '',
+    email: '',
+    rol: '',
+    errornombre: false,
+    errorcontraseña: false,
+    errorcontraseñacoincide: false,
+    erroremail: false,
+    errorrol: false
   }
 
   roles = [
@@ -31,17 +34,28 @@ class ComponentUsuarioListar extends Component {
   constructor(props) {
     super(props);
 
-    this.adicionarUsuario = this.adicionarUsuario.bind(this);
+    this.addUser = this.addUser.bind(this);
     this.changeModalInput = this.changeModalInput.bind(this);
     this.changeModalState = this.changeModalState.bind(this);
+    this.clearUserStateAndCloseModal = this.clearUserStateAndCloseModal.bind(this);
   }
 
   componentDidMount = () => {
-    this.obtenerUsuarios();
+    this.getAllUsers();
   }
 
-  adicionarUsuario = (evt, usuario) => {
-    evt.preventDefault();
+  componentWillUpdate() {
+    //console.log(this.state);
+  }
+
+  //adicionar nuevo usuario
+  addUser = (evt) => {
+    const {nombre, contraseña, repetircontraseña, email, rol } = this.state;
+    console.log(this.state);
+    const usuario = {
+      nombre: nombre, contraseña: contraseña, repetircontraseña: repetircontraseña, email: email, rol: rol
+    }
+    console.log(usuario);
 
     fetch(this.props.endpoint + 'api/usuario/', {
       method: 'POST', //metodo
@@ -56,17 +70,17 @@ class ComponentUsuarioListar extends Component {
       //capturar respuesta
       const { status, message } = data;
       if (status === 'OK') {
-
-        Swal.fire({ position: 'center', icon: 'success', title: 'Usuario adicionado', showConfirmButton: false, timer: 1500 }); //mostrar mensaje
+        Swal.fire({ position: 'center', icon: 'success', title: 'Usuario adicionado', showConfirmButton: false, timer: 3000 }); //mostrar mensaje
       }else{
-        Swal.fire({ position: 'center', icon: 'error', title: message, showConfirmButton: false, timer: 3000 }); //mostrar mensaje
+        Swal.fire({ position: 'center', icon: 'error', title: message.message, showConfirmButton: false, timer: 5000 }); //mostrar mensaje
       }
     }).catch(err => {
-      Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 3000 }); //mostrar mensaje de error
+      Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 5000 }); //mostrar mensaje de error
     });
   }
 
-  obtenerUsuarios = () => {
+  //obtener todos los usuarios desde la API
+  getAllUsers = () => {
     fetch(this.props.endpoint + 'api/usuario')
       .then(res => res.json())
       .then(data => {
@@ -81,19 +95,44 @@ class ComponentUsuarioListar extends Component {
       });
   }
 
+  //Actualiza los inputs con los valores que vamos escribiendo
   changeModalInput = (evt) => {
     const { name, value } = evt.target;
     
     this.setState({
-      usuario: {[name] : value}
+      [name] : value
     });
   }
 
+  //Limpia el usuario y cierra el modal
+  clearUserStateAndCloseModal = () => {
+    this.setState({
+      nombre: '',
+      contraseña: '',
+      repetircontraseña: '',
+      email: '',
+      rol: '',
+      openModal: false
+    });
+  }
+
+  handleSubmit = (evt) => {
+    evt.preventDefault();
+
+    let error = false;
+    this.setState({ erroremail: error = ((this.state.email === '')||(!this.state.email.match(''))) });
+    this.setState({ erroremail: error = (this.state.email === '') });
+  }
+
+  //cambiar el estado en el MODAL para adicionar usuario
   changeModalState = (evt) => {
     if (evt.target.className.includes('modal-button-add')) {
       this.setState({ openModal: true });
     }else if(evt.target.className.includes('modal-button-cancel')){
-      this.setState({ openModal: false });
+      this.clearUserStateAndCloseModal();
+    }else {
+      //this.addUser();
+      //this.clearUserStateAndCloseModal();
     }
   }
 
@@ -118,14 +157,14 @@ class ComponentUsuarioListar extends Component {
                     >
                     <Header icon='user' content='Adicionar  ' />
                     <Modal.Content>
-                      <Form>
+                      <Form ref='form' onSubmit={this.onSubmit}>
                         <Form.Input
                           name = 'nombre'
                           icon = 'user'
                           iconPosition = 'left'
                           label = 'Nombre:'
                           placeholder = 'nombre de usuario'
-                          value={this.state.usuario.nombre}
+                          error={this.state.errornombre}
                           onChange = {this.changeModalInput}
                         />
                         <Form.Input
@@ -133,7 +172,8 @@ class ComponentUsuarioListar extends Component {
                           icon = 'mail'
                           iconPosition = 'left'
                           label = 'Correo Electrónico:'
-                          value={this.state.usuario.email}
+                          value={this.state.email}
+                          error={this.state.erroremail}
                           placeholder = 'correo@host.com'
                           onChange = {this.changeModalInput}
                         />
@@ -143,9 +183,10 @@ class ComponentUsuarioListar extends Component {
                           label = 'Rol:'
                           placeholder = 'Seleccionar Rol'
                           options={this.roles}
+                          error={this.state.errorrol}
                           onChange = {(e, {value}) => {
                               this.setState({
-                                usuario: { rol : value}
+                                rol : value
                               });
                             }
                           }
@@ -156,7 +197,8 @@ class ComponentUsuarioListar extends Component {
                             icon='lock'
                             iconPosition='left'
                             label='Contraseña:'
-                            value={this.state.usuario.contraseña}
+                            value={this.state.contraseña}
+                            error={this.state.contraseña || this.state.errorcontraseñacoincide}
                             type='password'
                             onChange = {this.changeModalInput}
                         />
@@ -165,7 +207,8 @@ class ComponentUsuarioListar extends Component {
                             icon='lock'
                             iconPosition='left'
                             label='Repetir Contraseña:'
-                            value={this.state.usuario.repetircontraseña}
+                            value={this.state.repetircontraseña}
+                            error={this.state.repetircontraseña || this.state.errorcontraseñacoincide}
                             type='password'
                             onChange = {this.changeModalInput}
                         />
@@ -175,7 +218,13 @@ class ComponentUsuarioListar extends Component {
                       <Button color='red' onClick={this.changeModalState} className='modal-button-cancel'>
                         <Icon name='remove' /> Cancelar
                       </Button>
-                      <Button color='green'>
+                      <Button color='green' onClick={this.changeModalState} className='modal-button-acept' type='submit' disabled={
+                        !this.state.nombre ||
+                        !this.state.email ||
+                        !this.state.rol ||
+                        !this.state.contraseña ||
+                        !this.state.repetircontraseña
+                      }>
                         <Icon name='checkmark' /> Aceptar
                       </Button>
                     </Modal.Actions>

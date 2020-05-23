@@ -39,11 +39,11 @@ class ComponentLogin extends Component {
         Swal.fire({ position: 'center', icon: 'success', title: message, showConfirmButton: false, timer: 1500 }); //mostrar mensaje
         this.props.modificarLoginState();
       }else{
-        Swal.fire({ position: 'center', icon: 'error', title: 'Usuario o contraseña incorrecto', showConfirmButton: false, timer: 3000 }); //mostrar mensaje
+        Swal.fire({ position: 'center', icon: 'error', title: 'Usuario o contraseña incorrecto', showConfirmButton: false, timer: 5000 }); //mostrar mensaje
         this.setState({ contraseña: '' });
       }
     }).catch(err => {
-      Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 3000 }); //mostrar mensaje de error
+      Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 5000 }); //mostrar mensaje de error
       this.setState({ contraseña: '' });
     });
   };
@@ -89,7 +89,11 @@ class ComponentLogin extends Component {
               </Grid>
             </Grid.Row>
             <Grid.Row className='contentrowbutton'>
-              <Button content='Ingresar' icon='check' primary onClick={this.handleAutenticarClick} />
+              <Button content='Ingresar' icon='check' primary onClick={this.handleAutenticarClick} type='submit' 
+              disabled={
+                !this.state.nombre ||
+                !this.state.contraseña
+              }/>
             </Grid.Row>
           </Form>
         </Grid.Column>

@@ -96,12 +96,6 @@ db.on('error', console.error.bind(console, 'MongoDB error en conexion:'));
         rol: { type: String, default: 'usuario', required: 'debe escoger un rol', enum: roles }, 
         accessToken: { type: String }
     });
-    //virtuals
-    usuario_schema.virtual('confirmacion_contraseña').get(function(){
-        return this.c_contraseña;
-    }).set(function(contraseña){
-        this.c_contraseña = contraseña;
-    });
 
     //GRUPO SANGUINEO
     var gruposanguineo_schema = new Schema({
