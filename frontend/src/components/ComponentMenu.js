@@ -7,15 +7,22 @@ import './global/css/Menu.css';
 
 //Defincion de la clase
 class ComponentMenu extends Component {
-  state = { activeItem: 'gamepad' }
+  state = { activeItem: this.props.opcionmenu }
 
-  handleItemClick = (e, { name }) => this.setState({ activeItem: name })
+  handleItemClick = (e, { name }) => {
+    //this.setState({ activeItem: name })
+    this.props.cambiarOpcionMenu(name);
+  };
 
-  constructor (props) {
-    super(props);
+  componentWillMount() {
+    console.log('componentWillMount (this.props.opcionmenu) -> ' + this.props.opcionmenu);
+    console.log('componentWillMount (this.state.activeItem) -> ' + this.state.activeItem);
+  }
 
-    this.state = {
-    };
+  shouldComponentUpdate() {
+    console.log('shouldComponentUpdate (this.props.opcionmenu) -> ' + this.props.opcionmenu);
+    console.log('shouldComponentUpdate (this.state.activeItem) -> ' + this.state.activeItem);
+    //this.setState({ activeItem: this.props.opcionmenu });
   }
 
   render() {

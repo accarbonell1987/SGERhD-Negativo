@@ -1,5 +1,5 @@
 .headerrow {
-    background: #2e3642;
+    background: #282c34 !important;
     height: 120px;
     padding: 10px 0 10px 0;
     border-radius: 10px;
@@ -21,7 +21,7 @@
 
 .contentrowbutton {
     margin: 30px 0 0 0 !important;
-    background: #2e3642;
+    background: #282c34 !important;
     height: 55px;
     padding: 10px;
     border-radius: 10px;
@@ -35,4 +35,3 @@ body {
     background: #ffffff;
     border-radius: 10px;
 }
-

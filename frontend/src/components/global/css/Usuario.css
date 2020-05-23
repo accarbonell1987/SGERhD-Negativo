@@ -1,0 +1,33 @@
+.allcolumn {
+    margin: 0 !important;
+    background: #ffffff;
+    border-radius: 0 10px 0 0 !important;
+    max-width: 98%;
+}
+
+.allgrid {
+    margin: 10px 0 0 0 !important;
+    border-radius: 0px !important;
+}
+
+.div-label-attached {
+    background: #282c34 !important;
+    color: #ffffff !important;
+    margin-bottom: 10px;
+}
+
+.div-table {
+    margin-top: 2.5rem !important;
+}
+
+.button-change-password {
+    color: darkorange !important;
+    margin-right: 0 !important;
+}
+
+.cell-logs {
+    max-width: 2% !important;
+}
+.cell-acciones {
+    max-width: 2% !important;
+}

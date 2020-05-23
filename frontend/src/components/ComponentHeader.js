@@ -14,7 +14,7 @@ class ComponentHeader extends Component {
   }
 
   handleAutenticarClick = () => {
-    this.props.modifyLoginState();
+    this.props.modificarLoginState();
   }
 
   render() {
@@ -24,7 +24,7 @@ class ComponentHeader extends Component {
           <Image src={require('./global/images/logohletras.png')} className="logo" alt="logo" />
         </a>
         <div className='divbutton' >
-          <Button as='a' inverted animated='right' size='large' onClick={this.handleAutenticarClick}>
+          <Button as='a' inverted animated='right' size='mini' onClick={this.handleAutenticarClick}>
             <Button.Content visible>
               <Icon name='user' />Usuario
             </Button.Content>

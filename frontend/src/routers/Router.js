@@ -1,13 +1,13 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
-import ComponentDashboard from '../components/ComponentDashboard';
+import ComponentApp from '../components/ComponentApp';
 import ComponentPageNotFound from '../components/ComponentNotFound';
 
 const Router = () => (
     <BrowserRouter>
         <Switch>
-            <Route exact path = '/' component = { ComponentDashboard } />
+            <Route exact path = '/' component = { ComponentApp } />
             <Route component = { ComponentPageNotFound }/>
         </Switch>
     </BrowserRouter>

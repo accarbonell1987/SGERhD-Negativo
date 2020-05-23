@@ -1,15 +1,17 @@
 .labeled {
     margin: 0 !important;
 }
+
 .menu-div {
-    margin: 0.5px 0 0 0 !important;
+    margin: 1px 0 0 0 !important;
     border-radius: 0 !important;
     background: #282c34 !important;
 }
+
 .item {
     border-radius: 0 !important;
 }
 
-a:hover {
+.item:hover {
     background: #8bc43f !important;
 }

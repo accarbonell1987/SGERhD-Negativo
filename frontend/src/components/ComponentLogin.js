@@ -35,7 +35,7 @@ class ComponentLogin extends Component {
       const { status, message } = data;
       if (status === 'OK') {
         Swal.fire({ position: 'center', icon: 'success', title: message, showConfirmButton: false, timer: 1500 }); //mostrar mensaje
-        this.props.modifyLoginState();
+        this.props.modificarLoginState();
       }else{
         Swal.fire({ position: 'center', icon: 'error', title: 'Usuario o contraseña incorrecto', showConfirmButton: false, timer: 3000 }); //mostrar mensaje
         this.setState({ contraseña: '' });

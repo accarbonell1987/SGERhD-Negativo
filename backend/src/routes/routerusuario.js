@@ -11,6 +11,11 @@ const Log = require('../models/models').logaceso;
 router.get('/usuario', async (req, res) => {
     try {
         const usuarios = await Usuario.find();
+        // const cusuario = {...usuarios}; //crear un clon
+        // cusuario.map(usuario => {
+        //     usuario
+        // });
+
         res.json({ status: 'OK', message: 'Obtenidos', data: usuarios });
     } catch(err) {
         res.json({ message: err });
@@ -29,8 +34,8 @@ router.get('/usuario/:id', async (req, res) => {
 
 //POST - {json}
 router.post('/usuario', async (req, res) => {
-    const { nombre, contraseña, rol } = req.body;
-    const usuario = new Usuario({ nombre, contraseña, rol });
+    const { nombre, contraseña, rol, email } = req.body;
+    const usuario = new Usuario({ nombre, contraseña, rol, email });
 
     try {
         const saved = await usuario.save();

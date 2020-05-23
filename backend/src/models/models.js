@@ -90,9 +90,10 @@ db.on('error', console.error.bind(console, 'MongoDB error en conexion:'));
 
     //USUARIO
     var usuario_schema = new Schema({
-        nombre: { type: String, required: true },
-        contraseña: { type: String, required: true },
-        rol: { type: String, default: 'usuario', required: true, enum: roles }, 
+        nombre: { type: String, required: 'nombre de usuario vacio' },
+        email: { type: String, required: 'correo electrónico no valido', match:/^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/ },
+        contraseña: { type: String, required: true, minlength:[8, 'contraseña muy corta'] },
+        rol: { type: String, default: 'usuario', required: 'debe escoger un rol', enum: roles }, 
         accessToken: { type: String }
     });
     //virtuals

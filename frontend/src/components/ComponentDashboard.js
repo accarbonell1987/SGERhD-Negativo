@@ -7,47 +7,30 @@ import './global/css/Content.css';
 //Componentes
 import ComponentHeader from './ComponentHeader';
 import ComponentContent from './ComponentContent';
-import ComponentFooter from './ComponentFooter';
-import ComponentLogin from './ComponentLogin';
+
 import ComponentMenu from './ComponentMenu';
 
 //Definicion de la clase
 class ComponentDashboard extends Component {
-
-  constructor(props){
-    super(props);
-
-    this.state = {
-      autenticado: true,
-      logintime: '',
-      usuario: '',
-      rol: '',
-      endpoint: process.env.REACT_APP_API_PATH_LOCAL
-    };
-  }
-
-  //modificar el valor del login
-  modifyLoginState = (evt) => {
-    this.setState({ autenticado: !this.state.autenticado });
-    this.setState({ logintime: this.state.autenticado ? Date.now : '' });
-    
-    console.log(this.state.logintime);
+  state = {
+    opcionmenu: 'usuarios',
+  };
+  
+  cambiarOpcionMenu = (opcion) => {
+    this.setState({ opcionmenu: opcion});
+    console.log('cambiarOpcionMenu -> '+opcion);
   }
 
   render() {
-    if (this.state.autenticado) {
+    if (this.props.autenticado) {
+      console.log('render -> '+this.state.opcionmenu);
       return (
         <div className="Dashboard">
-          <ComponentHeader modifyLoginState = {this.modifyLoginState} endpoint = {this.state.endpoint} />
-          <ComponentMenu endpoint = {this.state.endpoint} />
-          <ComponentContent />
-          <ComponentFooter />
+          <ComponentHeader modificarLoginState = {this.props.modificarLoginState} endpoint = {this.props.endpoint} />
+          <ComponentMenu cambiarOpcionMenu = {this.cambiarOpcionMenu} opcionmenu = {this.state.opcionmenu} />
+          <ComponentContent endpoint = { this.props.endpoint } />
         </div>
-      )
-    }else{
-      return (
-        <ComponentLogin modifyLoginState = {this.modifyLoginState} endpoint = {this.state.endpoint} />
-      )
+      );
     }
   }
 }
