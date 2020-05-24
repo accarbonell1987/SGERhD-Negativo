@@ -38,8 +38,17 @@ router.post('/usuario', async (req, res) => {
     const usuario = new Usuario({ nombre, contraseña, rol, email });
 
     try {
-        const saved = await usuario.save();
-        res.json({ status: 'OK', message: 'Insertado', data: saved });
+        await Usuario.findOne({ nombre: nombre })
+            .then(doc => {
+                if (doc === null) {
+                    const saved = usuario.save();
+                    res.json({ status: 'OK', message: 'Insertado', data: saved });
+                }else{
+                    res.json({ status: 'FAILED', message: 'Usuario existente', data: doc });
+                }
+            }).catch(err => {
+                res.json({ status: 'FAILED', message: err });
+            });
     } catch(err) {
         res.json({ message: err });
     };

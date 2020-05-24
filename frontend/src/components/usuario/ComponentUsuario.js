@@ -1,6 +1,6 @@
 //Importaciones
 import React, { Component } from 'react';
-import { Button, Grid, Icon, Label, Table, Popup, Header, Modal, Form } from 'semantic-ui-react'
+import { Button, Grid, Icon, Label, Table, Popup, Header, Modal, Form, Message } from 'semantic-ui-react'
 import Swal from 'sweetalert2'
 
 //CSS
@@ -20,7 +20,8 @@ class ComponentUsuarioListar extends Component {
     errorcontraseña: false,
     errorcontraseñacoincide: false,
     erroremail: false,
-    errorrol: false
+    errorrol: false,
+    errorform: false
   }
 
   roles = [
@@ -38,6 +39,7 @@ class ComponentUsuarioListar extends Component {
     this.changeModalInput = this.changeModalInput.bind(this);
     this.changeModalState = this.changeModalState.bind(this);
     this.clearUserStateAndCloseModal = this.clearUserStateAndCloseModal.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentDidMount = () => {
@@ -50,8 +52,7 @@ class ComponentUsuarioListar extends Component {
 
   //adicionar nuevo usuario
   addUser = (evt) => {
-    const {nombre, contraseña, repetircontraseña, email, rol } = this.state;
-    console.log(this.state);
+    const { nombre, contraseña, repetircontraseña, email, rol } = this.state;
     const usuario = {
       nombre: nombre, contraseña: contraseña, repetircontraseña: repetircontraseña, email: email, rol: rol
     }
@@ -72,7 +73,11 @@ class ComponentUsuarioListar extends Component {
       if (status === 'OK') {
         Swal.fire({ position: 'center', icon: 'success', title: 'Usuario adicionado', showConfirmButton: false, timer: 3000 }); //mostrar mensaje
       }else{
-        Swal.fire({ position: 'center', icon: 'error', title: message.message, showConfirmButton: false, timer: 5000 }); //mostrar mensaje
+        let mensaje = message.message;
+        if (message.message === 'undefined') {
+          mensaje = message;
+        }
+        Swal.fire({ position: 'center', icon: 'error', title: mensaje, showConfirmButton: false, timer: 5000 }); //mostrar mensaje
       }
     }).catch(err => {
       Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 5000 }); //mostrar mensaje de error
@@ -98,7 +103,7 @@ class ComponentUsuarioListar extends Component {
   //Actualiza los inputs con los valores que vamos escribiendo
   changeModalInput = (evt) => {
     const { name, value } = evt.target;
-    
+
     this.setState({
       [name] : value
     });
@@ -112,16 +117,35 @@ class ComponentUsuarioListar extends Component {
       repetircontraseña: '',
       email: '',
       rol: '',
-      openModal: false
+      openModal: false,
+      errornombre: false,
+      errorcontraseña: false,
+      errorcontraseñacoincide: false,
+      erroremail: false,
+      errorrol: false,
+      errorform: false,
     });
   }
 
   handleSubmit = (evt) => {
     evt.preventDefault();
 
-    let error = false;
-    this.setState({ erroremail: error = ((this.state.email === '')||(!this.state.email.match(''))) });
-    this.setState({ erroremail: error = (this.state.email === '') });
+    let mailformat = /^\w+([-]?\w+)*@\w+([-]?\w+)*(\.\w{2,3})+$/; 
+    console.log(this.state);
+
+    this.setState({
+      errornombre: (this.state.nombre === ''),
+      errorcontraseña: (this.state.contraseña.length < 8) ? { content: 'La contraseña debe de tener mas de 8 caracteres', pointing: 'below' } : false,
+      errorcontraseñacoincide: (this.state.repetircontraseña !== this.state.contraseña) ? { content: 'La contraseñas no coinciden', pointing: 'below' } : false,
+      erroremail: (!this.state.email.match(mailformat)) ? { content: 'Formato de correo incorrecto (corre@host.dominio)', pointing: 'below' } : false,
+      errorrol: (this.state.rol === '') ? { content: 'Debe de escoger un rol', pointing: 'below' } : false,
+    });
+    const econtraseñarepetir = !Boolean(this.state.errorcontraseñacoincide);
+    const econtraseña = !Boolean(this.state.errorcontraseña);
+    const eemail = !Boolean(this.state.erroremail);
+    const erol = !Boolean(this.state.errorrol);
+
+    this.setState({ errorform: ( this.state.errornombre || econtraseña || econtraseñarepetir || eemail || erol )});
   }
 
   //cambiar el estado en el MODAL para adicionar usuario
@@ -131,12 +155,17 @@ class ComponentUsuarioListar extends Component {
     }else if(evt.target.className.includes('modal-button-cancel')){
       this.clearUserStateAndCloseModal();
     }else {
+      this.handleSubmit(evt);
+      if (!this.state.errorform) {
+        this.addUser();
+      }
       //this.addUser();
       //this.clearUserStateAndCloseModal();
     }
   }
 
   render() {
+    console.log(this.state);
     return (
       <Grid textAlign='center' verticalAlign='top' className='allgrid'>
         <Grid.Column className='allcolumn'>
@@ -157,17 +186,20 @@ class ComponentUsuarioListar extends Component {
                     >
                     <Header icon='user' content='Adicionar  ' />
                     <Modal.Content>
-                      <Form ref='form' onSubmit={this.onSubmit}>
+                      { this.state.errorform ? <Message error inverted header='Error' content='Existe algun error en el formulario' /> : null } 
+                      <Form ref='form'>
                         <Form.Input
+                          required
                           name = 'nombre'
                           icon = 'user'
                           iconPosition = 'left'
                           label = 'Nombre:'
                           placeholder = 'nombre de usuario'
-                          error={this.state.errornombre}
+                          error = { this.state.errornombre }
                           onChange = {this.changeModalInput}
                         />
                         <Form.Input
+                          required
                           name = 'email'
                           icon = 'mail'
                           iconPosition = 'left'
@@ -177,7 +209,8 @@ class ComponentUsuarioListar extends Component {
                           placeholder = 'correo@host.com'
                           onChange = {this.changeModalInput}
                         />
-                        <Form.Select 
+                        <Form.Select
+                          required
                           name = 'rol'
                           // iconPosition = 'left'
                           label = 'Rol:'
@@ -193,22 +226,24 @@ class ComponentUsuarioListar extends Component {
                           fluid selection clearable
                         />
                         <Form.Input
+                            required
                             name='contraseña'
                             icon='lock'
                             iconPosition='left'
                             label='Contraseña:'
                             value={this.state.contraseña}
-                            error={this.state.contraseña || this.state.errorcontraseñacoincide}
+                            error={this.state.errorcontraseña}
                             type='password'
                             onChange = {this.changeModalInput}
                         />
                         <Form.Input
+                            required
                             name='repetircontraseña'
                             icon='lock'
                             iconPosition='left'
                             label='Repetir Contraseña:'
                             value={this.state.repetircontraseña}
-                            error={this.state.repetircontraseña || this.state.errorcontraseñacoincide}
+                            error={this.state.errorcontraseñacoincide}
                             type='password'
                             onChange = {this.changeModalInput}
                         />
@@ -219,11 +254,7 @@ class ComponentUsuarioListar extends Component {
                         <Icon name='remove' /> Cancelar
                       </Button>
                       <Button color='green' onClick={this.changeModalState} className='modal-button-acept' type='submit' disabled={
-                        !this.state.nombre ||
-                        !this.state.email ||
-                        !this.state.rol ||
-                        !this.state.contraseña ||
-                        !this.state.repetircontraseña
+                        (!this.state.nombre || !this.state.email || !this.state.rol || !this.state.contraseña || !this.state.repetircontraseña)
                       }>
                         <Icon name='checkmark' /> Aceptar
                       </Button>
