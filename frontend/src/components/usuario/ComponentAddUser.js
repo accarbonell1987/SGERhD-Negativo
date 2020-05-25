@@ -160,7 +160,7 @@ class ComponentAddUsers extends Component {
         <Modal open={this.state.openModal}
             trigger = {
                 <Button floated='right' icon labelPosition='left' primary size='small' onClick={this.changeModalState} className='modal-button-add'>
-                <Icon name='add user' /> Adicionar
+                  <Icon name='add user' /> Adicionar
                 </Button>
             }
         >

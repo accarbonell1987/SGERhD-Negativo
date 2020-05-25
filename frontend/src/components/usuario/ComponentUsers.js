@@ -19,15 +19,57 @@ class ComponentUsers extends Component {
     super(props);
 
     this.allUsers = this.allUsers.bind(this);
+    this.deleteUser = this.deleteUser.bind(this);
   }
 
   componentDidMount = () => {
     this.allUsers();
   }
 
-  deleteUser = () => {
+  //eliminar el usuario
+  deleteUser = (id, nombre) => {
+    //Esta seguro?
+    Swal.fire({
+      title: '¿Esta seguro?',
+      text: "Desea eliminar el usuario: " + nombre,
+      icon: 'question',
+      showCancelButton: true,
+      // confirmButtonColor: '#3085d6',
+      cancelButtonColor: 'red',
+      confirmButtonColor: 'green',
+      // cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, Eliminar!'
+    })
+    .then((result) => {
+      //si escogio Si
+      if (result.value) {
+        //enviar al endpoint
+        fetch (this.props.endpoint + 'api/usuario/' + id, {
+          method: 'DELETE',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(res => res.json())
+        .then(data => {
+          const { status, message } = data;
+          status === 'OK' ?
+            Swal.fire({ position: 'center', icon: 'success', title: message, showConfirmButton: false, timer: 3000 })
+          :
+              Swal.fire({ position: 'center', icon: 'error', title: message, showConfirmButton: false, timer: 5000 })
+          //Actualizar el listado
+          this.allUsers();
+        })
+        .catch(err => {
+          Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 5000 }); //mostrar mensaje de error
+        });
+      }
+    })
   }
-  updateUser = () => {
+
+  updateUser = (id, nombre) => {
+    console.log(id + ' -> '+nombre);
   }
   //obtener todos los usuarios desde la API
   allUsers = () => {
@@ -61,14 +103,18 @@ class ComponentUsers extends Component {
                   <ComponentAddUsers allUsers = { this.allUsers } endpoint = { this.props.endpoint }/>
                 </Table.HeaderCell>
               </Table.Row>
-              <Table.Row>
-                <Table.HeaderCell />
-                <Table.HeaderCell>Nombre</Table.HeaderCell>
-                <Table.HeaderCell>Correo Electronico</Table.HeaderCell>
-                <Table.HeaderCell>Rol</Table.HeaderCell>
-                <Table.HeaderCell className='cell-logs'>Logs</Table.HeaderCell>
-                <Table.HeaderCell className='cell-acciones'>Acciones</Table.HeaderCell>
-              </Table.Row>
+
+              { 
+                (this.state.usuarios.length > 0) ? 
+                <Table.Row>
+                  <Table.HeaderCell />
+                  <Table.HeaderCell>Nombre</Table.HeaderCell>
+                  <Table.HeaderCell>Correo Electronico</Table.HeaderCell>
+                  <Table.HeaderCell>Rol</Table.HeaderCell>
+                  <Table.HeaderCell className='cell-logs'>Logs</Table.HeaderCell>
+                  <Table.HeaderCell className='cell-acciones'>Acciones</Table.HeaderCell>
+                </Table.Row> : ''
+              }
             </Table.Header>
 
             <Table.Body>
@@ -83,28 +129,32 @@ class ComponentUsers extends Component {
                       <Table.Cell>{usuario.rol}</Table.Cell>
                       <Table.Cell className='cell-logs' collapsing>
                         <Popup
-                            trigger={ <Button icon labelPosition='right' className='button-logs'>
-                            <Icon name='address card outline' className='button-icon-logs'/>Logs
-                          </Button> }
-                            content="Logs de acceso del usuario"
-                            basic inverted size='small'
+                          content="Logs de acceso del usuario" basic inverted size='small' 
+                          trigger={
+                            <Button icon labelPosition='right' className='button-logs'>
+                              <Icon name='address card outline' className='button-icon-logs'/>Logs
+                            </Button> 
+                          }
                         />
                       </Table.Cell>
                       <Table.Cell className='cell-acciones' collapsing>
                         <Popup
-                          trigger={<Button icon='remove user' className = 'button-remove' />}
-                          content="Eliminar el usuario"
-                          basic inverted size='small'
+                          content="Eliminar el usuario" basic inverted size='small'
+                          trigger={
+                            <Button icon='remove user' className = 'button-remove' onClick={() => this.deleteUser(usuario._id, usuario.nombre) }/>
+                          }
                         />
                         <Popup
-                          trigger={<Button icon='edit' className='button-edit'/>}
-                          content="Modificar el usuario"
-                          basic inverted size='small'
+                          content="Modificar el usuario" basic inverted size='small'
+                          trigger={
+                            <Button icon='edit' className='button-edit' onClick={() => this.updateUser(usuario._id, usuario.nombre) }/>
+                          }
                         />
                         <Popup
-                          trigger={<Button icon='key' className='button-change-password'/>}
-                          content="Cambiar contraseña"
-                          basic inverted size='small'
+                          content="Cambiar contraseña" basic inverted size='small'
+                          trigger={
+                            <Button icon='key' className='button-change-password'/>
+                          }
                         />
                       </Table.Cell>
                     </Table.Row>
