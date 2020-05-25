@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 import './global/css/Content.css';
 
 //Componentes
-import ComponentUsuario from './usuario/ComponentUsuario';
+import ComponentUsers from './usuario/ComponentUsers';
 import ComponentFooter from './ComponentFooter';
 
 //Defincion de la clase
@@ -34,7 +34,7 @@ class ComponentContent extends Component {
     // }
     return (
       <div className='Content'>
-        <ComponentUsuario endpoint = { this.props.endpoint } />
+        <ComponentUsers endpoint = { this.props.endpoint } />
         <ComponentFooter />
       </div>
     );

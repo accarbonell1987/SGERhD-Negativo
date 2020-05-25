@@ -69,20 +69,10 @@ class ComponentLogin extends Component {
               <Grid columns={1} relaxed='very' stackable>
                 <Grid.Column className='contentrowcolumn'>
                     <Form.Input
-                        name = 'nombre'
-                        icon = 'user'
-                        iconPosition = 'left'
-                        label = 'Usuario'
-                        placeholder = 'Usuario'
-                        onChange = {this.handleChange}
+                        name = 'nombre' icon = 'user' iconPosition = 'left' label = 'Usuario' placeholder = 'Usuario' onChange = {this.handleChange}
                     />
                     <Form.Input
-                        name='contraseña'
-                        icon='lock'
-                        iconPosition='left'
-                        label='contraseña'
-                        value={this.state.contraseña}
-                        type='password'
+                        name='contraseña' icon='lock' iconPosition='left' label='contraseña' value={this.state.contraseña} type='password'
                         onChange = {this.handleChange}
                     />
                 </Grid.Column>
