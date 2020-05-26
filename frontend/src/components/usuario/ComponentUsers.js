@@ -1,19 +1,30 @@
 //Importaciones
 import React, { Component } from 'react';
-import { Button, Grid, Icon, Label, Table, Popup } from 'semantic-ui-react'
+import { Button, Grid, Icon, Label, Table, Popup, Image } from 'semantic-ui-react'
 import Swal from 'sweetalert2'
 
 //CSS
 import '../global/css/Usuario.css';
 
 //Componentes
-import ComponentAddUsers from './ComponentAddUser';
+import ComponentAddUser from './ComponentAddUser';
+import ComponentUpdateUser from './ComponentUpdateUser';
+import ComponentChangePassword from './ComponentChangePassword';
+
 
 //Defincion de la clase
 class ComponentUsers extends Component {
   state = {
     usuarios: []
   }
+
+  roles = [
+    { key: 'usuario', text: 'Usuario', value: 'usuario', image: { avatar: true, src: require('../global/images/jenny.jpg') }},
+    { key: 'recepcionista', text: 'Recepcionista', value: 'recepcionista', image: { avatar: true, src: require('../global/images/molly.png') }},
+    { key: 'informatico', text: 'Informatico', value: 'informatico' , image: { avatar: true, src: require('../global/images/steve.jpg') }},
+    { key: 'especialista', text: 'Especialista', value: 'especialista' , image: { avatar: true, src: require('../global/images/stevie.jpg') }},
+    { key: 'doctor', text: 'Doctor', value: 'doctor', image: { avatar: true, src: require('../global/images/elliot.jpg') }}
+  ];
 
   constructor(props) {
     super(props);
@@ -25,7 +36,6 @@ class ComponentUsers extends Component {
   componentDidMount = () => {
     this.allUsers();
   }
-
   //eliminar el usuario
   deleteUser = (id, nombre) => {
     //Esta seguro?
@@ -67,16 +77,11 @@ class ComponentUsers extends Component {
       }
     })
   }
-
-  updateUser = (id, nombre) => {
-    console.log(id + ' -> '+nombre);
-  }
   //obtener todos los usuarios desde la API
   allUsers = () => {
     fetch(this.props.endpoint + 'api/usuario')
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data.status === 'OK'){
           this.setState({usuarios: data.data});
         }else{
@@ -100,7 +105,7 @@ class ComponentUsers extends Component {
               <Table.Row>
                 <Table.HeaderCell />
                 <Table.HeaderCell colSpan='5'>
-                  <ComponentAddUsers allUsers = { this.allUsers } endpoint = { this.props.endpoint }/>
+                  <ComponentAddUser allUsers = { this.allUsers } endpoint = { this.props.endpoint } roles = {this.roles} />
                 </Table.HeaderCell>
               </Table.Row>
 
@@ -119,6 +124,7 @@ class ComponentUsers extends Component {
 
             <Table.Body>
               { this.state.usuarios.map(usuario => {
+                  let rolData = this.roles.find(element => { return element.key === usuario.rol });
                   return(
                     <Table.Row key={usuario._id}> 
                       <Table.Cell collapsing>
@@ -126,7 +132,11 @@ class ComponentUsers extends Component {
                       </Table.Cell>
                       <Table.Cell>{usuario.nombre}</Table.Cell>
                       <Table.Cell>{usuario.email}</Table.Cell>
-                      <Table.Cell>{usuario.rol}</Table.Cell>
+                      <Table.Cell>
+                        <Label image size='medium'>
+                          <Image src={ rolData.image.src } /> {rolData.text}
+                        </Label>
+                      </Table.Cell>
                       <Table.Cell className='cell-logs' collapsing>
                         <Popup
                           content="Logs de acceso del usuario" basic inverted size='small' 
@@ -144,18 +154,8 @@ class ComponentUsers extends Component {
                             <Button icon='remove user' className = 'button-remove' onClick={() => this.deleteUser(usuario._id, usuario.nombre) }/>
                           }
                         />
-                        <Popup
-                          content="Modificar el usuario" basic inverted size='small'
-                          trigger={
-                            <Button icon='edit' className='button-edit' onClick={() => this.updateUser(usuario._id, usuario.nombre) }/>
-                          }
-                        />
-                        <Popup
-                          content="Cambiar contraseña" basic inverted size='small'
-                          trigger={
-                            <Button icon='key' className='button-change-password'/>
-                          }
-                        />
+                        <ComponentUpdateUser allUsers = { this.allUsers } endpoint = { this.props.endpoint } usuarioid = {usuario._id} roles = {this.roles} />
+                        <ComponentChangePassword endpoint = { this.props.endpoint } usuarioid = {usuario._id} gestion = {true} />
                       </Table.Cell>
                     </Table.Row>
                   )

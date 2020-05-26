@@ -20,14 +20,25 @@
     margin-top: 2.5rem !important;
 }
 
-.button-change-password {
-    color: darkorange !important;
-    margin-right: 0 !important;
-}
-
 .cell-logs {
     max-width: 2% !important;
 }
+
 .cell-acciones {
     max-width: 2% !important;
+}
+
+.modal-button-change-password {
+    color: darkorange !important;
+    margin-right: 0 !important;
+    padding: .78571429em .78571429em .78571429em !important;
+}
+
+.modal-button-action {
+    padding: .78571429em .78571429em .78571429em !important;
+}
+
+.modal-icon {
+    max-width: 16px !important;
+    margin: 0 !important;
 }

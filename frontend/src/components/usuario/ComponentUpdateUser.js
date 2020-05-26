@@ -1,0 +1,184 @@
+//Importaciones
+import React, { Component } from 'react';
+import { Button, Icon, Header, Modal, Form, Message } from 'semantic-ui-react'
+import Swal from 'sweetalert2'
+
+//CSS
+import '../global/css/Usuario.css';
+
+class ComponentUpdateUser extends Component {
+    state = {
+      openModal: false,
+      nombre: '',
+      email: '',
+      rol: '',
+      erroremail: false,
+      errorrol: false,
+      errorform: false
+    }
+  
+    constructor(props) {
+      super(props);
+  
+      this.clearModalState = this.clearModalState.bind(this);
+      this.updateUser = this.updateUser.bind(this);
+      this.changeModalInput = this.changeModalInput.bind(this);
+      this.changeModalState = this.changeModalState.bind(this);
+      this.handleSubmit = this.handleSubmit.bind(this);
+    }
+    //obtener propiedades del usuario
+    getUser = (id) => {
+      //enviar al endpoint
+      fetch (this.props.endpoint + 'api/usuario/' + id)
+      .then(res => res.json())
+      .then(jsondata => {
+        const { status, message, data } = jsondata;
+        if (status === 'OK') {
+          this.setState({
+            nombre: data.nombre,
+            email: data.email,
+            rol: data.rol,
+            openModal: true
+          });
+        }else{
+          Swal.fire({ position: 'center', icon: 'error', title: message, showConfirmButton: false, timer: 5000 })
+        }
+      })
+      .catch(err => {
+        Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 5000 }); //mostrar mensaje de error
+      });
+    }
+    //modificar usuario
+    updateUser = async (id) => {
+      const { email, rol } = this.state;
+      const usuario = {
+        email: email, 
+        rol: rol
+      }
+      //la promise debe de devolver un valor RETURN
+      try {
+        const res = await fetch(this.props.endpoint + 'api/usuario/' + id, {
+            method: 'PATCH',
+            body: JSON.stringify(usuario),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+        let jsondata = await res.json();
+        const { status, message } = jsondata;
+        if (status === 'OK') {
+          Swal.fire({ position: 'center', icon: 'success', title: message, showConfirmButton: false, timer: 3000 }); //mostrar mensaje
+          return true;
+        }
+        else {
+          Swal.fire({ position: 'center', icon: 'error', title: message, showConfirmButton: false, timer: 5000 }); //mostrar mensaje
+          return false;
+        }
+      } catch (err) {
+        Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 5000 }); //mostrar mensaje de error
+        return false;
+      }
+    }
+    //validar el formulario
+    handleSubmit = (evt) => {
+      evt.preventDefault();
+  
+      this.setState({ errform: false });
+  
+      let mailformat = /^\w+([-]?\w+)*@\w+([-]?\w+)*(\.\w{2,3})+$/; 
+  
+      let erroremail = (!this.state.email.match(mailformat)) ? { content: 'Formato de correo incorrecto (corre@host.dominio)', pointing: 'below' } : false;
+      let errorrol = (this.state.rol === '') ? { content: 'Debe de escoger un rol', pointing: 'below' } : false;
+      let eemail = Boolean(erroremail);
+      let erol = Boolean(errorrol);
+  
+      let errform = (eemail || erol);
+  
+      this.setState({ 
+        erroremail: erroremail,
+        errorrol: errorrol,
+        errorform: errform
+      });
+  
+      return errform;
+    }
+    //Actualiza los inputs con los valores que vamos escribiendo
+    changeModalInput = (evt) => {
+      const { name, value } = evt.target;
+  
+      this.setState({
+        [name] : value
+      });
+    }
+    //cambiar el estado en el MODAL para adicionar usuario
+    changeModalState = async (evt) => {
+      if (evt.target.className.includes('modal-button-action') || evt.target.className.includes('modal-icon')) {
+        this.getUser(this.props.usuarioid);
+      }else if(evt.target.className.includes('modal-button-cancel')){
+        this.clearModalState();
+      }else {
+        //si no hay problemas en el formulario
+        if (this.handleSubmit(evt) === false) {
+          //si no hay problemas en la insercion
+          if (await this.updateUser(this.props.usuarioid)){
+            //enviar a recargar los usuarios
+            this.props.allUsers();
+            this.clearModalState();
+          }
+        }
+      }
+    }
+    //limpiar states
+    clearModalState = () => {
+      this.setState({
+        openModal: false,
+        nombre: '',
+        email: '',
+        rol: '',
+        erroremail: false,
+        errorrol: false,
+        errorform: false
+      });
+    }
+  
+    render() {
+      return (
+        <Modal open={this.state.openModal}
+            trigger = {
+                <Button className='modal-button-action' onClick={this.changeModalState} >
+                  <Icon name='edit' className='modal-icon' onClick={this.changeModalState}/>
+                </Button>
+            }
+        >
+            <Header icon='user' content='Modificar  ' />
+            <Modal.Content>
+            { this.state.errorform ? <Message error inverted header='Error' content='Error en el formulario' /> : null } 
+            <Form ref='form' onSubmit={this.changeModalState}>
+                <Form.Input 
+                disabled required name = 'nombre' icon = 'user' iconPosition = 'left' label = 'Nombre:' value={this.state.nombre} error={this.state.errornombre} placeholder = 'nombre de usuario' onChange = {this.changeModalInput}
+                />
+                <Form.Input
+                required name = 'email' icon = 'mail' iconPosition = 'left' label = 'Correo Electrónico:' value={this.state.email} error={this.state.erroremail} placeholder = 'correo@host.com' onChange = {this.changeModalInput}
+                />
+                <Form.Select
+                required name = 'rol' label = 'Rol:' placeholder = 'Seleccionar Rol' options={this.props.roles} value={this.state.rol} error={this.state.errorrol} onChange = { (e, {value}) => { this.setState({ rol : value }); } } fluid selection clearable
+                />
+            </Form>
+            </Modal.Content>
+            <Modal.Actions>
+            <Button color='red' onClick={this.changeModalState} className='modal-button-cancel' type>
+                <Icon name='remove' /> Cancelar
+            </Button>
+            <Button color='green' onClick={this.changeModalState} className='modal-button-acept' type='submit' disabled={
+                (!this.state.nombre || !this.state.email || !this.state.rol)
+            }>
+                <Icon name='checkmark' /> Aceptar
+            </Button>
+            </Modal.Actions>
+        </Modal>
+      );
+    }
+  }
+  
+  export default ComponentUpdateUser;

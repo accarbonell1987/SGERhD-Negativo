@@ -11,11 +11,6 @@ const Log = require('../models/models').logaceso;
 router.get('/usuario', async (req, res) => {
     try {
         const usuarios = await Usuario.find();
-        // const cusuario = {...usuarios}; //crear un clon
-        // cusuario.map(usuario => {
-        //     usuario
-        // });
-
         res.json({ status: 'OK', message: 'Obtenidos', data: usuarios });
     } catch(err) {
         res.json({ message: err });
@@ -42,9 +37,9 @@ router.post('/usuario', async (req, res) => {
             .then(doc => {
                 if (doc === null) {
                     const saved = usuario.save();
-                    res.json({ status: 'OK', message: 'Insertado', data: saved });
+                    res.json({ status: 'OK', message: 'Insertado correctamente...', data: saved });
                 }else{
-                    res.json({ status: 'FAILED', message: 'Usuario existente', data: doc });
+                    res.json({ status: 'FAILED', message: 'Usuario ya existente...', data: doc });
                 }
             }).catch(err => {
                 res.json({ status: 'FAILED', message: err });
@@ -84,7 +79,7 @@ router.delete('/usuario/:id', async (req, res) => {
     try {
         const removed = await Usuario.findByIdAndRemove(req.params.id);
 
-        res.json({ status: 'OK', message: 'Eliminado', data: removed });
+        res.json({ status: 'OK', message: 'Eliminado correctamente...', data: removed });
     } catch(err) {
         res.json({ message: err });
     }
@@ -93,10 +88,22 @@ router.delete('/usuario/:id', async (req, res) => {
 //PATCH - Un usuario por id /usuario/id - {json}
 router.patch('/usuario/:id', async (req, res) => {
     try {
-        const { nombre, contraseña, rol } = req.body;
-        const data = { nombre, contraseña, rol };
+        const { email, rol } = req.body;
+        const data = { email, rol };
         await Usuario.findByIdAndUpdate(req.params.id, data);
-        res.json({ status: 'OK', message: 'Modificado', data: data });
+        res.json({ status: 'OK', message: 'Modificado correctamente...', data: data });
+    } catch(err) {
+        res.json({ message: err });
+    }
+});
+
+//PATCH - Cambiar clave /usuario/id - {json}
+router.patch('/usuario/password/:id', async (req, res) => {
+    try {
+        const { contraseña } = req.body;
+        const data = { contraseña };
+        await Usuario.findByIdAndUpdate(req.params.id, data);
+        res.json({ status: 'OK', message: 'Contraseña cambiada correctamente...', data: data });
     } catch(err) {
         res.json({ message: err });
     }

@@ -6,7 +6,7 @@ import Swal from 'sweetalert2'
 //CSS
 import '../global/css/Usuario.css';
 
-class ComponentAddUsers extends Component {
+class ComponentAddUser extends Component {
     state = {
       openModal: false,
       nombre: '',
@@ -19,17 +19,8 @@ class ComponentAddUsers extends Component {
       errorcontraseñacoincide: false,
       erroremail: false,
       errorrol: false,
-      errorform: false,
-      errorinsert: false
+      errorform: false
     }
-  
-    roles = [
-      { key: 'usuario', text: 'Usuario', value: 'usuario', image: { avatar: true, src: require('../global/images/patrick.png') }},
-      { key: 'recepcionista', text: 'Recepcionista', value: 'recepcionista', image: { avatar: true, src: require('../global/images/christian.jpg') }},
-      { key: 'informatico', text: 'Informatico', value: 'informatico' , image: { avatar: true, src: require('../global/images/elliot.jpg') }},
-      { key: 'especialista', text: 'Especialista', value: 'especialista' , image: { avatar: true, src: require('../global/images/jenny.jpg') }},
-      { key: 'doctor', text: 'Doctor', value: 'doctor', image: { avatar: true, src: require('../global/images/justen.jpg') }}
-    ];
   
     constructor(props) {
       super(props);
@@ -111,13 +102,12 @@ class ComponentAddUsers extends Component {
     }
     //Actualiza los inputs con los valores que vamos escribiendo
     changeModalInput = (evt) => {
-        const { name, value } = evt.target;
-    
-        this.setState({
-          [name] : value
-        });
-      }
-
+      const { name, value } = evt.target;
+  
+      this.setState({
+        [name] : value
+      });
+    }
     //cambiar el estado en el MODAL para adicionar usuario
     changeModalState = async (evt) => {
       if (evt.target.className.includes('modal-button-add')) {
@@ -136,7 +126,7 @@ class ComponentAddUsers extends Component {
         }
       }
     }
-    //limpiar form
+    //limpiar states
     clearModalState = () => {
         this.setState({
             openModal: false,
@@ -150,8 +140,7 @@ class ComponentAddUsers extends Component {
             errorcontraseñacoincide: false,
             erroremail: false,
             errorrol: false,
-            errorform: false,
-            errorinsert: false
+            errorform: false
         });
     }
   
@@ -175,7 +164,7 @@ class ComponentAddUsers extends Component {
                 required name = 'email' icon = 'mail' iconPosition = 'left' label = 'Correo Electrónico:' value={this.state.email} error={this.state.erroremail} placeholder = 'correo@host.com' onChange = {this.changeModalInput}
                 />
                 <Form.Select
-                required name = 'rol' label = 'Rol:' placeholder = 'Seleccionar Rol' options={this.roles} error={this.state.errorrol} onChange = { (e, {value}) => { this.setState({ rol : value }); } } fluid selection clearable
+                required name = 'rol' label = 'Rol:' placeholder = 'Seleccionar Rol' options={this.props.roles} error={this.state.errorrol} onChange = { (e, {value}) => { this.setState({ rol : value }); } } fluid selection clearable
                 />
                 <Form.Input
                 required name='contraseña' icon='lock' iconPosition='left' label='Contraseña:' value={this.state.contraseña} error={this.state.errorcontraseña} type='password' onChange = {this.changeModalInput}
@@ -200,4 +189,4 @@ class ComponentAddUsers extends Component {
     }
   }
   
-  export default ComponentAddUsers;
+  export default ComponentAddUser;
