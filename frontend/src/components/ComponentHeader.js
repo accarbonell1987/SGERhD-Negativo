@@ -26,7 +26,7 @@ class ComponentHeader extends Component {
         <div className='divbutton' >
           <Button as='a' inverted animated='right' size='mini' onClick={this.handleAutenticarClick}>
             <Button.Content visible>
-              <Icon name='user' />{this.props.parentState.usuario}
+              <Icon name='user' />{this.props.parentState.usuario} - {this.props.parentState.rol}
             </Button.Content>
             <Button.Content hidden>
               <Icon name='log out' />Deslogear

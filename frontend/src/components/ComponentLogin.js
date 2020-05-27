@@ -57,8 +57,8 @@ class ComponentLogin extends Component {
 
   render() {
     return (
-      <Grid textAlign='center' verticalAlign='middle' style={{ height: '100vh' }} className='allgrid'>
-        <Grid.Column style={{ maxWidth: 350 }} className='allcolumn'>
+      <Grid textAlign='center' verticalAlign='middle' style={{ height: '100vh' }} className='login-allgrid'>
+        <Grid.Column style={{ maxWidth: 350 }} className='login-allcolumn'>
           <Grid.Row className='headerrow'>
             <Header>
               <Image src={require('./global/images/logovletras.png')} className='headerimage'/>

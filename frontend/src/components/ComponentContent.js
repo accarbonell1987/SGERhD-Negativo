@@ -12,30 +12,15 @@ import ComponentFooter from './ComponentFooter';
 class ComponentContent extends Component {
 
   render() {
-    // switch (this.props.opcionmenu) {
-    //   case 'usuarios': {
-    //     return (
-    //       <ComponentUsuario />
-    //     );
-    //   };
-    //   case 'pacientes': {
-    //     return (
-    //       <ComponentUsuario />
-    //     );
-    //   };
-    //   default: {
-    //     return (
-    //       <div className="Content">
-    //         <h1>Soy el contenido</h1>
-    //         <p>Lorem impsum...</p>
-    //       </div>
-    //     );
-    //   }
-    // }
-    if (this.props.opcionmenu === 'usuarios') {
+    //buscar el permiso del rol
+    const permiso = this.props.permisos.find(p => p.rol === this.props.parentState.rol);
+    //buscar el acceso del menu
+    const accesomenu = permiso.accesos.find(p => p.opcion === this.props.opcionmenu);
+    //chequear si es usuario y tengo permiso
+    if (this.props.opcionmenu === 'usuarios' && accesomenu.permisos.menu)  {
       return (
         <div className='Content'>
-          <ComponentUsers endpoint = { this.props.endpoint } parentState = {this.props.parentState}/>
+          <ComponentUsers parentState = {this.props.parentState} roles = {this.props.roles} permisos = {this.props.permisos} />
           <ComponentFooter />
         </div>
       );

@@ -1,6 +1,6 @@
 //Importaciones
 import React, { Component } from 'react';
-import { Button, Grid, Icon, Label, Table, Popup, Image } from 'semantic-ui-react'
+import { Button, Grid, Icon, Label, Table, Image } from 'semantic-ui-react'
 import Swal from 'sweetalert2'
 
 //CSS
@@ -17,14 +17,6 @@ class ComponentUsers extends Component {
   state = {
     usuarios: []
   }
-
-  roles = [
-    { key: 'usuario', text: 'Usuario', value: 'usuario', image: { avatar: true, src: require('../global/images/jenny.jpg') }},
-    { key: 'recepcionista', text: 'Recepcionista', value: 'recepcionista', image: { avatar: true, src: require('../global/images/molly.png') }},
-    { key: 'informatico', text: 'Informatico', value: 'informatico' , image: { avatar: true, src: require('../global/images/steve.jpg') }},
-    { key: 'especialista', text: 'Especialista', value: 'especialista' , image: { avatar: true, src: require('../global/images/stevie.jpg') }},
-    { key: 'doctor', text: 'Doctor', value: 'doctor', image: { avatar: true, src: require('../global/images/elliot.jpg') }}
-  ];
 
   constructor(props) {
     super(props);
@@ -45,10 +37,11 @@ class ComponentUsers extends Component {
       icon: 'question',
       showCancelButton: true,
       // confirmButtonColor: '#3085d6',
-      cancelButtonColor: 'red',
-      confirmButtonColor: 'green',
+      cancelButtonColor: '#db2828',
+      confirmButtonColor: '#21ba45',
       // cancelButtonColor: '#d33',
-      confirmButtonText: 'Si, Eliminar!'
+      confirmButtonText: 'Si, Eliminar',
+      reverseButtons: true
     })
     .then((result) => {
       //si escogio Si
@@ -79,8 +72,8 @@ class ComponentUsers extends Component {
     })
   }
   //obtener todos los usuarios desde la API
-  allUsers = () => {
-    fetch(this.props.parentState.endpoint + 'api/usuario', {
+  allUsers = async () => {
+    await fetch(this.props.parentState.endpoint + 'api/usuario', {
         method: 'GET',
         headers: {
           'access-token' : this.props.parentState.token
@@ -95,15 +88,20 @@ class ComponentUsers extends Component {
         }
       })
       .catch(err => {
-        Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 3000 }); //mostrar mensaje de error
+        Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 3000 });
       });
   }
 
   render() {
+    //buscar el permiso del rol
+    const permiso = this.props.permisos.find(p => p.rol === this.props.parentState.rol);
+    //buscar el acceso del menu
+    const accesomenu = permiso.accesos.find(p => p.opcion === 'usuarios');
+    //chequear si es usuario y tengo permiso
     return (
-      <Grid textAlign='center' verticalAlign='top' className='allgrid'>
-        <Grid.Column className='allcolumn'>
-          <Label attached='top right' className='div-label-attached' size='large'>
+      <Grid textAlign='center' verticalAlign='top' className='usuario-allgrid'>
+        <Grid.Column className='usuario-allcolumn'>
+          <Label attached='top left' className='div-label-attached' size='large'>
             <Icon name='users' size='large' inverted/> Gestión de Usuarios
           </Label>
           <Table compact celled definition attached='top' className='div-table'>
@@ -111,7 +109,12 @@ class ComponentUsers extends Component {
               <Table.Row>
                 <Table.HeaderCell />
                 <Table.HeaderCell colSpan='5'>
-                  <ComponentAddUser allUsers = {this.allUsers}  parentState = {this.props.parentState} roles = {this.roles} />
+                  { accesomenu.permisos.crear ?
+                    <ComponentAddUser allUsers = {this.allUsers}  parentState = {this.props.parentState} roles = {this.props.roles} /> :
+                    <Button floated='right' icon labelPosition='left' primary size='small' onClick={this.changeModalState} className='modal-button-add' disabled>
+                      <Icon name='add user' /> Adicionar
+                    </Button>
+                  }
                 </Table.HeaderCell>
               </Table.Row>
 
@@ -129,8 +132,10 @@ class ComponentUsers extends Component {
             </Table.Header>
 
             <Table.Body>
-              { this.state.usuarios.map(usuario => {
-                  let rolData = this.roles.find(element => { return element.key === usuario.rol });
+              { this.state.usuarios.map (usuario => {
+
+                  let rolData = this.props.roles.find(element => { return element.key === usuario.rol });
+
                   return(
                     <Table.Row key={usuario._id}> 
                       <Table.Cell collapsing>
@@ -144,24 +149,25 @@ class ComponentUsers extends Component {
                         </Label>
                       </Table.Cell>
                       <Table.Cell className='cell-logs' collapsing>
-                        <Popup
-                          content="Logs de acceso del usuario" basic inverted size='small' 
-                          trigger={
-                            <Button icon labelPosition='right' className='button-logs'>
-                              <Icon name='address card outline' className='button-icon-logs'/>Logs
-                            </Button> 
-                          }
-                        />
+                        <Button icon labelPosition='right' className='button-logs'>
+                          <Icon name='address card outline' className='button-icon-logs'/>Logs
+                        </Button> 
                       </Table.Cell>
                       <Table.Cell className='cell-acciones' collapsing>
-                        <Popup
-                          content="Eliminar el usuario" basic inverted size='small'
-                          trigger={
-                            <Button icon='remove user' className = 'button-remove' onClick={() => this.deleteUser(usuario._id, usuario.nombre) }/>
-                          }
-                        />
-                        <ComponentUpdateUser allUsers = { this.allUsers } usuarioid = {usuario._id} parentState = {this.props.parentState} roles = {this.roles} />
-                        <ComponentChangePassword parentState = {this.props.parentState} usuarioid = {usuario._id} gestion = {true} />
+                        {
+                          //acceso a eliminar
+                          accesomenu.permisos.eliminar ?
+                          <Button icon='remove user' className = 'button-remove' onClick={() => this.deleteUser(usuario._id, usuario.nombre) } /> : <Button icon='remove user' className = 'button-remove' disabled />
+                        }
+                        {
+                          accesomenu.permisos.modificar ?
+                          <ComponentUpdateUser allUsers = { this.allUsers } usuarioid = {usuario._id} parentState = {this.props.parentState} roles = {this.props.roles} /> :
+                          <Button icon='edit' disabled />
+                        }
+                        {
+                          this.props.parentState.rol === 'informatico' ?
+                          <ComponentChangePassword parentState = {this.props.parentState} usuarioid = {usuario._id} gestion = {true} /> : <Button icon='key' disabled />
+                        }
                       </Table.Cell>
                     </Table.Row>
                   )

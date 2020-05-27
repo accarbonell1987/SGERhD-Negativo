@@ -19,6 +19,67 @@ class ComponentApp extends Component {
     token: '',
   };
 
+  permisos = [
+    { rol: 'usuario',
+      accesos: [ 
+        { opcion: 'usuarios', permisos: { crear: false, leer: true, modificar: false, eliminar: false, menu: true } },
+        { opcion: 'historiaclinica', permisos: { crear: false, leer:false, modificar: false, eliminar: false, menu: false } },
+        { opcion: 'pacientes', permisos: { crear: false, leer: false, modificar: false, eliminar: false, menu: false } },
+        { opcion: 'examenes', permisos: { crear: false, leer: false, modificar: false, eliminar: false, menu: false } },
+        { opcion: 'transfusiones', permisos: { crear: false, leer: false, modificar: false, eliminar: false, menu: false } },
+        { opcion: 'embarazos', permisos: { crear: false, leer: false, modificar: false, eliminar: false, menu: false } } 
+      ]
+    },
+    { rol: 'recepcionista', 
+      accesos: [
+        { opcion: 'usuarios', permisos: { crear: false, leer: true, modificar: false, eliminar: false, menu: false } },
+        { opcion: 'historiaclinica', permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
+        { opcion: 'pacientes', permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
+        { opcion: 'examenes', permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
+        { opcion: 'transfusiones', permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
+        { opcion: 'embarazos', permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } }
+      ]
+    },
+    { rol: 'informatico', 
+      accesos: [
+        { opcion: 'usuarios', permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
+        { opcion: 'historiaclinica', permisos: { crear: false, leer: false, modificar: false, eliminar: false, menu: false } },
+        { opcion: 'pacientes', permisos: { crear: false, leer: false, modificar: false, eliminar: false, menu: false } },
+        { opcion: 'examenes', permisos: { crear: false, leer: false, modificar: false, eliminar: false, menu: false } },
+        { opcion: 'transfusiones', permisos: { crear: false, leer: false, modificar: false, eliminar: false, menu: false } },
+        { opcion: 'embarazos', permisos: { crear: false, leer: false, modificar: false, eliminar: false, menu: false } }
+      ]
+    },
+    { rol: 'especialista', 
+      accesos: [
+        { opcion: 'usuarios', permisos: { crear: false, leer: true, modificar: false, eliminar: false, menu: false } },
+        { opcion: 'historiaclinica', permisos: { crear: false, leer: true, modificar: false, eliminar: false, menu: true } },
+        { opcion: 'pacientes', permisos: { crear: false, leer: true, modificar: false, eliminar: false, menu: true } },
+        { opcion: 'examenes', permisos: { crear: false, leer: true, modificar: true, eliminar: false, menu: true } },
+        { opcion: 'transfusiones', permisos: { crear: false, leer: false, modificar: false, eliminar: false, menu: false } },
+        { opcion: 'embarazos', permisos: { crear: false, leer: false, modificar: false, eliminar: false, menu: false } }
+      ]
+    },
+    { rol: 'doctor', 
+      accesos: [ 
+        { opcion: 'usuarios', permisos: { crear: false, leer: true, modificar: false, eliminar: false, menu: false } },
+        { opcion: 'historiaclinica', permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
+        { opcion: 'pacientes', permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
+        { opcion: 'examenes', permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
+        { opcion: 'transfusiones', permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
+        { opcion: 'embarazos', permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } }
+      ] 
+    }
+  ];
+
+  roles = [
+    { key: 'usuario', text: 'Usuario', value: 'usuario', image: { avatar: true, src: require('./global/images/jenny.jpg') } },
+    { key: 'recepcionista', text: 'Recepcionista', value: 'recepcionista', image: { avatar: true, src: require('./global/images/molly.png') }},
+    { key: 'informatico', text: 'Informatico', value: 'informatico' , image: { avatar: true, src: require('./global/images/steve.jpg') }},
+    { key: 'especialista', text: 'Especialista', value: 'especialista' , image: { avatar: true, src: require('./global/images/stevie.jpg') }},
+    { key: 'doctor', text: 'Doctor', value: 'doctor', image: { avatar: true, src: require('./global/images/elliot.jpg') }}
+  ];
+
   constructor(props) {
     super(props);
 
@@ -39,7 +100,7 @@ class ComponentApp extends Component {
   render() {
     if (this.state.autenticado) {
       return (
-        <ComponentDashboard changeLoginState = {this.changeLoginState} parentState = {this.state} />
+        <ComponentDashboard changeLoginState = {this.changeLoginState} parentState = {this.state} roles = {this.roles} permisos = {this.permisos} />
       )
     }else{
       return (

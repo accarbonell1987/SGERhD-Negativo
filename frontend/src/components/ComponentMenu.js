@@ -7,6 +7,24 @@ import './global/css/Menu.css';
 
 //Defincion de la clase
 class ComponentMenu extends Component {
+  state = {
+    visibleusuario: false,
+    visiblehistoriaclinica: false,
+    visiblepaciente: false,
+    visibleexamen: false,
+    visibletransfusiones: false,
+    visibleembarazo: false
+  }
+
+  menus = [
+    {name: 'usuarios', icon: 'users', visible: false, label: 'Usuarios'},
+    {name: 'historiaclinica', icon: 'clipboard', visible: false, label: 'Historia Clínica' },
+    {name: 'pacientes', icon: 'wheelchair', visible: false, label: 'Pacientes' },
+    {name: 'examenes', icon: 'clipboard list', visible: false, label: 'Examenes' },
+    {name: 'transfusiones', icon: 'tint', visible: false, label: 'Transfusiones' },
+    {name: 'embarazos', icon: 'heartbeat', visible: false, label: 'Embarazos' }
+  ];
+
   constructor(props) {
     super(props);
 
@@ -19,25 +37,23 @@ class ComponentMenu extends Component {
 
   render() {
     return (
-      <Menu icon='labeled' inverted  className='menu-div' size='small'>
-        <Menu.Item name='usuarios' active={this.props.opcionmenu === 'usuarios'} onClick={this.handleItemClick} >
-          <Icon name='users' /> Usuarios
-        </Menu.Item>
-        <Menu.Item name='historiaclinica' active={this.props.opcionmenu === 'historiaclinica'} onClick={this.handleItemClick} >
-          <Icon name='clipboard' /> Historia Clinica
-        </Menu.Item>
-        <Menu.Item name='paciente' active={this.props.opcionmenu === 'paciente'} onClick={this.handleItemClick} >
-          <Icon name='wheelchair' /> Paciente
-        </Menu.Item>
-        <Menu.Item name='examen' active={this.props.opcionmenu === 'examen'} onClick={this.handleItemClick} >
-          <Icon name='clipboard list' /> Exámen
-        </Menu.Item>
-        <Menu.Item name='transfusiones' active={this.props.opcionmenu === 'transfusiones'} onClick={this.handleItemClick} >
-          <Icon name='tint' /> Transfusiones
-        </Menu.Item>
-        <Menu.Item name='embarazo' active={this.props.opcionmenu === 'embarazo'} onClick={this.handleItemClick} >
-          <Icon name='heartbeat' /> Embarazo
-        </Menu.Item>
+      <Menu icon='labeled' inverted className='menu-div' size='small'>
+        { 
+          this.menus.map(menu => {
+            //buscar el permiso del rol
+            const permiso = this.props.permisos.find(p => p.rol === this.props.parentState.rol);
+            //buscar el acceso del menu
+            const accesomenu = permiso.accesos.find(p => p.opcion === menu.name);
+            //chequear su (menu) es true
+            if (accesomenu.permisos.menu) {
+              return (
+                <Menu.Item name={menu.name} active={this.props.opcionmenu === menu.name} onClick={this.handleItemClick} >
+                  <Icon name={menu.icon} /> {menu.label}
+                </Menu.Item>
+              )
+            } else return '';
+          })
+        }
       </Menu>
     );
   }

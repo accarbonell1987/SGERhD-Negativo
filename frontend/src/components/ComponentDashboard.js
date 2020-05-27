@@ -30,8 +30,8 @@ class ComponentDashboard extends Component {
       return (
         <div className="Dashboard">
           <ComponentHeader changeLoginState = {this.props.changeLoginState} parentState = {this.props.parentState} />
-          <ComponentMenu changeMenuOption = {this.changeMenuOption} opcionmenu = {this.state.opcionmenu} parentState = {this.props.parentState} />
-          <ComponentContent opcionmenu = {this.state.opcionmenu} parentState = {this.props.parentState} />
+          <ComponentMenu changeMenuOption = {this.changeMenuOption} opcionmenu = {this.state.opcionmenu} parentState = {this.props.parentState} roles = {this.props.roles} permisos = {this.props.permisos} />
+          <ComponentContent opcionmenu = {this.state.opcionmenu} parentState = {this.props.parentState} roles = {this.props.roles} permisos = {this.props.permisos} />
         </div>
       );
     }
