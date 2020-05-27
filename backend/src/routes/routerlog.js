@@ -5,7 +5,30 @@ const router = express.Router();
 //Modelos
 const Logs = require('../models/models').logaceso;
 
-//Rutas
+//CONSTANTES
+const jwtkey = process.env.JWT_KEY;
+
+//JWT Middleware
+router.use((req, res, next) => {
+    const token = req.headers['Access-Token'];
+
+    if (token) {
+        jwt.verify(token, jwtkey, (err, decoded) => {
+            if (err) {
+                return res.json({ status: 'FAILED', message: 'TOKEN invalida' });
+            } else {
+                req.decoded = decoded;
+                next();
+            }
+        });
+    } else {
+        res.send({
+            status: 'FAILED',
+            message: 'TOKEN no proveido'
+        });
+    }
+});
+
 //GET - Todos
 router.get('/log', async (req, res) => {
     try {

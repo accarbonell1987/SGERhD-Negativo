@@ -26,9 +26,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // app.use('/app', session_middleware);
 
 //Routes
+app.use('/api', require('./routes/routerapi'));
+app.use('/api', require('./routes/routerseguridad'));
 app.use('/api', require('./routes/routerusuario'));
 app.use('/api', require('./routes/routerlog'));
-app.use('/api', require('./routes/routerapi'));
+app.use('/api', require('./routes/routerpaciente'));
 
 //Static files
 console.log(__dirname);

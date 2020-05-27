@@ -14,7 +14,7 @@ class ComponentHeader extends Component {
   }
 
   handleAutenticarClick = () => {
-    this.props.modificarLoginState();
+    this.props.changeLoginState();
   }
 
   render() {
@@ -26,7 +26,7 @@ class ComponentHeader extends Component {
         <div className='divbutton' >
           <Button as='a' inverted animated='right' size='mini' onClick={this.handleAutenticarClick}>
             <Button.Content visible>
-              <Icon name='user' />Usuario
+              <Icon name='user' />{this.props.parentState.usuario}
             </Button.Content>
             <Button.Content hidden>
               <Icon name='log out' />Deslogear

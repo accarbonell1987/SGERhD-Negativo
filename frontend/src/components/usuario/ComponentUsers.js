@@ -54,11 +54,12 @@ class ComponentUsers extends Component {
       //si escogio Si
       if (result.value) {
         //enviar al endpoint
-        fetch (this.props.endpoint + 'api/usuario/' + id, {
+        fetch (this.props.parentState.endpoint + 'api/usuario/' + id, {
           method: 'DELETE',
           headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'access-token': this.props.parentState.token
           }
         })
         .then(res => res.json())
@@ -79,7 +80,12 @@ class ComponentUsers extends Component {
   }
   //obtener todos los usuarios desde la API
   allUsers = () => {
-    fetch(this.props.endpoint + 'api/usuario')
+    fetch(this.props.parentState.endpoint + 'api/usuario', {
+        method: 'GET',
+        headers: {
+          'access-token' : this.props.parentState.token
+        }
+      })
       .then(res => res.json())
       .then(data => {
         if (data.status === 'OK'){
@@ -105,7 +111,7 @@ class ComponentUsers extends Component {
               <Table.Row>
                 <Table.HeaderCell />
                 <Table.HeaderCell colSpan='5'>
-                  <ComponentAddUser allUsers = { this.allUsers } endpoint = { this.props.endpoint } roles = {this.roles} />
+                  <ComponentAddUser allUsers = {this.allUsers}  parentState = {this.props.parentState} roles = {this.roles} />
                 </Table.HeaderCell>
               </Table.Row>
 
@@ -154,8 +160,8 @@ class ComponentUsers extends Component {
                             <Button icon='remove user' className = 'button-remove' onClick={() => this.deleteUser(usuario._id, usuario.nombre) }/>
                           }
                         />
-                        <ComponentUpdateUser allUsers = { this.allUsers } endpoint = { this.props.endpoint } usuarioid = {usuario._id} roles = {this.roles} />
-                        <ComponentChangePassword endpoint = { this.props.endpoint } usuarioid = {usuario._id} gestion = {true} />
+                        <ComponentUpdateUser allUsers = { this.allUsers } usuarioid = {usuario._id} parentState = {this.props.parentState} roles = {this.roles} />
+                        <ComponentChangePassword parentState = {this.props.parentState} usuarioid = {usuario._id} gestion = {true} />
                       </Table.Cell>
                     </Table.Row>
                   )

@@ -15,18 +15,23 @@ class ComponentDashboard extends Component {
   state = {
     opcionmenu: 'usuarios',
   };
+
+  constructor(props) {
+    super(props);
+    this.changeMenuOption = this.changeMenuOption.bind(this);
+  }
   
-  cambiarOpcionMenu = (opcion) => {
+  changeMenuOption = (opcion) => {
     this.setState({ opcionmenu: opcion});
   }
 
   render() {
-    if (this.props.autenticado) {
+    if (this.props.parentState.autenticado) {
       return (
         <div className="Dashboard">
-          <ComponentHeader modificarLoginState = {this.props.modificarLoginState} endpoint = {this.props.endpoint} />
-          <ComponentMenu cambiarOpcionMenu = {this.cambiarOpcionMenu} opcionmenu = {this.state.opcionmenu} />
-          <ComponentContent endpoint = { this.props.endpoint } />
+          <ComponentHeader changeLoginState = {this.props.changeLoginState} parentState = {this.props.parentState} />
+          <ComponentMenu changeMenuOption = {this.changeMenuOption} opcionmenu = {this.state.opcionmenu} parentState = {this.props.parentState} />
+          <ComponentContent opcionmenu = {this.state.opcionmenu} parentState = {this.props.parentState} />
         </div>
       );
     }

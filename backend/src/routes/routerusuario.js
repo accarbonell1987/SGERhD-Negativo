@@ -1,12 +1,36 @@
 //Requeridos
 const express = require('express');
 const router = express.Router();
+const jwt = require('jsonwebtoken');
 
 //Modelos
 const Usuario = require('../models/models').usuario;
-const Log = require('../models/models').logaceso;
 
-//Rutas
+//CONSTANTES
+const jwtkey = process.env.JWT_KEY;
+
+//JWT Middleware
+router.use((req, res, next) => {
+    const token = req.headers['access-token'];
+    console.log(token);
+
+    if (token) {
+        jwt.verify(token, jwtkey, (err, decoded) => {
+            if (err) {
+                return res.json({ status: 'FAILED', message: 'TOKEN invalida' });
+            } else {
+                req.decoded = decoded;
+                next();
+            }
+        });
+    } else {
+        res.send({
+            status: 'FAILED',
+            message: 'TOKEN no proveido'
+        });
+    }
+});
+
 //GET - Todos
 router.get('/usuario', async (req, res) => {
     try {
@@ -48,30 +72,6 @@ router.post('/usuario', async (req, res) => {
         res.json({ message: err });
     };
     
-});
-
-//POST - {json}
-router.post('/usuario/autenticar', async (req, res) => {
-    try {
-        var autenticado = false;
-
-        await Usuario.findOne({ nombre: req.body.nombre, contraseña: req.body.contraseña})
-            .then(doc => {
-                if (doc === null) res.json({ status: 'FAILED', message: '', data: doc });
-                else {
-                    //salvando el log cada vez que me autentico
-                    const log = new Log({fecha: Date.now(), usuario: doc._id });
-                    log.save();
-
-                    res.json({ status: 'OK', message: 'Autenticado', data: doc });
-                }
-            })
-            .catch(err => {
-                res.json({ status: 'FAILED', message: err });
-            });
-    } catch(err) {
-        res.json({ status: 'FAILED', message: err });
-    };
 });
 
 //DELETE - Un usuario por id /usuario/id

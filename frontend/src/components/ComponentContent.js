@@ -32,12 +32,21 @@ class ComponentContent extends Component {
     //     );
     //   }
     // }
-    return (
-      <div className='Content'>
-        <ComponentUsers endpoint = { this.props.endpoint } />
-        <ComponentFooter />
-      </div>
-    );
+    if (this.props.opcionmenu === 'usuarios') {
+      return (
+        <div className='Content'>
+          <ComponentUsers endpoint = { this.props.endpoint } parentState = {this.props.parentState}/>
+          <ComponentFooter />
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <h2>OTRA {this.props.opcionmenu}</h2>
+          <ComponentFooter />
+        </div>
+      );
+    }
   }
 }
 

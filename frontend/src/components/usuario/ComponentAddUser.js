@@ -31,7 +31,8 @@ class ComponentAddUser extends Component {
       this.clearModalState = this.clearModalState.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
     }
-
+    
+    //componente se monto
     componentDidMount() {
         this.clearModalState();
     }
@@ -44,12 +45,13 @@ class ComponentAddUser extends Component {
       }
       //la promise debe de devolver un valor RETURN
       try {
-            const res = await fetch(this.props.endpoint + 'api/usuario/', {
+            const res = await fetch(this.props.parentState.endpoint + 'api/usuario/', {
                 method: 'POST',
                 body: JSON.stringify(usuario),
                 headers: {
                     'Accept': 'application/json',
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'access-token': this.props.parentState.token
                 }
             });
             let data = await res.json();

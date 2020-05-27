@@ -8,42 +8,42 @@ import './global/css/Login.css';
 
 //Definicion de la Clase
 class ComponentLogin extends Component {
+  state = {
+    nombre: '',
+    contraseña: ''
+  };
+
   constructor (props) {
     super(props);
 
-    this.state = {
-      nombre: '',
-      contraseña: ''
-    };
-
-    this.handleAutenticarClick = this.handleAutenticarClick.bind(this);
+    this.handleAutenticateClick = this.handleAutenticateClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
 
-  handleAutenticarClick = (evt) => {
+  handleAutenticateClick = (evt) => {
     evt.preventDefault();
 
-    fetch(this.props.endpoint + 'api/usuario/autenticar', {
-      method: 'POST', //metodo
-      body: JSON.stringify(this.state), //datos
+    fetch(this.props.parentState.endpoint + 'api/seguridad/autenticar', {
+      method: 'POST',
+      body: JSON.stringify(this.state), 
       headers: {
         'Accept':'application/json',
         'Content-Type':'application/json'
       }
     })
     .then(res => res.json())
-    .then(data => {
+    .then(jsondata => {
       //capturar respuesta
-      const { status, message } = data;
+      const { status, message, token, data } = jsondata;
       if (status === 'OK') {
-        Swal.fire({ position: 'center', icon: 'success', title: message, showConfirmButton: false, timer: 1500 }); //mostrar mensaje
-        this.props.modificarLoginState();
+        Swal.fire({ position: 'center', icon: 'success', title: message, showConfirmButton: false, timer: 1500 });
+        this.props.changeLoginState(data.nombre, data.rol, token);
       }else{
-        Swal.fire({ position: 'center', icon: 'error', title: 'Usuario o contraseña incorrecto', showConfirmButton: false, timer: 5000 }); //mostrar mensaje
+        Swal.fire({ position: 'center', icon: 'error', title: 'Usuario o contraseña incorrecto', showConfirmButton: false, timer: 5000 });
         this.setState({ contraseña: '' });
       }
     }).catch(err => {
-      Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 5000 }); //mostrar mensaje de error
+      Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 5000 });
       this.setState({ contraseña: '' });
     });
   };
@@ -79,11 +79,8 @@ class ComponentLogin extends Component {
               </Grid>
             </Grid.Row>
             <Grid.Row className='contentrowbutton'>
-              <Button content='Ingresar' icon='check' primary onClick={this.handleAutenticarClick} type='submit' 
-              disabled={
-                !this.state.nombre ||
-                !this.state.contraseña
-              }/>
+              <Button content='Ingresar' icon='check' primary onClick={this.handleAutenticateClick} type='submit' 
+              disabled={ !this.state.nombre || !this.state.contraseña }/>
             </Grid.Row>
           </Form>
         </Grid.Column>

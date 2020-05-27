@@ -11,27 +11,39 @@ import ComponentDashboard from './ComponentDashboard';
 //Definicion de la clase
 class ComponentApp extends Component {
   state = {
-    autenticado: true,
-    logintime: '',
+    autenticado: false,
     usuario: '',
     rol: '',
-    endpoint: process.env.REACT_APP_API_PATH_LOCAL
+    endpoint: process.env.REACT_APP_API_PATH_LOCAL,
+    logintime: '',
+    token: '',
   };
+
+  constructor(props) {
+    super(props);
+
+    this.changeLoginState = this.changeLoginState.bind(this);
+  }
   
   //modificar el valor del login
-  modificarLoginState = () => {
-    this.setState({ autenticado: !this.state.autenticado });
-    this.setState({ logintime: this.state.autenticado ? Date.now : '' });
+  changeLoginState = (usuario, rol, token) => {
+    this.setState({ 
+      autenticado: !this.state.autenticado,
+      usuario: usuario,
+      rol: rol,
+      logintime: this.state.autenticado ? Date.now : '',
+      token: token
+     });
   }
 
   render() {
     if (this.state.autenticado) {
       return (
-        <ComponentDashboard modificarLoginState = {this.modificarLoginState} endpoint = {this.state.endpoint} autenticado = {this.state.autenticado} />
+        <ComponentDashboard changeLoginState = {this.changeLoginState} parentState = {this.state} />
       )
     }else{
       return (
-        <ComponentLogin modificarLoginState = {this.modificarLoginState} endpoint = {this.state.endpoint} />
+        <ComponentLogin changeLoginState = {this.changeLoginState} parentState = {this.state} />
       )
     }
   }

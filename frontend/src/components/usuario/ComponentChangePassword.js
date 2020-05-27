@@ -19,6 +19,7 @@ class ComponentChangePassword extends Component {
       usuariocontraseña: ''
     }
     
+    //constructor
     constructor(props) {
       super(props);
   
@@ -33,7 +34,12 @@ class ComponentChangePassword extends Component {
     //obtener propiedades del usuario
     getUser = (id) => {
       //enviar al endpoint
-      fetch (this.props.endpoint + 'api/usuario/' + id)
+      fetch (this.props.parentState.endpoint + 'api/usuario/' + id, {
+        method: 'GET',
+        headers: {
+          'access-token' : this.props.parentState.token
+        }
+      })
       .then(res => res.json())
       .then(jsondata => {
         const { status, message, data } = jsondata;
@@ -55,12 +61,13 @@ class ComponentChangePassword extends Component {
       const usuario = { contraseña }
       //la promise debe de devolver un valor RETURN
       try {
-        const res = await fetch(this.props.endpoint + 'api/usuario/password/' + id, {
+        const res = await fetch(this.props.parentState.endpoint + 'api/usuario/password/' + id, {
             method: 'PATCH',
             body: JSON.stringify(usuario),
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'access-token': this.props.parentState.token
             }
         })
         let jsondata = await res.json();
