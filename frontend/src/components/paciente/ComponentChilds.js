@@ -151,8 +151,8 @@ class ComponentChilds extends Component {
       return (
         <Modal open={this.state.openModal}
             trigger = {
-                <Button className='modal-button-other' onClick={this.changeModalState} >
-                  <Icon name='child' className='modal-icon-other' onClick={this.changeModalState}/>Hijos {this.props.paciente.hijos !== null ?this.props.paciente.hijos.length > 0 ? this.props.paciente.hijos.length : '' : '' }
+                <Button icon labelPosition='right' className='modal-button-other' onClick={this.changeModalState} >
+                  <Icon name='child' className='modal-icon-other' onClick={this.changeModalState}/>{this.props.paciente.hijos !== null ? this.props.paciente.hijos.length > 0 ? this.props.paciente.hijos.length : 0 : '' }
                 </Button>
             }
         >

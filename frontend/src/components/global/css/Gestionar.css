@@ -19,6 +19,14 @@
 
 .div-table {
     margin-top: 3.5rem !important;
+    /* max-height: 670px; */
+    /* overflow-y: scroll; */
+}
+
+.div-table-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
 .div-table-modal {
@@ -49,14 +57,10 @@
     padding: .78571429em .78571429em .78571429em !important;
 }
 .modal-icon-other {
-    max-width: 16px !important;
+    /* max-width: 16px !important; */
     margin: 0 !important;
 }
 
 .button-remove {
     color: #db2828 !important;
-}
-
-.modal-content-table {
-
 }

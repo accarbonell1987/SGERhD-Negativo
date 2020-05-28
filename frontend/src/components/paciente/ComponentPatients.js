@@ -102,7 +102,7 @@ class ComponentPatients extends Component {
             <Icon name='wheelchair' size='large' inverted/> Gestión de Pacientes
           </Label>
           <Table compact celled definition attached='top' className='div-table'>
-            <Table.Header>
+            <Table.Header className='div-table-header'>
               <Table.Row>
                 <Table.HeaderCell />
                 <Table.HeaderCell colSpan='12'>
@@ -186,7 +186,6 @@ class ComponentPatients extends Component {
                       </Table.Cell>
                       <Table.Cell className='cells-max-witdh-2' collapsing>
                         {
-                          //acceso a eliminar
                           accesomenu.permisos.eliminar ?
                           <Button icon='remove circle' className = 'button-remove' onClick={() => this.deletePatient(paciente._id, paciente.nombre, paciente.apellidos) } /> : <Button icon='remove circle' className = 'button-remove' disabled />
                         }
