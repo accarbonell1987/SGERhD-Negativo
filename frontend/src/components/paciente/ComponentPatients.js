@@ -105,7 +105,7 @@ class ComponentPatients extends Component {
             <Table.Header>
               <Table.Row>
                 <Table.HeaderCell />
-                <Table.HeaderCell colSpan='10'>
+                <Table.HeaderCell colSpan='12'>
                   { accesomenu.permisos.crear ?
                     <ComponentAddPatient allPatients = {this.allPatients}  parentState = {this.props.parentState} roles = {this.props.roles} /> :
                     <Button floated='right' icon labelPosition='left' primary size='small' className='modal-button-add' disabled>
@@ -121,7 +121,8 @@ class ComponentPatients extends Component {
                   <Table.HeaderCell>Nombres y Apellidos</Table.HeaderCell>
                   <Table.HeaderCell>Carnet Identidad</Table.HeaderCell>
                   <Table.HeaderCell>Dirección</Table.HeaderCell>
-                  <Table.HeaderCell>Telefonos</Table.HeaderCell>
+                  <Table.HeaderCell>Teléfonos</Table.HeaderCell>
+                  <Table.HeaderCell>Madre</Table.HeaderCell>
                   <Table.HeaderCell className='cells-max-witdh-2'>Género</Table.HeaderCell>
                   <Table.HeaderCell className='cells-max-witdh-2'>Hijos</Table.HeaderCell>
                   <Table.HeaderCell className='cells-max-witdh-2'>Transfusiones</Table.HeaderCell>
@@ -133,7 +134,9 @@ class ComponentPatients extends Component {
             </Table.Header>
 
             <Table.Body>
-              { this.state.pacientes.map (paciente => {
+              { this.state.pacientes.map(paciente => {
+                  let madre = this.state.pacientes.find(p => p._id === paciente.madre);
+                  let madrenombreyapellido = (madre == null) ? 'Indefinido' : madre.nombre + ' ' + madre.apellidos;
                   // let rolData = this.props.roles.find(element => { return element.key === usuario.rol });
                   // //para colorear row
                   // let negative = this.props.parentState.usuario === usuario.nombre;
@@ -146,6 +149,11 @@ class ComponentPatients extends Component {
                       <Table.Cell>{paciente.ci}</Table.Cell>
                       <Table.Cell>{paciente.direccion}</Table.Cell>
                       <Table.Cell>{paciente.telefono}</Table.Cell>
+                      <Table.Cell>
+                        <Button icon labelPosition='right' className='button-childs'>
+                          <Icon name='venus' className='button-icon-childs'/>{madrenombreyapellido}
+                        </Button> 
+                      </Table.Cell>
                       <Table.Cell>
                       {
                         paciente.sexo === 'M' ? 

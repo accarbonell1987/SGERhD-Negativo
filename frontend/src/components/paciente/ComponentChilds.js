@@ -84,13 +84,15 @@ class ComponentChilds extends Component {
         });
       }else if(evt.target.className.includes('modal-button-cancel')){
         this.clearModalState();
-      }else {
+      }else if(evt.target.className.includes('modal-button-accept')) {
         //si no hay problemas en la insercion
         if (await this.updatePatient(this.props.paciente._id)){
           //enviar a recargar los usuarios
           this.props.allPatients();
           this.clearModalState();
         }
+      }else{
+        //no hago nada
       }
     }
     //limpiar states
@@ -166,6 +168,7 @@ class ComponentChilds extends Component {
                   <Table.HeaderCell>Selección</Table.HeaderCell>
                   <Table.HeaderCell>Nombres y Apellidos</Table.HeaderCell>
                   <Table.HeaderCell>Carnet Identidad</Table.HeaderCell>
+                  <Table.HeaderCell>Madre</Table.HeaderCell>
                   <Table.HeaderCell className='cells-max-witdh-2'>Género</Table.HeaderCell>
                 </Table.Row> : ''
               }
@@ -173,6 +176,9 @@ class ComponentChilds extends Component {
               <Table.Body>
               { this.props.pacientes.map (paciente => 
                 {
+                  let madre = this.props.pacientes.find(p => p._id === paciente.madre);
+                  let madrenombreyapellido = (madre == null) ? 'Indefinido' : madre.nombre + ' ' + madre.apellidos;
+
                   let esHijo = false;
                   //buscar si el tengo que marcar el checkbox
                   if (this.state.hijos !== null) {
@@ -190,6 +196,11 @@ class ComponentChilds extends Component {
                         </Table.Cell>
                         <Table.Cell>{paciente.nombre} {paciente.apellidos}</Table.Cell>
                         <Table.Cell>{paciente.ci}</Table.Cell>
+                        <Table.Cell>
+                          <Button icon labelPosition='right' className='button-childs'>
+                            <Icon name='venus' className='button-icon-childs'/>{madrenombreyapellido}
+                          </Button> 
+                        </Table.Cell>
                         <Table.Cell>
                         {
                           paciente.sexo === 'M' ? 
