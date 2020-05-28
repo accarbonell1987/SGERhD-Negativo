@@ -20,7 +20,7 @@ class ComponentMenu extends Component {
     {name: 'usuarios', icon: 'users', visible: false, label: 'Usuarios'},
     {name: 'historiaclinica', icon: 'clipboard', visible: false, label: 'Historia Clínica' },
     {name: 'pacientes', icon: 'wheelchair', visible: false, label: 'Pacientes' },
-    {name: 'examenes', icon: 'clipboard list', visible: false, label: 'Examenes' },
+    {name: 'examenes', icon: 'clipboard list', visible: false, label: 'Exámenes' },
     {name: 'transfusiones', icon: 'tint', visible: false, label: 'Transfusiones' },
     {name: 'embarazos', icon: 'heartbeat', visible: false, label: 'Embarazos' }
   ];
@@ -37,7 +37,7 @@ class ComponentMenu extends Component {
 
   render() {
     return (
-      <Menu icon='labeled' inverted className='menu-div' size='small'>
+      <Menu inverted className='menu-div' size='small' icon='labeled'>
         { 
           this.menus.map(menu => {
             //buscar el permiso del rol
@@ -47,7 +47,7 @@ class ComponentMenu extends Component {
             //chequear su (menu) es true
             if (accesomenu.permisos.menu) {
               return (
-                <Menu.Item name={menu.name} active={this.props.opcionmenu === menu.name} onClick={this.handleItemClick} >
+                <Menu.Item key={menu.name} name={menu.name} active={this.props.opcionmenu === menu.name} onClick={this.handleItemClick} >
                   <Icon name={menu.icon} /> {menu.label}
                 </Menu.Item>
               )

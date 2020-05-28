@@ -21,7 +21,8 @@ db.on('error', console.error.bind(console, 'MongoDB error en conexion:'));
     //LOGACCESO
     var logacceso_schema = new Schema({
         fecha: { type: Date, required: true, default: Date.now },
-        usuario: { type: Schema.Types.ObjectId, ref: 'Usuario' },
+        usuario: { type: String },
+        activo: { type: Boolean },
         accessToken: { type: String }
     });
 
@@ -30,8 +31,9 @@ db.on('error', console.error.bind(console, 'MongoDB error en conexion:'));
         fecha: { type: Date, required: true, default: Date.now },
         tiempoDeGestacion: { type: Number, required: true },
         observaciones: { type: String },
-        examenes: [{ type: Schema.Types.ObjectId, ref: 'Examen' }],
-        paciente: { type: Schema.Types.ObjectId, ref: 'Paciente' },
+        examenes: [],
+        paciente: { type: String },
+        activo: { type: Boolean },
         accessToken: { type: String }
     });
 
@@ -39,44 +41,47 @@ db.on('error', console.error.bind(console, 'MongoDB error en conexion:'));
     var examen_schema = new Schema({
         fecha: { type: Date, required: true, default: Date.now },
         observaciones: { type: String },
-        embarazo: { type: Schema.Types.ObjectId, ref: 'Embarazo' },
-        paciente: { type: Schema.Types.ObjectId, ref: 'Paciente' },
-        grupoSanguineo: { type: Schema.Types.ObjectId, ref: 'GrupoSanguineo' },
-        identificacionAnticuerpo: { type: Schema.Types.ObjectId, ref: 'IdentificacionAnticuerpo' },
-        pesquizajeAnticuerpo: { type: Schema.Types.ObjectId, ref: 'PesquizajeAnticuerpo' },
+        embarazo: { type: String },
+        paciente: { type: String },
+        grupoSanguineo: { type: String },
+        identificacionAnticuerpo: { type: String },
+        pesquizajeAnticuerpo: { type: String },
+        activo: { type: Boolean },
         accessToken: { type: String }
     });
 
     //HISTORIACLINICA
     var historiaclinica_schema = new Schema({
         fechaDeCreacion: { type: Date, require: true, default: Date.now },
-        numero: { type: Number, require: true },
+        areaDeSalud: { type: String },
+        numerohistoria: { type: Number, require: true },
         vacunaAntiD: { type: Boolean },
         numeroDeEmbarazos: { type: Number, min: 0 },
         numeroDePartos: { type: Number, min: 0 },
         numeroDeAbortos: { type: Number, min: 0 },
-        paciente: { type: Schema.Types.ObjectId, ref: 'Paciente' },
+        paciente: { type: String },
+        activo: { type: Boolean },
         accessToken: { type: String }
     });
 
     //PACIENTE
     var paciente_schema = new Schema({
-        nombre: { type: String, required: true },
-        apellidos: { type: String, required: true },
-        ci: { type: String, required: true, minlength:11, maxlength:11 },
-        direccion: { type: String, required: true },
-        telefono: {type: Number },
-        areaDeSalud: { type: String },
-        madre: { type: Schema.Types.ObjectId, ref: 'Paciente' },
-        hijos: [{ type: Schema.Types.ObjectId, ref: 'Paciente' }],
-        transfusiones: [{ type: Schema.Types.ObjectId, ref: 'Transfusion' }],
-        embarazos: [{ type: Schema.Types.ObjectId, ref: 'Embarazo' }],
-        examen: [{ type: Schema.Types.ObjectId, ref: 'Examen' }],
+        fechaDeCreacion: { type: Date, require: 'fecha de creacion requerida' , default: Date.now },
+        nombre: { type: String, required: 'nombre obligatorio' },
+        apellidos: { type: String, required: 'apellidos obligatorios' },
+        ci: { type: String, required: 'carnet de identidad obligatorio', minlength:[11,'el carnet de identidad debe de tener 11 digitos'], maxlength:[11,'el ci debe de tener 11 digitos'] },
+        direccion: { type: String, required: 'debe de existir una dirección' },
+        direccionopcional: { type: String },
+        telefono: { type: Number },
+        sexo: { type: String, default: 'F', required: 'debe de existir un sexo definido'},
+        madre: { type: String },
+        padre: { type: String},
+        hijos: [],
+        transfusiones: [],
+        embarazos: [],
+        examenes: [],
+        activo: { type: Boolean },
         accessToken: { type: String }
-    });
-    //virtuals
-    paciente_schema.virtual('nombre_completo').get(function(){
-        return this.nombre + ' ' + this.apellidos;
     });
 
     //TRANSFUSION
@@ -84,7 +89,8 @@ db.on('error', console.error.bind(console, 'MongoDB error en conexion:'));
         fecha: {type: Date, required: true, default: Date.now },
         observaciones: { type: String },
         reacionAdversa: { type: Boolean },
-        paciente: { type: Schema.Types.ObjectId, ref: 'Paciente' },
+        paciente: { type: String },
+        activo: { type: Boolean },
         accessToken: { type: String }
     });
 
@@ -94,6 +100,7 @@ db.on('error', console.error.bind(console, 'MongoDB error en conexion:'));
         email: { type: String, required: 'correo electrónico no valido', match:/^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/ },
         contraseña: { type: String, required: true, minlength:[8, 'contraseña muy corta'] },
         rol: { type: String, default: 'usuario', required: 'debe escoger un rol', enum: roles }, 
+        activo: { type: Boolean },
         accessToken: { type: String }
     });
 
@@ -103,7 +110,8 @@ db.on('error', console.error.bind(console, 'MongoDB error en conexion:'));
         dDebil : { type: String },
         gSanguineo : { type: String },
         factor : { type: String },
-        examen: { type: Schema.Types.ObjectId, ref: 'Examen' },
+        examen: { type: String },
+        activo: { type: Boolean },
         accessToken: { type: String }
     });
 
@@ -116,7 +124,8 @@ db.on('error', console.error.bind(console, 'MongoDB error en conexion:'));
         tituloDelAnticuerpoParaCoombsIndirecto : { type: String },
         tituloDelAnticuerpoParaSalina4g : { type: String },
         tituloDelAnticuerpoParaSalina37g : { type: String },
-        examen: { type: Schema.Types.ObjectId, ref: 'Examen' },
+        examen: { type: String },
+        activo: { type: Boolean },
         accessToken: { type: String }
     });
 
@@ -127,7 +136,8 @@ db.on('error', console.error.bind(console, 'MongoDB error en conexion:'));
         pCoomsIndirecto: { type: String },
         pSalina4g: { type: String },
         pSalina37g: { type: String },
-        examen: { type: Schema.Types.ObjectId, ref: 'Examen' },
+        examen: { type: String },
+        activo: { type: Boolean },
         accessToken: { type: String }
     });
 

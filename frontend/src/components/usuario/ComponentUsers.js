@@ -4,7 +4,7 @@ import { Button, Grid, Icon, Label, Table, Image } from 'semantic-ui-react'
 import Swal from 'sweetalert2'
 
 //CSS
-import '../global/css/Usuario.css';
+import '../global/css/Gestionar.css';
 
 //Componentes
 import ComponentAddUser from './ComponentAddUser';
@@ -99,8 +99,8 @@ class ComponentUsers extends Component {
     const accesomenu = permiso.accesos.find(p => p.opcion === 'usuarios');
     //chequear si es usuario y tengo permiso
     return (
-      <Grid textAlign='center' verticalAlign='top' className='usuario-allgrid'>
-        <Grid.Column className='usuario-allcolumn'>
+      <Grid textAlign='center' verticalAlign='top' className='gestionar-allgrid'>
+        <Grid.Column className='gestionar-allcolumn'>
           <Label attached='top left' className='div-label-attached' size='large'>
             <Icon name='users' size='large' inverted/> Gestión de Usuarios
           </Label>
@@ -108,16 +108,14 @@ class ComponentUsers extends Component {
             <Table.Header>
               <Table.Row>
                 <Table.HeaderCell />
-                <Table.HeaderCell colSpan='5'>
-                  { accesomenu.permisos.crear ?
-                    <ComponentAddUser allUsers = {this.allUsers}  parentState = {this.props.parentState} roles = {this.props.roles} /> :
-                    <Button floated='right' icon labelPosition='left' primary size='small' onClick={this.changeModalState} className='modal-button-add' disabled>
+                <Table.HeaderCell colSpan='5'>{
+                  accesomenu.permisos.crear ?
+                    <ComponentAddUser allUsers = {this.allUsers}  parentState = {this.props.parentState} roles = {this.props.roles} />:<Button floated='right' icon labelPosition='left' primary size='small' className='modal-button-add' disabled>
                       <Icon name='add user' /> Adicionar
                     </Button>
-                  }
+                }
                 </Table.HeaderCell>
-              </Table.Row>
-
+              </Table.Row> 
               { 
                 (this.state.usuarios.length > 0) ? 
                 <Table.Row>
@@ -125,8 +123,8 @@ class ComponentUsers extends Component {
                   <Table.HeaderCell>Nombre</Table.HeaderCell>
                   <Table.HeaderCell>Correo Electronico</Table.HeaderCell>
                   <Table.HeaderCell>Rol</Table.HeaderCell>
-                  <Table.HeaderCell className='cell-logs'>Logs</Table.HeaderCell>
-                  <Table.HeaderCell className='cell-acciones'>Acciones</Table.HeaderCell>
+                  <Table.HeaderCell className='cells-max-witdh-2'>Logs</Table.HeaderCell>
+                  <Table.HeaderCell className='cells-max-witdh-2'>Acciones</Table.HeaderCell>
                 </Table.Row> : ''
               }
             </Table.Header>
@@ -135,9 +133,10 @@ class ComponentUsers extends Component {
               { this.state.usuarios.map (usuario => {
 
                   let rolData = this.props.roles.find(element => { return element.key === usuario.rol });
-
+                  //para colorear row
+                  let negative = this.props.parentState.usuario === usuario.nombre;
                   return(
-                    <Table.Row key={usuario._id}> 
+                    <Table.Row key={usuario._id} negative={negative}>
                       <Table.Cell collapsing>
                         <Icon name='user' />
                       </Table.Cell>
@@ -145,7 +144,7 @@ class ComponentUsers extends Component {
                       <Table.Cell>{usuario.email}</Table.Cell>
                       <Table.Cell>
                         <Label image size='medium'>
-                          <Image src={ rolData.image.src } /> {rolData.text}
+                          <Image src={ rolData.image.src } />{rolData.text}
                         </Label>
                       </Table.Cell>
                       <Table.Cell className='cell-logs' collapsing>
@@ -156,7 +155,7 @@ class ComponentUsers extends Component {
                       <Table.Cell className='cell-acciones' collapsing>
                         {
                           //acceso a eliminar
-                          accesomenu.permisos.eliminar ?
+                          accesomenu.permisos.eliminar && !negative ?
                           <Button icon='remove user' className = 'button-remove' onClick={() => this.deleteUser(usuario._id, usuario.nombre) } /> : <Button icon='remove user' className = 'button-remove' disabled />
                         }
                         {

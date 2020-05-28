@@ -12,7 +12,6 @@ const jwtkey = process.env.JWT_KEY;
 //JWT Middleware
 router.use((req, res, next) => {
     const token = req.headers['access-token'];
-    console.log(token);
 
     if (token) {
         jwt.verify(token, jwtkey, (err, decoded) => {
@@ -37,7 +36,7 @@ router.get('/usuario', async (req, res) => {
         const usuarios = await Usuario.find();
         res.json({ status: 'OK', message: 'Obtenidos', data: usuarios });
     } catch(err) {
-        res.json({ message: err });
+        res.json({ status: 'FAILED', message: err });
     }
 });
 
@@ -47,14 +46,14 @@ router.get('/usuario/:id', async (req, res) => {
         const usuario = await Usuario.findById(req.params.id);
         res.json({ status: 'OK', message: 'Obtenido', data: usuario });
     } catch(err) {
-        res.json({ message: err });
+        res.json({ status: 'FAILED', message: err });
     }
 });
 
 //POST - {json}
 router.post('/usuario', async (req, res) => {
-    const { nombre, contraseña, rol, email } = req.body;
-    const usuario = new Usuario({ nombre, contraseña, rol, email });
+    const { nombre, contraseña, rol, email, activo } = req.body;
+    const usuario = new Usuario({ nombre, contraseña, rol, email, activo });
 
     try {
         await Usuario.findOne({ nombre: nombre })
@@ -69,7 +68,7 @@ router.post('/usuario', async (req, res) => {
                 res.json({ status: 'FAILED', message: err });
             });
     } catch(err) {
-        res.json({ message: err });
+        res.json({ status: 'FAILED', message: err });
     };
     
 });
@@ -81,19 +80,19 @@ router.delete('/usuario/:id', async (req, res) => {
 
         res.json({ status: 'OK', message: 'Eliminado correctamente...', data: removed });
     } catch(err) {
-        res.json({ message: err });
+        res.json({ status: 'FAILED', message: err });
     }
 });
 
 //PATCH - Un usuario por id /usuario/id - {json}
 router.patch('/usuario/:id', async (req, res) => {
     try {
-        const { email, rol } = req.body;
-        const data = { email, rol };
+        const { email, rol, activo } = req.body;
+        const data = { email, rol, activo };
         await Usuario.findByIdAndUpdate(req.params.id, data);
         res.json({ status: 'OK', message: 'Modificado correctamente...', data: data });
     } catch(err) {
-        res.json({ message: err });
+        res.json({ status: 'FAILED', message: err });
     }
 });
 
@@ -105,7 +104,7 @@ router.patch('/usuario/password/:id', async (req, res) => {
         await Usuario.findByIdAndUpdate(req.params.id, data);
         res.json({ status: 'OK', message: 'Contraseña cambiada correctamente...', data: data });
     } catch(err) {
-        res.json({ message: err });
+        res.json({ status: 'FAILED', message: err });
     }
 });
 

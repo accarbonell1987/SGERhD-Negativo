@@ -4,7 +4,7 @@ import { Button, Icon, Header, Modal, Form, Message, Divider } from 'semantic-ui
 import Swal from 'sweetalert2'
 
 //CSS
-import '../global/css/Usuario.css';
+import '../global/css/Gestionar.css';
 
 class ComponentChangePassword extends Component {
     state = {

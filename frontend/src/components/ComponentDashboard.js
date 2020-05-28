@@ -29,7 +29,7 @@ class ComponentDashboard extends Component {
     if (this.props.parentState.autenticado) {
       return (
         <div className="Dashboard">
-          <ComponentHeader changeLoginState = {this.props.changeLoginState} parentState = {this.props.parentState} />
+          <ComponentHeader changeLoginState = {this.props.changeLoginState} parentState = {this.props.parentState} roles = {this.props.roles} />
           <ComponentMenu changeMenuOption = {this.changeMenuOption} opcionmenu = {this.state.opcionmenu} parentState = {this.props.parentState} roles = {this.props.roles} permisos = {this.props.permisos} />
           <ComponentContent opcionmenu = {this.state.opcionmenu} parentState = {this.props.parentState} roles = {this.props.roles} permisos = {this.props.permisos} />
         </div>

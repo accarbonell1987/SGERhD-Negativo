@@ -1,11 +1,11 @@
-.usuario-allcolumn {
+.gestionar-allcolumn {
     margin: 0 !important;
     background: #ffffff;
     border-radius: 30px 0 0 0 !important;
     max-width: 98%;
 }
 
-.usuario-allgrid {
+.gestionar-allgrid {
     margin: 10px 0 10px 0 !important;
     border-radius: 0px !important;
 }
@@ -18,28 +18,45 @@
 }
 
 .div-table {
-    margin-top: 2.5rem !important;
+    margin-top: 3.5rem !important;
 }
 
-.cell-logs {
-    max-width: 2% !important;
+.div-table-modal {
+    margin-top: 0.5rem !important;
 }
 
-.cell-acciones {
+.cells-max-witdh-2 {
     max-width: 2% !important;
 }
 
 .modal-button-change-password {
-    color: darkorange !important;
+    color: darkmagenta !important;
     margin-right: 0 !important;
     padding: .78571429em .78571429em .78571429em !important;
 }
 
 .modal-button-action {
+    color: darkorange !important;
     padding: .78571429em .78571429em .78571429em !important;
 }
 
 .modal-icon {
     max-width: 16px !important;
     margin: 0 !important;
+}
+
+.modal-button-other {
+    padding: .78571429em .78571429em .78571429em !important;
+}
+.modal-icon-other {
+    max-width: 16px !important;
+    margin: 0 !important;
+}
+
+.button-remove {
+    color: #db2828 !important;
+}
+
+.modal-content-table {
+
 }

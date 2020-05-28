@@ -43,11 +43,11 @@ class ComponentApp extends Component {
     { rol: 'informatico', 
       accesos: [
         { opcion: 'usuarios', permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
-        { opcion: 'historiaclinica', permisos: { crear: false, leer: false, modificar: false, eliminar: false, menu: false } },
-        { opcion: 'pacientes', permisos: { crear: false, leer: false, modificar: false, eliminar: false, menu: false } },
-        { opcion: 'examenes', permisos: { crear: false, leer: false, modificar: false, eliminar: false, menu: false } },
-        { opcion: 'transfusiones', permisos: { crear: false, leer: false, modificar: false, eliminar: false, menu: false } },
-        { opcion: 'embarazos', permisos: { crear: false, leer: false, modificar: false, eliminar: false, menu: false } }
+        { opcion: 'historiaclinica', permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
+        { opcion: 'pacientes', permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
+        { opcion: 'examenes', permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
+        { opcion: 'transfusiones', permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
+        { opcion: 'embarazos', permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } }
       ]
     },
     { rol: 'especialista', 

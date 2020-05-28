@@ -4,7 +4,7 @@ import { Button, Icon, Header, Modal, Form, Message } from 'semantic-ui-react'
 import Swal from 'sweetalert2'
 
 //CSS
-import '../global/css/Usuario.css';
+import '../global/css/Gestionar.css';
 
 class ComponentAddUser extends Component {
     state = {
@@ -123,7 +123,7 @@ class ComponentAddUser extends Component {
           if (await this.addUser()){
             //enviar a recargar los usuarios
             this.props.allUsers();
-            this.setState({ openModal: false });
+            this.clearModalState();
           }
         }
       }

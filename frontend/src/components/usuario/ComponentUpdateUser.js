@@ -4,7 +4,7 @@ import { Button, Icon, Header, Modal, Form, Message } from 'semantic-ui-react'
 import Swal from 'sweetalert2'
 
 //CSS
-import '../global/css/Usuario.css';
+import '../global/css/Gestionar.css';
 
 class ComponentUpdateUser extends Component {
     state = {

@@ -1,6 +1,6 @@
 //Importaciones
 import React, { Component } from 'react';
-import { Icon, Button, Header, Image } from 'semantic-ui-react'
+import { Button, Icon, Header, Image } from 'semantic-ui-react'
 
 //CSS
 import './global/css/Header.css';
