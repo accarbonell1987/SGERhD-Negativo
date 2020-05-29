@@ -1,5 +1,5 @@
 //#region Modelos
-const Log = require('../models/models').logaceso;
+const Log = require('../models/models').LogAcceso;
 //#endregion
 
 //#region Logs
@@ -15,6 +15,15 @@ exports.GetLogs = async (query, page, limit) => {
 exports.GetLog = async (id) => {
     try {
         var log = await Log.findById(id);
+        return log;
+    } catch (err) {
+        console.log('Error: Obteniendo Log con id: ' + id);
+        throw Error('Obteniendo Log con id: ' + id);
+    }
+}
+exports.GetLogByUserId = async (id) => {
+    try {
+        var log = await Log.find(p => p.usuario === id.toString());
         return log;
     } catch (err) {
         console.log('Error: Obteniendo Log con id: ' + id);

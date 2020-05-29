@@ -1,4 +1,5 @@
-//#region Modelos
+//#region Servicios
+const PatientServices = require('../services/patients');
 const UserServices = require('../services/users');
 const LogServices = require('../services/logs');
 //#endregion
@@ -97,6 +98,52 @@ exports.UpdateLog = async (req, res, next) => {
     try {
         var log = await LogServices.UpdateLog();
         return res.status(200).json({ status: 200, message: 'Modificado Correctamente', data: log });
+    } catch(err) {
+        return res.status(400).json({ status: 400, message: err });
+    }
+}
+//#endregion
+
+//#region Pacientes
+exports.GetPatients = async (req, res, next) => {
+    var page = req.params.page ? req.params.page : 1;
+    var limit = req.params.limit ? req.params.limit : -1;
+
+    try {
+        var pacientes = await PatientServices.GetPatients({}, page, limit);
+        return res.status(200).json({ status: 200, message: 'Obtenidos', data: pacientes });
+    } catch(err) {
+        return res.status(400).json({ status: 400, message: err });
+    }
+}
+exports.GetPatient = async (req, res, next) => {
+    try {
+        var paciente = await PatientServices.GetPatient(req.params.id);
+        return res.status(200).json({ status: 200, message: 'Obtenido', data: paciente });
+    } catch(err) {
+        return res.status(400).json({ status: 400, message: err });
+    }
+}
+exports.InsertPatient = async (req, res, next) => {
+    try {
+        paciente = await PatientServices.InsertPatient(req.body);
+        return res.status(200).json({ status: 200, message: 'Insertado Correctamente', data: paciente });
+    } catch(err) {
+        return res.status(400).json({ status: 400, message: err });
+    }
+}
+exports.DeletePatient = async (req, res, next) => {
+    try {
+        var paciente = await PatientServices.DeletePatient(req.params.id);
+        return res.status(200).json({ status: 200, message: 'Eliminado Correctamente', data: paciente });
+    } catch(err) {
+        return res.status(400).json({ status: 400, message: err });
+    }
+}
+exports.UpdatePatient = async (req, res, next) => {
+    try {
+        var paciente = await PatientServices.UpdatePatient(req.params.id, req.body);
+        return res.status(200).json({ status: 200, message: 'Modificado Correctamente', data: paciente });
     } catch(err) {
         return res.status(400).json({ status: 400, message: err });
     }

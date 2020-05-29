@@ -59,7 +59,7 @@ class ComponentUpdatePatient extends Component {
       .then(res => res.json())
       .then(jsondata => {
         const { status, message, data } = jsondata;
-        if (status === 'OK') {
+        if (status === 200) {
           this.setState({
             openModal: true,
             nombre: data.nombre,
@@ -117,7 +117,7 @@ class ComponentUpdatePatient extends Component {
         })
         let jsondata = await res.json();
         const { status, message } = jsondata;
-        if (status === 'OK') {
+        if (status === 200) {
           Swal.fire({ position: 'center', icon: 'success', title: message, showConfirmButton: false, timer: 3000 });
           return true;
         }

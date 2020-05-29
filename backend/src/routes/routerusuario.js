@@ -19,17 +19,14 @@ router.use((req, res, next) => {
     if (token) {
         jwt.verify(token, jwtkey, (err, decoded) => {
             if (err) {
-                return res.json({ status: 'FAILED', message: 'TOKEN invalida' });
+                return res.status(400).json({ status: 400, message: 'Invalid Token' });
             } else {
                 req.decoded = decoded;
                 next();
             }
         });
     } else {
-        res.send({
-            status: 'FAILED',
-            message: 'TOKEN no proveido'
-        });
+        res.status(400).json({ status: 400, message: 'Not Token'});
     }
 });
 //#endregion

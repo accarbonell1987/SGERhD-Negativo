@@ -1,120 +1,49 @@
-//Requeridos
+//#region Requeridos
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
+//#endregion
 
-//Modelos
-const Paciente = require('../models/models').paciente;
+//#region Controladora
+var bll = require('../controller/bll');
+//#endregion
 
-//CONSTANTES
+//#region Constantes
 const jwtkey = process.env.JWT_KEY;
+//#endregion
 
-//JWT Middleware
+//#region Middlewares
 router.use((req, res, next) => {
     const token = req.headers['access-token'];
 
     if (token) {
         jwt.verify(token, jwtkey, (err, decoded) => {
             if (err) {
-                return res.json({ status: 'FAILED', message: 'TOKEN invalida' });
+                return res.status(400).json({ status: 400, message: 'Invalid Token' });
             } else {
                 req.decoded = decoded;
                 next();
             }
         });
     } else {
-        res.send({
-            status: 'FAILED',
-            message: 'TOKEN no proveido'
-        });
+        res.status(400).json({ status: 400, message: 'Not Token'});
     }
 });
+//#endregion
 
+//#region Rutas
 //GET - Todos
-router.get('/paciente', async (req, res) => {
-    try {
-        const pacientes = await Paciente.find();
-        res.json({ status: 'OK', message: 'Obtenidos', data: pacientes });
-    } catch(err) {
-        res.json({ status: 'FAILED', message: err });
-    }
-});
-
+router.get('/paciente', bll.GetPatients);
 //GET - por id
-router.get('/paciente/:id', async (req, res) => {
-    try {
-        var paciente = await Paciente.findById(req.params.id);
-        res.json({ status: 'OK', message: 'Obtenido', data: paciente });
-    } catch(err) {
-        res.json({ status: 'FAILED', message: err });
-    }
-});
-
+router.get('/paciente/:id', bll.GetPatient);
 //POST - {json}
-router.post('/paciente', async (req, res) => {
-    try {
-        const { fechaDeCreacion, nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, padre, hijos, transfusiones, embarazos, examenes, activo } = req.body;
-        const paciente = new Paciente({ fechaDeCreacion, nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, padre, hijos, transfusiones,embarazos, examenes, activo });
-
-        await Paciente.findOne({ ci: ci })
-            .then(doc => {
-                if (doc === null) {
-                    const saved = paciente.save();
-                    res.json({ status: 'OK', message: 'Insertado correctamente...', data: saved });
-                }else{
-                    res.json({ status: 'FAILED', message: 'Paciente ya existente...', data: doc });
-                }
-            }).catch(err => {
-                res.json({ status: 'FAILED', message: err });
-            });
-    } catch(err) {
-        res.json({ status: 'FAILED', message: err });
-    };
-    
-});
-
+router.post('/paciente', bll.InsertPatient);
 //DELETE - Un paciente por id /paciente/id
-router.delete('/paciente/:id', async (req, res) => {
-    try {
-        const removed = await Paciente.findByIdAndRemove(req.params.id);
-        res.json({ status: 'OK', message: 'Eliminado correctamente...', data: removed });
-    } catch(err) {
-        res.json({ status: 'FAILED', message: err });
-    }
-});
-
+router.delete('/paciente/:id', bll.DeletePatient);
 //PATCH - Un paciente por id /paciente/id - {json}
-router.patch('/paciente/:id', async (req, res) => {
-    try {
-        const { nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, padre, hijos, transfusiones, embarazos, examenes, activo, hijoseliminados } = req.body;
-        const paciente = { nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, padre, hijos, transfusiones,embarazos, examenes, activo };
-        //asignarle el padre o madre al hijo correspondiente
-        if (hijos !== null) {
-            hijos.map(pacienteid => {
-                Paciente.findById(pacienteid)
-                .then(hijo => {
-                    if (sexo === 'M') hijo.padre = req.params.id;
-                    else hijo.madre = req.params.id;
-                    const saved = hijo.save();
-                });
-            });
-        }
-        if (hijoseliminados !== null) {
-            //eliminar el padre o madre al hijo
-            hijoseliminados.map(pacienteid => {
-                Paciente.findById(pacienteid)
-                .then(hijo => {
-                    if (sexo === 'M') hijo.padre = null;
-                    else hijo.madre = null;
-                    const saved = hijo.save();
-                });
-            });
-        }
-        await Paciente.findByIdAndUpdate(req.params.id, paciente);
-        res.json({ status: 'OK', message: 'Modificado correctamente...', data: paciente });
-    } catch(err) {
-        res.json({ status: 'FAILED', message: err });
-    }
-});
+router.patch('/paciente/:id', bll.UpdatePatient);
+//#endregion
 
+//#region Exports
 module.exports = router;
+//#endregion

@@ -20,6 +20,38 @@ class ComponentLogin extends Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
+  swalToast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    onOpen: (toast) => {
+      toast.addEventListener('mouseenter', Swal.stopTimer)
+      toast.addEventListener('mouseleave', Swal.resumeTimer)
+    }
+  });
+
+  componentDidMount(){
+    this.getComienzo();
+  }
+
+  getComienzo = async () => {
+    await fetch(this.props.parentState.endpoint + 'api/seguridad/comienzo', {
+      method: 'GET'
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === 200){
+        Swal.fire({ position: 'center', icon: 'success', title: data.message, text: 'Se ha creado el usuario del sistema (usuario:administrador, contraseña: administrador)', showConfirmButton: false, timer: 10000 });
+      }else{
+        Swal.fire({ position: 'center', icon: 'error', title: data.message, showConfirmButton: false, timer: 3000 }); 
+      }
+    })
+    .catch(err => {
+      Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 3000 });
+    });
+  }
   handleAutenticateClick = (evt) => {
     evt.preventDefault();
 
@@ -36,7 +68,8 @@ class ComponentLogin extends Component {
       //capturar respuesta
       const { status, message, token, data } = jsondata;
       if (status === 200) {
-        Swal.fire({ position: 'center', icon: 'success', title: message, showConfirmButton: false, timer: 1500 });
+        // Swal.fire({ position: 'center', icon: 'success', title: message, showConfirmButton: false, timer: 1500 });
+        this.swalToast.fire({icon:'success', title: message});
         this.props.changeLoginState(data.nombre, data.rol, token);
       }else{
         Swal.fire({ position: 'center', icon: 'error', title: 'Usuario o contraseña incorrecto', showConfirmButton: false, timer: 5000 });
@@ -47,7 +80,6 @@ class ComponentLogin extends Component {
       this.setState({ contraseña: '' });
     });
   };
-
   handleChange = (evt) => {
     const { name, value} = evt.target;
     this.setState({

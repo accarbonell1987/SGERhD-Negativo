@@ -52,7 +52,7 @@ class ComponentChilds extends Component {
         })
         let jsondata = await res.json();
         const { status, message } = jsondata;
-        if (status === 'OK') {
+        if (status === 200) {
           Swal.fire({ position: 'center', icon: 'success', title: message, showConfirmButton: false, timer: 3000 });
           return true;
         }

@@ -21,7 +21,7 @@ db.on('error', console.error.bind(console, 'MongoDB error en conexion:'));
     //LOGACCESO
     var logacceso_schema = new Schema({
         fecha: { type: Date, required: true, default: Date.now },
-        usuario: { type: String },
+        usuario: { type: Schema.Types.ObjectId, ref: 'Usuario' },
         activo: { type: Boolean },
         accessToken: { type: String }
     });
@@ -104,6 +104,7 @@ db.on('error', console.error.bind(console, 'MongoDB error en conexion:'));
         email: { type: String, required: 'correo electrónico no valido', match:/^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/ },
         contraseña: { type: String, required: true, minlength:[8, 'contraseña muy corta'] },
         rol: { type: String, default: 'usuario', required: 'debe escoger un rol', enum: roles }, 
+        logs: [{ type: Schema.Types.ObjectId, ref: 'LogAcceso'}],
         activo: { type: Boolean },
         accessToken: { type: String }
     });
@@ -146,27 +147,28 @@ db.on('error', console.error.bind(console, 'MongoDB error en conexion:'));
     });
 
 //exportacion del modelo
-var pesquizajeanticuerpo = mongoose.model('PesquizajeAnticuerpo', pesquizajeanticuerpo_schema);
-var identificacionanticuerpo = mongoose.model('IdentificacionAnticuerpo', identificacionanticuerpo_schema);
-var gruposanguineo = mongoose.model('GrupoSanguineo', gruposanguineo_schema);
-var usuario = mongoose.model('Usuario', usuario_schema);
-var transfusion = mongoose.model('Transfusion', transfusion_schema);
-var paciente = mongoose.model('Paciente', paciente_schema);
-var historiaclinica = mongoose.model('HistoriaClinica', historiaclinica_schema);
-var examen = mongoose.model('Examen', examen_schema);
-var embarazo = mongoose.model('Embarazo', embarazo_schema);
-var logacceso = mongoose.model('LogAcceso', logacceso_schema);
+var PesquizajeAnticuerpo = mongoose.model('PesquizajeAnticuerpo', pesquizajeanticuerpo_schema);
+var IdentificacionAnticuerpo = mongoose.model('IdentificacionAnticuerpo', identificacionanticuerpo_schema);
+var GrupoSanguineo = mongoose.model('GrupoSanguineo', gruposanguineo_schema);
+var Usuario = mongoose.model('Usuario', usuario_schema);
+var Transfusion = mongoose.model('Transfusion', transfusion_schema);
+var Paciente = mongoose.model('Paciente', paciente_schema);
+var HistoriaClinica = mongoose.model('HistoriaClinica', historiaclinica_schema);
+var Examen = mongoose.model('Examen', examen_schema);
+var Embarazo = mongoose.model('Embarazo', embarazo_schema);
+var LogAcceso = mongoose.model('LogAcceso', logacceso_schema);
 
 //exportacion del modelos
 module.exports = {
-    'embarazo': embarazo,
-    'logaceso': logacceso,
-    'examen' : examen,
-    'historiaclinica' : historiaclinica,
-    'paciente' : paciente,
-    'transfusion' : transfusion,
-    'usuario' : usuario,
-    'pesquizajeanticuerpo' : pesquizajeanticuerpo,
-    'identificacionanticuerpo' : identificacionanticuerpo,
-    'gruposanguineo' : gruposanguineo
+    'Embarazo': Embarazo,
+    'LogAcceso': LogAcceso,
+    'Examen' : Examen,
+    'HistoriaClinica' : HistoriaClinica,
+    'Paciente' : Paciente,
+    'Transfusion' : Transfusion,
+    'Usuario' : Usuario,
+    'PesquizajeAnticuerpo' : PesquizajeAnticuerpo,
+    'IdentificacionAnticuerpo' : IdentificacionAnticuerpo,
+    'GrupoSanguineo' : GrupoSanguineo,
+    'CollectionUserExist': this.CollectionUserExist
 }

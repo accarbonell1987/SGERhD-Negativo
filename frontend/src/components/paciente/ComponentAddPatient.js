@@ -74,7 +74,7 @@ class ComponentAddPatient extends Component {
             let data = await res.json();
             //capturar respuesta
             const { status, message } = data;
-            if (status === 'OK') {
+            if (status === 200) {
                 this.clearModalState();
                 Swal.fire({ position: 'center', icon: 'success', title: message, showConfirmButton: false, timer: 3000 });
                 return true;

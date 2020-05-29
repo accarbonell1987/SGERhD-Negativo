@@ -1,11 +1,21 @@
 //#region Modelos
-const Usuario = require('../models/models').usuario;
+const Usuario = require('../models/models').Usuario;
+//#endregion
+
+//#Servicios
+const LogServices = require('../services/logs');
 //#endregion
 
 //#region Usuarios
 exports.GetUsers = async (query, page, limit) => {
     try {
         var users = await Usuario.find(query);
+
+        // users.forEach((element, index, users) => {
+        //     var logs = LogServices.GetLogByUserId(element._id);
+        //     console.log(logs);
+        // });
+
         return users;
     } catch (err) {
         console.log('Error: Obteniendo Usuarios');
