@@ -33,8 +33,8 @@ router.use((req, res, next) => {
 //GET - Todos
 router.get('/paciente', async (req, res) => {
     try {
-        const paciente = await Paciente.find();
-        res.json({ status: 'OK', message: 'Obtenidos', data: paciente });
+        const pacientes = await Paciente.find();
+        res.json({ status: 'OK', message: 'Obtenidos', data: pacientes });
     } catch(err) {
         res.json({ status: 'FAILED', message: err });
     }
@@ -43,7 +43,7 @@ router.get('/paciente', async (req, res) => {
 //GET - por id
 router.get('/paciente/:id', async (req, res) => {
     try {
-        const paciente = await Paciente.findById(req.params.id);
+        var paciente = await Paciente.findById(req.params.id);
         res.json({ status: 'OK', message: 'Obtenido', data: paciente });
     } catch(err) {
         res.json({ status: 'FAILED', message: err });
@@ -55,7 +55,7 @@ router.post('/paciente', async (req, res) => {
     try {
         const { fechaDeCreacion, nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, padre, hijos, transfusiones, embarazos, examenes, activo } = req.body;
         const paciente = new Paciente({ fechaDeCreacion, nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, padre, hijos, transfusiones,embarazos, examenes, activo });
-        console.log(paciente);
+
         await Paciente.findOne({ ci: ci })
             .then(doc => {
                 if (doc === null) {
@@ -88,9 +88,6 @@ router.patch('/paciente/:id', async (req, res) => {
     try {
         const { nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, padre, hijos, transfusiones, embarazos, examenes, activo, hijoseliminados } = req.body;
         const paciente = { nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, padre, hijos, transfusiones,embarazos, examenes, activo };
-        console.log('paciente -> ' +paciente);
-        console.log('hijoseliminados -> ' + hijoseliminados);
-        console.log('hijos -> ' + hijos);
         //asignarle el padre o madre al hijo correspondiente
         if (hijos !== null) {
             hijos.map(pacienteid => {
@@ -99,7 +96,6 @@ router.patch('/paciente/:id', async (req, res) => {
                     if (sexo === 'M') hijo.padre = req.params.id;
                     else hijo.madre = req.params.id;
                     const saved = hijo.save();
-                    console.log('hijo -> ' +hijo);
                 });
             });
         }
@@ -111,11 +107,9 @@ router.patch('/paciente/:id', async (req, res) => {
                     if (sexo === 'M') hijo.padre = null;
                     else hijo.madre = null;
                     const saved = hijo.save();
-                    console.log('hijoseliminados -> ' +hijo);
                 });
             });
         }
-
         await Paciente.findByIdAndUpdate(req.params.id, paciente);
         res.json({ status: 'OK', message: 'Modificado correctamente...', data: paciente });
     } catch(err) {

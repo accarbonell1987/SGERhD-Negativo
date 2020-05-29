@@ -1,15 +1,18 @@
-//Requeridos
+//#region Requeridos
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
+//#endregion
 
-//Modelos
-const Logs = require('../models/models').logaceso;
+//#region Controladora
+var bll = require('../controller/bll');
+//#endregion
 
-//CONSTANTES
+//#region Constantes
 const jwtkey = process.env.JWT_KEY;
+//#endregion
 
-//JWT Middleware
+//#region Middlewares
 router.use((req, res, next) => {
     const token = req.headers['access-token'];
 
@@ -29,58 +32,21 @@ router.use((req, res, next) => {
         });
     }
 });
+//#endregion
 
+//#region Rutas
 //GET - Todos
-router.get('/log', async (req, res) => {
-    try {
-        const logs = await Logs.find();
-        res.json({ status: 'OK', message: 'Obtenidos', data: logs });
-    } catch(err) {
-        res.json({ status: 'FAILED', message: err });
-    }
-});
-
+router.get('/log', bll.GetLogs);
 //GET - por id
-router.get('/log/:id', async (req, res) => {
-    try {
-        const log = await Logs.findById(req.params.id);
-        res.json({ status: 'OK', message: 'Obtenido', data: log });
-    } catch(err) {
-        res.json({ status: 'FAILED', message: err });
-    }
-});
-
+router.get('/log/:id', bll.GetLog);
 //POST - {json}
-router.post('/log', async (req, res) => {
-    const { fecha, usuario } = req.body; 
-    const log = new Logs({ fecha, usuario });
-    
-    try {
-        const saved = await log.save();
-        res.json({ status: 'OK', message: 'Insertado', data: saved });
-    } catch(err) {
-        res.json({ status: 'FAILED', message: err });
-    };
-    
-});
-
+router.post('/log', bll.InsertLog);
 //DELETE - por id
-router.delete('/log/:id', async (req, res) => {
-    try {
-        const removed = await Logs.findByIdAndRemove(req.params.id);
-        res.json({ status: 'OK', message: 'Eliminado', data: removed });
-    } catch(err) {
-        res.json({ status: 'FAILED', message: err });
-    }
-});
-
+router.delete('/log/:id', bll.DeleteLog);
 //PATCH - por id - {json}
-router.patch('/log/:id', async (req, res) => {
-    try {
-        res.json({ status: 'Undefined', message: 'No permitido' });
-    } catch(err) {
-        res.json({ status: 'FAILED', message: err });
-    }
-});
+router.patch('/log/:id', bll.UpdateLog);
+//#endregion
 
+//#region Exports
 module.exports = router;
+//#endregion

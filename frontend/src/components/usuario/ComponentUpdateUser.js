@@ -39,8 +39,9 @@ class ComponentUpdateUser extends Component {
       })
       .then(res => res.json())
       .then(jsondata => {
+        console.log(jsondata);
         const { status, message, data } = jsondata;
-        if (status === 'OK') {
+        if (status === 200) {
           this.setState({
             nombre: data.nombre,
             email: data.email,
@@ -52,7 +53,7 @@ class ComponentUpdateUser extends Component {
         }
       })
       .catch(err => {
-        Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 5000 }); //mostrar mensaje de error
+        Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 5000 });
       });
     }
     //modificar usuario
@@ -75,7 +76,7 @@ class ComponentUpdateUser extends Component {
         })
         let jsondata = await res.json();
         const { status, message } = jsondata;
-        if (status === 'OK') {
+        if (status === 200) {
           Swal.fire({ position: 'center', icon: 'success', title: message, showConfirmButton: false, timer: 3000 }); //mostrar mensaje
           return true;
         }

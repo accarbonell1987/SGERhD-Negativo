@@ -58,7 +58,7 @@ class ComponentUsers extends Component {
         .then(res => res.json())
         .then(data => {
           const { status, message } = data;
-          status === 'OK' ?
+          status === 200 ?
             Swal.fire({ position: 'center', icon: 'success', title: message, showConfirmButton: false, timer: 3000 })
           :
               Swal.fire({ position: 'center', icon: 'error', title: message, showConfirmButton: false, timer: 5000 })
@@ -81,7 +81,7 @@ class ComponentUsers extends Component {
       })
       .then(res => res.json())
       .then(data => {
-        if (data.status === 'OK'){
+        if (data.status === 200){
           this.setState({usuarios: data.data});
         }else{
           Swal.fire({ position: 'center', icon: 'error', title: data.message, showConfirmButton: false, timer: 3000 }); 

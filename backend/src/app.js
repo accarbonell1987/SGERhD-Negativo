@@ -31,6 +31,8 @@ app.use('/api', require('./routes/routerseguridad'));
 app.use('/api', require('./routes/routerusuario'));
 app.use('/api', require('./routes/routerlog'));
 app.use('/api', require('./routes/routerpaciente'));
+app.use('/api', require('./routes/routerhistoriaclinica'));
+app.use('/api', require('./routes/routerembarazo'));
 
 //Static files
 console.log(__dirname);

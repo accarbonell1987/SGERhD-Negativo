@@ -43,7 +43,7 @@ class ComponentChangePassword extends Component {
       .then(res => res.json())
       .then(jsondata => {
         const { status, message, data } = jsondata;
-        if (status === 'OK') {
+        if (status === 200) {
           this.setState({
             usuariocontraseña: data.contraseña
           });
@@ -72,7 +72,7 @@ class ComponentChangePassword extends Component {
         })
         let jsondata = await res.json();
         const { status, message } = jsondata;
-        if (status === 'OK') {
+        if (status === 200) {
           Swal.fire({ position: 'center', icon: 'success', title: message, showConfirmButton: false, timer: 3000 });
           return true;
         }

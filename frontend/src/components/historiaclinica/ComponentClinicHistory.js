@@ -7,32 +7,57 @@ import Swal from 'sweetalert2'
 import '../global/css/Gestionar.css';
 
 //Componentes
-import ComponentAddPatient from './ComponentAddPatient';
-import ComponentUpdatePatient from './ComponentUpdatePatient';
-import ComponentChilds from './ComponentChilds';
+import ComponentAddClinicHistory from './ComponentAddClinicHistory';
+import ComponentUpdateClinicHistory from './ComponentUpdateClinicHistory';
 
 //Defincion de la clase
-class ComponentPatients extends Component {
+class ComponentClinicHistory extends Component {
   state = {
+    historiasclinica: [],
     pacientes: []
   }
 
   constructor(props) {
     super(props);
 
+    this.allClinicsHistory = this.allClinicsHistory.bind(this);
     this.allPatients = this.allPatients.bind(this);
-    this.deletePatient = this.deletePatient.bind(this);
+    this.deleteClinicHistory = this.deleteClinicHistory.bind(this);
   }
 
   componentDidMount = () => {
+    this.allClinicsHistory();
     this.allPatients();
   }
-  //eliminar el paciente
-  deletePatient = (id, nombre, apellidos) => {
+  //obtener propiedades de historia clinica
+  getClinicHistory = (id) => {
+    //enviar al endpoint
+    fetch (this.props.parentState.endpoint + 'api/historiaclinica/' + id, {
+      method: 'GET',
+      headers: {
+        'access-token' : this.props.parentState.token
+      }
+    })
+    .then(res => res.json())
+    .then(jsondata => {
+      const { status, message, data } = jsondata;
+      if (status === 'OK') {
+        return data;
+      }else{
+        Swal.fire({ position: 'center', icon: 'error', title: message, showConfirmButton: false, timer: 5000 })
+      }
+    })
+    .catch(err => {
+      Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 5000 });
+    });
+  }
+  //eliminar el historia clinica
+  deleteClinicHistory = (id, pacienteid) => {
+    const paciente = this.getPatient(id);
     //Esta seguro?
     Swal.fire({
       title: '¿Esta seguro?',
-      text: "Desea eliminar el paciente: " + nombre + " " + apellidos,
+      text: "Desea eliminar la historia clinica perteneciente al paciente: " + paciente.nombre + " " + paciente.apellidos,
       icon: 'question',
       showCancelButton: true,
       cancelButtonColor: '#db2828',
@@ -44,7 +69,7 @@ class ComponentPatients extends Component {
       //si escogio Si
       if (result.value) {
         //enviar al endpoint
-        fetch (this.props.parentState.endpoint + 'api/paciente/' + id, {
+        fetch (this.props.parentState.endpoint + 'api/historiaclinica/' + id, {
           method: 'DELETE',
           headers: {
             'Accept': 'application/json',
@@ -60,7 +85,7 @@ class ComponentPatients extends Component {
           :
             Swal.fire({ position: 'center', icon: 'error', title: message, showConfirmButton: false, timer: 5000 })
 
-          this.allPatients();
+          this.allClinicsHistory();
         })
         .catch(err => {
           Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 5000 });
@@ -68,7 +93,26 @@ class ComponentPatients extends Component {
       }
     })
   }
-  //obtener todos los pacientes desde la API
+  //obtener todos los historia clinica desde la API
+  allClinicsHistory = async () => {
+    await fetch(this.props.parentState.endpoint + 'api/historiaclinica', {
+        method: 'GET',
+        headers: {
+          'access-token' : this.props.parentState.token
+        }
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'OK'){
+          this.setState({historiasclinica: data.data});
+        }else{
+          Swal.fire({ position: 'center', icon: 'error', title: data.message, showConfirmButton: false, timer: 3000 }); 
+        }
+      })
+      .catch(err => {
+        Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 3000 });
+      });
+  }
   allPatients = async () => {
     await fetch(this.props.parentState.endpoint + 'api/paciente', {
         method: 'GET',
@@ -93,21 +137,21 @@ class ComponentPatients extends Component {
     //buscar el permiso del rol
     const permiso = this.props.permisos.find(p => p.rol === this.props.parentState.rol);
     //buscar el acceso del menu
-    const accesomenu = permiso.accesos.find(p => p.opcion === 'pacientes');
-    //chequear si es paciente y tengo permiso
+    const accesomenu = permiso.accesos.find(p => p.opcion === 'historiaclinica');
+    //chequear si es historiasclinica y tengo permiso
     return (
       <Grid textAlign='center' verticalAlign='top' className='gestionar-allgrid'>
         <Grid.Column className='gestionar-allcolumn'>
           <Label attached='top left' className='div-label-attached' size='large'>
-            <Icon name='wheelchair' size='large' inverted/> Gestión de Pacientes
+            <Icon name='clipboard' size='large' inverted/> Gestión de Historias Clínicas
           </Label>
           <Table compact celled definition attached='top' className='div-table'>
-            <Table.Header className='div-table-header-row'>
-              <Table.Row >
+            <Table.Header className='div-table-header'>
+              <Table.Row>
                 <Table.HeaderCell />
-                <Table.HeaderCell colSpan='13'>
+                <Table.HeaderCell colSpan='9'>
                   { accesomenu.permisos.crear ?
-                    <ComponentAddPatient allPatients = {this.allPatients}  parentState = {this.props.parentState} roles = {this.props.roles} /> :
+                    <ComponentAddClinicHistory allClinicsHistory = {this.allClinicsHistory}  parentState = {this.props.parentState} roles = {this.props.roles} pacientes = {this.state.pacientes} /> :
                     <Button floated='right' icon labelPosition='left' primary size='small' className='modal-button-add' disabled>
                       <Icon name='add circle' /> Adicionar
                     </Button>
@@ -115,71 +159,39 @@ class ComponentPatients extends Component {
                 </Table.HeaderCell>
               </Table.Row>
               { 
-                (this.state.pacientes.length > 0) ? 
+                
+                (this.state.historiasclinica.length > 0) ? 
                 <Table.Row>
                   <Table.HeaderCell />
-                  <Table.HeaderCell>Nombres y Apellidos</Table.HeaderCell>
-                  <Table.HeaderCell>Carnet Identidad</Table.HeaderCell>
-                  <Table.HeaderCell>Dirección</Table.HeaderCell>
-                  <Table.HeaderCell>Teléfonos</Table.HeaderCell>
-                  <Table.HeaderCell>Madre</Table.HeaderCell>
-                  <Table.HeaderCell className='cells-max-witdh-2'>Género</Table.HeaderCell>
-                  <Table.HeaderCell className='cells-max-witdh-2'>Hijos</Table.HeaderCell>
-                  <Table.HeaderCell className='cells-max-witdh-2'>Historia Clínica</Table.HeaderCell>
-                  <Table.HeaderCell className='cells-max-witdh-2'>Transfusiones</Table.HeaderCell>
+                  <Table.HeaderCell>Número</Table.HeaderCell>
+                  <Table.HeaderCell>Area de Salud</Table.HeaderCell>
+                  <Table.HeaderCell>Vacuna AntiD</Table.HeaderCell>
+                  <Table.HeaderCell>Partos</Table.HeaderCell>
+                  <Table.HeaderCell>Abortos</Table.HeaderCell>
                   <Table.HeaderCell className='cells-max-witdh-2'>Embarazos</Table.HeaderCell>
-                  <Table.HeaderCell className='cells-max-witdh-2'>Examenes</Table.HeaderCell>
+                  <Table.HeaderCell className='cells-max-witdh-2'>Paciente</Table.HeaderCell>
                   <Table.HeaderCell className='cells-max-witdh-2'>Acciones</Table.HeaderCell>
                 </Table.Row> : ''
               }
             </Table.Header>
 
             <Table.Body>
-              { this.state.pacientes.map(paciente => {
-                  let madre = this.state.pacientes.find(p => p._id === paciente.madre);
-                  let madrenombreyapellido = (madre == null) ? 'Indefinido' : madre.nombre + ' ' + madre.apellidos;
+              { 
+                this.state.historiasclinica.map(historia => {
                   // let rolData = this.props.roles.find(element => { return element.key === usuario.rol });
                   // //para colorear row
                   // let negative = this.props.parentState.usuario === usuario.nombre;
                   return(
-                    <Table.Row key={paciente._id} >
+                    <Table.Row key={historia._id} >
                       <Table.Cell collapsing>
-                        <Icon name='wheelchair' />
+                        <Icon name='clipboard' />
                       </Table.Cell>
-                      <Table.Cell>{paciente.nombre} {paciente.apellidos}</Table.Cell>
-                      <Table.Cell>{paciente.ci}</Table.Cell>
-                      <Table.Cell>{paciente.direccion}</Table.Cell>
-                      <Table.Cell>{paciente.telefono}</Table.Cell>
-                      <Table.Cell>
-                        <Button icon labelPosition='right' className='button-childs'>
-                          <Icon name='venus' className='button-icon-childs'/>{madrenombreyapellido}
-                        </Button> 
-                      </Table.Cell>
-                      <Table.Cell>
-                      {
-                        paciente.sexo === 'M' ? 
-                        <Button icon labelPosition='right' className='button-childs'>
-                          <Icon name='man' className='button-icon-childs'/>Masculino
-                        </Button>  
-                        : 
-                        <Button icon labelPosition='right' className='button-childs'>
-                          <Icon name='woman' className='button-icon-childs'/>Femenino
-                        </Button>
-                      }
-                      </Table.Cell>
-                      <Table.Cell className='cells-max-witdh-2' collapsing>
-                        <ComponentChilds parentState = {this.props.parentState} paciente = {paciente} pacientes = {this.state.pacientes} allPatients = {this.allPatients} />
-                      </Table.Cell>
-                      <Table.Cell className='cells-max-witdh-2' collapsing>
-                        <Button icon labelPosition='right' className='button-childs'>
-                          <Icon name='clipboard' className='button-icon-childs'/>Vacia
-                        </Button> 
-                      </Table.Cell>
-                      <Table.Cell className='cells-max-witdh-2' collapsing>
-                        <Button icon labelPosition='right' className='button-childs'>
-                          <Icon name='tint' className='button-icon-childs'/>0
-                        </Button> 
-                      </Table.Cell>
+                      <Table.Cell>{historia.numerohistoria}</Table.Cell>
+                      <Table.Cell>{historia.areaDeSalud}</Table.Cell>
+                      <Table.Cell>{historia.numerohistoria}</Table.Cell>
+                      <Table.Cell>{historia.vacunaAntiD}</Table.Cell>
+                      <Table.Cell>{historia.numeroDePartos}</Table.Cell>
+                      <Table.Cell>{historia.numeroDeAbortos}</Table.Cell>
                       <Table.Cell className='cells-max-witdh-2' collapsing>
                         <Button icon labelPosition='right' className='button-childs'>
                           <Icon name='heartbeat' className='button-icon-childs'/>0
@@ -187,17 +199,17 @@ class ComponentPatients extends Component {
                       </Table.Cell>
                       <Table.Cell className='cells-max-witdh-2' collapsing>
                         <Button icon labelPosition='right' className='button-childs'>
-                          <Icon name='clipboard list' className='button-icon-childs'/>0
+                          <Icon name='clipboard' className='button-icon-childs'/>Vacia
                         </Button> 
                       </Table.Cell>
                       <Table.Cell className='cells-max-witdh-2' collapsing>
                         {
                           accesomenu.permisos.eliminar ?
-                          <Button icon='remove circle' className = 'button-remove' onClick={() => this.deletePatient(paciente._id, paciente.nombre, paciente.apellidos) } /> : <Button icon='remove circle' className = 'button-remove' disabled />
+                          <Button icon='remove circle' className = 'button-remove' onClick={() => this.deleteClinicHistory(historia._id, historia.paciente) } /> : <Button icon='remove circle' className = 'button-remove' disabled />
                         }
                         {
                           accesomenu.permisos.modificar ?
-                          <ComponentUpdatePatient allPatients = { this.allPatients } pacienteid = {paciente._id} parentState = {this.props.parentState} roles = {this.props.roles} /> :
+                          <ComponentUpdateClinicHistory allClinicsHistory = { this.allClinicsHistory } historiaid = {historia._id} parentState = {this.props.parentState} roles = {this.props.roles} /> :
                           <Button icon='edit' disabled />
                         }
                       </Table.Cell>
@@ -213,4 +225,4 @@ class ComponentPatients extends Component {
   }
 }
 
-export default ComponentPatients;
+export default ComponentClinicHistory;

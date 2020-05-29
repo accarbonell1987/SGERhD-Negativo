@@ -7,6 +7,7 @@ import './global/css/Content.css';
 //Componentes
 import ComponentUsers from './usuario/ComponentUsers';
 import ComponentPatients from './paciente/ComponentPatients';
+import ComponentClinicHistory from './historiaclinica/ComponentClinicHistory';
 import ComponentFooter from './ComponentFooter';
 
 //Defincion de la clase
@@ -30,6 +31,14 @@ class ComponentContent extends Component {
       return (
         <div className='Content'>
           <ComponentPatients parentState = {this.props.parentState} roles = {this.props.roles} permisos = {this.props.permisos} />
+          <ComponentFooter />
+        </div>
+      );
+    //chequear si es pacientes y tengo permiso
+    } else if (this.props.opcionmenu === 'historiaclinica' && accesomenu.permisos.menu) {
+      return (
+        <div className='Content'>
+          <ComponentClinicHistory parentState = {this.props.parentState} roles = {this.props.roles} permisos = {this.props.permisos} />
           <ComponentFooter />
         </div>
       );

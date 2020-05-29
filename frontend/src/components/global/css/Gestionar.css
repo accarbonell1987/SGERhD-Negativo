@@ -19,14 +19,17 @@
 
 .div-table {
     margin-top: 3.5rem !important;
-    /* max-height: 670px; */
-    /* overflow-y: scroll; */
+    /* max-height: 670px;
+    overflow-y: scroll;
+    display: block; 
+    position: relative !important;
+    border-collapse: collapse !important; */
 }
 
 .div-table-header {
-    position: sticky;
-    top: 0;
-    z-index: 10;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 10 !important;
 }
 
 .div-table-modal {
@@ -63,4 +66,14 @@
 
 .button-remove {
     color: #db2828 !important;
+}
+
+.button-group-addsub {
+    margin-top: 22px !important;
+    height: 38px;
+}
+
+.modal-segmen-expanded {
+    margin: 0 8px 0 8px !important;
+    width: 100% !important;
 }

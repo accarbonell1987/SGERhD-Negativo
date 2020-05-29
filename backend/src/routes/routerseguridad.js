@@ -1,39 +1,44 @@
-//Requeridos
+//#region Requeridos
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
+//#endregion
 
-//Modelos
+//#region Modelos
 const Usuario = require('../models/models').usuario;
-const Log = require('../models/models').logaceso;
+//#endregion
 
+//#region Services
+var LogServices = require('../services/logs');
+//#endregion
+
+//#region Constantes
 const jwtkey = process.env.JWT_KEY;
+//#endregion
 
+//#region Rutas
 //POST - {json}
 router.post('/seguridad/autenticar', async (req, res) => {
     try {
-        var autenticado = false;
-
         await Usuario.findOne({ nombre: req.body.nombre, contraseña: req.body.contraseña})
-            .then(doc => {
-                if (doc === null) res.json({ status: 'FAILED', message: 'Usuario o contraseña incorrecto', data: doc });
+            .then(user => {
+                if (user === null) res.status(400).json({ status: 400, message: 'Usuario o contraseña incorrecto', data: user });
                 else {
                     const payload = { check: true };
                     const token = jwt.sign(payload, jwtkey, { expiresIn: 1440 });
-
-                    //salvando el log cada vez que me autentico
-                    const log = new Log({fecha: Date.now(), usuario: doc._id });
-                    log.save();
-
-                    res.json({ status: 'OK', message: 'Autenticado', data: doc, token: token });
+                    LogServices.InsertLog({fecha: Date.now(), usuario: user._id });
+                    res.status(200).json({ status: 200, message: 'Autenticado', data: user, token: token });
                 }
             })
             .catch(err => {
-                res.json({ status: 'FAILED', message: err });
+                res.status(400).json({ status: 400, message: err });
             });
     } catch(err) {
-        res.json({ status: 'FAILED', message: err });
+        res.status(400).json({ status: 400, message: err });
     };
 });
+//#endregion
 
+//#region Exports
 module.exports = router;
+//#endregion

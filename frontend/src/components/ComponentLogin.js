@@ -35,7 +35,7 @@ class ComponentLogin extends Component {
     .then(jsondata => {
       //capturar respuesta
       const { status, message, token, data } = jsondata;
-      if (status === 'OK') {
+      if (status === 200) {
         Swal.fire({ position: 'center', icon: 'success', title: message, showConfirmButton: false, timer: 1500 });
         this.props.changeLoginState(data.nombre, data.rol, token);
       }else{
