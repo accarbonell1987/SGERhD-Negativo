@@ -22,7 +22,7 @@ class ComponentLogin extends Component {
 
   swalToast = Swal.mixin({
     toast: true,
-    position: 'top-end',
+    position: 'bottom-left',
     showConfirmButton: false,
     timer: 3000,
     timerProgressBar: true,
@@ -68,8 +68,8 @@ class ComponentLogin extends Component {
       //capturar respuesta
       const { status, message, token, data } = jsondata;
       if (status === 200) {
-        // Swal.fire({ position: 'center', icon: 'success', title: message, showConfirmButton: false, timer: 1500 });
-        this.swalToast.fire({icon:'success', title: message});
+        Swal.fire({ position: 'center', icon: 'success', title: message, showConfirmButton: false, timer: 1500 });
+        // this.swalToast.fire({icon:'success', title: message});
         this.props.changeLoginState(data.nombre, data.rol, token);
       }else{
         Swal.fire({ position: 'center', icon: 'error', title: 'Usuario o contraseña incorrecto', showConfirmButton: false, timer: 5000 });

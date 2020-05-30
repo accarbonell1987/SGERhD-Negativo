@@ -10,6 +10,8 @@ mongoose.connect(process.env.DB_CONNECT, {useNewUrlParser: true, useUnifiedTopol
     .then(db => console.log('Conectado a la BD: '+process.env.DB_CONNECT))
     .catch(err => console.error('Error: '+err));
 
+mongoose.set('useFindAndModify', false);
+
 mongoose.Promise = global.Promise;
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB error en conexion:'));

@@ -9,13 +9,11 @@ const LogServices = require('../services/logs');
 //#region Usuarios
 exports.GetUsers = async (query, page, limit) => {
     try {
-        var users = await Usuario.find(query);
-
-        // users.forEach((element, index, users) => {
-        //     var logs = LogServices.GetLogByUserId(element._id);
-        //     console.log(logs);
-        // });
-
+        var users = await Usuario.find(query)
+            .populate('logs')
+            .then(users => {
+                return users;
+            });
         return users;
     } catch (err) {
         console.log('Error: Obteniendo Usuarios');
@@ -65,6 +63,17 @@ exports.UpdateUser = async (id, body) => {
     try {
         var updated = await Usuario.findByIdAndUpdate(id, user);
         return updated;
+    } catch(err) {
+        console.log('Error: Modificando Usuario: ' + err);
+        throw Error('Modificando Usuario: ' + err);
+    }
+}
+exports.InserLogToUser = (log) => {
+    try {
+        Usuario.findById(log.usuario).then(u => {
+            (u.logs) ? u.logs = [log] : u.logs = {...u.logs, log};
+            return updated = Usuario.findByIdAndUpdate(u._id, u);
+        });
     } catch(err) {
         console.log('Error: Modificando Usuario: ' + err);
         throw Error('Modificando Usuario: ' + err);

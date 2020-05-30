@@ -59,7 +59,6 @@ class ComponentAddPatient extends Component {
       const paciente = {
         fechaDeCreacion: fecha, nombre: nombre, apellidos: apellidos, ci: ci, direccion: direccion, direccionopcional: direccionopcional, telefono: telefono, sexo: sexo, madre: madre,padre: padre, hijos: hijos, transfusiones: transfusiones, embarazos: embarazos, examenes: examenes, activo:activo
       }
-      console.log(paciente);
       //la promise debe de devolver un valor RETURN
       try {
             const res = await fetch(this.props.parentState.endpoint + 'api/paciente/', {
@@ -80,13 +79,11 @@ class ComponentAddPatient extends Component {
                 return true;
             }
             else {
-                console.log(message);
                 Swal.fire({ position: 'center', icon: 'error', title: message, showConfirmButton: false, timer: 5000 });
                 return false;
             }
         }
         catch (err) {
-            console.log(err);
             Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 5000 });
             return false;
         }

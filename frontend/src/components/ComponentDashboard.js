@@ -13,7 +13,7 @@ import ComponentMenu from './ComponentMenu';
 //Definicion de la clase
 class ComponentDashboard extends Component {
   state = {
-    opcionmenu: 'historiaclinica',
+    opcionmenu: 'usuarios',
   };
 
   constructor(props) {

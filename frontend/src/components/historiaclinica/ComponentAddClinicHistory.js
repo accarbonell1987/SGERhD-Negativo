@@ -71,13 +71,11 @@ class ComponentAddPatient extends Component {
                 return true;
             }
             else {
-                console.log(message);
                 Swal.fire({ position: 'center', icon: 'error', title: message, showConfirmButton: false, timer: 5000 });
                 return false;
             }
         }
         catch (err) {
-            console.log(err);
             Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 5000 });
             return false;
         }

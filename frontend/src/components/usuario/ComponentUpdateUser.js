@@ -39,7 +39,6 @@ class ComponentUpdateUser extends Component {
       })
       .then(res => res.json())
       .then(jsondata => {
-        console.log(jsondata);
         const { status, message, data } = jsondata;
         if (status === 200) {
           this.setState({

@@ -2,6 +2,10 @@
 const Log = require('../models/models').LogAcceso;
 //#endregion
 
+//#Servicios
+const UserServices = require('../services/users');
+//#endregion
+
 //#region Logs
 exports.GetLogs = async (query, page, limit) => {
     try {
@@ -34,7 +38,10 @@ exports.InsertLog = async (body) => {
     const { fecha, usuario } = body;
     const log = new Log({ fecha, usuario });
     try {
-        const saved = log.save();
+        const saved = log.save().then(p => {
+            //adicionando el log al usuario
+            UserServices.InserLogToUser(p);
+        });
         return saved;
     } catch(err) {
         console.log('Error: Insertando Log: ' + err);

@@ -37,8 +37,6 @@ class ComponentChilds extends Component {
       this.props.paciente.hijos = hijos;
       this.props.paciente.hijoseliminados = hijoseliminados;
 
-      console.log('paciente.updatePatient ->' + this.props.paciente);
-      
       //la promise debe de devolver un valor RETURN
       try {
         const res = await fetch(this.props.parentState.endpoint + 'api/paciente/' + id, {
