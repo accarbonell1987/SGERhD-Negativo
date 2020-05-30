@@ -25,15 +25,6 @@ exports.GetLog = async (id) => {
         throw Error('Obteniendo Log con id: ' + id);
     }
 }
-exports.GetLogByUserId = async (id) => {
-    try {
-        var log = await Log.find(p => p.usuario === id.toString());
-        return log;
-    } catch (err) {
-        console.log('Error: Obteniendo Log con id: ' + id);
-        throw Error('Obteniendo Log con id: ' + id);
-    }
-}
 exports.InsertLog = async (body) => {
     const { fecha, usuario } = body;
     const log = new Log({ fecha, usuario });
@@ -56,6 +47,15 @@ exports.DeleteLog = async (id) => {
         console.log('Error: Eliminando Logs' + err);
         throw Error('Eliminando Log: ' + err);
     };
+}
+exports.DeleteLogByUserId = async (id) => {
+    try {
+        var deleated = Log.deleteMany({ usuario: id});
+        return deleated;
+    } catch (err) {
+        console.log('Error: DeleteLogByUserId con id: ' + id);
+        throw Error('Obteniendo Log con id: ' + id);
+    }
 }
 exports.UpdateLog = async () => {
     try {

@@ -22,7 +22,11 @@ exports.GetUsers = async (query, page, limit) => {
 }
 exports.GetUser = async (id) => {
     try {
-        var user = await Usuario.findById(id);
+        var user = await Usuario.findById(id)
+            .populate('logs')
+            .then(user => {
+                return user;
+            });
         return user;
     } catch (err) {
         console.log('Error: Obteniendo Usuario con id: ' + id);
@@ -51,6 +55,8 @@ exports.InsertUser = async (body) => {
 exports.DeleteUser = async (id) => {
     try {
         var removed = await Usuario.findByIdAndRemove(id);
+        //borrar los logs del usuario
+        LogServices.DeleteLogByUserId(id);
         return removed;
     } catch(err) {
         console.log('Error: Eliminando Usuarios' + err);

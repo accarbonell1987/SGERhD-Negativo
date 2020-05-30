@@ -134,7 +134,7 @@ class ComponentUsers extends Component {
 
                   let rolData = this.props.roles.find(element => { return element.key === usuario.rol });
                   //para colorear row
-                  let negative = this.props.parentState.usuario === usuario.nombre;
+                  let negative = this.props.parentState.usuario === usuario.nombre || usuario.nombre === 'administrador';
                   return(
                     <Table.Row key={usuario._id} negative={negative}>
                       <Table.Cell collapsing>
