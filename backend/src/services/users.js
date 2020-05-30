@@ -9,11 +9,8 @@ const LogServices = require('../services/logs');
 //#region Usuarios
 exports.GetUsers = async (query, page, limit) => {
     try {
-        var users = await Usuario.find(query)
-            .populate('logs')
-            .then(users => {
-                return users;
-            });
+        const users = await Usuario.find(query).populate('logs');
+        console.log(users);
         return users;
     } catch (err) {
         console.log('Error: Obteniendo Usuarios');
@@ -22,12 +19,7 @@ exports.GetUsers = async (query, page, limit) => {
 }
 exports.GetUser = async (id) => {
     try {
-        var user = await Usuario.findById(id)
-            .populate('logs')
-            .then(user => {
-                return user;
-            });
-        return user;
+        return user = await Usuario.findById(id).populate('logs').execPopulate();
     } catch (err) {
         console.log('Error: Obteniendo Usuario con id: ' + id);
         throw Error('Obteniendo Usuario con id: ' + id);
@@ -59,7 +51,7 @@ exports.DeleteUser = async (id) => {
         LogServices.DeleteLogByUserId(id);
         return removed;
     } catch(err) {
-        console.log('Error: Eliminando Usuarios' + err);
+        console.log('Error: Eliminando Usuario' + err);
         throw Error('Eliminando Usuario: ' + err);
     };
 }
@@ -77,12 +69,13 @@ exports.UpdateUser = async (id, body) => {
 exports.InserLogToUser = (log) => {
     try {
         Usuario.findById(log.usuario).then(u => {
-            (u.logs) ? u.logs = [log] : u.logs = {...u.logs, log};
-            return updated = Usuario.findByIdAndUpdate(u._id, u);
+            u.logs.push(log);
+            const saved = u.save();
+            return saved;
         });
     } catch(err) {
-        console.log('Error: Modificando Usuario: ' + err);
-        throw Error('Modificando Usuario: ' + err);
+        console.log('Error: Insertando Log en Usuario: ' + err);
+        throw Error('Insertando Log en Usuario: ' + err);
     }
 }
 exports.UpdateUserPassword = async (id, body) => {

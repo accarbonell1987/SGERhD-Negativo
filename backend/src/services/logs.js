@@ -29,10 +29,11 @@ exports.InsertLog = async (body) => {
     const { fecha, usuario } = body;
     const log = new Log({ fecha, usuario });
     try {
-        const saved = log.save().then(p => {
-            //adicionando el log al usuario
-            UserServices.InserLogToUser(p);
-        });
+        const saved = log.save()
+            .then(p => {
+                //adicionando el log al usuario
+                UserServices.InserLogToUser(p);
+            });
         return saved;
     } catch(err) {
         console.log('Error: Insertando Log: ' + err);
@@ -53,8 +54,8 @@ exports.DeleteLogByUserId = async (id) => {
         var deleated = Log.deleteMany({ usuario: id});
         return deleated;
     } catch (err) {
-        console.log('Error: DeleteLogByUserId con id: ' + id);
-        throw Error('Obteniendo Log con id: ' + id);
+        console.log('Error: Eliminando Log por Id de Usuario: ' + id);
+        throw Error('Eliminando Log por Id de Usuario: ' + id);
     }
 }
 exports.UpdateLog = async () => {

@@ -75,7 +75,7 @@ class ComponentApp extends Component {
   roles = [
     { key: 'usuario', text: 'Usuario', value: 'usuario', image: { avatar: true, src: require('./global/images/jenny.jpg') } },
     { key: 'recepcionista', text: 'Recepcionista', value: 'recepcionista', image: { avatar: true, src: require('./global/images/molly.png') }},
-    { key: 'informatico', text: 'Informatico', value: 'informatico' , image: { avatar: true, src: require('./global/images/steve.jpg') }},
+    { key: 'informatico', text: 'Informático', value: 'informatico' , image: { avatar: true, src: require('./global/images/steve.jpg') }},
     { key: 'especialista', text: 'Especialista', value: 'especialista' , image: { avatar: true, src: require('./global/images/stevie.jpg') }},
     { key: 'doctor', text: 'Doctor', value: 'doctor', image: { avatar: true, src: require('./global/images/elliot.jpg') }}
   ];

@@ -104,7 +104,7 @@ class ComponentLogin extends Component {
                         name = 'nombre' icon = 'user' iconPosition = 'left' label = 'Usuario' placeholder = 'Usuario' onChange = {this.handleChange}
                     />
                     <Form.Input
-                        name='contraseña' icon='lock' iconPosition='left' label='contraseña' value={this.state.contraseña} type='password'
+                        name='contraseña' icon='lock' iconPosition='left' label='Contraseña' value={this.state.contraseña} type='password'
                         onChange = {this.handleChange}
                     />
                 </Grid.Column>

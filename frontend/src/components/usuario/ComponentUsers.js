@@ -121,7 +121,7 @@ class ComponentUsers extends Component {
                 <Table.Row>
                   <Table.HeaderCell />
                   <Table.HeaderCell>Nombre</Table.HeaderCell>
-                  <Table.HeaderCell>Correo Electronico</Table.HeaderCell>
+                  <Table.HeaderCell>Correo Electrónico</Table.HeaderCell>
                   <Table.HeaderCell>Rol</Table.HeaderCell>
                   <Table.HeaderCell className='cells-max-witdh-2'>Logs</Table.HeaderCell>
                   <Table.HeaderCell className='cells-max-witdh-2'>Acciones</Table.HeaderCell>
