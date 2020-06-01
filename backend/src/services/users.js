@@ -10,7 +10,6 @@ const LogServices = require('../services/logs');
 exports.GetUsers = async (query, page, limit) => {
     try {
         const users = await Usuario.find(query).populate('logs');
-        console.log(users);
         return users;
     } catch (err) {
         console.log('Error: Obteniendo Usuarios');
@@ -19,7 +18,8 @@ exports.GetUsers = async (query, page, limit) => {
 }
 exports.GetUser = async (id) => {
     try {
-        return user = await Usuario.findById(id).populate('logs').execPopulate();
+        const user = await Usuario.findById(id).populate('logs');
+        return users;
     } catch (err) {
         console.log('Error: Obteniendo Usuario con id: ' + id);
         throw Error('Obteniendo Usuario con id: ' + id);
@@ -89,5 +89,4 @@ exports.UpdateUserPassword = async (id, body) => {
         throw Error('Modificando Contraseña Usuario: ' + err);
     }
 }
-
 //#endregion

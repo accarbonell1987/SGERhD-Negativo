@@ -17,7 +17,6 @@ class ComponentUpdatePatient extends Component {
       telefono: '',
       sexo: '',
       madre: '',
-      padre: '',
       hijos: [],
       transfusiones: [],
       embarazos: [],
@@ -70,7 +69,6 @@ class ComponentUpdatePatient extends Component {
             telefono: data.telefono,
             sexo: data.sexo,
             madre: data.madre,
-            padre: data.padre,
             hijos: data.hijos,
             transfusiones: data.transfusiones,
             embarazos: data.embarazos,
@@ -87,7 +85,7 @@ class ComponentUpdatePatient extends Component {
     }
     //modificar paciente
     updatePatient = async (id) => {
-      const { nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, padre, hijos, transfusiones, embarazos, examenes, activo } = this.state;
+      const { nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, hijos, transfusiones, embarazos, examenes, activo } = this.state;
       const paciente = {
         nombre: nombre,
         apellidos: apellidos,
@@ -97,7 +95,6 @@ class ComponentUpdatePatient extends Component {
         telefono: telefono,
         sexo: sexo,
         madre: madre,
-        padre: padre,
         hijos: hijos,
         transfusiones: transfusiones,
         embarazos: embarazos,
@@ -199,7 +196,6 @@ class ComponentUpdatePatient extends Component {
         telefono: '',
         sexo: '',
         madre: '',
-        padre: '',
         hijos: [],
         transfusiones: [],
         embarazos: [],

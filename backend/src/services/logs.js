@@ -9,7 +9,7 @@ const UserServices = require('../services/users');
 //#region Logs
 exports.GetLogs = async (query, page, limit) => {
     try {
-        var logs = await Log.find(query);
+        var logs = await Log.find(query).populate('usuario');
         return logs;
     } catch (err) {
         console.log('Error: Obteniendo Logs');

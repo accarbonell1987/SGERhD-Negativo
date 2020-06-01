@@ -17,7 +17,6 @@ class ComponentAddPatient extends Component {
       telefono: '',
       sexo: '',
       madre: '',
-      padre: '',
       hijos: [],
       transfusiones: [],
       embarazos: [],
@@ -53,11 +52,11 @@ class ComponentAddPatient extends Component {
 
     //adicionar nuevo paciente
     addPatient = async () => {
-      const { nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, padre, hijos, transfusiones, embarazos, examenes, activo } = this.state;
+      const { nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, activo } = this.state;
 
       const fecha = Date.now();
       const paciente = {
-        fechaDeCreacion: fecha, nombre: nombre, apellidos: apellidos, ci: ci, direccion: direccion, direccionopcional: direccionopcional, telefono: telefono, sexo: sexo, madre: madre,padre: padre, hijos: hijos, transfusiones: transfusiones, embarazos: embarazos, examenes: examenes, activo:activo
+        fechaDeCreacion: fecha, nombre: nombre, apellidos: apellidos, ci: ci, direccion: direccion, direccionopcional: direccionopcional, telefono: telefono, sexo: sexo, activo:activo
       }
       //la promise debe de devolver un valor RETURN
       try {
@@ -157,7 +156,6 @@ class ComponentAddPatient extends Component {
           telefono: '',
           sexo: '',
           madre: '',
-          padre: '',
           hijos: [],
           transfusiones: [],
           embarazos: [],

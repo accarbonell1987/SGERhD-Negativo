@@ -22,7 +22,7 @@ db.on('error', console.error.bind(console, 'MongoDB error en conexion:'));
 
     //LOGACCESO
     var logacceso_schema = new Schema({
-        fecha: { type: Date, required: true, default: Date.now },
+        fecha: { type: Date, required: true, default: new Date() },
         usuario: { type: Schema.Types.ObjectId, ref: 'Usuario' },
         activo: { type: Boolean },
         accessToken: { type: String }
@@ -30,7 +30,7 @@ db.on('error', console.error.bind(console, 'MongoDB error en conexion:'));
 
     //EMBARAZO
     var embarazo_schema = new Schema({
-        fecha: { type: Date, required: true, default: Date.now },
+        fecha: { type: Date, required: true, default: new Date() },
         tiempoDeGestacion: { type: Number, required: true },
         observaciones: { type: String },
         examenes: [],
@@ -38,41 +38,41 @@ db.on('error', console.error.bind(console, 'MongoDB error en conexion:'));
         findeembarazo: { type: String, default: 'parto', require: 'Debe de escoger el fin de embarazo'},
         findeaborto: { type: String, default: 'interrumpido'},
         findeparto: { type: String, default: 'natural'},
-        paciente: { type: String },
+        paciente: { type: Schema.Types.ObjectId, ref: 'Paciente' },
         activo: { type: Boolean },
         accessToken: { type: String }
     });
 
     //EXAMEN
     var examen_schema = new Schema({
-        fecha: { type: Date, required: true, default: Date.now },
+        fecha: { type: Date, required: true, default: new Date() },
         observaciones: { type: String },
-        embarazo: { type: String },
-        paciente: { type: String },
-        grupoSanguineo: { type: String },
-        identificacionAnticuerpo: { type: String },
-        pesquizajeAnticuerpo: { type: String },
+        embarazo: { type: Schema.Types.ObjectId, ref: 'Embarazo', default: mongoose.mongo.ObjectID() },
+        paciente: { type: Schema.Types.ObjectId, ref: 'Paciente', default: mongoose.mongo.ObjectID() },
+        grupoSanguineo: { type: Schema.Types.ObjectId, ref: 'GrupoSanguineo', default: mongoose.mongo.ObjectID() },
+        identificacionAnticuerpo: { type: Schema.Types.ObjectId, ref: 'IdentificacionAnticuerpo', default: mongoose.mongo.ObjectID() },
+        pesquizajeAnticuerpo: { type: Schema.Types.ObjectId, ref: 'PesquizajeAnticuerpo', default: mongoose.mongo.ObjectID() },
         activo: { type: Boolean },
         accessToken: { type: String }
     });
 
     //HISTORIACLINICA
     var historiaclinica_schema = new Schema({
-        fechaDeCreacion: { type: Date, require: true, default: Date.now },
+        fechaDeCreacion: { type: Date, require: true, default: new Date() },
         areaDeSalud: { type: String },
         numerohistoria: { type: Number, require: true },
         vacunaAntiD: { type: Boolean },
         numeroDeEmbarazos: { type: Number, min: 0 },
         numeroDePartos: { type: Number, min: 0 },
         numeroDeAbortos: { type: Number, min: 0 },
-        paciente: { type: String },
+        paciente: { type: Schema.Types.ObjectId, ref: 'Paciente' },
         activo: { type: Boolean },
         accessToken: { type: String }
     });
 
     //PACIENTE
     var paciente_schema = new Schema({
-        fechaDeCreacion: { type: Date, require: 'fecha de creacion requerida' , default: Date.now },
+        fechaDeCreacion: { type: Date, require: 'fecha de creacion requerida' , default: new Date() },
         nombre: { type: String, required: 'nombre obligatorio' },
         apellidos: { type: String, required: 'apellidos obligatorios' },
         ci: { type: String, required: 'carnet de identidad obligatorio', minlength:[11,'el carnet de identidad debe de tener 11 digitos'], maxlength:[11,'el ci debe de tener 11 digitos'] },
@@ -80,22 +80,21 @@ db.on('error', console.error.bind(console, 'MongoDB error en conexion:'));
         direccionopcional: { type: String },
         telefono: { type: Number },
         sexo: { type: String, default: 'F', required: 'debe de existir un sexo definido'},
-        madre: { type: String },
-        padre: { type: String},
-        hijos: [],
-        transfusiones: [],
-        embarazos: [],
-        examenes: [],
+        madre: { type: Schema.Types.ObjectId, ref: 'Paciente', default: new mongoose.mongo.ObjectID() },
+        hijos: [{ type: Schema.Types.ObjectId, ref: 'Paciente' }],
+        transfusiones: [{ type: Schema.Types.ObjectId, ref: 'Transfusion' }],
+        embarazos: [{ type: Schema.Types.ObjectId, ref: 'Embarazo' }],
+        examenes: [{ type: Schema.Types.ObjectId, ref: 'Examen' }],
         activo: { type: Boolean },
         accessToken: { type: String }
     });
 
     //TRANSFUSION
     var transfusion_schema = new Schema({
-        fecha: {type: Date, required: true, default: Date.now },
+        fecha: {type: Date, required: true, default: new Date() },
         observaciones: { type: String },
         reacionAdversa: { type: Boolean },
-        paciente: { type: String },
+        paciente: { type: Schema.Types.ObjectId, ref: 'Paciente' },
         activo: { type: Boolean },
         accessToken: { type: String }
     });
@@ -113,37 +112,37 @@ db.on('error', console.error.bind(console, 'MongoDB error en conexion:'));
 
     //GRUPO SANGUINEO
     var gruposanguineo_schema = new Schema({
-        fecha: { type: Date, required: true, default: Date.now },
+        fecha: { type: Date, required: true, default: new Date() },
         dDebil : { type: String },
         gSanguineo : { type: String },
         factor : { type: String },
-        examen: { type: String },
+        examen: { type: Schema.Types.ObjectId, ref: 'Examen' },
         activo: { type: Boolean },
         accessToken: { type: String }
     });
 
     //IDENTIFICACIONANTICUERPO
     var identificacionanticuerpo_schema = new Schema({
-        fecha: { type: Date, required: true, default: Date.now },
+        fecha: { type: Date, required: true, default: new Date() },
         pTipoIdentificacionEnCoombsIndirecto : { type: String },
         pTipoDeAnticuerpoEnsalina4g : { type: String },
         pTipoDeAnticuerpoEnSalina37g : { type: String },
         tituloDelAnticuerpoParaCoombsIndirecto : { type: String },
         tituloDelAnticuerpoParaSalina4g : { type: String },
         tituloDelAnticuerpoParaSalina37g : { type: String },
-        examen: { type: String },
+        examen: { type: Schema.Types.ObjectId, ref: 'Examen' },
         activo: { type: Boolean },
         accessToken: { type: String }
     });
 
     //PESQUIZAJEANTICUERPO
     var pesquizajeanticuerpo_schema = new Schema({
-        fecha: { type: Date, required: true, default: Date.now },
+        fecha: { type: Date, required: true, default: new Date() },
         tipoCelula: { type: String },
         pCoomsIndirecto: { type: String },
         pSalina4g: { type: String },
         pSalina37g: { type: String },
-        examen: { type: String },
+        examen: { type: Schema.Types.ObjectId, ref: 'Examen' },
         activo: { type: Boolean },
         accessToken: { type: String }
     });
@@ -171,6 +170,5 @@ module.exports = {
     'Usuario' : Usuario,
     'PesquizajeAnticuerpo' : PesquizajeAnticuerpo,
     'IdentificacionAnticuerpo' : IdentificacionAnticuerpo,
-    'GrupoSanguineo' : GrupoSanguineo,
-    'CollectionUserExist': this.CollectionUserExist
+    'GrupoSanguineo' : GrupoSanguineo
 }

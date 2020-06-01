@@ -1,5 +1,6 @@
 //#region Modelos
 const Paciente = require('../models/models').Paciente;
+var mongoose = require('mongoose');
 //#endregion
 
 //#region Pacientes
@@ -22,10 +23,11 @@ exports.GetPatient = async (id) => {
     }
 }
 exports.InsertPatient = async (body) => {
-    const { fechaDeCreacion, nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, padre, hijos, transfusiones, embarazos, examenes, activo } = body;
-
-    const patient = new Paciente({ fechaDeCreacion, nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, padre, hijos, transfusiones,embarazos, examenes, activo });
     try {
+        var { fechaDeCreacion, nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, padre, hijos, transfusiones, embarazos, examenes, activo } = body;
+
+        const patient = new Paciente({ fechaDeCreacion, nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, padre, hijos, transfusiones,embarazos, examenes, activo });
+        
         await Paciente.findOne({ ci: ci })
             .then(doc => {
                 if (doc === null) {
@@ -51,29 +53,30 @@ exports.DeletePatient = async (id) => {
     };
 }
 exports.UpdatePatient = async (id, body) => {
-    const { nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, padre, hijos, transfusiones, embarazos, examenes, activo, hijoseliminados } = body;
-
-    const patient = { nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, padre, hijos, transfusiones,embarazos, examenes, activo };
-
     try {
+        const { nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, padre, hijos, transfusiones, embarazos, examenes, activo, hijoseliminados } = body;
+
+        const patient = { nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, padre, hijos, transfusiones,embarazos, examenes, activo };
+
+        console.log(hijos + ' - ' + hijoseliminados);
+
         //asignarle el padre o madre al hijo correspondiente
-        if (hijos !== null) {
+        if (hijos != null) {
             hijos.map(pacienteid => {
                 Paciente.findById(pacienteid)
                 .then(hijo => {
-                    if (sexo === 'M') hijo.padre = req.params.id;
-                    else hijo.madre = req.params.id;
+                    if (sexo === 'F') hijo.madre = req.params.id;
                     const saved = hijo.save();
                 });
             });
         }
-        if (hijoseliminados !== null) {
+        //asignar null al padre o hijo correspondiente
+        if (hijoseliminados != null) {
             //eliminar el padre o madre al hijo
             hijoseliminados.map(pacienteid => {
                 Paciente.findById(pacienteid)
                 .then(hijo => {
-                    if (sexo === 'M') hijo.padre = null;
-                    else hijo.madre = null;
+                    if (sexo === 'F') hijo.madre = mongoose.mongo.ObjectID();
                     const saved = hijo.save();
                 });
             });

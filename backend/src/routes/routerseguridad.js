@@ -47,9 +47,11 @@ router.post('/seguridad/autenticar', async (req, res) => {
         .then(user => {
             if (user === null) res.status(400).json({ status: 400, message: 'Usuario o Contraseña Incorrecto', data: user });
             else {
+                const fechaAhora = new Date();
+                
                 const payload = { check: true };
                 const token = jwt.sign(payload, jwtkey, { expiresIn: 1440 });
-                LogServices.InsertLog({fecha: Date.now(), usuario: user._id });
+                LogServices.InsertLog({fecha: fechaAhora, usuario: user._id });
                 res.status(200).json({ status: 200, message: 'Autenticado', data: user, token: token });
             }
         })

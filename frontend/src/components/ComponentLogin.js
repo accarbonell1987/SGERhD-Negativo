@@ -20,6 +20,7 @@ class ComponentLogin extends Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
+  //componenten mixin
   swalToast = Swal.mixin({
     toast: true,
     position: 'bottom-left',
