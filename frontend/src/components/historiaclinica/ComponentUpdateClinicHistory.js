@@ -85,7 +85,7 @@ class ComponentUpdatePatient extends Component {
     }
     //modificar paciente
     updateClinicHistory = async (id) => {
-      const { nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, padre, hijos, transfusiones, embarazos, examenes, activo } = this.state;
+      const { nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, historiaclinica, madre, hijos, transfusiones, embarazos, examenes, activo } = this.state;
       const paciente = {
         nombre: nombre,
         apellidos: apellidos,
@@ -94,8 +94,8 @@ class ComponentUpdatePatient extends Component {
         direccionopcional: direccionopcional,
         telefono: telefono,
         sexo: sexo,
+        historiaclinica: historiaclinica,
         madre: madre,
-        padre: padre,
         hijos: hijos,
         transfusiones: transfusiones,
         embarazos: embarazos,
@@ -196,8 +196,8 @@ class ComponentUpdatePatient extends Component {
         direccionopcional: '',
         telefono: '',
         sexo: '',
+        historiaclinica: '',
         madre: '',
-        padre: '',
         hijos: [],
         transfusiones: [],
         embarazos: [],

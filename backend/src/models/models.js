@@ -80,6 +80,7 @@ db.on('error', console.error.bind(console, 'MongoDB error en conexion:'));
         direccionopcional: { type: String },
         telefono: { type: Number },
         sexo: { type: String, default: 'F', required: 'debe de existir un sexo definido'},
+        historiaclinica: { type: Schema.Types.ObjectId, ref: 'HistoriaClinica', default: new mongoose.mongo.ObjectID() },
         madre: { type: Schema.Types.ObjectId, ref: 'Paciente', default: new mongoose.mongo.ObjectID() },
         hijos: [{ type: Schema.Types.ObjectId, ref: 'Paciente' }],
         transfusiones: [{ type: Schema.Types.ObjectId, ref: 'Transfusion' }],

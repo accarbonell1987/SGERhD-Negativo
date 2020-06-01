@@ -1,6 +1,6 @@
 //Importaciones
 import React, { Component } from 'react';
-import { Button, Grid, Icon, Label, Table } from 'semantic-ui-react'
+import { Button, Grid, Icon, Label, Table, Checkbox } from 'semantic-ui-react'
 import Swal from 'sweetalert2'
 
 //CSS
@@ -151,7 +151,7 @@ class ComponentClinicHistory extends Component {
                 <Table.HeaderCell />
                 <Table.HeaderCell colSpan='9'>
                   { accesomenu.permisos.crear ?
-                    <ComponentAddClinicHistory allClinicsHistory = {this.allClinicsHistory}  parentState = {this.props.parentState} roles = {this.props.roles} pacientes = {this.state.pacientes} /> :
+                    <ComponentAddClinicHistory allClinicsHistory = {this.allClinicsHistory}  parentState = {this.props.parentState} roles = {this.props.roles} pacientes = {this.state.pacientes} historiasclinica = {this.state.historiasclinica}/> :
                     <Button floated='right' icon labelPosition='left' primary size='small' className='modal-button-add' disabled>
                       <Icon name='add circle' /> Adicionar
                     </Button>
@@ -166,9 +166,9 @@ class ComponentClinicHistory extends Component {
                   <Table.HeaderCell>Número</Table.HeaderCell>
                   <Table.HeaderCell>Area de Salud</Table.HeaderCell>
                   <Table.HeaderCell>Vacuna AntiD</Table.HeaderCell>
+                  <Table.HeaderCell className='cells-max-witdh-2'>Embarazos</Table.HeaderCell>
                   <Table.HeaderCell>Partos</Table.HeaderCell>
                   <Table.HeaderCell>Abortos</Table.HeaderCell>
-                  <Table.HeaderCell className='cells-max-witdh-2'>Embarazos</Table.HeaderCell>
                   <Table.HeaderCell className='cells-max-witdh-2'>Paciente</Table.HeaderCell>
                   <Table.HeaderCell className='cells-max-witdh-2'>Acciones</Table.HeaderCell>
                 </Table.Row> : ''
@@ -188,18 +188,21 @@ class ComponentClinicHistory extends Component {
                       </Table.Cell>
                       <Table.Cell>{historia.numerohistoria}</Table.Cell>
                       <Table.Cell>{historia.areaDeSalud}</Table.Cell>
-                      <Table.Cell>{historia.numerohistoria}</Table.Cell>
-                      <Table.Cell>{historia.vacunaAntiD}</Table.Cell>
+                      <Table.Cell>
+                        <Checkbox
+                          toggle name='vacunaAntiD' labelPosition='left' label = {historia.vacunaAntiD ? 'Si' : 'No'} disabled
+                        />
+                      </Table.Cell>
+                      <Table.Cell className='cells-max-witdh-2'>
+                        <Button icon labelPosition='right' className='button-childs'>
+                          <Icon name='heartbeat' className='button-icon-childs'/>{historia.numeroDeEmbarazos}
+                        </Button> 
+                      </Table.Cell>
                       <Table.Cell>{historia.numeroDePartos}</Table.Cell>
                       <Table.Cell>{historia.numeroDeAbortos}</Table.Cell>
                       <Table.Cell className='cells-max-witdh-2' collapsing>
                         <Button icon labelPosition='right' className='button-childs'>
-                          <Icon name='heartbeat' className='button-icon-childs'/>0
-                        </Button> 
-                      </Table.Cell>
-                      <Table.Cell className='cells-max-witdh-2' collapsing>
-                        <Button icon labelPosition='right' className='button-childs'>
-                          <Icon name='clipboard' className='button-icon-childs'/>Vacia
+                          <Icon name='wheelchair' className='button-icon-childs'/>0
                         </Button> 
                       </Table.Cell>
                       <Table.Cell className='cells-max-witdh-2' collapsing>

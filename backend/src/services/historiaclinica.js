@@ -2,6 +2,10 @@
 const HistoriaClinica = require('../models/models').HistoriaClinica;
 //#endregion
 
+//#Servicios
+const Patient = require('../services/patients');
+//#endregion
+
 //#region HistoriaClinicas
 exports.GetClinicsHistory = async (query, page, limit) => {
     try {
@@ -23,13 +27,12 @@ exports.GetClinicHistory = async (id) => {
 }
 exports.GetClinicHistoryLastInserted = async () => {
     try {
-        // var clinichistory = await HistoriaClinica.find();
-        // var clinichistory = await HistoriaClinica.find().sort({ _id: -1}).limit(1);
-        // return clinichistory;
-        return null;
+        var clinichistory = await HistoriaClinica.find().sort({ _id: -1}).limit(1);
+        return clinichistory;
+        // return null;
     } catch(err) {
-        console.log('Error: Obteniendo Ultimo Id');
-        throw Error('Obteniendo Ultimo Id');
+        console.log('Error: Obteniendo Ultimo');
+        throw Error('Obteniendo Ultimo');
     }
 }
 exports.InsertClinicHistory = async (body) => {
@@ -44,7 +47,11 @@ exports.InsertClinicHistory = async (body) => {
                     const saved = clinichistory.save();
                     return saved;
                 } else throw Error('HistoriaClinica ya existente');
-            }).catch(err => {
+            })
+            .then(saved => {
+                Patient.UpdatePatientClinicHistory(paciente, saved);
+            })
+            .catch(err => {
                 console.log('Error: Insertando HistoriaClinica: ' + err);
                 throw Error('Insertando HistoriaClinica: ' + err);
             });
@@ -55,7 +62,10 @@ exports.InsertClinicHistory = async (body) => {
 }
 exports.DeleteClinicHistory = async (id) => {
     try {
-        var removed = await HistoriaClinica.findByIdAndRemove(id);
+        var removed = await HistoriaClinica.findByIdAndRemove(id)
+            .then(deleted => {
+                Patient.UpdatePatientClinicHistory(deleted.paciente, null);
+            });
         return removed;
     } catch(err) {
         console.log('Error: Eliminando Historia Clinicas' + err);

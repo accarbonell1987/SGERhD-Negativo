@@ -24,9 +24,9 @@ exports.GetPatient = async (id) => {
 }
 exports.InsertPatient = async (body) => {
     try {
-        var { fechaDeCreacion, nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, hijos, transfusiones, embarazos, examenes, activo } = body;
+        var { fechaDeCreacion, nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, historiaclinica, madre, hijos, transfusiones, embarazos, examenes, activo } = body;
 
-        const patient = new Paciente({ fechaDeCreacion, nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, padre, hijos, transfusiones,embarazos, examenes, activo });
+        const patient = new Paciente({ fechaDeCreacion, nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, historiaclinica, madre, hijos, transfusiones, embarazos, examenes, activo });
         
         await Paciente.findOne({ ci: ci })
             .then(doc => {
@@ -54,9 +54,9 @@ exports.DeletePatient = async (id) => {
 }
 exports.UpdatePatient = async (id, body) => {
     try {
-        const { nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, hijos, transfusiones, embarazos, examenes, activo, hijoseliminados } = body;
+        const { nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, historiaclinica, madre, hijos, transfusiones, embarazos, examenes, activo, hijoseliminados } = body;
 
-        const patient = { nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, hijos, transfusiones,embarazos, examenes, activo };
+        const patient = { nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, historiaclinica, madre, hijos, transfusiones,embarazos, examenes, activo };
         
         //asignarle el madre al hijo correspondiente
         if (hijos != null) {
@@ -85,6 +85,16 @@ exports.UpdatePatient = async (id, body) => {
     } catch(err) {
         console.log('Error: Modificando Paciente: ' + err);
         throw Error('Modificando Paciente: ' + err);
+    }
+}
+exports.UpdatePatientClinicHistory = async (id, clinichistory) => {
+    try {
+        const patient = { historiaclinica: clinichistory };
+        var updated = await Paciente.findByIdAndUpdate(id, patient);
+        return updated;
+    } catch(err) {
+        console.log('Error: (UpdatePatientClinicHistory) Modificando Paciente: ' + err);
+        throw Error('(UpdatePatientClinicHistory) Modificando Paciente: ' + err);
     }
 }
 //#endregion

@@ -105,7 +105,6 @@ class ComponentAddPatient extends Component {
     //validar el formulario
     handleSubmit = (evt) => {
       evt.preventDefault();
-  
       // this.setState({ errform: false });
 
       // let soloLetras = /^[a-zA-Z ]+$/;
@@ -160,41 +159,55 @@ class ComponentAddPatient extends Component {
     }
     //limpiar states
     clearModalState = () => {
-        const lastinserted = this.getLastInsertedClinicHistory();
-        //obtener la fecha
-        var fecha = new Date();
-        const ano = fecha.getFullYear();
-        const mes = fecha.getMonth();
-        const dia = fecha.getDate();
-        //extraer las partes para el formato de la historia clinica (año mes dia numeroconsecutivo) ej: 205280020
-        let numero = ano+mes+dia+'0000';
-        if (lastinserted != null) {
-          numero = lastinserted.numerohistoria.slice(-4);
-        }
+      const lastinserted = this.getLastInsertedClinicHistory();
+      //obtener la fecha
+      var fecha = new Date();
+      const ano = fecha.getFullYear();
+      const mes = fecha.getMonth();
+      const dia = fecha.getDate();
+      //extraer las partes para el formato de la historia clinica (año mes dia numeroconsecutivo) ej: 205280020
+      let numero = ano+mes+dia+'0000';
+      if (lastinserted != null) {
+        numero = lastinserted.numerohistoria.slice(-4);
+      }
 
-        let opcion = [];
-        this.props.pacientes.forEach(p => {
+      let opcion = [];
+      
+      this.props.pacientes.forEach(p => {
+        //validacion si el paciente tiene una historia no se debe de mostrar
+        //en caso de que sea mayor que cero
+        if (this.props.historiasclinica.length > 0) {
+          //busco los pacientes que no tengan historias validas
+          console.log(this.props.historiasclinica);
+          console.log(this.props.pacientes);
+          if (this.props.historiasclinica.find(history => history === p.historiaclinica)) {
+            let nombreyapellidos = p.nombre + ' ' + p.apellidos;
+            let cur = { key: p._id, text: nombreyapellidos, value: p._id, icon: 'wheelchair' };
+            opcion = [...opcion, cur];
+          }
+        }else{
           let nombreyapellidos = p.nombre + ' ' + p.apellidos;
           let cur = { key: p._id, text: nombreyapellidos, value: p._id, icon: 'wheelchair' };
           opcion = [...opcion, cur];
-        });
-
-        this.setState({
-          openModal: false,
-          areaDeSalud: '', 
-          numerohistoria: numero, 
-          vacunaAntiD : false, 
-          numeroDeEmbarazos: 0, 
-          numeroDePartos: 0, 
-          numeroDeAbortos: 0, 
-          paciente: '',
-          opcionPacientes: opcion,
-          activo: true,
-          errorareaDeSalud: false,
-          errornumerohistoria: false,
-          errorpaciente: false,
-          errorform: false
-        });
+        }
+      });
+      //actualizar los states
+      this.setState({
+        openModal: false,
+        areaDeSalud: '', 
+        numerohistoria: numero, 
+        vacunaAntiD : false, 
+        numeroDeEmbarazos: 0, 
+        numeroDePartos: 0, 
+        numeroDeAbortos: 0, 
+        paciente: '',
+        opcionPacientes: opcion,
+        activo: true,
+        errorareaDeSalud: false,
+        errornumerohistoria: false,
+        errorpaciente: false,
+        errorform: false
+      });
     }
   
     render() {
@@ -213,28 +226,33 @@ class ComponentAddPatient extends Component {
                 <Form.Input
                   required disabled name = 'numerohistoria' icon = 'address card outline' iconPosition = 'left' label = 'Numero de Historia:' value={this.state.numerohistoria}
                 />
-                <Form.Input
-                  required name = 'areaDeSalud' icon = 'hospital symbol' iconPosition = 'left' label = 'Area de Salud:' value={this.state.areaDeSalud} placeholder = 'Consultorio, Policlinico, Hospital' onChange = {this.changeModalInput}
-                />
-                <Form.Group>
-                    <Segment className='modal-segmen-expanded'>
-                      <Header as='h5'>Vacuna Anti-D:</Header>
-                      <Form.Checkbox
-                        toggle name='vacunaAntiD' labelPosition='left' label = {this.state.vacunaAntiD === true ? 'Si' : 'No'} value={this.state.vacunaAntiD} onChange = {(evt) => {
-                        evt.preventDefault();
-                        this.setState({
-                          vacunaAntiD: !this.state.vacunaAntiD
-                        });
-                      }}
-                      />
+                <Segment.Group horizontal className='modal-segment-group'>
+                  <Segment className='modal-segment-longleft'>
+                    <Form.Input
+                    required name = 'areaDeSalud' icon = 'hospital symbol' iconPosition = 'left' label = 'Area de Salud:' value={this.state.areaDeSalud} placeholder = 'Consultorio, Policlinico, Hospital' onChange = {this.changeModalInput}
+                    />
                   </Segment>
-                </Form.Group>
-                
+                  <Segment className='modal-segment-shortright'>
+                    <Form.Group>
+                      <Segment className='modal-segment-expanded'>
+                        <Header as='h5'>Vacuna Anti-D:</Header>
+                        <Form.Checkbox
+                          toggle name='vacunaAntiD' labelPosition='left' label = {this.state.vacunaAntiD === true ? 'Si' : 'No'} value={this.state.vacunaAntiD} onChange = {(evt) => {
+                          evt.preventDefault();
+                          this.setState({
+                            vacunaAntiD: !this.state.vacunaAntiD
+                          });
+                        }}
+                        />
+                    </Segment>
+                  </Form.Group>
+                  </Segment>
+                </Segment.Group>
                 <Segment.Group horizontal>
                   <Segment>
                     <Form.Group>
-                      <Form.Input 
-                        required name = 'numeroDeEmbarazos' icon = 'user md' iconPosition = 'left' label = 'Numero de Embarazos:' value={this.state.numeroDeEmbarazos} onChange = {this.changeModalInput}
+                      <Form.Input className='modal-input-30p'
+                        required name = 'numeroDeEmbarazos' icon = 'user md' iconPosition = 'left' label = 'Numero de Embarazos:' value={this.state.numeroDeEmbarazos}
                       />
                       <Button.Group>
                         <Button className='button-group-addsub' icon='plus' primary onClick={(evt) => { 
@@ -250,8 +268,8 @@ class ComponentAddPatient extends Component {
                   </Segment>
                   <Segment>
                     <Form.Group>
-                      <Form.Input 
-                        required name = 'numeroDePartos' icon = 'user md' iconPosition = 'left' label = 'Numero de Partos:' value={this.state.numeroDePartos} onChange = {this.changeModalInput}
+                      <Form.Input className='modal-input-30p'
+                        required name = 'numeroDePartos' icon = 'user md' iconPosition = 'left' label = 'Numero de Partos:' value={this.state.numeroDePartos} 
                       />
                       <Button.Group>
                         <Button className='button-group-addsub' icon='plus' primary onClick={(evt) => { 
@@ -267,8 +285,8 @@ class ComponentAddPatient extends Component {
                   </Segment>
                   <Segment>
                     <Form.Group>
-                      <Form.Input 
-                        required name = 'numeroDeAbortos' icon = 'user md' iconPosition = 'left' label = 'Numero de Abortos:' value={this.state.numeroDeAbortos} onChange = {this.changeModalInput}
+                      <Form.Input className='modal-input-30p'
+                        required name = 'numeroDeAbortos' icon = 'user md' iconPosition = 'left' label = 'Numero de Abortos:' value={this.state.numeroDeAbortos}
                       />
                       <Button.Group>
                         <Button className='button-group-addsub' icon='plus' primary onClick={(evt) => { 
@@ -293,7 +311,7 @@ class ComponentAddPatient extends Component {
                   <Icon name='remove' /> Cancelar
               </Button>
               <Button color='green' onClick={this.changeModalState} className='modal-button-accept' type='submit' disabled={
-                  (!this.state.numerohistoria || !this.state.areaDeSalud || !this.state.vacunaAntiD || !this.state.numeroDeEmbarazos || !this.state.paciente)
+                  (!this.state.numerohistoria || !this.state.areaDeSalud || !this.state.paciente)
               }>
                   <Icon name='checkmark' /> Aceptar
               </Button>

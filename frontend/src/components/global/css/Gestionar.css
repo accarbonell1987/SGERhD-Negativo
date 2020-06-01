@@ -73,7 +73,23 @@
     height: 38px;
 }
 
-.modal-segmen-expanded {
+.modal-segment-expanded {
     margin: 0 8px 0 8px !important;
     width: 100% !important;
+}
+
+.modal-segment-shortright {
+    width: 20% !important;
+}
+
+.modal-segment-longleft {
+    width: 80% !important;
+}
+
+.modal-segment-group {
+    height: 110px !important;
+}
+
+.modal-input-30p {
+    width: 70% !important;
 }

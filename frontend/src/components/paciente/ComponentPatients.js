@@ -172,7 +172,7 @@ class ComponentPatients extends Component {
                       </Table.Cell>
                       <Table.Cell className='cells-max-witdh-2' collapsing>
                         <Button icon labelPosition='right' className='button-childs'>
-                          <Icon name='clipboard' className='button-icon-childs'/>Vacia
+                          <Icon name='clipboard' className='button-icon-childs'/>{ paciente.historiaclinica !== null ? paciente.historiaclinica.numerohistoria : 'Vacia'}
                         </Button> 
                       </Table.Cell>
                       <Table.Cell className='cells-max-witdh-2' collapsing>
