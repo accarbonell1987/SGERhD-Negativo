@@ -17,7 +17,6 @@ class ComponentUpdatePatient extends Component {
       telefono: '',
       sexo: '',
       madre: '',
-      padre: '',
       hijos: [],
       transfusiones: [],
       embarazos: [],
@@ -41,7 +40,7 @@ class ComponentUpdatePatient extends Component {
       super(props);
   
       this.clearModalState = this.clearModalState.bind(this);
-      this.updatePatient = this.updatePatient.bind(this);
+      this.updateClinicHistory = this.updateClinicHistory.bind(this);
       this.changeModalInput = this.changeModalInput.bind(this);
       this.changeModalState = this.changeModalState.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
@@ -59,7 +58,7 @@ class ComponentUpdatePatient extends Component {
       .then(res => res.json())
       .then(jsondata => {
         const { status, message, data } = jsondata;
-        if (status === 'OK') {
+        if (status === 200) {
           this.setState({
             openModal: true,
             nombre: data.nombre,
@@ -70,7 +69,6 @@ class ComponentUpdatePatient extends Component {
             telefono: data.telefono,
             sexo: data.sexo,
             madre: data.madre,
-            padre: data.padre,
             hijos: data.hijos,
             transfusiones: data.transfusiones,
             embarazos: data.embarazos,
@@ -86,7 +84,7 @@ class ComponentUpdatePatient extends Component {
       });
     }
     //modificar paciente
-    updatePatient = async (id) => {
+    updateClinicHistory = async (id) => {
       const { nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, padre, hijos, transfusiones, embarazos, examenes, activo } = this.state;
       const paciente = {
         nombre: nombre,

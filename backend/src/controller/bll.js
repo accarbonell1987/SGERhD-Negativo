@@ -1,4 +1,5 @@
-//#region Servicios
+//#region Servicios de Clases
+const ClinicHistoryServices = require('../services/historiaclinica');
 const PatientServices = require('../services/patients');
 const UserServices = require('../services/users');
 const LogServices = require('../services/logs');
@@ -145,6 +146,65 @@ exports.UpdatePatient = async (req, res, next) => {
     try {
         var paciente = await PatientServices.UpdatePatient(req.params.id, req.body);
         return res.status(200).json({ status: 200, message: 'Modificado Correctamente', data: paciente });
+    } catch(err) {
+        return res.status(400).json({ status: 400, message: err });
+    }
+}
+//#endregion
+
+//#region Historia Clinica
+exports.GetClinicsHistory = async (req, res, next) => {
+    var page = req.params.page ? req.params.page : 1;
+    var limit = req.params.limit ? req.params.limit : -1;
+
+    try {
+        var clinicshistory = await ClinicHistoryServices.GetClinicsHistory({}, page, limit);
+        return res.status(200).json({ status: 200, message: 'Obtenidos', data: clinicshistory });
+    } catch(err) {
+        return res.status(400).json({ status: 400, message: err });
+    }
+}
+exports.GetClinicHistory = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        var clinichistory = {};
+
+        if (id == -1) clinichistory = await ClinicHistoryServices.GetClinicHistoryLastInserted();
+        else clinichistory = await ClinicHistoryServices.GetClinicHistory(req.params.id);
+        
+        return res.status(200).json({ status: 200, message: 'Obtenido', data: clinichistory });
+    } catch(err) {
+        return res.status(400).json({ status: 400, message: err });
+    }
+}
+exports.GetClinicHistoryLastInserted = async (req, res, next) => {
+    try {
+        var clinichistory = await ClinicHistoryServices.GetClinicHistoryLastInserted();
+        return res.status(200).json({ status: 200, message: 'Obtenido', data: clinichistory });
+    } catch(err) {
+        return res.status(400).json({ status: 400, message: err });
+    }
+}
+exports.InsertClinicHistory = async (req, res, next) => {
+    try {
+        clinichistory = await ClinicHistoryServices.InsertClinicHistory(req.body);
+        return res.status(200).json({ status: 200, message: 'Insertado Correctamente', data: clinichistory });
+    } catch(err) {
+        return res.status(400).json({ status: 400, message: err });
+    }
+}
+exports.DeleteClinicHistory = async (req, res, next) => {
+    try {
+        var clinichistory = await ClinicHistoryServices.DeleteClinicHistory(req.params.id);
+        return res.status(200).json({ status: 200, message: 'Eliminado Correctamente', data: clinichistory });
+    } catch(err) {
+        return res.status(400).json({ status: 400, message: err });
+    }
+}
+exports.UpdateClinicHistory = async (req, res, next) => {
+    try {
+        var clinichistory = await ClinicHistoryServices.UpdateClinicHistory(req.params.id, req.body);
+        return res.status(200).json({ status: 200, message: 'Modificado Correctamente', data: clinichistory });
     } catch(err) {
         return res.status(400).json({ status: 400, message: err });
     }

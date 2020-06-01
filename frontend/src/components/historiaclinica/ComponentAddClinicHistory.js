@@ -47,7 +47,7 @@ class ComponentAddPatient extends Component {
     addClinicHistory = async () => {
       const { areaDeSalud, numerohistoria, vacunaAntiD, numeroDeEmbarazos, numeroDePartos, numeroDeAbortos, paciente, activo } = this.state;
 
-      const fecha = Date.now();
+      const fecha = new Date();
       const historiaclinica = {
         fechaDeCreacion: fecha, areaDeSalud: areaDeSalud, numerohistoria: numerohistoria, vacunaAntiD: vacunaAntiD, numeroDeEmbarazos: numeroDeEmbarazos, numeroDePartos: numeroDePartos, numeroDeAbortos: numeroDeAbortos, paciente: paciente,activo: activo
       }
@@ -65,7 +65,7 @@ class ComponentAddPatient extends Component {
             let data = await res.json();
             //capturar respuesta
             const { status, message } = data;
-            if (status === 'OK') {
+            if (status === 200) {
                 this.clearModalState();
                 Swal.fire({ position: 'center', icon: 'success', title: message, showConfirmButton: false, timer: 3000 });
                 return true;
@@ -83,7 +83,7 @@ class ComponentAddPatient extends Component {
     //obtener el ultimo
     getLastInsertedClinicHistory = () => {
       //enviar al endpoint
-      fetch (this.props.parentState.endpoint + 'api/historiaclinica/ultimo', {
+      fetch (this.props.parentState.endpoint + 'api/historiaclinica/-1', {
         method: 'GET',
         headers: {
           'access-token' : this.props.parentState.token
@@ -92,7 +92,7 @@ class ComponentAddPatient extends Component {
       .then(res => res.json())
       .then(jsondata => {
         const { status, message, data } = jsondata;
-        if (status === 'OK') {
+        if (status === 200) {
           return data;
         }else{
           Swal.fire({ position: 'center', icon: 'error', title: message, showConfirmButton: false, timer: 5000 })

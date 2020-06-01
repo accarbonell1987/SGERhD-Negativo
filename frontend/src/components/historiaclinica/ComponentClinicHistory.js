@@ -41,7 +41,7 @@ class ComponentClinicHistory extends Component {
     .then(res => res.json())
     .then(jsondata => {
       const { status, message, data } = jsondata;
-      if (status === 'OK') {
+      if (status === 200) {
         return data;
       }else{
         Swal.fire({ position: 'center', icon: 'error', title: message, showConfirmButton: false, timer: 5000 })
@@ -52,8 +52,7 @@ class ComponentClinicHistory extends Component {
     });
   }
   //eliminar el historia clinica
-  deleteClinicHistory = (id, pacienteid) => {
-    const paciente = this.getPatient(id);
+  deleteClinicHistory = (id, paciente) => {
     //Esta seguro?
     Swal.fire({
       title: '¿Esta seguro?',
@@ -80,7 +79,7 @@ class ComponentClinicHistory extends Component {
         .then(res => res.json())
         .then(data => {
           const { status, message } = data;
-          status === 'OK' ?
+          status === 200 ?
             Swal.fire({ position: 'center', icon: 'success', title: message, showConfirmButton: false, timer: 3000 })
           :
             Swal.fire({ position: 'center', icon: 'error', title: message, showConfirmButton: false, timer: 5000 })
@@ -103,7 +102,7 @@ class ComponentClinicHistory extends Component {
       })
       .then(res => res.json())
       .then(data => {
-        if (data.status === 'OK'){
+        if (data.status === 200){
           this.setState({historiasclinica: data.data});
         }else{
           Swal.fire({ position: 'center', icon: 'error', title: data.message, showConfirmButton: false, timer: 3000 }); 
@@ -113,6 +112,7 @@ class ComponentClinicHistory extends Component {
         Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 3000 });
       });
   }
+  //obtener todos los pacientes desde la API
   allPatients = async () => {
     await fetch(this.props.parentState.endpoint + 'api/paciente', {
         method: 'GET',
@@ -122,7 +122,7 @@ class ComponentClinicHistory extends Component {
       })
       .then(res => res.json())
       .then(data => {
-        if (data.status === 'OK'){
+        if (data.status === 200){
           this.setState({pacientes: data.data});
         }else{
           Swal.fire({ position: 'center', icon: 'error', title: data.message, showConfirmButton: false, timer: 3000 }); 

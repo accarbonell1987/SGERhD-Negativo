@@ -6,7 +6,7 @@ var mongoose = require('mongoose');
 //#region Pacientes
 exports.GetPatients = async (query, page, limit) => {
     try {
-        var patients = await Paciente.find(query);
+        var patients = await Paciente.find(query).populate('historiaclinica');
         return patients;
     } catch (err) {
         console.log('Error: Obteniendo Pacientes');
@@ -15,7 +15,7 @@ exports.GetPatients = async (query, page, limit) => {
 }
 exports.GetPatient = async (id) => {
     try {
-        var patient = await Paciente.findById(id);
+        var patient = await Paciente.findById(id).populate('historiaclinica');
         return patient;
     } catch (err) {
         console.log('Error: Obteniendo Paciente con id: ' + id);
@@ -24,7 +24,7 @@ exports.GetPatient = async (id) => {
 }
 exports.InsertPatient = async (body) => {
     try {
-        var { fechaDeCreacion, nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, padre, hijos, transfusiones, embarazos, examenes, activo } = body;
+        var { fechaDeCreacion, nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, hijos, transfusiones, embarazos, examenes, activo } = body;
 
         const patient = new Paciente({ fechaDeCreacion, nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, padre, hijos, transfusiones,embarazos, examenes, activo });
         
@@ -54,13 +54,11 @@ exports.DeletePatient = async (id) => {
 }
 exports.UpdatePatient = async (id, body) => {
     try {
-        const { nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, padre, hijos, transfusiones, embarazos, examenes, activo, hijoseliminados } = body;
+        const { nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, hijos, transfusiones, embarazos, examenes, activo, hijoseliminados } = body;
 
-        const patient = { nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, padre, hijos, transfusiones,embarazos, examenes, activo };
-
-        console.log(hijos + ' - ' + hijoseliminados);
-
-        //asignarle el padre o madre al hijo correspondiente
+        const patient = { nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, hijos, transfusiones,embarazos, examenes, activo };
+        
+        //asignarle el madre al hijo correspondiente
         if (hijos != null) {
             hijos.map(pacienteid => {
                 Paciente.findById(pacienteid)
@@ -70,9 +68,9 @@ exports.UpdatePatient = async (id, body) => {
                 });
             });
         }
-        //asignar null al padre o hijo correspondiente
+        //asignar null al hijo correspondiente
         if (hijoseliminados != null) {
-            //eliminar el padre o madre al hijo
+            //eliminar la madre al hijo
             hijoseliminados.map(pacienteid => {
                 Paciente.findById(pacienteid)
                 .then(hijo => {
