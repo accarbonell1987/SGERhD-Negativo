@@ -173,7 +173,6 @@ class ComponentPatients extends Component {
                       </Table.Cell>
                       <Table.Cell className='cells-max-witdh-2' collapsing>
                         <ComponentSeeClinicHistory parentState = {this.props.parentState} paciente = {paciente} pacientes = {this.state.pacientes} />
-                        
                       </Table.Cell>
                       <Table.Cell className='cells-max-witdh-2' collapsing>
                         <Button icon labelPosition='right' className='button-childs'>
@@ -197,7 +196,7 @@ class ComponentPatients extends Component {
                         }
                         {
                           accesomenu.permisos.modificar ?
-                          <ComponentUpdatePatient allPatients = { this.allPatients } pacienteid = {paciente._id} parentState = {this.props.parentState} roles = {this.props.roles} /> :
+                          <ComponentUpdatePatient allPatients = { this.allPatients } paciente = {paciente} parentState = {this.props.parentState} roles = {this.props.roles} /> :
                           <Button icon='edit' disabled />
                         }
                       </Table.Cell>

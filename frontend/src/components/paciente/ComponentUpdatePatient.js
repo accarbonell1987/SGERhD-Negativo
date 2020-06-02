@@ -45,44 +45,7 @@ class ComponentUpdatePatient extends Component {
       this.changeModalState = this.changeModalState.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
     }
-
-    //obtener propiedades del paciente
-    getPatient = (id) => {
-      //enviar al endpoint
-      fetch (this.props.parentState.endpoint + 'api/paciente/' + id, {
-        method: 'GET',
-        headers: {
-          'access-token' : this.props.parentState.token
-        }
-      })
-      .then(res => res.json())
-      .then(jsondata => {
-        const { status, message, data } = jsondata;
-        if (status === 200) {
-          this.setState({
-            openModal: true,
-            nombre: data.nombre,
-            apellidos: data.apellidos,
-            ci: data.ci,
-            direccion: data.direccion,
-            direccionopcional: data.direccionopcional,
-            telefono: data.telefono,
-            sexo: data.sexo,
-            madre: data.madre,
-            hijos: data.hijos,
-            transfusiones: data.transfusiones,
-            embarazos: data.embarazos,
-            examenes: data.examenes,
-            activo: data.activo
-          });
-        }else{
-          Swal.fire({ position: 'center', icon: 'error', title: message, showConfirmButton: false, timer: 5000 })
-        }
-      })
-      .catch(err => {
-        Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 5000 });
-      });
-    }
+    
     //modificar paciente
     updatePatient = async (id) => {
       const { nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, hijos, transfusiones, embarazos, examenes, activo } = this.state;
@@ -166,17 +129,32 @@ class ComponentUpdatePatient extends Component {
         [name] : value
       });
     }
-    //cambiar el estado en el MODAL para adicionar usuario
+    //cambiar el estado en el MODAL para adicionar paciente
     changeModalState = async (evt) => {
       if (evt.target.className.includes('modal-button-action') || evt.target.className.includes('modal-icon')) {
-        this.getPatient(this.props.pacienteid);
+        this.setState({
+          openModal: true,
+          nombre: this.props.paciente.nombre,
+          apellidos: this.props.paciente.apellidos,
+          ci: this.props.paciente.ci,
+          direccion: this.props.paciente.direccion,
+          direccionopcional: this.props.paciente.direccionopcional,
+          telefono: this.props.paciente.telefono,
+          sexo: this.props.paciente.sexo,
+          madre: this.props.paciente.madre,
+          hijos: this.props.paciente.hijos,
+          transfusiones: this.props.paciente.transfusiones,
+          embarazos: this.props.paciente.embarazos,
+          examenes: this.props.paciente.examenes,
+          activo: this.props.paciente.activo
+        });
       }else if(evt.target.className.includes('modal-button-cancel')){
         this.clearModalState();
       }else {
         //si no hay problemas en el formulario
         if (this.handleSubmit(evt) === false) {
           //si no hay problemas en la insercion
-          if (await this.updatePatient(this.props.pacienteid)){
+          if (await this.updatePatient(this.props.paciente._id)){
             //enviar a recargar los usuarios
             this.props.allPatients();
             this.clearModalState();
