@@ -56,9 +56,9 @@ exports.DeleteUser = async (id) => {
     };
 }
 exports.UpdateUser = async (id, body) => {
-    const { email, rol, activo } = body;
-    const user = { email, rol, activo };
     try {
+        const { email, rol, activo } = body;
+        const user = { email, rol, activo };
         var updated = await Usuario.findByIdAndUpdate(id, user);
         return updated;
     } catch(err) {

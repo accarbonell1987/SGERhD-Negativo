@@ -9,24 +9,18 @@ import '../global/css/Gestionar.css';
 class ComponentUpdatePatient extends Component {
     state = {
       openModal: false,
-      nombre: '',
-      apellidos: '',
-      ci: '',
-      direccion: '',
-      direccionopcional: '',
-      telefono: '',
-      sexo: '',
-      madre: '',
-      hijos: [],
-      transfusiones: [],
-      embarazos: [],
-      examenes: [],
+      areaDeSalud: '', 
+      numerohistoria: '', 
+      vacunaAntiD : false, 
+      numeroDeEmbarazos: 0, 
+      numeroDePartos: 0, 
+      numeroDeAbortos: 0, 
+      paciente: '',
+      opcionPacientes: [],
       activo: true,
-      errornombre: false,
-      errorapellidos: false,
-      errorci: false,
-      errordireccion: false,
-      errortelefono: false,
+      errorareaDeSalud: false,
+      errornumerohistoria: false,
+      errorpaciente: false,
       errorform: false
     }
 
@@ -187,27 +181,39 @@ class ComponentUpdatePatient extends Component {
     }
     //limpiar states
     clearModalState = () => {
+      let opcion = [];
+      
+      this.props.pacientes.forEach(p => {
+        //validacion si el paciente tiene una historia no se debe de mostrar
+        //en caso de que sea mayor que cero
+        if (this.props.historiasclinica.length > 0) {
+          //busco los pacientes que no tengan historias validas
+          if (this.props.historiasclinica.find(history => history === p.historiaclinica)) {
+            let nombreyapellidos = p.nombre + ' ' + p.apellidos;
+            let cur = { key: p._id, text: nombreyapellidos, value: p._id, icon: 'wheelchair' };
+            opcion = [...opcion, cur];
+          }
+        }else{
+          let nombreyapellidos = p.nombre + ' ' + p.apellidos;
+          let cur = { key: p._id, text: nombreyapellidos, value: p._id, icon: 'wheelchair' };
+          opcion = [...opcion, cur];
+        }
+      });
+      
       this.setState({
         openModal: false,
-        nombre: '',
-        apellidos: '',
-        ci: '',
-        direccion: '',
-        direccionopcional: '',
-        telefono: '',
-        sexo: '',
-        historiaclinica: '',
-        madre: '',
-        hijos: [],
-        transfusiones: [],
-        embarazos: [],
-        examenes: [],
+        areaDeSalud: '', 
+        numerohistoria: '', 
+        vacunaAntiD : false, 
+        numeroDeEmbarazos: 0, 
+        numeroDePartos: 0, 
+        numeroDeAbortos: 0, 
+        paciente: '',
+        opcionPacientes: opcion,
         activo: true,
-        errornombre: false,
-        errorapellidos: false,
-        errorci: false,
-        errordireccion: false,
-        errortelefono: false,
+        errorareaDeSalud: false,
+        errornumerohistoria: false,
+        errorpaciente: false,
         errorform: false
       });
     }
@@ -221,31 +227,11 @@ class ComponentUpdatePatient extends Component {
                 </Button>
             }
         >
-            <Header icon='wheelchair' content='Modificar  ' />
+            <Header icon='clipboard' content='Modificar  ' />
             <Modal.Content>
             { this.state.errorform ? <Message error inverted header='Error' content='Error en el formulario' /> : null } 
             <Form ref='form' onSubmit={this.changeModalState}>
-            <Form.Input
-                  required name = 'nombre' icon = 'address card outline' iconPosition = 'left' label = 'Nombre:' value={this.state.nombre} placeholder = 'Facundo' error = { this.state.errornombre } onChange = {this.changeModalInput}
-                />
-                <Form.Input
-                  required name = 'apellidos' icon = 'address card outline' iconPosition = 'left' label = 'Apellidos:' value={this.state.apellidos} error={this.state.errorapellidos} placeholder = 'Correcto Inseguro' onChange = {this.changeModalInput}
-                />
-                <Form.Input
-                  required name = 'ci' icon = 'vcard' iconPosition = 'left' label = 'Carnet de Identidad:' value={this.state.ci} placeholder = '90112050112' error = { this.state.errorci } onChange = {this.changeModalInput}
-                />
-                <Form.Input
-                  required name = 'direccion' icon = 'building outline' iconPosition = 'left' label = 'Dirección:' value={this.state.direccion} placeholder = 'Calle 6 No.512...' onChange = {this.changeModalInput}
-                />
-                <Form.Input
-                  name = 'direccionopcional' icon = 'building outline' iconPosition = 'left' label = 'Dirección Opcional:' value={this.state.direccionopcional} placeholder = 'Calle 6 No.512...' onChange = {this.changeModalInput}
-                />
-                <Form.Input
-                  required name = 'telefono' icon = 'phone' iconPosition = 'left' label = 'Teléfono:' value={this.state.telefono} placeholder = '52802640' onChange = {this.changeModalInput} error={this.state.errortelefono}
-                />
-                <Form.Select
-                required name = 'sexo' label = 'Género:' placeholder = 'Seleccionar Género' options={this.generos} value={this.state.sexo} error={this.state.errorsexo} onChange = { (e, {value}) => { this.setState({ sexo : value }); } } fluid selection clearable
-                />
+                
             </Form>
             </Modal.Content>
             <Modal.Actions>

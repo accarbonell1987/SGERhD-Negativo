@@ -10,6 +10,7 @@ import '../global/css/Gestionar.css';
 import ComponentAddPatient from './ComponentAddPatient';
 import ComponentUpdatePatient from './ComponentUpdatePatient';
 import ComponentChilds from './ComponentChilds';
+import ComponentSeeClinicHistory from '../historiaclinica/ComponentSeeClinicHistory';
 
 //Defincion de la clase
 class ComponentPatients extends Component {
@@ -171,9 +172,8 @@ class ComponentPatients extends Component {
                         <ComponentChilds parentState = {this.props.parentState} paciente = {paciente} pacientes = {this.state.pacientes} allPatients = {this.allPatients} />
                       </Table.Cell>
                       <Table.Cell className='cells-max-witdh-2' collapsing>
-                        <Button icon labelPosition='right' className='button-childs'>
-                          <Icon name='clipboard' className='button-icon-childs'/>{ paciente.historiaclinica !== null ? paciente.historiaclinica.numerohistoria : 'Vacia'}
-                        </Button> 
+                        <ComponentSeeClinicHistory parentState = {this.props.parentState} paciente = {paciente} pacientes = {this.state.pacientes} />
+                        
                       </Table.Cell>
                       <Table.Cell className='cells-max-witdh-2' collapsing>
                         <Button icon labelPosition='right' className='button-childs'>

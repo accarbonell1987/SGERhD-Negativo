@@ -24,36 +24,10 @@ class ComponentChangePassword extends Component {
       super(props);
   
       this.clearModalState = this.clearModalState.bind(this);
-      this.getUser = this.getUser.bind(this);
       this.updateUser = this.updateUser.bind(this);
       this.changeModalInput = this.changeModalInput.bind(this);
       this.changeModalState = this.changeModalState.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
-    }
-
-    //obtener propiedades del usuario
-    getUser = (id) => {
-      //enviar al endpoint
-      fetch (this.props.parentState.endpoint + 'api/usuario/' + id, {
-        method: 'GET',
-        headers: {
-          'access-token' : this.props.parentState.token
-        }
-      })
-      .then(res => res.json())
-      .then(jsondata => {
-        const { status, message, data } = jsondata;
-        if (status === 200) {
-          this.setState({
-            usuariocontraseña: data.contraseña
-          });
-        }else{
-          Swal.fire({ position: 'center', icon: 'error', title: message, showConfirmButton: false, timer: 5000 })
-        }
-      })
-      .catch(err => {
-        Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 5000 }); //mostrar mensaje de error
-      });
     }
     //modificar usuario
     updateUser = async (id) => {
@@ -134,11 +108,11 @@ class ComponentChangePassword extends Component {
           //chequear si se abrio el componente desde el gestionar o desde el cambiar clave de usuario
           if (!this.props.gestion) {
             //buscar la contraseña antigua del usuario en caso de que sea igual a null o vacio
-            if (this.state.usuariocontraseña === '') this.getUser(this.props.usuarioid);
+            if (this.state.usuariocontraseña === '') this.getUser(this.props.usuario._id);
             //comparar las contraseñas antiguas == actual
             if (this.state.usuariocontraseña === this.state.contraseñaanterior) {
               //si no hay problemas modificando
-              if (await this.updateUser(this.props.usuarioid)){
+              if (await this.updateUser(this.props.usuario._id)){
                 this.clearModalState();
               }
             }else{
@@ -150,7 +124,7 @@ class ComponentChangePassword extends Component {
             }
           }else{
             //si no hay problemas modificando
-            if (await this.updateUser(this.props.usuarioid)){
+            if (await this.updateUser(this.props.usuario._id)){
               this.clearModalState();
             }
           }

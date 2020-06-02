@@ -27,40 +27,13 @@ class ComponentUpdateUser extends Component {
       this.changeModalState = this.changeModalState.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
     }
-
-    //obtener propiedades del usuario
-    getUser = (id) => {
-      //enviar al endpoint
-      fetch (this.props.parentState.endpoint + 'api/usuario/' + id, {
-        method: 'GET',
-        headers: {
-          'access-token' : this.props.parentState.token
-        }
-      })
-      .then(res => res.json())
-      .then(jsondata => {
-        const { status, message, data } = jsondata;
-        if (status === 200) {
-          this.setState({
-            nombre: data.nombre,
-            email: data.email,
-            rol: data.rol,
-            openModal: true
-          });
-        }else{
-          Swal.fire({ position: 'center', icon: 'error', title: message, showConfirmButton: false, timer: 5000 })
-        }
-      })
-      .catch(err => {
-        Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 5000 });
-      });
-    }
     //modificar usuario
     updateUser = async (id) => {
       const { email, rol } = this.state;
       const usuario = {
         email: email, 
-        rol: rol
+        rol: rol,
+        activo: true
       }
       //la promise debe de devolver un valor RETURN
       try {
@@ -122,14 +95,20 @@ class ComponentUpdateUser extends Component {
     //cambiar el estado en el MODAL para adicionar usuario
     changeModalState = async (evt) => {
       if (evt.target.className.includes('modal-button-action') || evt.target.className.includes('modal-icon')) {
-        this.getUser(this.props.usuarioid);
+        // this.getUser(this.props.usuario._id);
+        this.setState({
+          nombre: this.props.usuario.nombre,
+          email: this.props.usuario.email,
+          rol: this.props.usuario.rol,
+          openModal: true
+        });
       }else if(evt.target.className.includes('modal-button-cancel')){
         this.clearModalState();
       }else {
         //si no hay problemas en el formulario
         if (this.handleSubmit(evt) === false) {
           //si no hay problemas en la insercion
-          if (await this.updateUser(this.props.usuarioid)){
+          if (await this.updateUser(this.props.usuario._id)){
             //enviar a recargar los usuarios
             this.props.allUsers();
             this.clearModalState();

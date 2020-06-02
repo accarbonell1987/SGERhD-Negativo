@@ -178,8 +178,6 @@ class ComponentAddPatient extends Component {
         //en caso de que sea mayor que cero
         if (this.props.historiasclinica.length > 0) {
           //busco los pacientes que no tengan historias validas
-          console.log(this.props.historiasclinica);
-          console.log(this.props.pacientes);
           if (this.props.historiasclinica.find(history => history === p.historiaclinica)) {
             let nombreyapellidos = p.nombre + ' ' + p.apellidos;
             let cur = { key: p._id, text: nombreyapellidos, value: p._id, icon: 'wheelchair' };

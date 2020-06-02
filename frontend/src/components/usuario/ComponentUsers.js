@@ -160,12 +160,12 @@ class ComponentUsers extends Component {
                         }
                         {
                           accesomenu.permisos.modificar ?
-                          <ComponentUpdateUser allUsers = { this.allUsers } usuarioid = {usuario._id} parentState = {this.props.parentState} roles = {this.props.roles} /> :
+                          <ComponentUpdateUser allUsers = { this.allUsers } usuario = {usuario} parentState = {this.props.parentState} roles = {this.props.roles} /> :
                           <Button icon='edit' disabled />
                         }
                         {
                           this.props.parentState.rol === 'informatico' ?
-                          <ComponentChangePassword parentState = {this.props.parentState} usuarioid = {usuario._id} gestion = {true} /> : <Button icon='key' disabled />
+                          <ComponentChangePassword parentState = {this.props.parentState} usuario = {usuario} gestion = {true} /> : <Button icon='key' disabled />
                         }
                       </Table.Cell>
                     </Table.Row>
