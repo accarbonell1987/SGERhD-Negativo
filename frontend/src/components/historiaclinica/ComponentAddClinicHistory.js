@@ -105,22 +105,7 @@ class ComponentAddPatient extends Component {
     //validar el formulario
     handleSubmit = (evt) => {
       evt.preventDefault();
-      // this.setState({ errform: false });
-
-      // let soloLetras = /^[a-zA-Z ]+$/;
-      // let soloNumeros = /^([0-9])*$/;
-
-      // let errorareaDeSalud = (!this.state.nombre.match(soloLetras)) ? { content: 'El nombre solo debe de contener letras', pointing: 'below' } : false;
-      // let errornumerohistoria = (!this.state.apellidos.match(soloLetras)) ? { content: 'Apellidos solo debe de contener letras', pointing: 'below' } : false;
-      // let errorpaciente = (!this.state.ci.toString().match(soloNumeros) || this.state.ci.length !== 11) ? { content: 'El carnet de identidad solo debe de contener números y ser igual a 11 dígitos', pointing: 'below' } : false;
-  
-      // let enombre = Boolean(errornombre);
-      // let eapellidos = Boolean(errorapellidos);
-      // let eci = Boolean(errorci);
-      // let etelefono = Boolean(errortelefono);
-  
-      // let errform = (enombre || eapellidos || eci || etelefono);
-  
+      
       this.setState({ 
         errorareaDeSalud: false,
         errornumerohistoria: false,
