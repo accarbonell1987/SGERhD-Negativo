@@ -110,9 +110,9 @@ class ComponentUpdateClinicHistory extends Component {
           paciente: this.props.historiaclinica.paciente,
           activo: this.props.historiaclinica.activo
         });
-      }else if(evt.target.className.includes('modal-button-cancel')){
+      } else if ((evt.target.className.includes('modal-button-cancel')) || (evt.target.className.includes('modal-icon-cancel'))){
         this.clearModalState();
-      }else {
+      } else {
         //si no hay problemas en el formulario
         if (this.handleSubmit(evt) === false) {
           //si no hay problemas en la insercion
@@ -127,16 +127,15 @@ class ComponentUpdateClinicHistory extends Component {
     //limpiar states
     clearModalState = () => {
       let opcion = [];
-      
       this.props.pacientes.forEach(p => {
         //validacion si el paciente tiene una historia no se debe de mostrar
         //en caso de que sea mayor que cero
-        if (this.props.historiasclinicas) {
+        if (this.props.historiasclinicas.length > 0) {
           //busco los pacientes que no tengan historias validas
-          if (!this.props.historiasclinicas.some(h => h.paciente._id === p._id)) {
+          if (!this.props.historiasclinicas.some(h => h.paciente._id === p._id) || (this.props.historiaclinica.paciente._id === p._id)) {
             let nombreyapellidos = p.nombre + ' ' + p.apellidos;
-            let cur = { key: p._id, text: nombreyapellidos, value: p._id, icon: 'wheelchair' };
-            opcion = [...opcion, cur];
+             let cur = { key: p._id, text: nombreyapellidos, value: p._id, icon: 'wheelchair' };
+             opcion = [...opcion, cur];
           }
         }else{
           let nombreyapellidos = p.nombre + ' ' + p.apellidos;
@@ -261,9 +260,9 @@ class ComponentUpdateClinicHistory extends Component {
             </Modal.Content>
             <Modal.Actions>
               <Button color='red' onClick={this.changeModalState} className='modal-button-cancel' type>
-                  <Icon name='remove' /> Cancelar
+                  <Icon name='remove' className='modal-icon-cancel' /> Cancelar
               </Button>
-              <Button color='green' onClick={this.changeModalState} className='modal-button-acept' type='submit' disabled={
+              <Button color='green' onClick={this.changeModalState} className='modal-button-accept' type='submit' disabled={
                   (!this.state.numerohistoria || !this.state.areaDeSalud || !this.state.paciente)
               }>
                   <Icon name='checkmark' /> Aceptar

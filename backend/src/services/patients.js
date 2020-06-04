@@ -15,7 +15,7 @@ exports.GetPatients = async (query, page, limit) => {
 }
 exports.GetPatient = async (id) => {
     try {
-        var patient = await Paciente.findById(id).populate('historiaclinica');
+        var patient = await Paciente.findById(id).populate('historiaclinica').populate('madre');
         return patient;
     } catch (err) {
         console.log('Error: Obteniendo Paciente con id: ' + id);
@@ -48,7 +48,7 @@ exports.DeletePatient = async (id) => {
         var removed = await Paciente.findByIdAndRemove(id);
         return removed;
     } catch(err) {
-        console.log('Error: Eliminando Pacientes' + err);
+        console.log('Error: Eliminando Paciente' + err);
         throw Error('Eliminando Paciente: ' + err);
     };
 }

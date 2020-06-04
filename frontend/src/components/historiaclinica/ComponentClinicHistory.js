@@ -19,28 +19,6 @@ class ComponentClinicHistory extends Component {
     this.deleteClinicHistory = this.deleteClinicHistory.bind(this);
   }
 
-  //obtener propiedades de historia clinica
-  getClinicHistory = (id) => {
-    //enviar al endpoint
-    fetch (this.props.parentState.endpoint + 'api/historiaclinica/' + id, {
-      method: 'GET',
-      headers: {
-        'access-token' : this.props.parentState.token
-      }
-    })
-    .then(res => res.json())
-    .then(jsondata => {
-      const { status, message, data } = jsondata;
-      if (status === 200) {
-        return data;
-      }else{
-        Swal.fire({ position: 'center', icon: 'error', title: message, showConfirmButton: false, timer: 5000 })
-      }
-    })
-    .catch(err => {
-      Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 5000 });
-    });
-  }
   //eliminar el historia clinica
   deleteClinicHistory = (id, paciente) => {
     //Esta seguro?
@@ -69,12 +47,16 @@ class ComponentClinicHistory extends Component {
         .then(res => res.json())
         .then(data => {
           const { status, message } = data;
+          //recargar todas las historias y todos los pacientes
+          
+          //chequear el mensaje
           status === 200 ?
             Swal.fire({ position: 'center', icon: 'success', title: message, showConfirmButton: false, timer: 3000 })
           :
             Swal.fire({ position: 'center', icon: 'error', title: message, showConfirmButton: false, timer: 5000 })
 
           this.props.allClinicsHistory();
+          this.props.allPatients();
         })
         .catch(err => {
           Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 5000 });
@@ -101,7 +83,7 @@ class ComponentClinicHistory extends Component {
                 <Table.HeaderCell />
                 <Table.HeaderCell colSpan='9'>
                   { accesomenu.permisos.crear ?
-                    <ComponentAddClinicHistory allClinicsHistory = {this.props.allClinicsHistory}  parentState = {this.props.parentState} roles = {this.props.roles} pacientes = {this.props.pacientes} historiasclinicas = {this.props.historiasclinicas}/> :
+                    <ComponentAddClinicHistory allClinicsHistory = {this.props.allClinicsHistory} allPatients = {this.props.allPatients} parentState = {this.props.parentState} roles = {this.props.roles} pacientes = {this.props.pacientes} historiasclinicas = {this.props.historiasclinicas}/> :
                     <Button floated='right' icon labelPosition='left' primary size='small' className='modal-button-add' disabled>
                       <Icon name='add circle' /> Adicionar
                     </Button>
@@ -160,7 +142,7 @@ class ComponentClinicHistory extends Component {
                         }
                         {
                           accesomenu.permisos.modificar ?
-                          <ComponentUpdateClinicHistory allClinicsHistory = { this.props.allClinicsHistory } historiaclinica = {historia} parentState = {this.props.parentState} roles = {this.props.roles} pacientes = {this.props.pacientes} /> :
+                          <ComponentUpdateClinicHistory allClinicsHistory = { this.props.allClinicsHistory } allPatients = { this.props.allPatients } historiaclinica = {historia} parentState = {this.props.parentState} roles = {this.props.roles} pacientes = {this.props.pacientes} historiasclinicas = {this.props.historiasclinicas}/> :
                           <Button icon='edit' disabled />
                         }
                       </Table.Cell>

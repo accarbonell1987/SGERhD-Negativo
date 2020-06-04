@@ -60,7 +60,7 @@ db.on('error', console.error.bind(console, 'MongoDB error en conexion:'));
     var historiaclinica_schema = new Schema({
         fechaDeCreacion: { type: Date, require: true, default: new Date() },
         areaDeSalud: { type: String },
-        numerohistoria: { type: Number, require: true },
+        numerohistoria: { type: String, require: true },
         vacunaAntiD: { type: Boolean },
         numeroDeEmbarazos: { type: Number, min: 0 },
         numeroDePartos: { type: Number, min: 0 },

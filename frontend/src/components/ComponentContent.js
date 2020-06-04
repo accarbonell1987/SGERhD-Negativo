@@ -103,7 +103,7 @@ class ComponentContent extends Component {
     if (this.props.opcionmenu === 'usuarios' && accesomenu.permisos.menu)  {
       return (
         <div className='Content'>
-          <ComponentUsers parentState = {this.props.parentState} roles = {this.props.roles} permisos = {this.props.permisos} usuarios = {this.state.usuarios} />
+          <ComponentUsers parentState = {this.props.parentState} roles = {this.props.roles} permisos = {this.props.permisos} usuarios = {this.state.usuarios} allUsers={this.allUsers}/>
           <ComponentFooter />
         </div>
       );

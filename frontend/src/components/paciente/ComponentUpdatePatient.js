@@ -148,9 +148,9 @@ class ComponentUpdatePatient extends Component {
           examenes: this.props.paciente.examenes,
           activo: this.props.paciente.activo
         });
-      }else if(evt.target.className.includes('modal-button-cancel')){
+      } else if ((evt.target.className.includes('modal-button-cancel')) || (evt.target.className.includes('modal-icon-cancel'))){
         this.clearModalState();
-      }else {
+      } else {
         //si no hay problemas en el formulario
         if (this.handleSubmit(evt) === false) {
           //si no hay problemas en la insercion
@@ -226,7 +226,7 @@ class ComponentUpdatePatient extends Component {
             </Modal.Content>
             <Modal.Actions>
               <Button color='red' onClick={this.changeModalState} className='modal-button-cancel' type>
-                  <Icon name='remove' /> Cancelar
+                  <Icon name='remove' className='modal-icon-cancel' /> Cancelar
               </Button>
               <Button color='green' onClick={this.changeModalState} className='modal-button-acept' type='submit' disabled={
                   (!this.state.nombre || !this.state.apellidos || !this.state.ci || !this.state.direccion || !this.state.telefono ||!this.state.sexo)

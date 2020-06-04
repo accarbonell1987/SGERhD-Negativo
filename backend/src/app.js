@@ -33,6 +33,7 @@ app.use('/api', require('./routes/routerlog'));
 app.use('/api', require('./routes/routerpaciente'));
 app.use('/api', require('./routes/routerhistoriaclinica'));
 app.use('/api', require('./routes/routerembarazo'));
+app.use('/api', require('./routes/routertransfusion'));
 
 //Static files
 console.log(__dirname);

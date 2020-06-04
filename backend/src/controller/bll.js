@@ -3,6 +3,7 @@ const ClinicHistoryServices = require('../services/historiaclinica');
 const PatientServices = require('../services/patients');
 const UserServices = require('../services/users');
 const LogServices = require('../services/logs');
+const TranServices = require('../services/trans');
 //#endregion
 
 //#region Usuarios
@@ -187,7 +188,7 @@ exports.GetClinicHistoryLastInserted = async (req, res, next) => {
 }
 exports.InsertClinicHistory = async (req, res, next) => {
     try {
-        clinichistory = await ClinicHistoryServices.InsertClinicHistory(req.body);
+        var clinichistory = await ClinicHistoryServices.InsertClinicHistory(req.body);
         return res.status(200).json({ status: 200, message: 'Insertado Correctamente', data: clinichistory });
     } catch(err) {
         return res.status(400).json({ status: 400, message: err });
@@ -205,6 +206,53 @@ exports.UpdateClinicHistory = async (req, res, next) => {
     try {
         var clinichistory = await ClinicHistoryServices.UpdateClinicHistory(req.params.id, req.body);
         return res.status(200).json({ status: 200, message: 'Modificado Correctamente', data: clinichistory });
+    } catch(err) {
+        return res.status(400).json({ status: 400, message: err });
+    }
+}
+//#endregion
+
+//#region Transfusion
+exports.GetTrans = async (req, res, next) => {
+    var page = req.params.page ? req.params.page : 1;
+    var limit = req.params.limit ? req.params.limit : -1;
+
+    try {
+        var trans = await TranServices.GetTrans({}, page, limit);
+        return res.status(200).json({ status: 200, message: 'Obtenidos', data: trans });
+    } catch(err) {
+        return res.status(400).json({ status: 400, message: err });
+    }
+}
+exports.GetTran = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        var tran = await TranServices.GetTran(req.params.id);
+        return res.status(200).json({ status: 200, message: 'Obtenido', data: tran });
+    } catch(err) {
+        return res.status(400).json({ status: 400, message: err });
+    }
+}
+exports.InsertTran = async (req, res, next) => {
+    try {
+        var tran = await TranServices.InsertTran(req.body);
+        return res.status(200).json({ status: 200, message: 'Insertado Correctamente', data: tran });
+    } catch(err) {
+        return res.status(400).json({ status: 400, message: err });
+    }
+}
+exports.DeleteTran = async (req, res, next) => {
+    try {
+        var tran = await TranServices.DeleteTran(req.params.id);
+        return res.status(200).json({ status: 200, message: 'Eliminado Correctamente', data: tran });
+    } catch(err) {
+        return res.status(400).json({ status: 400, message: err });
+    }
+}
+exports.UpdateTran = async (req, res, next) => {
+    try {
+        var tran = await TranServices.UpdateTran(req.params.id, req.body);
+        return res.status(200).json({ status: 200, message: 'Modificado Correctamente', data: tran });
     } catch(err) {
         return res.status(400).json({ status: 400, message: err });
     }

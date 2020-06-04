@@ -53,7 +53,8 @@ class ComponentPatients extends Component {
           :
             Swal.fire({ position: 'center', icon: 'error', title: message, showConfirmButton: false, timer: 5000 })
 
-          this.props.allPatients();
+            this.props.allClinicsHistory();
+            this.props.allPatients();
         })
         .catch(err => {
           Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 5000 });
@@ -144,7 +145,7 @@ class ComponentPatients extends Component {
                         <ComponentChilds parentState = {this.props.parentState} paciente = {paciente} pacientes = {this.props.pacientes} allPatients = {this.props.allPatients} />
                       </Table.Cell>
                       <Table.Cell className='cells-max-witdh-2' collapsing>
-                        <ComponentSeeClinicHistory parentState = {this.props.parentState} paciente = {paciente} pacientes = {this.props.pacientes} historiasclinicas = {this.props.historiasclinicas}/>
+                        <ComponentSeeClinicHistory allClinicsHistory = {this.props.allClinicsHistory} allPatients={this.props.allPatients} parentState = {this.props.parentState} paciente = {paciente} pacientes = {this.props.pacientes} historiasclinicas = {this.props.historiasclinicas}  roles = {this.props.roles} />
                       </Table.Cell>
                       <Table.Cell className='cells-max-witdh-2' collapsing>
                         <Button icon labelPosition='right' className='button-childs'>

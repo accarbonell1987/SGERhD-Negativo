@@ -14,7 +14,7 @@ class ComponentApp extends Component {
     autenticado: false,
     usuario: '',
     rol: '',
-    endpoint: process.env.REACT_APP_API_PATH_LOCAL,
+    endpoint: process.env.REACT_APP_API_PATH,
     logintime: '',
     token: '',
   };

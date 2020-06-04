@@ -114,7 +114,7 @@ class ComponentAddUser extends Component {
     changeModalState = async (evt) => {
       if (evt.target.className.includes('modal-button-add')) {
         this.setState({ openModal: true });
-      }else if(evt.target.className.includes('modal-button-cancel')){
+      } else if ((evt.target.className.includes('modal-button-cancel')) || (evt.target.className.includes('modal-icon-cancel'))){
         this.setState({ openModal: false });
       }else {
         //si no hay problemas en el formulario
@@ -178,7 +178,7 @@ class ComponentAddUser extends Component {
             </Modal.Content>
             <Modal.Actions>
             <Button color='red' onClick={this.changeModalState} className='modal-button-cancel' type>
-                <Icon name='remove' /> Cancelar
+                <Icon name='remove' className='modal-icon-cancel' /> Cancelar
             </Button>
             <Button color='green' onClick={this.changeModalState} className='modal-button-acept' type='submit' disabled={
                 (!this.state.nombre || !this.state.email || !this.state.rol || !this.state.contraseña || !this.state.repetircontraseña)

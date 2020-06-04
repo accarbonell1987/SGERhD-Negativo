@@ -128,11 +128,11 @@ class ComponentAddPatient extends Component {
     }
     //cambiar el estado en el MODAL para adicionar
     changeModalState = async (evt) => {
-      if (evt.target.className.includes('modal-button-add')) {
+      if ((evt.target.className.includes('modal-button-add')) || (evt.target.className.includes('modal-icon-add'))) {
         this.setState({ openModal: true });
-      }else if(evt.target.className.includes('modal-button-cancel')){
+      } else if ((evt.target.className.includes('modal-button-cancel')) || (evt.target.className.includes('modal-icon-cancel'))){
         this.setState({ openModal: false });
-      }else {
+      } else {
         //si no hay problemas en el formulario
         if (this.handleSubmit(evt) === false) {
           //si no hay problemas en la insercion
@@ -175,7 +175,7 @@ class ComponentAddPatient extends Component {
         <Modal open={this.state.openModal}
             trigger = {
                 <Button floated='right' icon labelPosition='left' primary size='small' onClick={this.changeModalState} className='modal-button-add'>
-                  <Icon name='add circle' /> Adicionar
+                  <Icon name='add circle' className='modal-icon-add' /> Adicionar
                 </Button>
             }
         >
@@ -208,7 +208,7 @@ class ComponentAddPatient extends Component {
             </Modal.Content>
             <Modal.Actions>
               <Button color='red' onClick={this.changeModalState} className='modal-button-cancel' type>
-                  <Icon name='remove' /> Cancelar
+                  <Icon name='remove' className='modal-icon-cancel'/> Cancelar
               </Button>
               <Button color='green' onClick={this.changeModalState} className='modal-button-accept' type='submit' disabled={
                   (!this.state.nombre || !this.state.apellidos || !this.state.ci || !this.state.direccion || !this.state.telefono ||!this.state.sexo)

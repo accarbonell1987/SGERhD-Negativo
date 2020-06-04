@@ -5,6 +5,9 @@ import { Button, Icon, Header, Modal, Form, Segment } from 'semantic-ui-react'
 //CSS
 import '../global/css/Gestionar.css';
 
+//Componentes
+import ComponentAddClinicHistory from './ComponentAddClinicHistory';
+
 class ComponentSeeClinicHistory extends Component {
     state = {
       openModal: false,
@@ -137,9 +140,7 @@ class ComponentSeeClinicHistory extends Component {
           </Modal>
         );
       } else return (
-        <Button disabled icon labelPosition='right' className='button-childs' onClick={this.changeModalState} >
-          <Icon name='eye' className='button-icon-childs' onClick={this.changeModalState}/>Indefinida
-        </Button>
+        <ComponentAddClinicHistory allClinicsHistory = {this.props.allClinicsHistory}  allPatients={this.props.allPatients} parentState = {this.props.parentState} roles = {this.props.roles} pacientes = {this.props.pacientes} historiasclinicas = {this.props.historiasclinicas} cambiarIcono = {true} paciente = {this.props.paciente} />
       );
     }
   }
