@@ -9,6 +9,7 @@ import './global/css/Content.css';
 import ComponentUsers from './usuario/ComponentUsers';
 import ComponentPatients from './paciente/ComponentPatients';
 import ComponentClinicHistory from './historiaclinica/ComponentClinicHistory';
+import ComponentTrans from './transfusiones/ComponentTrans';
 import ComponentFooter from './ComponentFooter';
 
 //Defincion de la clase
@@ -16,18 +17,21 @@ class ComponentContent extends Component {
   state = {
     pacientes: [],
     usuarios: [],
-    historiasclinicas: []
+    historiasclinicas: [],
+    transfusiones: []
   }
 
   constructor(props) {
     super(props);
 
     this.allUsers = this.allUsers.bind(this);
+    this.allTrans = this.allTrans.bind(this);
     this.allClinicsHistory = this.allClinicsHistory.bind(this);
     this.allPatients = this.allPatients.bind(this);
   }
 
   componentDidMount = () => {
+    this.allTrans();
     this.allClinicsHistory();
     this.allPatients();
     this.allUsers();
@@ -56,6 +60,25 @@ class ComponentContent extends Component {
   //obtener todos los pacientes desde la API
   allPatients = async () => {
     await fetch(this.props.parentState.endpoint + 'api/paciente', {
+        method: 'GET',
+        headers: {
+          'access-token' : this.props.parentState.token
+        }
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 200){
+          this.setState({pacientes: data.data});
+        }else{
+          Swal.fire({ position: 'center', icon: 'error', title: data.message, showConfirmButton: false, timer: 3000 }); 
+        }
+      })
+      .catch(err => {
+        Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 3000 });
+      });
+  }
+  allTrans = async () => {
+    await fetch(this.props.parentState.endpoint + 'api/transfusion', {
         method: 'GET',
         headers: {
           'access-token' : this.props.parentState.token
@@ -120,6 +143,13 @@ class ComponentContent extends Component {
       return (
         <div className='Content'>
           <ComponentClinicHistory parentState = {this.props.parentState} roles = {this.props.roles} permisos = {this.props.permisos} pacientes = {this.state.pacientes} historiasclinicas = {this.state.historiasclinicas} allClinicsHistory = {this.allClinicsHistory} allPatients = {this.allPatients}/>
+          <ComponentFooter />
+        </div>
+      );
+    }  else if (this.props.opcionmenu === 'transfusiones' && accesomenu.permisos.menu) {
+      return (
+        <div className='Content'>
+          <ComponentTrans parentState = {this.props.parentState} roles = {this.props.roles} permisos = {this.props.permisos} pacientes = {this.state.pacientes} historiasclinicas = {this.state.historiasclinicas} allTrans = {this.allTrans} allPatients = {this.allPatients}/>
           <ComponentFooter />
         </div>
       );

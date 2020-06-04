@@ -9,28 +9,27 @@ import '../global/css/Gestionar.css';
 //#endregion
 
 //#region Componentes
-import ComponentAddClinicHistory from './ComponentAddClinicHistory';
-import ComponentUpdateClinicHistory from './ComponentUpdateClinicHistory';
+import ComponentAddTran from './ComponentAddTran';
+// import ComponentUpdateClinicHistory from './ComponentUpdateClinicHistory';
 import ComponentSeePatient from '../paciente/ComponentSeePatient';
 //#endregion
 
 //#region Defincion de la clase
-class ComponentClinicHistory extends Component {
+class ComponentTrans extends Component {
   //#region Constructor
   constructor(props) {
     super(props);
 
-    this.deleteClinicHistory = this.deleteClinicHistory.bind(this);
+    this.deleteTran = this.deleteTran.bind(this);
   }
   //#endregion
 
   //#region Metodos y Eventos
-  //eliminar el historia clinica
-  deleteClinicHistory = (id, paciente) => {
+  deleteTran = (id, paciente) => {
     //Esta seguro?
     Swal.fire({
       title: '¿Esta seguro?',
-      text: "Desea eliminar la historia clinica perteneciente al paciente: " + paciente.nombre + " " + paciente.apellidos,
+      text: "Desea eliminar la transfusion perteneciente al paciente: " + paciente.nombre + " " + paciente.apellidos,
       icon: 'question',
       showCancelButton: true,
       cancelButtonColor: '#db2828',
@@ -42,7 +41,7 @@ class ComponentClinicHistory extends Component {
       //si escogio Si
       if (result.value) {
         //enviar al endpoint
-        fetch (this.props.parentState.endpoint + 'api/historiaclinica/' + id, {
+        fetch (this.props.parentState.endpoint + 'api/transfusion/' + id, {
           method: 'DELETE',
           headers: {
             'Accept': 'application/json',
@@ -53,15 +52,13 @@ class ComponentClinicHistory extends Component {
         .then(res => res.json())
         .then(data => {
           const { status, message } = data;
-          //recargar todas las historias y todos los pacientes
-          
           //chequear el mensaje
           status === 200 ?
             Swal.fire({ position: 'center', icon: 'success', title: message, showConfirmButton: false, timer: 3000 })
           :
             Swal.fire({ position: 'center', icon: 'error', title: message, showConfirmButton: false, timer: 5000 })
-
-          this.props.allClinicsHistory();
+          
+          //recargar
           this.props.allPatients();
         })
         .catch(err => {
@@ -77,21 +74,21 @@ class ComponentClinicHistory extends Component {
     //buscar el permiso del rol
     const permiso = this.props.permisos.find(p => p.rol === this.props.parentState.rol);
     //buscar el acceso del menu
-    const accesomenu = permiso.accesos.find(p => p.opcion === 'historiaclinica');
-    //chequear si es historiasclinica y tengo permiso
+    const accesomenu = permiso.accesos.find(p => p.opcion === 'transfusiones');
+    //chequear si es transfusiones y tengo permiso
     return (
       <Grid textAlign='center' verticalAlign='top' className='gestionar-allgrid'>
         <Grid.Column className='gestionar-allcolumn'>
           <Label attached='top left' className='div-label-attached' size='large'>
-            <Icon name='clipboard' size='large' inverted/> Gestión de Historias Clínicas
+            <Icon name='tint' size='large' inverted/> Gestión de Transfusiones
           </Label>
           <Table compact celled definition attached='top' className='div-table'>
             <Table.Header className='div-table-header'>
               <Table.Row>
                 <Table.HeaderCell />
-                <Table.HeaderCell colSpan='9'>
+                <Table.HeaderCell colSpan='6'>
                   { accesomenu.permisos.crear ?
-                    <ComponentAddClinicHistory allClinicsHistory = {this.props.allClinicsHistory} allPatients = {this.props.allPatients} parentState = {this.props.parentState} roles = {this.props.roles} pacientes = {this.props.pacientes} historiasclinicas = {this.props.historiasclinicas} permisos = {this.props.permisos} />:
+                    <ComponentAddTran parentState = {this.props.parentState} roles = {this.props.roles} pacientes = {this.props.pacientes} permisos = {this.props.permisos} />:
                     <Button floated='right' icon labelPosition='left' primary size='small' className='modal-button-add' disabled>
                       <Icon name='add circle' />Adicionar
                     </Button>
@@ -99,15 +96,12 @@ class ComponentClinicHistory extends Component {
                 </Table.HeaderCell>
               </Table.Row>
               { 
-                (this.props.historiasclinicas.length > 0) ? 
+                (this.props.transfusiones.length > 0) ? 
                 <Table.Row>
                   <Table.HeaderCell />
-                  <Table.HeaderCell>Número</Table.HeaderCell>
-                  <Table.HeaderCell>Area de Salud</Table.HeaderCell>
-                  <Table.HeaderCell>Vacuna AntiD</Table.HeaderCell>
-                  <Table.HeaderCell className='cells-max-witdh-2'>Embarazos</Table.HeaderCell>
-                  <Table.HeaderCell>Partos</Table.HeaderCell>
-                  <Table.HeaderCell>Abortos</Table.HeaderCell>
+                  <Table.HeaderCell>Fecha</Table.HeaderCell>
+                  <Table.HeaderCell>Reacción Adversa</Table.HeaderCell>
+                  <Table.HeaderCell>Observaciones</Table.HeaderCell>
                   <Table.HeaderCell className='cells-max-witdh-2'>Paciente</Table.HeaderCell>
                   <Table.HeaderCell className='cells-max-witdh-2'>Acciones</Table.HeaderCell>
                 </Table.Row> : ''
@@ -116,40 +110,33 @@ class ComponentClinicHistory extends Component {
 
             <Table.Body>
               { 
-                this.props.historiasclinicas.map(historia => {
+                this.props.transfusiones.map(tran => {
                   // let rolData = this.props.roles.find(element => { return element.key === usuario.rol });
                   // //para colorear row
                   // let negative = this.props.parentState.usuario === usuario.nombre;
                   return(
-                    <Table.Row key={historia._id} >
+                    <Table.Row key={tran._id} >
                       <Table.Cell collapsing>
-                        <Icon name='clipboard' />
+                        <Icon name='tint' />
                       </Table.Cell>
-                      <Table.Cell>{historia.numerohistoria}</Table.Cell>
-                      <Table.Cell>{historia.areaDeSalud}</Table.Cell>
+                      <Table.Cell>{tran.fecha}</Table.Cell>
                       <Table.Cell>
                         <Checkbox
-                          toggle name='vacunaAntiD' labelPosition='left' label = {historia.vacunaAntiD ? 'Si' : 'No'} disabled
+                          toggle name='reaccionAdversa' labelPosition='left' label = {tran.reaccionAdversa ? 'Si' : 'No'} disabled
                         />
                       </Table.Cell>
-                      <Table.Cell className='cells-max-witdh-2'>
-                        <Button icon labelPosition='right' className='button-childs'>
-                          <Icon name='heartbeat' className='button-icon-childs'/>{historia.numeroDeEmbarazos}
-                        </Button> 
-                      </Table.Cell>
-                      <Table.Cell>{historia.numeroDePartos}</Table.Cell>
-                      <Table.Cell>{historia.numeroDeAbortos}</Table.Cell>
+                      <Table.Cell>{tran.observaciones}</Table.Cell>
                       <Table.Cell className='cells-max-witdh-2' collapsing>
-                        <ComponentSeePatient historiaclinica = {historia} parentState = {this.props.parentState} roles = {this.props.roles}/>
+                        <ComponentSeePatient historiaclinica = {tran.paciente.historiaclinica} parentState = {this.props.parentState} roles = {this.props.roles}/>
                       </Table.Cell>
                       <Table.Cell className='cells-max-witdh-2' collapsing>
                         {
                           accesomenu.permisos.eliminar ?
-                          <Button icon='remove circle' className = 'button-remove' onClick={() => this.deleteClinicHistory(historia._id, historia.paciente) } /> : <Button icon='remove circle' className = 'button-remove' disabled />
+                          <Button icon='remove circle' className = 'button-remove' onClick={() => this.deleteTran(tran._id, tran.paciente) } /> : <Button icon='remove circle' className = 'button-remove' disabled />
                         }
                         {
-                          accesomenu.permisos.modificar ?
-                          <ComponentUpdateClinicHistory allClinicsHistory = { this.props.allClinicsHistory } allPatients = { this.props.allPatients } historiaclinica = {historia} parentState = {this.props.parentState} roles = {this.props.roles} pacientes = {this.props.pacientes} historiasclinicas = {this.props.historiasclinicas} /> :
+                          // accesomenu.permisos.modificar ?
+                          // <ComponentUpdateClinicHistory allClinicsHistory = { this.props.allClinicsHistory } allPatients = { this.props.allPatients } historiaclinica = {historia} parentState = {this.props.parentState} roles = {this.props.roles} pacientes = {this.props.pacientes} historiasclinicas = {this.props.historiasclinicas} /> :
                           <Button icon='edit' disabled />
                         }
                       </Table.Cell>
@@ -167,5 +154,5 @@ class ComponentClinicHistory extends Component {
 }
 
 //#region Export
-export default ComponentClinicHistory;
+export default ComponentTrans;
 //#endregion

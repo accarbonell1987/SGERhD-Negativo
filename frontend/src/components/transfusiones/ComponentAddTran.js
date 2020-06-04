@@ -1,6 +1,10 @@
 //#region Importaciones
 import React, { Component } from 'react';
 import { Button, Icon, Header, Modal, Form, Message, Segment } from 'semantic-ui-react'
+import DateRangePicker from 'react-daterange-picker';
+import Moment from 'moment';
+import {extendedMoment} from 'moment-range';
+
 import Swal from 'sweetalert2'
 //#endregion
 
@@ -8,38 +12,28 @@ import Swal from 'sweetalert2'
 import '../global/css/Gestionar.css';
 //#endregion
 
+const moment = extendedMoment(Moment);
+
 //#region Definicion Clase
-class ComponentAddClinicHistory extends Component {
+class ComponentAddTran extends Component {
     //#region Properties
     state = {
       openModal: false,
-      areaDeSalud: '', 
-      numerohistoria: '', 
-      vacunaAntiD : false, 
-      numeroDeEmbarazos: 0, 
-      numeroDePartos: 0, 
-      numeroDeAbortos: 0, 
+      fecha: '',
+      reaccionAdversa: false,
+      observaciones: '',
       paciente: '',
       opcionPacientes: [],
       activo: true,
-      errorareaDeSalud: false,
-      errornumerohistoria: false,
-      errorpaciente: false,
       errorform: false
     }
-
-    generos = [
-      { key: 'M', text: 'Masculino', value: 'M', icon: 'man' },
-      { key: 'F', text: 'Femenino', value: 'F', icon: 'woman' }
-    ];
     //#endregion
 
     //#region Constructor
     constructor(props) {
       super(props);
   
-      this.getLastInsertedClinicHistory = this.getLastInsertedClinicHistory.bind(this);
-      this.addClinicHistory = this.addClinicHistory.bind(this);
+      this.addTran = this.addTran.bind(this);
       this.changeModalInput = this.changeModalInput.bind(this);
       this.changeModalState = this.changeModalState.bind(this);
       this.clearModalState = this.clearModalState.bind(this);
@@ -53,18 +47,16 @@ class ComponentAddClinicHistory extends Component {
         this.clearModalState();
     }
     //adicionar nuevo paciente
-    addClinicHistory = async () => {
-      const { areaDeSalud, numerohistoria, vacunaAntiD, numeroDeEmbarazos, numeroDePartos, numeroDeAbortos, paciente, activo } = this.state;
-
-      const fecha = new Date();
-      const historiaclinica = {
-        fechaDeCreacion: fecha, areaDeSalud: areaDeSalud, numerohistoria: numerohistoria, vacunaAntiD: vacunaAntiD, numeroDeEmbarazos: numeroDeEmbarazos, numeroDePartos: numeroDePartos, numeroDeAbortos: numeroDeAbortos, paciente: paciente,activo: activo
+    addTran = async () => {
+      const { fecha, reaccionAdversa, observaciones, paciente, activo } = this.state;
+      const tran = {
+        fecha: fecha, reaccionAdversa: reaccionAdversa, observaciones: observaciones, paciente: paciente,activo: activo
       }
       //la promise debe de devolver un valor RETURN
       try {
-            const res = await fetch(this.props.parentState.endpoint + 'api/historiaclinica/', {
+            const res = await fetch(this.props.parentState.endpoint + 'api/transfusion/', {
                 method: 'POST',
-                body: JSON.stringify(historiaclinica),
+                body: JSON.stringify(tran),
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
@@ -89,29 +81,11 @@ class ComponentAddClinicHistory extends Component {
             return false;
         }
     }
-    //obtener el ultimo
-    getLastInsertedClinicHistory = async () => {
-      //enviar al endpoint
-      const res = await fetch (this.props.parentState.endpoint + 'api/historiaclinica/-1', {
-        method: 'GET',
-        headers: {
-          'access-token' : this.props.parentState.token
-        }
-      });
-      let json = await res.json();
-      //capturar respuesta
-      const { status, message, data } = json;
-      if (status === 200) return data;
-      else Swal.fire({ position: 'center', icon: 'error', title: message, showConfirmButton: false, timer: 5000 })
-    }
     //validar el formulario
     handleSubmit = (evt) => {
       evt.preventDefault();
       
       this.setState({ 
-        errorareaDeSalud: false,
-        errornumerohistoria: false,
-        errorpaciente: false,
         errform: false
       });
   
@@ -137,9 +111,8 @@ class ComponentAddClinicHistory extends Component {
         //si no hay problemas en el formulario
         if (this.handleSubmit(evt) === false) {
           //si no hay problemas en la insercion
-          if (await this.addClinicHistory()){
+          if (await this.addTran()){
             //enviar a recargar los pacientes
-            this.props.allClinicsHistory();
             this.props.allPatients();
             this.clearModalState();
           }
@@ -150,67 +123,21 @@ class ComponentAddClinicHistory extends Component {
     clearModalState = () => {
       let opcion = [];
       this.props.pacientes.forEach(p => {
-        //validacion si el paciente tiene una historia no se debe de mostrar
-        //en caso de que sea mayor que cero
-        if (this.props.historiasclinicas.length > 0) {
-          //busco los pacientes que no tengan historias validas
-          if (!this.props.historiasclinicas.some(h => h.paciente._id === p._id)) {
-            let nombreyapellidos = p.nombre + ' ' + p.apellidos;
-            let cur = { key: p._id, text: nombreyapellidos, value: p._id, icon: 'wheelchair' };
-            opcion = [...opcion, cur];
-          }
-        }else{
-          let nombreyapellidos = p.nombre + ' ' + p.apellidos;
-          let cur = { key: p._id, text: nombreyapellidos, value: p._id, icon: 'wheelchair' };
-          opcion = [...opcion, cur];
-        }
-      });
-
-      //obtener la fecha
-      var fecha = new Date();
-      const ano = fecha.getFullYear().toString();
-      const mes = (fecha.getMonth() + 1).toString();
-      const dia = fecha.getDate().toString();
-      //extraer las partes para el formato de la historia clinica (año mes dia numeroconsecutivo) ej: 205280020
-      let numero = ano+mes+dia+'-0000';
-
-      //busco el ultimo insertado
-      this.getLastInsertedClinicHistory().then(element => {
-        //chequeo que me devuelva un arreglo mayor que cero
-        if (element.length > 0) {
-          //convierto el numero de historia en un string
-          var numerohistoria = element[0].numerohistoria.toString();
-          //pico el string por el guión -
-          var elementosnumero = numerohistoria.split('-');
-          //si la primera parte del numero es igual a la suma de ano+mes+dia entonces
-          if (elementosnumero[0] === (ano+mes+dia)){
-            //adiciono uno a la segunda parte del numero
-            var addone = (parseInt(elementosnumero[1]) + 1).toString();
-            //adicionar los ceros que necesito a la izquierda
-            while (addone.length < 4) addone = '0' + addone;
-            //lo almaceno en numero
-            numero = ano+mes+dia + '-' + addone;
-          }
-        }
-        //lo pongo en el state
-        this.setState({numerohistoria: numero});
+        let nombreyapellidos = p.nombre + ' ' + p.apellidos;
+        let cur = { key: p._id, text: nombreyapellidos, value: p._id, icon: 'wheelchair' };
+        opcion = [...opcion, cur];
       });
 
       const pacienteid = this.props.paciente != null ? this.props.paciente._id : '';
       //actualizar los states
       this.setState({
         openModal: false,
-        areaDeSalud: '', 
-        vacunaAntiD : false, 
-        numeroDeEmbarazos: 0, 
-        numeroDePartos: 0, 
-        numeroDeAbortos: 0, 
+        fecha: '',
+        reaccionAdversa: false,
+        observaciones: '',
         paciente: pacienteid,
         opcionPacientes: opcion,
         activo: true,
-        errorareaDeSalud: false,
-        errornumerohistoria: false,
-        errorpaciente: false,
         errorform: false
       });
     }
@@ -220,7 +147,7 @@ class ComponentAddClinicHistory extends Component {
     render() {
       const permiso = this.props.permisos.find(p => p.rol === this.props.parentState.rol);
       //buscar el acceso del menu
-      const accesomenu = permiso.accesos.find(p => p.opcion === 'historiaclinica');
+      const accesomenu = permiso.accesos.find(p => p.opcion === 'transfusiones');
       //chequear si es historiasclinica y tengo permiso
       return (
         <Modal open={this.state.openModal}
@@ -228,28 +155,29 @@ class ComponentAddClinicHistory extends Component {
               accesomenu.permisos.crear ?
                 this.props.cambiarIcono ? 
                 <Button icon labelPosition='right' className='button-childs' onClick={this.changeModalState} >
-                  <Icon name='add circle' className='button-icon-childs' onClick={this.changeModalState}/> Adicionar
+                  <Icon name='add circle' className='button-icon-childs' onClick={this.changeModalState}/>Adicionar
                 </Button>
                 :
                 <Button floated='right' icon labelPosition='left' primary size='small' onClick={this.changeModalState} className='modal-button-add'>
-                  <Icon name='add circle' className='modal-icon-add'/> Adicionar
+                  <Icon name='add circle' className='modal-icon-add'/>Adicionar
                 </Button>
               :
                 this.props.cambiarIcono ? 
                 <Button disabled icon labelPosition='right' className='button-childs'>
-                  <Icon name='add circle' className='button-icon-childs'/> Adicionar
+                  <Icon name='add circle' className='button-icon-childs'/>Adicionar
                 </Button>
                 :
                 <Button disabled floated='right' icon labelPosition='left' primary size='small'className='modal-button-add'>
-                  <Icon name='add circle' className='modal-icon-add'/> Adicionar
+                  <Icon name='add circle' className='modal-icon-add'/>Adicionar
                 </Button>
             }
         >
-            <Header icon='clipboard' content='Adicionar  ' />
+            <Header icon='tint' content='Adicionar  ' />
             <Modal.Content>
             { this.state.errorform ? <Message error inverted header='Error' content='Error en el formulario' /> : null } 
             <Form ref='form' onSubmit={this.changeModalState}>
-                <Form.Input
+                <DateRangePicker firstOfWeek={1} numberOfCalendars={2} selectionType='range' minimumDate={new Date()} defaultState='available' showLegend={true} value={this.state.fecha} onSelect={this.changeModalInput} />
+                {/* <Form.Input
                   required disabled name = 'numerohistoria' icon = 'address card outline' iconPosition = 'left' label = 'Numero de Historia:' value={this.state.numerohistoria}
                 />
                 <Segment.Group horizontal className='modal-segment-group'>
@@ -326,7 +254,7 @@ class ComponentAddClinicHistory extends Component {
                       </Button.Group>
                     </Form.Group>
                   </Segment>
-                </Segment.Group>
+                </Segment.Group> */}
                 <Form.Select
                     name = 'paciente' label = 'Paciente:' placeholder = 'Seleccionar Paciente' options={this.state.opcionPacientes} value={this.state.paciente} onChange = { (e, {value}) => { this.setState({ paciente : value }); } } fluid selection clearable
                 />
@@ -349,5 +277,5 @@ class ComponentAddClinicHistory extends Component {
   }
   
   //#region Exports
-  export default ComponentAddClinicHistory;
+  export default ComponentAddTran;
   //#endregion
