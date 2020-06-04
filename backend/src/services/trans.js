@@ -7,7 +7,7 @@ var mongoose = require('mongoose');
 exports.GetTrans = async (query, page, limit) => {
     try {
         var trans = await Transfusion.find(query).populate('paciente');
-        return patients;
+        return trans;
     } catch (err) {
         console.log('Error: Obteniendo Transfusiones');
         throw Error('Obteniendo Transfusiones');
@@ -15,8 +15,9 @@ exports.GetTrans = async (query, page, limit) => {
 }
 exports.GetTran = async (id) => {
     try {
-        var patient = await Transfusion.findById(id).populate('paciente');
-        return patient;
+        console.log(id);
+        var tran = await Transfusion.findById(id).populate('paciente');
+        return tran;
     } catch (err) {
         console.log('Error: Obteniendo Transfusion con id: ' + id);
         throw Error('Obteniendo Transfusion con id: ' + id);
