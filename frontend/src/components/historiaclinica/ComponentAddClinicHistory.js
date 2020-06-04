@@ -208,15 +208,29 @@ class ComponentAddPatient extends Component {
     }
   
     render() {
+      const permiso = this.props.permisos.find(p => p.rol === this.props.parentState.rol);
+      //buscar el acceso del menu
+      const accesomenu = permiso.accesos.find(p => p.opcion === 'historiaclinica');
+      //chequear si es historiasclinica y tengo permiso
       return (
         <Modal open={this.state.openModal}
             trigger = {
+              accesomenu.permisos.crear ?
                 this.props.cambiarIcono ? 
                 <Button icon labelPosition='right' className='button-childs' onClick={this.changeModalState} >
                   <Icon name='add circle' className='button-icon-childs' onClick={this.changeModalState}/> Adicionar
                 </Button>
                 :
                 <Button floated='right' icon labelPosition='left' primary size='small' onClick={this.changeModalState} className='modal-button-add'>
+                  <Icon name='add circle' className='modal-icon-add'/> Adicionar
+                </Button>
+              :
+                this.props.cambiarIcono ? 
+                <Button disabled icon labelPosition='right' className='button-childs'>
+                  <Icon name='add circle' className='button-icon-childs'/> Adicionar
+                </Button>
+                :
+                <Button disabled floated='right' icon labelPosition='left' primary size='small'className='modal-button-add'>
                   <Icon name='add circle' className='modal-icon-add'/> Adicionar
                 </Button>
             }
@@ -310,12 +324,12 @@ class ComponentAddPatient extends Component {
             </Modal.Content>
             <Modal.Actions>
               <Button color='red' onClick={this.changeModalState} className='modal-button-cancel' type>
-                  <Icon name='remove' className='modal-icon-cancel' /> Cancelar
+                  <Icon name='remove' className='modal-icon-cancel' />Cancelar
               </Button>
               <Button color='green' onClick={this.changeModalState} className='modal-button-accept' type='submit' disabled={
                   (!this.state.numerohistoria || !this.state.areaDeSalud || !this.state.paciente)
               }>
-                  <Icon name='checkmark' /> Aceptar
+                  <Icon name='checkmark' />Aceptar
               </Button>
             </Modal.Actions>
         </Modal>

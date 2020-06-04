@@ -33,7 +33,7 @@ router.get('/seguridad/comienzo', (req, res) => {
                 var user = UserServices.InsertUser({ nombre: 'administrador', contraseña: 'administrador', rol:'informatico', email:'administrador.sgerhn@bancodesangre.stg.sld.cu', activo: true });
                 console.log('Insertado Usuario Administrador');
                 res.status(200).json({ status: 200, message: 'Insertado Usuario Administrador', data: user });
-            }
+            } else res.status(202).json({ status: 202, message: 'Sistema Iniciado' });
         });
     } catch (err) {
         res.status(400).json({ status: 400, message: err });

@@ -45,7 +45,9 @@ class ComponentLogin extends Component {
     .then(data => {
       if (data.status === 200){
         Swal.fire({ position: 'center', icon: 'success', title: data.message, text: 'Se ha creado el usuario del sistema (usuario:administrador, contraseña: administrador)', showConfirmButton: false, timer: 10000 });
-      }else{
+      } else if (data.status === 202) {
+        //luego veremos que hacemos aca
+      } else {
         Swal.fire({ position: 'center', icon: 'error', title: data.message, showConfirmButton: false, timer: 3000 }); 
       }
     })

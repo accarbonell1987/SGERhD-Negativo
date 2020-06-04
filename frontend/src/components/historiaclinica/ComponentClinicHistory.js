@@ -83,15 +83,14 @@ class ComponentClinicHistory extends Component {
                 <Table.HeaderCell />
                 <Table.HeaderCell colSpan='9'>
                   { accesomenu.permisos.crear ?
-                    <ComponentAddClinicHistory allClinicsHistory = {this.props.allClinicsHistory} allPatients = {this.props.allPatients} parentState = {this.props.parentState} roles = {this.props.roles} pacientes = {this.props.pacientes} historiasclinicas = {this.props.historiasclinicas}/> :
+                    <ComponentAddClinicHistory allClinicsHistory = {this.props.allClinicsHistory} allPatients = {this.props.allPatients} parentState = {this.props.parentState} roles = {this.props.roles} pacientes = {this.props.pacientes} historiasclinicas = {this.props.historiasclinicas} permisos = {this.props.permisos} />:
                     <Button floated='right' icon labelPosition='left' primary size='small' className='modal-button-add' disabled>
-                      <Icon name='add circle' /> Adicionar
+                      <Icon name='add circle' />Adicionar
                     </Button>
                   }
                 </Table.HeaderCell>
               </Table.Row>
               { 
-                
                 (this.props.historiasclinicas.length > 0) ? 
                 <Table.Row>
                   <Table.HeaderCell />
@@ -133,7 +132,7 @@ class ComponentClinicHistory extends Component {
                       <Table.Cell>{historia.numeroDePartos}</Table.Cell>
                       <Table.Cell>{historia.numeroDeAbortos}</Table.Cell>
                       <Table.Cell className='cells-max-witdh-2' collapsing>
-                        <ComponentSeePatient historiaclinica = {historia} parentState = {this.props.parentState} roles = {this.props.roles} />
+                        <ComponentSeePatient historiaclinica = {historia} parentState = {this.props.parentState} roles = {this.props.roles}/>
                       </Table.Cell>
                       <Table.Cell className='cells-max-witdh-2' collapsing>
                         {
@@ -142,7 +141,7 @@ class ComponentClinicHistory extends Component {
                         }
                         {
                           accesomenu.permisos.modificar ?
-                          <ComponentUpdateClinicHistory allClinicsHistory = { this.props.allClinicsHistory } allPatients = { this.props.allPatients } historiaclinica = {historia} parentState = {this.props.parentState} roles = {this.props.roles} pacientes = {this.props.pacientes} historiasclinicas = {this.props.historiasclinicas}/> :
+                          <ComponentUpdateClinicHistory allClinicsHistory = { this.props.allClinicsHistory } allPatients = { this.props.allPatients } historiaclinica = {historia} parentState = {this.props.parentState} roles = {this.props.roles} pacientes = {this.props.pacientes} historiasclinicas = {this.props.historiasclinicas} /> :
                           <Button icon='edit' disabled />
                         }
                       </Table.Cell>

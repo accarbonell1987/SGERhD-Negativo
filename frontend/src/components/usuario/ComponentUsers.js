@@ -81,7 +81,8 @@ class ComponentUsers extends Component {
                 <Table.HeaderCell />
                 <Table.HeaderCell colSpan='5'>{
                   accesomenu.permisos.crear ?
-                    <ComponentAddUser allUsers = {this.props.allUsers}  parentState = {this.props.parentState} roles = {this.props.roles} />:<Button floated='right' icon labelPosition='left' primary size='small' className='modal-button-add' disabled>
+                    <ComponentAddUser allUsers = {this.props.allUsers}  parentState = {this.props.parentState} roles = {this.props.roles} />:
+                    <Button floated='right' icon labelPosition='left' primary size='small' className='modal-button-add' disabled>
                       <Icon name='add user' /> Adicionar
                     </Button>
                 }
@@ -131,7 +132,7 @@ class ComponentUsers extends Component {
                         }
                         {
                           accesomenu.permisos.modificar ?
-                          <ComponentUpdateUser allUsers = { this.props.allUsers } usuario = {usuario} parentState = {this.props.parentState} roles = {this.props.roles} /> :
+                          <ComponentUpdateUser allUsers = { this.props.allUsers } usuario = {usuario} parentState = {this.props.parentState} roles = {this.props.roles} />:
                           <Button icon='edit' disabled />
                         }
                         {

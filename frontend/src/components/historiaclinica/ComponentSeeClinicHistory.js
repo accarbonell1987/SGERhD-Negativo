@@ -71,6 +71,7 @@ class ComponentSeeClinicHistory extends Component {
   
     render() {
       const historia = this.props.paciente.historiaclinica;
+      //buscar el permiso del rol
       if (historia != null) {
         return (
           <Modal open={this.state.openModal}
@@ -140,7 +141,7 @@ class ComponentSeeClinicHistory extends Component {
           </Modal>
         );
       } else return (
-        <ComponentAddClinicHistory allClinicsHistory = {this.props.allClinicsHistory}  allPatients={this.props.allPatients} parentState = {this.props.parentState} roles = {this.props.roles} pacientes = {this.props.pacientes} historiasclinicas = {this.props.historiasclinicas} cambiarIcono = {true} paciente = {this.props.paciente} />
+        <ComponentAddClinicHistory allClinicsHistory = {this.props.allClinicsHistory}  allPatients={this.props.allPatients} parentState = {this.props.parentState} roles = {this.props.roles} pacientes = {this.props.pacientes} historiasclinicas = {this.props.historiasclinicas} cambiarIcono = {true} paciente = {this.props.paciente} permisos = {this.props.permisos} />
       );
     }
   }

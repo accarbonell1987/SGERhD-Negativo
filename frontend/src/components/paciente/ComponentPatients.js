@@ -81,9 +81,9 @@ class ComponentPatients extends Component {
                 <Table.HeaderCell />
                 <Table.HeaderCell colSpan='13'>
                   { accesomenu.permisos.crear ?
-                    <ComponentAddPatient allPatients = {this.props.allPatients}  parentState = {this.props.parentState} roles = {this.props.roles} /> :
+                    <ComponentAddPatient allPatients = {this.props.allPatients}  parentState = {this.props.parentState} roles = {this.props.roles} />:
                     <Button floated='right' icon labelPosition='left' primary size='small' className='modal-button-add' disabled>
-                      <Icon name='add circle' /> Adicionar
+                      <Icon name='add circle' />Adicionar
                     </Button>
                   }
                 </Table.HeaderCell>
@@ -142,10 +142,16 @@ class ComponentPatients extends Component {
                       }
                       </Table.Cell>
                       <Table.Cell className='cells-max-witdh-2' collapsing>
-                        <ComponentChilds parentState = {this.props.parentState} paciente = {paciente} pacientes = {this.props.pacientes} allPatients = {this.props.allPatients} />
+                        {
+                          accesomenu.permisos.modificar ?
+                          <ComponentChilds parentState = {this.props.parentState} paciente = {paciente} pacientes = {this.props.pacientes} allPatients = {this.props.allPatients} />:
+                          <Button icon labelPosition='right' className='modal-button-other' >
+                            <Icon name='child' className='modal-icon-other'/>{paciente.hijos !== null ? paciente.hijos.length > 0 ? paciente.hijos.length : 0 : '' }
+                          </Button>
+                        }
                       </Table.Cell>
                       <Table.Cell className='cells-max-witdh-2' collapsing>
-                        <ComponentSeeClinicHistory allClinicsHistory = {this.props.allClinicsHistory} allPatients={this.props.allPatients} parentState = {this.props.parentState} paciente = {paciente} pacientes = {this.props.pacientes} historiasclinicas = {this.props.historiasclinicas}  roles = {this.props.roles} />
+                        <ComponentSeeClinicHistory allClinicsHistory = {this.props.allClinicsHistory} allPatients={this.props.allPatients} parentState = {this.props.parentState} paciente = {paciente} pacientes = {this.props.pacientes} historiasclinicas = {this.props.historiasclinicas}  roles = {this.props.roles} permisos = {this.props.permisos} />
                       </Table.Cell>
                       <Table.Cell className='cells-max-witdh-2' collapsing>
                         <Button icon labelPosition='right' className='button-childs'>
