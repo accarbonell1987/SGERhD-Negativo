@@ -109,7 +109,7 @@ class ComponentPatients extends Component {
 
             <Table.Body>
               { this.props.pacientes.map(paciente => {
-                  let madre = this.props.pacientes.find(p => p._id === paciente.madre);
+                  let madre = paciente.madre;
                   let madrenombreyapellido = (madre == null) ? 'Indefinido' : madre.nombre + ' ' + madre.apellidos;
                   // let rolData = this.props.roles.find(element => { return element.key === usuario.rol });
                   // //para colorear row

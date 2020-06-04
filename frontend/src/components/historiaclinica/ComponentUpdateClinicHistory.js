@@ -133,7 +133,7 @@ class ComponentUpdateClinicHistory extends Component {
         //en caso de que sea mayor que cero
         if (this.props.historiasclinicas) {
           //busco los pacientes que no tengan historias validas
-          if (this.props.historiasclinicas.find(history => history === p.historiaclinica)) {
+          if (!this.props.historiasclinicas.some(h => h.paciente._id === p._id)) {
             let nombreyapellidos = p.nombre + ' ' + p.apellidos;
             let cur = { key: p._id, text: nombreyapellidos, value: p._id, icon: 'wheelchair' };
             opcion = [...opcion, cur];
@@ -144,6 +144,7 @@ class ComponentUpdateClinicHistory extends Component {
           opcion = [...opcion, cur];
         }
       });
+      
       this.setState({
         openModal: false,
         areaDeSalud: '', 

@@ -6,7 +6,7 @@ var mongoose = require('mongoose');
 //#region Pacientes
 exports.GetPatients = async (query, page, limit) => {
     try {
-        var patients = await Paciente.find(query).populate('historiaclinica');
+        var patients = await Paciente.find(query).populate('historiaclinica').populate('madre');
         return patients;
     } catch (err) {
         console.log('Error: Obteniendo Pacientes');
@@ -56,14 +56,15 @@ exports.UpdatePatient = async (id, body) => {
     try {
         const { nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, historiaclinica, madre, hijos, transfusiones, embarazos, examenes, activo, hijoseliminados } = body;
 
-        const patient = { nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, historiaclinica, madre, hijos, transfusiones,embarazos, examenes, activo };
+        const patient = { nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, historiaclinica, madre, hijos, transfusiones, embarazos, examenes, activo };
         
+        console.log(hijos);
         //asignarle el madre al hijo correspondiente
         if (hijos != null) {
-            hijos.map(pacienteid => {
-                Paciente.findById(pacienteid)
+            hijos.map(hijo => {
+                Paciente.findById(hijo)
                 .then(hijo => {
-                    if (sexo === 'F') hijo.madre = req.params.id;
+                    if (sexo === 'F') hijo.madre = id;
                     const saved = hijo.save();
                 });
             });
@@ -71,8 +72,8 @@ exports.UpdatePatient = async (id, body) => {
         //asignar null al hijo correspondiente
         if (hijoseliminados != null) {
             //eliminar la madre al hijo
-            hijoseliminados.map(pacienteid => {
-                Paciente.findById(pacienteid)
+            hijoseliminados.map(hijo => {
+                Paciente.findById(hijo)
                 .then(hijo => {
                     if (sexo === 'F') hijo.madre = mongoose.mongo.ObjectID();
                     const saved = hijo.save();
