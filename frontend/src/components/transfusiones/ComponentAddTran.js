@@ -1,10 +1,6 @@
 //#region Importaciones
 import React, { Component } from 'react';
 import { Button, Icon, Header, Modal, Form, Message, Segment } from 'semantic-ui-react'
-import DateRangePicker from 'react-daterange-picker';
-import Moment from 'moment';
-import {extendedMoment} from 'moment-range';
-
 import Swal from 'sweetalert2'
 //#endregion
 
@@ -12,19 +8,22 @@ import Swal from 'sweetalert2'
 import '../global/css/Gestionar.css';
 //#endregion
 
-const moment = extendedMoment(Moment);
+//#region Componentes
+import ComponentInputDatePicker from '../generales/ComponentInputDatePicker';
+//#endregion
 
 //#region Definicion Clase
 class ComponentAddTran extends Component {
     //#region Properties
     state = {
       openModal: false,
-      fecha: '',
+      fecha: null,
       reaccionAdversa: false,
       observaciones: '',
-      paciente: '',
+      paciente: null,
       opcionPacientes: [],
       activo: true,
+      errorfecha: false,
       errorform: false
     }
     //#endregion
@@ -33,6 +32,7 @@ class ComponentAddTran extends Component {
     constructor(props) {
       super(props);
   
+      this.setDate = this.setDate.bind(this);
       this.addTran = this.addTran.bind(this);
       this.changeModalInput = this.changeModalInput.bind(this);
       this.changeModalState = this.changeModalState.bind(this);
@@ -84,11 +84,6 @@ class ComponentAddTran extends Component {
     //validar el formulario
     handleSubmit = (evt) => {
       evt.preventDefault();
-      
-      this.setState({ 
-        errform: false
-      });
-  
       return false;
     }
     //Actualiza los inputs con los valores que vamos escribiendo
@@ -141,6 +136,11 @@ class ComponentAddTran extends Component {
         errorform: false
       });
     }
+    //capturar fecha
+    setDate = (fecha) => {
+      this.setState({fecha: fecha});
+      console.log(fecha);
+    }
     //#endregion
   
     //#region Render
@@ -176,7 +176,12 @@ class ComponentAddTran extends Component {
             <Modal.Content>
             { this.state.errorform ? <Message error inverted header='Error' content='Error en el formulario' /> : null } 
             <Form ref='form' onSubmit={this.changeModalState}>
-                <DateRangePicker firstOfWeek={1} numberOfCalendars={2} selectionType='range' minimumDate={new Date()} defaultState='available' showLegend={true} value={this.state.fecha} onSelect={this.changeModalInput} />
+                <Form.Group>
+                  <Segment className='modal-segment-expanded'>
+                    <Header as='h5'>Fecha:</Header>
+                    <ComponentInputDatePicker setDate={this.setDate} />
+                  </Segment>
+                </Form.Group>
                 {/* <Form.Input
                   required disabled name = 'numerohistoria' icon = 'address card outline' iconPosition = 'left' label = 'Numero de Historia:' value={this.state.numerohistoria}
                 />
@@ -265,8 +270,8 @@ class ComponentAddTran extends Component {
                   <Icon name='remove' className='modal-icon-cancel' />Cancelar
               </Button>
               <Button color='green' onClick={this.changeModalState} className='modal-button-accept' type='submit' disabled={
-                  (!this.state.numerohistoria || !this.state.areaDeSalud || !this.state.paciente)
-              }>
+                  (!this.state.fecha || !this.state.paciente)
+                }>
                   <Icon name='checkmark' />Aceptar
               </Button>
             </Modal.Actions>

@@ -97,3 +97,11 @@
 .modal-input-60p {
     width: 100% !important;
 }
+
+.modal-datepicker {
+    width: 20% !important;
+}
+
+.modal-action-centered {
+    text-align: center !important;
+}

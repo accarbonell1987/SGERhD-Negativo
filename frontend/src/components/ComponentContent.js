@@ -149,7 +149,7 @@ class ComponentContent extends Component {
     }  else if (this.props.opcionmenu === 'transfusiones' && accesomenu.permisos.menu) {
       return (
         <div className='Content'>
-          <ComponentTrans parentState = {this.props.parentState} roles = {this.props.roles} permisos = {this.props.permisos} pacientes = {this.state.pacientes} historiasclinicas = {this.state.historiasclinicas} allTrans = {this.allTrans} allPatients = {this.allPatients}/>
+          <ComponentTrans parentState = {this.props.parentState} roles = {this.props.roles} permisos = {this.props.permisos} pacientes = {this.state.pacientes} transfusiones={this.state.transfusiones} allTrans = {this.allTrans} allPatients = {this.allPatients}/>
           <ComponentFooter />
         </div>
       );
