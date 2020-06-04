@@ -14,20 +14,12 @@ import ComponentSeeClinicHistory from '../historiaclinica/ComponentSeeClinicHist
 
 //Defincion de la clase
 class ComponentPatients extends Component {
-  state = {
-    pacientes: []
-  }
-
   constructor(props) {
     super(props);
 
-    this.allPatients = this.allPatients.bind(this);
     this.deletePatient = this.deletePatient.bind(this);
   }
 
-  componentDidMount = () => {
-    this.allPatients();
-  }
   //eliminar el paciente
   deletePatient = (id, nombre, apellidos) => {
     //Esta seguro?
@@ -61,7 +53,7 @@ class ComponentPatients extends Component {
           :
             Swal.fire({ position: 'center', icon: 'error', title: message, showConfirmButton: false, timer: 5000 })
 
-          this.allPatients();
+          this.props.allPatients();
         })
         .catch(err => {
           Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 5000 });
@@ -69,27 +61,7 @@ class ComponentPatients extends Component {
       }
     })
   }
-  //obtener todos los pacientes desde la API
-  allPatients = async () => {
-    await fetch(this.props.parentState.endpoint + 'api/paciente', {
-        method: 'GET',
-        headers: {
-          'access-token' : this.props.parentState.token
-        }
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === 200){
-          this.setState({pacientes: data.data});
-        }else{
-          Swal.fire({ position: 'center', icon: 'error', title: data.message, showConfirmButton: false, timer: 3000 }); 
-        }
-      })
-      .catch(err => {
-        Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 3000 });
-      });
-  }
-
+  
   render() {
     //buscar el permiso del rol
     const permiso = this.props.permisos.find(p => p.rol === this.props.parentState.rol);
@@ -108,7 +80,7 @@ class ComponentPatients extends Component {
                 <Table.HeaderCell />
                 <Table.HeaderCell colSpan='13'>
                   { accesomenu.permisos.crear ?
-                    <ComponentAddPatient allPatients = {this.allPatients}  parentState = {this.props.parentState} roles = {this.props.roles} /> :
+                    <ComponentAddPatient allPatients = {this.props.allPatients}  parentState = {this.props.parentState} roles = {this.props.roles} /> :
                     <Button floated='right' icon labelPosition='left' primary size='small' className='modal-button-add' disabled>
                       <Icon name='add circle' /> Adicionar
                     </Button>
@@ -116,7 +88,7 @@ class ComponentPatients extends Component {
                 </Table.HeaderCell>
               </Table.Row>
               { 
-                (this.state.pacientes.length > 0) ? 
+                (this.props.pacientes.length > 0) ? 
                 <Table.Row>
                   <Table.HeaderCell />
                   <Table.HeaderCell>Nombres y Apellidos</Table.HeaderCell>
@@ -136,8 +108,8 @@ class ComponentPatients extends Component {
             </Table.Header>
 
             <Table.Body>
-              { this.state.pacientes.map(paciente => {
-                  let madre = this.state.pacientes.find(p => p._id === paciente.madre);
+              { this.props.pacientes.map(paciente => {
+                  let madre = this.props.pacientes.find(p => p._id === paciente.madre);
                   let madrenombreyapellido = (madre == null) ? 'Indefinido' : madre.nombre + ' ' + madre.apellidos;
                   // let rolData = this.props.roles.find(element => { return element.key === usuario.rol });
                   // //para colorear row
@@ -169,10 +141,10 @@ class ComponentPatients extends Component {
                       }
                       </Table.Cell>
                       <Table.Cell className='cells-max-witdh-2' collapsing>
-                        <ComponentChilds parentState = {this.props.parentState} paciente = {paciente} pacientes = {this.state.pacientes} allPatients = {this.allPatients} />
+                        <ComponentChilds parentState = {this.props.parentState} paciente = {paciente} pacientes = {this.props.pacientes} allPatients = {this.props.allPatients} />
                       </Table.Cell>
                       <Table.Cell className='cells-max-witdh-2' collapsing>
-                        <ComponentSeeClinicHistory parentState = {this.props.parentState} paciente = {paciente} pacientes = {this.state.pacientes} />
+                        <ComponentSeeClinicHistory parentState = {this.props.parentState} paciente = {paciente} pacientes = {this.props.pacientes} historiasclinicas = {this.props.historiasclinicas}/>
                       </Table.Cell>
                       <Table.Cell className='cells-max-witdh-2' collapsing>
                         <Button icon labelPosition='right' className='button-childs'>
@@ -196,7 +168,7 @@ class ComponentPatients extends Component {
                         }
                         {
                           accesomenu.permisos.modificar ?
-                          <ComponentUpdatePatient allPatients = { this.allPatients } paciente = {paciente} parentState = {this.props.parentState} roles = {this.props.roles} /> :
+                          <ComponentUpdatePatient allPatients = { this.props.allPatients } paciente = {paciente} parentState = {this.props.parentState} roles = {this.props.roles} /> :
                           <Button icon='edit' disabled />
                         }
                       </Table.Cell>

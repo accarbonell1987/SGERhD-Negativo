@@ -161,9 +161,9 @@ class ComponentAddPatient extends Component {
       this.props.pacientes.forEach(p => {
         //validacion si el paciente tiene una historia no se debe de mostrar
         //en caso de que sea mayor que cero
-        if (this.props.historiasclinica.length > 0) {
+        if (this.props.historiasclinicas.length > 0) {
           //busco los pacientes que no tengan historias validas
-          if (this.props.historiasclinica.find(history => history === p.historiaclinica)) {
+          if (this.props.historiasclinicas.find(history => history === p.historiaclinica)) {
             let nombreyapellidos = p.nombre + ' ' + p.apellidos;
             let cur = { key: p._id, text: nombreyapellidos, value: p._id, icon: 'wheelchair' };
             opcion = [...opcion, cur];
@@ -286,7 +286,7 @@ class ComponentAddPatient extends Component {
                 </Segment.Group>
                 <Form.Select
                     name = 'paciente' label = 'Paciente:' placeholder = 'Seleccionar Paciente' options={this.state.opcionPacientes} value={this.state.paciente} onChange = { (e, {value}) => { this.setState({ paciente : value }); } } fluid selection clearable
-                  />
+                />
             </Form>
             </Modal.Content>
             <Modal.Actions>

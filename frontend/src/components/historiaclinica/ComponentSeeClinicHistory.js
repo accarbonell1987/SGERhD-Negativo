@@ -1,26 +1,26 @@
 //Importaciones
 import React, { Component } from 'react';
-import { Button, Icon, Header, Modal, Form, Message } from 'semantic-ui-react'
-import Swal from 'sweetalert2'
+import { Button, Icon, Header, Modal, Form, Message, Segment } from 'semantic-ui-react'
 
 //CSS
 import '../global/css/Gestionar.css';
 
-class ComponentUpdatePatient extends Component {
+class ComponentSeeClinicHistory extends Component {
     state = {
       openModal: false,
-      nombre: '',
-      apellidos: '',
-      ci: '',
-      direccion: '',
-      direccionopcional: '',
-      telefono: '',
-      sexo: '',
-      madre: '',
-      hijos: [],
-      transfusiones: [],
-      embarazos: [],
-      examenes: []
+      areaDeSalud: '', 
+      numerohistoria: '', 
+      vacunaAntiD : false, 
+      numeroDeEmbarazos: 0, 
+      numeroDePartos: 0, 
+      numeroDeAbortos: 0, 
+      paciente: '',
+      opcionPacientes: [],
+      activo: true,
+      errorareaDeSalud: false,
+      errornumerohistoria: false,
+      errorpaciente: false,
+      errorform: false
     }
 
     generos = [
@@ -35,44 +35,21 @@ class ComponentUpdatePatient extends Component {
       this.clearModalState = this.clearModalState.bind(this);
       this.changeModalInput = this.changeModalInput.bind(this);
       this.changeModalState = this.changeModalState.bind(this);
+      this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    //obtener propiedades del paciente
-    getPatient = (id) => {
-      //enviar al endpoint
-      fetch (this.props.parentState.endpoint + 'api/paciente/' + id, {
-        method: 'GET',
-        headers: {
-          'access-token' : this.props.parentState.token
-        }
-      })
-      .then(res => res.json())
-      .then(jsondata => {
-        const { status, message, data } = jsondata;
-        if (status === 200) {
-          this.setState({
-            openModal: true,
-            nombre: data.nombre,
-            apellidos: data.apellidos,
-            ci: data.ci,
-            direccion: data.direccion,
-            direccionopcional: data.direccionopcional,
-            telefono: data.telefono,
-            sexo: data.sexo,
-            madre: data.madre,
-            hijos: data.hijos,
-            transfusiones: data.transfusiones,
-            embarazos: data.embarazos,
-            examenes: data.examenes,
-            activo: data.activo
-          });
-        }else{
-          Swal.fire({ position: 'center', icon: 'error', title: message, showConfirmButton: false, timer: 5000 })
-        }
-      })
-      .catch(err => {
-        Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 5000 });
+    //validar el formulario
+    handleSubmit = (evt) => {
+      evt.preventDefault();
+  
+      this.setState({ 
+        errorareaDeSalud: false,
+        errornumerohistoria: false,
+        errorpaciente: false,
+        errform: false
       });
+  
+      return false;
     }
     //Actualiza los inputs con los valores que vamos escribiendo
     changeModalInput = (evt) => {
@@ -85,38 +62,63 @@ class ComponentUpdatePatient extends Component {
     //cambiar el estado en el MODAL para adicionar usuario
     changeModalState = async (evt) => {
       if (evt.target.className.includes('modal-button-action') || evt.target.className.includes('modal-icon')) {
-        this.getPatient(this.props.pacienteid);
-      }else if(evt.target.className.includes('modal-button-cancel')){
         this.clearModalState();
-      }else {
+        this.setState({
+          openModal: true,
+          areaDeSalud: this.props.historiaclinica.areaDeSalud, 
+          numerohistoria: this.props.historiaclinica.numerohistoria, 
+          vacunaAntiD : this.props.historiaclinica.vacunaAntiD, 
+          numeroDeEmbarazos: this.props.historiaclinica.numeroDeEmbarazos, 
+          numeroDePartos: this.props.historiaclinica.numeroDePartos, 
+          numeroDeAbortos: this.props.historiaclinica.numeroDeAbortos, 
+          paciente: this.props.historiaclinica.paciente,
+          activo: this.props.historiaclinica.activo
+        });
+      } else if(evt.target.className.includes('modal-button-cancel')){
+        this.clearModalState();
+      } else {
         //si no hay problemas en el formulario
         if (this.handleSubmit(evt) === false) {
           //si no hay problemas en la insercion
-          if (await this.updatePatient(this.props.pacienteid)){
-            //enviar a recargar los usuarios
-            this.props.allPatients();
-            this.clearModalState();
-          }
+          this.clearModalState();
         }
       }
     }
     //limpiar states
     clearModalState = () => {
+      let opcion = [];
+      
+      this.props.pacientes.forEach(p => {
+        //validacion si el paciente tiene una historia no se debe de mostrar
+        //en caso de que sea mayor que cero
+        if (this.props.historiasclinicas) {
+          //busco los pacientes que no tengan historias validas
+          if (this.props.historiasclinicas.find(history => history === p.historiaclinica)) {
+            let nombreyapellidos = p.nombre + ' ' + p.apellidos;
+            let cur = { key: p._id, text: nombreyapellidos, value: p._id, icon: 'wheelchair' };
+            opcion = [...opcion, cur];
+          }
+        }else{
+          let nombreyapellidos = p.nombre + ' ' + p.apellidos;
+          let cur = { key: p._id, text: nombreyapellidos, value: p._id, icon: 'wheelchair' };
+          opcion = [...opcion, cur];
+        }
+      });
       this.setState({
         openModal: false,
-        nombre: '',
-        apellidos: '',
-        ci: '',
-        direccion: '',
-        direccionopcional: '',
-        telefono: '',
-        sexo: '',
-        historiaclinica: '',
-        madre: '',
-        hijos: [],
-        transfusiones: [],
-        embarazos: [],
-        examenes: []
+        areaDeSalud: '', 
+        numerohistoria: '', 
+        vacunaAntiD : false, 
+        numeroDeEmbarazos: 0, 
+        numeroDePartos: 0, 
+        numeroDeAbortos: 0, 
+        paciente: '',
+        opcionPacientes: opcion,
+        activo: true,
+        errorareaDeSalud: false,
+        errornumerohistoria: false,
+        errorpaciente: false,
+        errorform: false
       });
     }
   
@@ -125,34 +127,71 @@ class ComponentUpdatePatient extends Component {
         <Modal open={this.state.openModal}
             trigger = {
                 <Button className='modal-button-action' onClick={this.changeModalState} >
-                  <Icon name='eye' className='modal-icon' onClick={this.changeModalState}/>{ this.props.paciente.historiaclinica !== null ? this.props.paciente.historiaclinica.numerohistoria : 'Vacia'}
+                  <Icon name='edit' className='modal-icon' onClick={this.changeModalState}/>
                 </Button>
             }
         >
-            <Header icon='clipboard' content='Inspeccionar  ' />
+            <Header icon='clipboard' content='Modificar  ' />
             <Modal.Content>
             { this.state.errorform ? <Message error inverted header='Error' content='Error en el formulario' /> : null } 
             <Form ref='form' onSubmit={this.changeModalState}>
-            <Form.Input
-                  required name = 'nombre' icon = 'address card outline' iconPosition = 'left' label = 'Nombre:' value={this.state.nombre} placeholder = 'Facundo' error = { this.state.errornombre } onChange = {this.changeModalInput}
-                />
                 <Form.Input
-                  required name = 'apellidos' icon = 'address card outline' iconPosition = 'left' label = 'Apellidos:' value={this.state.apellidos} error={this.state.errorapellidos} placeholder = 'Correcto Inseguro' onChange = {this.changeModalInput}
+                  required disabled name = 'numerohistoria' icon = 'address card outline' iconPosition = 'left' label = 'Numero de Historia:' value={this.state.numerohistoria}
                 />
-                <Form.Input
-                  required name = 'ci' icon = 'vcard' iconPosition = 'left' label = 'Carnet de Identidad:' value={this.state.ci} placeholder = '90112050112' error = { this.state.errorci } onChange = {this.changeModalInput}
-                />
-                <Form.Input
-                  required name = 'direccion' icon = 'building outline' iconPosition = 'left' label = 'Dirección:' value={this.state.direccion} placeholder = 'Calle 6 No.512...' onChange = {this.changeModalInput}
-                />
-                <Form.Input
-                  name = 'direccionopcional' icon = 'building outline' iconPosition = 'left' label = 'Dirección Opcional:' value={this.state.direccionopcional} placeholder = 'Calle 6 No.512...' onChange = {this.changeModalInput}
-                />
-                <Form.Input
-                  required name = 'telefono' icon = 'phone' iconPosition = 'left' label = 'Teléfono:' value={this.state.telefono} placeholder = '52802640' onChange = {this.changeModalInput} error={this.state.errortelefono}
-                />
+                <Segment.Group horizontal className='modal-segment-group'>
+                  <Segment className='modal-segment-longleft'>
+                    <Form.Input
+                    name = 'areaDeSalud' icon = 'hospital symbol' iconPosition = 'left' label = 'Area de Salud:' value={this.state.areaDeSalud} placeholder = 'Consultorio, Policlinico, Hospital'
+                    />
+                  </Segment>
+                  <Segment className='modal-segment-shortright'>
+                    <Form.Group>
+                      <Segment className='modal-segment-expanded'>
+                        <Header as='h5'>Vacuna Anti-D:</Header>
+                        <Form.Checkbox
+                            toggle name='vacunaAntiD' labelPosition='left' label = {this.state.vacunaAntiD === true ? 'Si' : 'No'} value={this.state.vacunaAntiD}
+                        />
+                      </Segment>
+                    </Form.Group>
+                  </Segment>
+                </Segment.Group>
+                <Segment.Group horizontal>
+                  <Segment>
+                    <Form.Group>
+                      <Form.Input className='modal-input-30p'
+                        required name = 'numeroDeEmbarazos' icon = 'user md' iconPosition = 'left' label = 'Numero de Embarazos:' value={this.state.numeroDeEmbarazos}
+                      />
+                      <Button.Group>
+                        <Button className='button-group-addsub' icon='plus' primary />
+                        <Button className='button-group-addsub' icon='minus' secondary />
+                      </Button.Group>
+                    </Form.Group>
+                  </Segment>
+                  <Segment>
+                    <Form.Group>
+                      <Form.Input className='modal-input-30p'
+                        required name = 'numeroDePartos' icon = 'user md' iconPosition = 'left' label = 'Numero de Partos:' value={this.state.numeroDePartos} 
+                      />
+                      <Button.Group>
+                        <Button className='button-group-addsub' icon='plus' primary />
+                        <Button className='button-group-addsub' icon='minus' secondary />
+                      </Button.Group>
+                    </Form.Group>
+                  </Segment>
+                  <Segment>
+                    <Form.Group>
+                      <Form.Input className='modal-input-30p'
+                        required name = 'numeroDeAbortos' icon = 'user md' iconPosition = 'left' label = 'Numero de Abortos:' value={this.state.numeroDeAbortos}
+                      />
+                      <Button.Group>
+                        <Button className='button-group-addsub' icon='plus' primary />
+                        <Button className='button-group-addsub' icon='minus' secondary />
+                      </Button.Group>
+                    </Form.Group>
+                  </Segment>
+                </Segment.Group>
                 <Form.Select
-                required name = 'sexo' label = 'Género:' placeholder = 'Seleccionar Género' options={this.generos} value={this.state.sexo} error={this.state.errorsexo} onChange = { (e, {value}) => { this.setState({ sexo : value }); } } fluid selection clearable
+                    name = 'paciente' label = 'Paciente:' placeholder = 'Seleccionar Paciente' options={this.state.opcionPacientes} value={this.state.paciente._id} fluid selection clearable
                 />
             </Form>
             </Modal.Content>
@@ -160,15 +199,15 @@ class ComponentUpdatePatient extends Component {
               <Button color='red' onClick={this.changeModalState} className='modal-button-cancel' type>
                   <Icon name='remove' /> Cancelar
               </Button>
-              <Button color='green' onClick={this.changeModalState} className='modal-button-acept' type='submit' disabled={
-                  (!this.state.nombre || !this.state.apellidos || !this.state.ci || !this.state.direccion || !this.state.telefono ||!this.state.sexo)
+              {/* <Button color='green' onClick={this.changeModalState} className='modal-button-acept' type='submit' disabled={
+                  (!this.state.numerohistoria || !this.state.areaDeSalud || !this.state.paciente)
               }>
                   <Icon name='checkmark' /> Aceptar
-              </Button>
+              </Button> */}
             </Modal.Actions>
         </Modal>
       );
     }
   }
   
-  export default ComponentUpdatePatient;
+  export default ComponentSeeClinicHistory;

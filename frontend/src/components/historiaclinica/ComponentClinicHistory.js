@@ -12,23 +12,12 @@ import ComponentUpdateClinicHistory from './ComponentUpdateClinicHistory';
 
 //Defincion de la clase
 class ComponentClinicHistory extends Component {
-  state = {
-    historiasclinica: [],
-    pacientes: []
-  }
-
   constructor(props) {
     super(props);
 
-    this.allClinicsHistory = this.allClinicsHistory.bind(this);
-    this.allPatients = this.allPatients.bind(this);
     this.deleteClinicHistory = this.deleteClinicHistory.bind(this);
   }
 
-  componentDidMount = () => {
-    this.allClinicsHistory();
-    this.allPatients();
-  }
   //obtener propiedades de historia clinica
   getClinicHistory = (id) => {
     //enviar al endpoint
@@ -84,53 +73,13 @@ class ComponentClinicHistory extends Component {
           :
             Swal.fire({ position: 'center', icon: 'error', title: message, showConfirmButton: false, timer: 5000 })
 
-          this.allClinicsHistory();
+          this.props.allClinicsHistory();
         })
         .catch(err => {
           Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 5000 });
         });
       }
     })
-  }
-  //obtener todos los historia clinica desde la API
-  allClinicsHistory = async () => {
-    await fetch(this.props.parentState.endpoint + 'api/historiaclinica', {
-        method: 'GET',
-        headers: {
-          'access-token' : this.props.parentState.token
-        }
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === 200){
-          this.setState({historiasclinica: data.data});
-        }else{
-          Swal.fire({ position: 'center', icon: 'error', title: data.message, showConfirmButton: false, timer: 3000 }); 
-        }
-      })
-      .catch(err => {
-        Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 3000 });
-      });
-  }
-  //obtener todos los pacientes desde la API
-  allPatients = async () => {
-    await fetch(this.props.parentState.endpoint + 'api/paciente', {
-        method: 'GET',
-        headers: {
-          'access-token' : this.props.parentState.token
-        }
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === 200){
-          this.setState({pacientes: data.data});
-        }else{
-          Swal.fire({ position: 'center', icon: 'error', title: data.message, showConfirmButton: false, timer: 3000 }); 
-        }
-      })
-      .catch(err => {
-        Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 3000 });
-      });
   }
 
   render() {
@@ -151,7 +100,7 @@ class ComponentClinicHistory extends Component {
                 <Table.HeaderCell />
                 <Table.HeaderCell colSpan='9'>
                   { accesomenu.permisos.crear ?
-                    <ComponentAddClinicHistory allClinicsHistory = {this.allClinicsHistory}  parentState = {this.props.parentState} roles = {this.props.roles} pacientes = {this.state.pacientes} historiasclinica = {this.state.historiasclinica}/> :
+                    <ComponentAddClinicHistory allClinicsHistory = {this.props.allClinicsHistory}  parentState = {this.props.parentState} roles = {this.props.roles} pacientes = {this.props.pacientes} historiasclinicas = {this.props.historiasclinicas}/> :
                     <Button floated='right' icon labelPosition='left' primary size='small' className='modal-button-add' disabled>
                       <Icon name='add circle' /> Adicionar
                     </Button>
@@ -160,7 +109,7 @@ class ComponentClinicHistory extends Component {
               </Table.Row>
               { 
                 
-                (this.state.historiasclinica.length > 0) ? 
+                (this.props.historiasclinicas.length > 0) ? 
                 <Table.Row>
                   <Table.HeaderCell />
                   <Table.HeaderCell>Número</Table.HeaderCell>
@@ -177,7 +126,7 @@ class ComponentClinicHistory extends Component {
 
             <Table.Body>
               { 
-                this.state.historiasclinica.map(historia => {
+                this.props.historiasclinicas.map(historia => {
                   // let rolData = this.props.roles.find(element => { return element.key === usuario.rol });
                   // //para colorear row
                   // let negative = this.props.parentState.usuario === usuario.nombre;
@@ -202,8 +151,8 @@ class ComponentClinicHistory extends Component {
                       <Table.Cell>{historia.numeroDeAbortos}</Table.Cell>
                       <Table.Cell className='cells-max-witdh-2' collapsing>
                         <Button icon labelPosition='right' className='button-childs'>
-                          <Icon name='wheelchair' className='button-icon-childs'/>0
-                        </Button> 
+                          <Icon name='wheelchair' className='button-icon-childs'/>{historia.paciente.nombre + ' ' + historia.paciente.apellidos}
+                        </Button>
                       </Table.Cell>
                       <Table.Cell className='cells-max-witdh-2' collapsing>
                         {
@@ -212,7 +161,7 @@ class ComponentClinicHistory extends Component {
                         }
                         {
                           accesomenu.permisos.modificar ?
-                          <ComponentUpdateClinicHistory allClinicsHistory = { this.allClinicsHistory } historiaid = {historia._id} parentState = {this.props.parentState} roles = {this.props.roles} /> :
+                          <ComponentUpdateClinicHistory allClinicsHistory = { this.props.allClinicsHistory } historiaclinica = {historia} parentState = {this.props.parentState} roles = {this.props.roles} pacientes = {this.props.pacientes} /> :
                           <Button icon='edit' disabled />
                         }
                       </Table.Cell>

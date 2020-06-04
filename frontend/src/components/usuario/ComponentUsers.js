@@ -14,19 +14,10 @@ import ComponentChangePassword from './ComponentChangePassword';
 
 //Defincion de la clase
 class ComponentUsers extends Component {
-  state = {
-    usuarios: []
-  }
-
   constructor(props) {
     super(props);
 
-    this.allUsers = this.allUsers.bind(this);
     this.deleteUser = this.deleteUser.bind(this);
-  }
-
-  componentDidMount = () => {
-    this.allUsers();
   }
   //eliminar el usuario
   deleteUser = (id, nombre) => {
@@ -71,26 +62,6 @@ class ComponentUsers extends Component {
       }
     })
   }
-  //obtener todos los usuarios desde la API
-  allUsers = async () => {
-    await fetch(this.props.parentState.endpoint + 'api/usuario', {
-        method: 'GET',
-        headers: {
-          'access-token' : this.props.parentState.token
-        }
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === 200){
-          this.setState({usuarios: data.data});
-        }else{
-          Swal.fire({ position: 'center', icon: 'error', title: data.message, showConfirmButton: false, timer: 3000 }); 
-        }
-      })
-      .catch(err => {
-        Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 3000 });
-      });
-  }
 
   render() {
     //buscar el permiso del rol
@@ -117,7 +88,7 @@ class ComponentUsers extends Component {
                 </Table.HeaderCell>
               </Table.Row> 
               { 
-                (this.state.usuarios.length > 0) ? 
+                (this.props.usuarios.length > 0) ? 
                 <Table.Row>
                   <Table.HeaderCell />
                   <Table.HeaderCell>Nombre</Table.HeaderCell>
@@ -130,7 +101,7 @@ class ComponentUsers extends Component {
             </Table.Header>
 
             <Table.Body>
-              { this.state.usuarios.map (usuario => {
+              { this.props.usuarios.map (usuario => {
 
                   let rolData = this.props.roles.find(element => { return element.key === usuario.rol });
                   //para colorear row
