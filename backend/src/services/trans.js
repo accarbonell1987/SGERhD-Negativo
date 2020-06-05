@@ -48,17 +48,6 @@ exports.InsertTran = async (body) => {
         throw Error('Insertando Transfusion: ' + err);
     };
 }
-exports.DeleteTran = async (id) => {
-    try {
-        var removed = await Transfusion.findByIdAndRemove(id).then(t => {
-            PatientServices.DeleteTranFromPatient(t, t.paciente);
-        });
-        return removed;
-    } catch(err) {
-        console.log('Error: Eliminando Transfusion' + err);
-        throw Error('Eliminando Transfusion: ' + err);
-    };
-}
 exports.UpdateTran = async (id, body) => {
     try {
         var { fecha, observaciones, reacionAdversa, paciente, activo } = body;
@@ -71,14 +60,30 @@ exports.UpdateTran = async (id, body) => {
         throw Error('Modificando Transfusion: ' + err);
     }
 }
-exports.DesactivateTran = async (id) => {
-    try {
-        const tran = { activo: false };
-        var updated = await Transfusion.findByIdAndUpdate(id, tran);
+exports.DeleteTran = (tran) => {
+    var removed = Transfusion.findByIdAndRemove(tran._id)
+        .then(removed => removed)
+        .then(t => {
+            PatientServices.DeleteTranInPatient(tran);
+        })
+        .catch(err => {
+            console.log('Error: Eliminando Transfusion' + err);
+            throw Error('Eliminando Transfusion: ' + err);
+        });
+    return removed;
+}
+exports.DisableTran = (id, tran) => {
+    if (tran.activo ) {
+        tran = { activo: false };
+        var updated = Transfusion.findByIdAndUpdate(id, tran)
+        .then(tran => tran)
+        .catch(err => {
+            console.log('Error: Desactivando Transfusion: ' + err);
+            throw Error('Desactivando Transfusion: ' + err);
+        });
         return updated;
-    } catch(err) {
-        console.log('Error: Modificando Transfusion: ' + err);
-        throw Error('Modificando Transfusion: ' + err);
+    }else{
+        return exports.DeleteTran(tran);
     }
 }
 //#endregion

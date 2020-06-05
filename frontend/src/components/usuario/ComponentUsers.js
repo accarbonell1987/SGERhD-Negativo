@@ -22,9 +22,10 @@ class ComponentUsers extends Component {
   //eliminar el usuario
   deleteUser = (usuario) => {
     //Esta seguro?
-    let text = '';
-    if (usuario.activo) text = 'Desea desactivar el usuario: ' + usuario.nombre
-    else text = 'Desea eliminar el usuario: ' + usuario.nombre;
+    let {text, accion} = '';
+    if (usuario.activo) accion = 'Desactivar';
+    else accion = 'Eliminar';
+    text = 'Desea '+ accion +' el usuario: ' + usuario.nombre;
 
     Swal.fire({
       title: '¿Esta seguro?',
@@ -35,7 +36,7 @@ class ComponentUsers extends Component {
       cancelButtonColor: '#db2828',
       confirmButtonColor: '#21ba45',
       // cancelButtonColor: '#d33',
-      confirmButtonText: 'Si, Eliminar',
+      confirmButtonText: 'Si, '+ accion,
       reverseButtons: true
     })
     .then((result) => {
@@ -43,7 +44,8 @@ class ComponentUsers extends Component {
       if (result.value) {
         //enviar al endpoint
         fetch (this.props.parentState.endpoint + 'api/usuario/' + usuario._id, {
-          method: 'DELETE',
+          method: 'PUT',
+          body: JSON.stringify(usuario),
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',

@@ -37,8 +37,21 @@ exports.InsertUser = async (req, res, next) => {
 }
 exports.DeleteUser = async (req, res, next) => {
     try {
-        var user = UserServices.DesactivateUser(req.params.id);
-        return res.status(200).json({ status: 200, message: !user.activo ? 'Desactivado Correctamente' : 'Eliminado Correctamente', data: user });
+        var user = UserServices.DeleteUser(req.params.id);
+        return res.status(200).json({ status: 200, message: 'Eliminado Correctamente', data: user });
+    }catch(err) {
+        return res.status(400).json({ status: 400, message: err });
+    }
+}
+exports.DisableUser = async (req, res, next) => {
+    try {
+        let requser = req.body;
+        
+        let message = 'Eliminado Correctamente';
+        if (requser.activo) message = 'Desactivado Correctamente'
+
+        var user = UserServices.DisableUser(req.params.id, requser);
+        return res.status(200).json({ status: 200, message: message, data: user });
     }catch(err) {
         return res.status(400).json({ status: 400, message: err });
     }
@@ -143,6 +156,19 @@ exports.DeletePatient = async (req, res, next) => {
         return res.status(400).json({ status: 400, message: err });
     }
 }
+exports.DisablePatient = async (req, res, next) => {
+    try {
+        let reqpatient = req.body;
+        
+        let message = 'Eliminado Correctamente';
+        if (reqpatient.activo) message = 'Desactivado Correctamente'
+
+        var patient = PatientServices.DisablePatient(req.params.id, reqpatient);
+        return res.status(200).json({ status: 200, message: message, data: patient });
+    }catch(err) {
+        return res.status(400).json({ status: 400, message: err });
+    }
+}
 exports.UpdatePatient = async (req, res, next) => {
     try {
         var paciente = await PatientServices.UpdatePatient(req.params.id, req.body);
@@ -202,6 +228,19 @@ exports.DeleteClinicHistory = async (req, res, next) => {
         return res.status(400).json({ status: 400, message: err });
     }
 }
+exports.DisableClinicHistory = async (req, res, next) => {
+    try {
+        let reqclinichistory = req.body;
+        
+        let message = 'Eliminado Correctamente';
+        if (reqclinichistory.activo) message = 'Desactivado Correctamente'
+
+        var clinichistory = ClinicHistoryServices.DisableClinicHistory(req.params.id, reqclinichistory);
+        return res.status(200).json({ status: 200, message: message, data: clinichistory });
+    }catch(err) {
+        return res.status(400).json({ status: 400, message: err });
+    }
+}
 exports.UpdateClinicHistory = async (req, res, next) => {
     try {
         var clinichistory = await ClinicHistoryServices.UpdateClinicHistory(req.params.id, req.body);
@@ -246,6 +285,19 @@ exports.DeleteTran = async (req, res, next) => {
         var tran = await TranServices.DesactivateTran(req.params.id);
         return res.status(200).json({ status: 200, message: 'Eliminado Correctamente', data: tran });
     } catch(err) {
+        return res.status(400).json({ status: 400, message: err });
+    }
+}
+exports.DisableTran = async (req, res, next) => {
+    try {
+        let reqtran = req.body;
+        
+        let message = 'Eliminado Correctamente';
+        if (reqtran.activo) message = 'Desactivado Correctamente'
+
+        var tran = TranServices.DisableTran(req.params.id, reqtran);
+        return res.status(200).json({ status: 200, message: message, data: tran });
+    }catch(err) {
         return res.status(400).json({ status: 400, message: err });
     }
 }

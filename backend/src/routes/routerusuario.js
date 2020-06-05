@@ -42,6 +42,8 @@ router.post('/usuario', bll.InsertUser);
 router.delete('/usuario/:id', bll.DeleteUser);
 //PATCH - Un usuario por id /usuario/id - {json}
 router.patch('/usuario/:id', bll.UpdateUser);
+//PUT - lo usaremos para el eliminar
+router.put('/usuario/:id', bll.DisableUser);
 //PATCH - Cambiar clave /usuario/id - {json}
 router.patch('/usuario/password/:id', bll.UpdateUserPassword);
 //#endregion

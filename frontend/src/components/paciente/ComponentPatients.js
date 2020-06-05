@@ -21,24 +21,30 @@ class ComponentPatients extends Component {
   }
 
   //eliminar el paciente
-  deletePatient = (id, nombre, apellidos) => {
+  deletePatient = (paciente) => {
     //Esta seguro?
+    let {text, accion} = '';
+    if (paciente.activo) accion = 'Desactivar';
+    else accion = 'Eliminar';
+    text = 'Desea '+ accion +' el paciente: ' + paciente.nombre + " " + paciente.apellidos;
+
     Swal.fire({
       title: '¿Esta seguro?',
-      text: "Desea eliminar el paciente: " + nombre + " " + apellidos,
+      text: text,
       icon: 'question',
       showCancelButton: true,
       cancelButtonColor: '#db2828',
       confirmButtonColor: '#21ba45',
-      confirmButtonText: 'Si, Eliminar',
+      confirmButtonText: 'Si, ' + accion,
       reverseButtons: true
     })
     .then((result) => {
       //si escogio Si
       if (result.value) {
         //enviar al endpoint
-        fetch (this.props.parentState.endpoint + 'api/paciente/' + id, {
-          method: 'DELETE',
+        fetch (this.props.parentState.endpoint + 'api/paciente/' + paciente._id, {
+          method: 'PUT',
+          body: JSON.stringify(paciente),
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
@@ -179,7 +185,7 @@ class ComponentPatients extends Component {
                       <Table.Cell className='cells-max-witdh-2' collapsing>
                         {
                           accesomenu.permisos.eliminar ?
-                          <Button icon='remove circle' className = 'button-remove' onClick={() => this.deletePatient(paciente._id, paciente.nombre, paciente.apellidos) } /> : <Button icon='remove circle' className = 'button-remove' disabled />
+                          <Button icon='remove circle' className = 'button-remove' onClick={() => this.deletePatient(paciente) } /> : <Button icon='remove circle' className = 'button-remove' disabled />
                         }
                         {
                           accesomenu.permisos.modificar ?

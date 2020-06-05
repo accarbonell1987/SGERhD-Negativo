@@ -61,18 +61,6 @@ exports.InsertClinicHistory = async (body) => {
         throw Error('Insertando HistoriaClinica: ' + err);
     };
 }
-exports.DeleteClinicHistory = async (id) => {
-    try {
-        var removed = await HistoriaClinica.findByIdAndRemove(id)
-            .then(deleted => {
-                PatientService.UpdatePatientClinicHistory(deleted.paciente, null);
-            });
-        return removed;
-    } catch(err) {
-        console.log('Error: Eliminando Historia Clinicas' + err);
-        throw Error('Eliminando Historia Clinica: ' + err);
-    };
-}
 exports.UpdateClinicHistory = async (id, body) => {
     try {
         const { fechaDeCreacion, areaDeSalud, numerohistoria, vacunaAntiD, numeroDeEmbarazos, numeroDePartos, numeroDeAbortos, paciente, activo } = body;
@@ -86,25 +74,39 @@ exports.UpdateClinicHistory = async (id, body) => {
         throw Error('Modificando HistoriaClinica: ' + err);
     }
 }
-exports.DesactivateClinicHistory = async (id) => {
-    try {
-        const clinichistory = { activo: false };
-        var updated = await HistoriaClinica.findByIdAndUpdate(id, clinichistory);
-        return updated;
-    } catch(err) {
-        console.log('Error: Modificando HistoriaClinica: ' + err);
-        throw Error('Modificando HistoriaClinica: ' + err);
-    }
+exports.DeleteClinicHistory = (clinichistory) => {
+    var removed = HistoriaClinica.findByIdAndRemove(clinichistory._id)
+        .then(removed => removed)
+        .then(p => {
+            PatientService.DeleteClinicHistoryInPatient(clinichistory);
+        })
+        .catch(err => {
+            console.log('Error: Eliminando Historia Clinica' + err);
+            throw Error('Eliminando Historia Clinica: ' + err);
+        });
+    return removed;
 }
-exports.DeleteClinicHistoryPatient = async (paciente, historiaclinicaid) => {
-    try {
-        console.log(paciente, historiaclinicaid);
-        const clinichistory = { paciente: mongoose.mongo.ObjectID() };
-        var updated = await HistoriaClinica.findByIdAndUpdate(historiaclinicaid, clinichistory);
+exports.DeleteClinicHistoryFromPatient = (patient) => {
+    var removed = HistoriaClinica.findByIdAndRemove(patient.historiaclinica)
+        .then(removed => removed)
+        .catch(err => {
+            console.log('Error: (DeleteClinicHistoryFromPatient) Eliminando Historia Clinica' + err);
+            throw Error('(DeleteClinicHistoryFromPatient) Eliminando Historia Clinica: ' + err);
+        });
+    return removed;
+}
+exports.DisableClinicHistory = async (id, clinichistory) => {
+    if (clinichistory.activo ) {
+        clinichistory = { activo: false };
+        var updated = HistoriaClinica.findByIdAndUpdate(id, clinichistory)
+        .then(clinichistory => clinichistory)
+        .catch(err => {
+            console.log('Error: Desactivando Historia Clinica: ' + err);
+            throw Error('Desactivando Historia Clinica: ' + err);
+        });
         return updated;
-    } catch(err) {
-        console.log('Error: Modificando HistoriaClinica: ' + err);
-        throw Error('Modificando HistoriaClinica: ' + err);
+    }else{
+        return exports.DeleteClinicHistory(clinichistory);
     }
 }
 //#endregion

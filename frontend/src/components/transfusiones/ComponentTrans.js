@@ -25,11 +25,16 @@ class ComponentTrans extends Component {
   //#endregion
 
   //#region Metodos y Eventos
-  deleteTran = (id, paciente) => {
+  deleteTran = (tran) => {
     //Esta seguro?
+    let {text, accion} = '';
+    if (tran.activo) accion = 'Desactivar';
+    else accion = 'Eliminar';
+    text = 'Desea '+ accion +' la transfusion perteneciente al paciente: ' + tran.paciente.nombre + " " + tran.paciente.apellidos;
+
     Swal.fire({
       title: '¿Esta seguro?',
-      text: "Desea eliminar la transfusion perteneciente al paciente: " + paciente.nombre + " " + paciente.apellidos,
+      text: text,
       icon: 'question',
       showCancelButton: true,
       cancelButtonColor: '#db2828',
@@ -41,8 +46,9 @@ class ComponentTrans extends Component {
       //si escogio Si
       if (result.value) {
         //enviar al endpoint
-        fetch (this.props.parentState.endpoint + 'api/transfusion/' + id, {
-          method: 'DELETE',
+        fetch (this.props.parentState.endpoint + 'api/transfusion/' + tran._id, {
+          method: 'PUT',
+          body: JSON.stringify(tran),
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
@@ -136,7 +142,7 @@ class ComponentTrans extends Component {
                       <Table.Cell className='cells-max-witdh-2' collapsing>
                         {
                           accesomenu.permisos.eliminar ?
-                          <Button icon='remove circle' className = 'button-remove' onClick={() => this.deleteTran(tran._id, tran.paciente) } /> : <Button icon='remove circle' className = 'button-remove' disabled />
+                          <Button icon='remove circle' className = 'button-remove' onClick={() => this.deleteTran(tran) } /> : <Button icon='remove circle' className = 'button-remove' disabled />
                         }
                         {
                           accesomenu.permisos.modificar ?

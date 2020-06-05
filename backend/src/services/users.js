@@ -44,39 +44,6 @@ exports.InsertUser = async (body) => {
         throw Error('Insertando Usuario: ' + err);
     };
 }
-exports.DeleteUser = async (id) => {
-    try {
-        var removed = await Usuario.findByIdAndRemove(id);
-        //borrar los logs del usuario
-        LogServices.DeleteLogByUserId(id);
-        return removed;
-    } catch(err) {
-        console.log('Error: Eliminando Usuario' + err);
-        throw Error('Eliminando Usuario: ' + err);
-    };
-}
-exports.DesactivateUser = (id) => {
-    const user = { activo: false };
-
-    var d = Usuario.findByIdAndUpdate(id, user)
-    .then(user => user)
-    .catch(err => {
-        console.log('Error: Modificando Usuario: ' + err);
-        throw Error('Modificando Usuario: ' + err);
-    });
-    return d;
-}
-exports.UpdateUser = async (id, body) => {
-    try {
-        const { email, rol, activo } = body;
-        const user = { email, rol, activo };
-        var updated = await Usuario.findByIdAndUpdate(id, user);
-        return updated;
-    } catch(err) {
-        console.log('Error: Modificando Usuario: ' + err);
-        throw Error('Modificando Usuario: ' + err);
-    }
-}
 exports.InserLogToUser = (log) => {
     try {
         Usuario.findById(log.usuario).then(u => {
@@ -89,6 +56,17 @@ exports.InserLogToUser = (log) => {
         throw Error('Insertando Log en Usuario: ' + err);
     }
 }
+exports.UpdateUser = async (id, body) => {
+    try {
+        const { email, rol, activo } = body;
+        const user = { email, rol, activo };
+        var updated = await Usuario.findByIdAndUpdate(id, user);
+        return updated;
+    } catch(err) {
+        console.log('Error: Modificando Usuario: ' + err);
+        throw Error('Modificando Usuario: ' + err);
+    }
+}
 exports.UpdateUserPassword = async (id, body) => {
     const { contraseña } = body;
     const user = { contraseña };
@@ -98,6 +76,33 @@ exports.UpdateUserPassword = async (id, body) => {
     } catch(err) {
         console.log('Error: Modificando Contraseña Usuario: ' + err);
         throw Error('Modificando Contraseña Usuario: ' + err);
+    }
+}
+exports.DeleteUser = (id) => {
+    var removed = Usuario.findByIdAndRemove(id)
+        .then(removed => removed)
+        .then(p => {
+            //borrar los logs del usuario
+            LogServices.DeleteLogByUserId(id);
+        })
+        .catch(err => {
+            console.log('Error: Eliminando Usuario' + err);
+            throw Error('Eliminando Usuario: ' + err);
+        });
+    return removed;
+}
+exports.DisableUser = (id, user) => {
+    if (user.activo ) {
+        user = { activo: false };
+        var updated = Usuario.findByIdAndUpdate(id, user)
+        .then(user => user)
+        .catch(err => {
+            console.log('Error: Modificando Usuario: ' + err);
+            throw Error('Modificando Usuario: ' + err);
+        });
+        return updated;
+    }else{
+        return exports.DeleteUser(id);
     }
 }
 //#endregion

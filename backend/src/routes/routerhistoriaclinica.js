@@ -42,6 +42,8 @@ router.get('/historiaclinica/:id', bll.GetClinicHistory);
 router.post('/historiaclinica', bll.InsertClinicHistory);
 //DELETE - Una historiaclinica por id
 router.delete('/historiaclinica/:id', bll.DeleteClinicHistory);
+//PUT - lo usaremos para el eliminar
+router.put('/historiaclinica/:id', bll.DisableClinicHistory);
 //PATCH - Un historiaclinica por id {json}
 router.patch('/historiaclinica/:id', bll.UpdateClinicHistory);
 //#endregion

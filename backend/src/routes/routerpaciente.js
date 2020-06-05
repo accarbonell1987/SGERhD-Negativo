@@ -40,6 +40,8 @@ router.get('/paciente/:id', bll.GetPatient);
 router.post('/paciente', bll.InsertPatient);
 //DELETE - Un paciente por id /paciente/id
 router.delete('/paciente/:id', bll.DeletePatient);
+//PUT - lo usaremos para el eliminar
+router.put('/paciente/:id', bll.DisablePatient);
 //PATCH - Un paciente por id /paciente/id - {json}
 router.patch('/paciente/:id', bll.UpdatePatient);
 //#endregion

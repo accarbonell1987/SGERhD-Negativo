@@ -40,6 +40,8 @@ router.get('/transfusion/:id', bll.GetTran);
 router.post('/transfusion', bll.InsertTran);
 //DELETE - Un transfusion por id /transfusion/id
 router.delete('/transfusion/:id', bll.DeleteTran);
+//PUT - lo usaremos para el eliminar
+router.put('/transfusion/:id', bll.DisableTran);
 //PATCH - Un transfusion por id /transfusion/id - {json}
 router.patch('/transfusion/:id', bll.UpdateTran);
 //#endregion
