@@ -95,7 +95,7 @@ class ComponentClinicHistory extends Component {
             <Table.Header className='div-table-header'>
               <Table.Row>
                 <Table.HeaderCell />
-                <Table.HeaderCell colSpan='10'>
+                <Table.HeaderCell colSpan='11'>
                   { accesomenu.permisos.crear ?
                     <ComponentAddClinicHistory allClinicsHistory = {this.props.allClinicsHistory} allPatients = {this.props.allPatients} parentState = {this.props.parentState} roles = {this.props.roles} pacientes = {this.props.pacientes} historiasclinicas = {this.props.historiasclinicas} permisos = {this.props.permisos} />:
                     <Button floated='right' icon labelPosition='left' primary size='small' className='modal-button-add' disabled>
@@ -116,6 +116,7 @@ class ComponentClinicHistory extends Component {
                   <Table.HeaderCell>Partos</Table.HeaderCell>
                   <Table.HeaderCell>Abortos</Table.HeaderCell>
                   <Table.HeaderCell className='cells-max-witdh-2'>Paciente</Table.HeaderCell>
+                  <Table.HeaderCell>Activo</Table.HeaderCell>
                   <Table.HeaderCell className='cells-max-witdh-2'>Acciones</Table.HeaderCell>
                 </Table.Row> : ''
               }
@@ -140,7 +141,7 @@ class ComponentClinicHistory extends Component {
                       <Table.Cell>{historia.areaDeSalud}</Table.Cell>
                       <Table.Cell>
                         <Checkbox
-                          toggle name='vacunaAntiD' labelPosition='left' label = {historia.vacunaAntiD ? 'Si' : 'No'} disabled
+                          toggle name='vacunaAntiD' labelPosition='left' checked={historia.vacunaAntiD} label = {historia.vacunaAntiD ? 'Si' : 'No'} disabled
                         />
                       </Table.Cell>
                       <Table.Cell className='cells-max-witdh-2'>
@@ -152,6 +153,11 @@ class ComponentClinicHistory extends Component {
                       <Table.Cell>{historia.numeroDeAbortos}</Table.Cell>
                       <Table.Cell className='cells-max-witdh-2' collapsing>
                         <ComponentSeePatient paciente = {historia.paciente} parentState = {this.props.parentState} roles = {this.props.roles}/>
+                      </Table.Cell>
+                      <Table.Cell className='cells-max-witdh-2' collapsing>
+                        <Checkbox
+                          toggle name='activo' labelPosition='left' label = {historia.activo ? 'Si' : 'No'} checked={historia.activo} disabled
+                        />
                       </Table.Cell>
                       <Table.Cell className='cells-max-witdh-2' collapsing>
                         {

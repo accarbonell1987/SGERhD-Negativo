@@ -1,6 +1,6 @@
 //Importaciones
 import React, { Component } from 'react';
-import { Button, Grid, Icon, Label, Table } from 'semantic-ui-react'
+import { Button, Grid, Icon, Label, Table, Checkbox } from 'semantic-ui-react'
 import Swal from 'sweetalert2'
 
 //CSS
@@ -85,7 +85,7 @@ class ComponentPatients extends Component {
             <Table.Header className='div-table-header-row'>
               <Table.Row >
                 <Table.HeaderCell />
-                <Table.HeaderCell colSpan='14'>
+                <Table.HeaderCell colSpan='15'>
                   { accesomenu.permisos.crear ?
                     <ComponentAddPatient allPatients = {this.props.allPatients}  parentState = {this.props.parentState} roles = {this.props.roles} />:
                     <Button floated='right' icon labelPosition='left' primary size='small' className='modal-button-add' disabled>
@@ -110,6 +110,7 @@ class ComponentPatients extends Component {
                   <Table.HeaderCell className='cells-max-witdh-2'>Transfusiones</Table.HeaderCell>
                   <Table.HeaderCell className='cells-max-witdh-2'>Embarazos</Table.HeaderCell>
                   <Table.HeaderCell className='cells-max-witdh-2'>Examenes</Table.HeaderCell>
+                  <Table.HeaderCell className='cells-max-witdh-2'>Activo</Table.HeaderCell>
                   <Table.HeaderCell className='cells-max-witdh-2'>Acciones</Table.HeaderCell>
                 </Table.Row> : ''
               }
@@ -181,6 +182,11 @@ class ComponentPatients extends Component {
                         <Button icon labelPosition='right' className='button-childs'>
                           <Icon name='clipboard list' className='button-icon-childs'/>0
                         </Button> 
+                      </Table.Cell>
+                      <Table.Cell className='cells-max-witdh-2' collapsing>
+                        <Checkbox
+                          toggle name='activo' labelPosition='left' label = {paciente.activo ? 'Si' : 'No'} checked={paciente.activo} disabled
+                        />
                       </Table.Cell>
                       <Table.Cell className='cells-max-witdh-2' collapsing>
                         {

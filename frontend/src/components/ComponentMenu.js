@@ -17,12 +17,12 @@ class ComponentMenu extends Component {
   }
 
   menus = [
-    {name: 'usuarios', icon: 'users', visible: false, label: 'Usuarios'},
-    {name: 'historiaclinica', icon: 'clipboard', visible: false, label: 'Historia Clínica' },
-    {name: 'pacientes', icon: 'wheelchair', visible: false, label: 'Pacientes' },
-    {name: 'examenes', icon: 'clipboard list', visible: false, label: 'Exámenes' },
-    {name: 'transfusiones', icon: 'tint', visible: false, label: 'Transfusiones' },
-    {name: 'embarazos', icon: 'heartbeat', visible: false, label: 'Embarazos' }
+    {name: 'usuarios', icon: 'users', visible: false, label: 'Usuarios', enabled: true},
+    {name: 'historiaclinica', icon: 'clipboard', visible: false, label: 'Historia Clínica', enabled: true },
+    {name: 'pacientes', icon: 'wheelchair', visible: false, label: 'Pacientes', enabled: true },
+    {name: 'examenes', icon: 'clipboard list', visible: false, label: 'Exámenes', enabled: false },
+    {name: 'transfusiones', icon: 'tint', visible: false, label: 'Transfusiones', enabled: true },
+    {name: 'embarazos', icon: 'heartbeat', visible: false, label: 'Embarazos', enabled: false }
   ];
 
   constructor(props) {
@@ -45,7 +45,7 @@ class ComponentMenu extends Component {
             //buscar el acceso del menu
             const accesomenu = permiso.accesos.find(p => p.opcion === menu.name);
             //chequear su (menu) es true
-            if (accesomenu.permisos.menu) {
+            if (accesomenu.permisos.menu && menu.enabled) {
               return (
                 <Menu.Item key={menu.name} name={menu.name} active={this.props.opcionmenu === menu.name} onClick={this.handleItemClick} >
                   <Icon name={menu.icon} /> {menu.label}

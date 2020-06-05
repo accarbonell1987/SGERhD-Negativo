@@ -171,7 +171,7 @@ class ComponentAddTran extends Component {
                 <Segment className='modal-segment-expanded'>
                   <Header as='h5'>Reacción Adversa:</Header>
                   <Form.Checkbox
-                    toggle name='reaccionAdversa' labelPosition='left' label = {this.state.reaccionAdversa === true ? 'Si' : 'No'} value={this.state.reaccionAdversa} onChange = {(evt) => {
+                    toggle name='reaccionAdversa' labelPosition='left' label = {this.state.reaccionAdversa === true ? 'Si' : 'No'} value={this.state.reaccionAdversa} checked={this.state.reaccionAdversa} onChange = {(evt) => {
                       evt.preventDefault();
                       this.setState({
                         reaccionAdversa: !this.state.reaccionAdversa

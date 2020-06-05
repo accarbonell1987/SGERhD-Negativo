@@ -189,7 +189,7 @@ class ComponentUpdateClinicHistory extends Component {
                       <Segment className='modal-segment-expanded'>
                         <Header as='h5'>Vacuna Anti-D:</Header>
                         <Form.Checkbox
-                            toggle name='vacunaAntiD' labelPosition='left' label = {this.state.vacunaAntiD === true ? 'Si' : 'No'} value={this.state.vacunaAntiD} onChange = {(evt) => {
+                            toggle name='vacunaAntiD' labelPosition='left' label = {this.state.vacunaAntiD === true ? 'Si' : 'No'} value={this.state.vacunaAntiD} checked={this.state.vacunaAntiD} onChange = {(evt) => {
                             evt.preventDefault();
                             this.setState({
                               vacunaAntiD: !this.state.vacunaAntiD

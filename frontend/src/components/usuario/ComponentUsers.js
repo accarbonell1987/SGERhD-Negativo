@@ -101,8 +101,8 @@ class ComponentUsers extends Component {
                   <Table.HeaderCell>Nombre</Table.HeaderCell>
                   <Table.HeaderCell>Correo Electrónico</Table.HeaderCell>
                   <Table.HeaderCell>Rol</Table.HeaderCell>
-                  <Table.HeaderCell>Activo</Table.HeaderCell>
                   <Table.HeaderCell className='cells-max-witdh-2'>Logs</Table.HeaderCell>
+                  <Table.HeaderCell className='cells-max-witdh-2'>Activo</Table.HeaderCell>
                   <Table.HeaderCell className='cells-max-witdh-2'>Acciones</Table.HeaderCell>
                 </Table.Row> : ''
               }
@@ -126,15 +126,15 @@ class ComponentUsers extends Component {
                           <Image src={ rolData.image.src } />{rolData.text}
                         </Label>
                       </Table.Cell>
-                      <Table.Cell>
-                        <Checkbox
-                          toggle name='activo' labelPosition='left' label = {usuario.activo ? 'Si' : 'No'} checked={usuario.activo} disabled
-                        />
-                      </Table.Cell>
                       <Table.Cell className='cell-logs' collapsing>
                         <Button icon labelPosition='right' className='button-logs'>
                           <Icon name='address card outline' className='button-icon-logs'/>Logs
                         </Button> 
+                      </Table.Cell>
+                      <Table.Cell className='cells-max-witdh-2' collapsing>
+                        <Checkbox
+                          toggle name='activo' labelPosition='left' label = {usuario.activo ? 'Si' : 'No'} checked={usuario.activo} disabled
+                        />
                       </Table.Cell>
                       <Table.Cell className='cell-acciones' collapsing>
                         {

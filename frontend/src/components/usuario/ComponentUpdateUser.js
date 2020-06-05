@@ -157,7 +157,7 @@ class ComponentUpdateUser extends Component {
                 <Segment className='modal-segment-expanded'>
                   <Header as='h5'>Activo:</Header>
                   <Form.Checkbox
-                    toggle name='activo' labelPosition='left' label = {this.state.activo === true ? 'Si' : 'No'} value={this.state.activo} onChange = {(evt) => {
+                    toggle name='activo' labelPosition='left' label = {this.state.activo === true ? 'Si' : 'No'} value={this.state.activo} checked={this.state.activo} onChange = {(evt) => {
                       evt.preventDefault();
                       this.setState({
                         activo: !this.state.activo

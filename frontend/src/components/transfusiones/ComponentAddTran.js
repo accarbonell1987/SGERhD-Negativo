@@ -49,7 +49,7 @@ class ComponentAddTran extends Component {
     addTran = async () => {
       const { fecha, reaccionAdversa, observaciones, paciente, activo } = this.state;
       const tran = {
-        fecha: fecha, reaccionAdversa: reaccionAdversa, observaciones: observaciones, paciente: paciente,activo: activo
+        fecha: fecha, reaccionAdversa: reaccionAdversa, observaciones: observaciones, paciente: paciente, activo: activo
       }
       //la promise debe de devolver un valor RETURN
       try {

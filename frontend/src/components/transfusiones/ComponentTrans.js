@@ -93,7 +93,7 @@ class ComponentTrans extends Component {
             <Table.Header className='div-table-header'>
               <Table.Row>
                 <Table.HeaderCell />
-                <Table.HeaderCell colSpan='6'>
+                <Table.HeaderCell colSpan='7'>
                   { accesomenu.permisos.crear ?
                     <ComponentAddTran parentState = {this.props.parentState} roles = {this.props.roles} pacientes = {this.props.pacientes} permisos = {this.props.permisos} allTrans = {this.props.allTrans} allPatients={this.props.allPatients} />:
                     <Button floated='right' icon labelPosition='left' primary size='small' className='modal-button-add' disabled>
@@ -110,6 +110,7 @@ class ComponentTrans extends Component {
                   <Table.HeaderCell>Reacción Adversa</Table.HeaderCell>
                   <Table.HeaderCell>Observaciones</Table.HeaderCell>
                   <Table.HeaderCell className='cells-max-witdh-2'>Paciente</Table.HeaderCell>
+                  <Table.HeaderCell className='cells-max-witdh-2'>Activo</Table.HeaderCell>
                   <Table.HeaderCell className='cells-max-witdh-2'>Acciones</Table.HeaderCell>
                 </Table.Row> : ''
               }
@@ -132,12 +133,17 @@ class ComponentTrans extends Component {
                       <Table.Cell>{fechacadena}</Table.Cell>
                       <Table.Cell>
                         <Checkbox
-                          toggle name='reaccionAdversa' labelPosition='left' label = {tran.reaccionAdversa ? 'Si' : 'No'} disabled
+                          toggle name='reaccionAdversa' labelPosition='left' checked={tran.reaccionAdversa} label = {tran.reaccionAdversa ? 'Si' : 'No'} disabled
                         />
                       </Table.Cell>
                       <Table.Cell>{tran.observaciones}</Table.Cell>
                       <Table.Cell className='cells-max-witdh-2' collapsing>
                         <ComponentSeePatient paciente = {tran.paciente} parentState = {this.props.parentState} roles = {this.props.roles} />
+                      </Table.Cell>
+                      <Table.Cell className='cells-max-witdh-2' collapsing>
+                        <Checkbox
+                          toggle name='activo' labelPosition='left' label = {tran.activo ? 'Si' : 'No'} checked={tran.activo} disabled
+                        />
                       </Table.Cell>
                       <Table.Cell className='cells-max-witdh-2' collapsing>
                         {
