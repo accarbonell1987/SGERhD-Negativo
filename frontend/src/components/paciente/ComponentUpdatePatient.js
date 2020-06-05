@@ -197,7 +197,7 @@ class ComponentUpdatePatient extends Component {
                 </Button>
             }
         >
-            <Header icon='wheelchair' content='Modificar  ' />
+            <Header icon='wheelchair' content='Modificar Paciente' />
             <Modal.Content>
             { this.state.errorform ? <Message error inverted header='Error' content='Error en el formulario' /> : null } 
             <Form ref='form' onSubmit={this.changeModalState}>

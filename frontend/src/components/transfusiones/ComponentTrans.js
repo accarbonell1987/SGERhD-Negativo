@@ -10,7 +10,7 @@ import '../global/css/Gestionar.css';
 
 //#region Componentes
 import ComponentAddTran from './ComponentAddTran';
-// import ComponentUpdateClinicHistory from './ComponentUpdateClinicHistory';
+import ComponentUpdateTran from './ComponentUpdateTran';
 import ComponentSeePatient from '../paciente/ComponentSeePatient';
 //#endregion
 
@@ -59,6 +59,7 @@ class ComponentTrans extends Component {
             Swal.fire({ position: 'center', icon: 'error', title: message, showConfirmButton: false, timer: 5000 })
           
           //recargar
+          this.props.allTrans();
           this.props.allPatients();
         })
         .catch(err => {
@@ -88,7 +89,7 @@ class ComponentTrans extends Component {
                 <Table.HeaderCell />
                 <Table.HeaderCell colSpan='6'>
                   { accesomenu.permisos.crear ?
-                    <ComponentAddTran parentState = {this.props.parentState} roles = {this.props.roles} pacientes = {this.props.pacientes} permisos = {this.props.permisos} />:
+                    <ComponentAddTran parentState = {this.props.parentState} roles = {this.props.roles} pacientes = {this.props.pacientes} permisos = {this.props.permisos} allTrans = {this.props.allTrans} allPatients={this.props.allPatients} />:
                     <Button floated='right' icon labelPosition='left' primary size='small' className='modal-button-add' disabled>
                       <Icon name='add circle' />Adicionar
                     </Button>
@@ -111,6 +112,10 @@ class ComponentTrans extends Component {
             <Table.Body>
               { 
                 this.props.transfusiones.map(tran => {
+                  let fecha = new Date(tran.fecha);
+                  let dia = fecha.getDate(); let mes = fecha.getMonth() + 1; let ano = fecha.getFullYear();
+                  let fechacadena = dia + '/' + mes + '/' + ano;
+
                   // let rolData = this.props.roles.find(element => { return element.key === usuario.rol });
                   // //para colorear row
                   // let negative = this.props.parentState.usuario === usuario.nombre;
@@ -119,7 +124,7 @@ class ComponentTrans extends Component {
                       <Table.Cell collapsing>
                         <Icon name='tint' />
                       </Table.Cell>
-                      <Table.Cell>{tran.fecha}</Table.Cell>
+                      <Table.Cell>{fechacadena}</Table.Cell>
                       <Table.Cell>
                         <Checkbox
                           toggle name='reaccionAdversa' labelPosition='left' label = {tran.reaccionAdversa ? 'Si' : 'No'} disabled
@@ -127,7 +132,7 @@ class ComponentTrans extends Component {
                       </Table.Cell>
                       <Table.Cell>{tran.observaciones}</Table.Cell>
                       <Table.Cell className='cells-max-witdh-2' collapsing>
-                        <ComponentSeePatient historiaclinica = {tran.paciente.historiaclinica} parentState = {this.props.parentState} roles = {this.props.roles}/>
+                        <ComponentSeePatient paciente = {tran.paciente} parentState = {this.props.parentState} roles = {this.props.roles} />
                       </Table.Cell>
                       <Table.Cell className='cells-max-witdh-2' collapsing>
                         {
@@ -135,8 +140,8 @@ class ComponentTrans extends Component {
                           <Button icon='remove circle' className = 'button-remove' onClick={() => this.deleteTran(tran._id, tran.paciente) } /> : <Button icon='remove circle' className = 'button-remove' disabled />
                         }
                         {
-                          // accesomenu.permisos.modificar ?
-                          // <ComponentUpdateClinicHistory allClinicsHistory = { this.props.allClinicsHistory } allPatients = { this.props.allPatients } historiaclinica = {historia} parentState = {this.props.parentState} roles = {this.props.roles} pacientes = {this.props.pacientes} historiasclinicas = {this.props.historiasclinicas} /> :
+                          accesomenu.permisos.modificar ?
+                          <ComponentUpdateTran allPatients = { this.props.allPatients } parentState = {this.props.parentState} roles = {this.props.roles} pacientes = {this.props.pacientes} tran={tran} /> :
                           <Button icon='edit' disabled />
                         }
                       </Table.Cell>

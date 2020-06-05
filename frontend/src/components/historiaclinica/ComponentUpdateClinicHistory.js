@@ -171,7 +171,7 @@ class ComponentUpdateClinicHistory extends Component {
                 </Button>
             }
         >
-            <Header icon='clipboard' content='Modificar  ' />
+            <Header icon='clipboard' content='Modificar Paciente' />
             <Modal.Content>
             { this.state.errorform ? <Message error inverted header='Error' content='Error en el formulario' /> : null } 
             <Form ref='form' onSubmit={this.changeModalState}>

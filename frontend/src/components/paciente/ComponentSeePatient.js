@@ -58,7 +58,7 @@ class ComponentSeePatient extends Component {
     }
   
     render() {
-      const paciente = this.props.historiaclinica.paciente;
+      const paciente = this.props.paciente;
       return (
         <Modal open={this.state.openModal}
             trigger = {
@@ -67,7 +67,7 @@ class ComponentSeePatient extends Component {
                 </Button>
             }
         >
-            <Header icon='wheelchair' content='Detalles  ' />
+            <Header icon='wheelchair' content='Detalles Paciente' />
             <Modal.Content>
             <Form ref='form'>
             <Form.Input

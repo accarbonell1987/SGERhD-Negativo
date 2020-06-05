@@ -3,10 +3,12 @@ const Transfusion = require('../models/models').Transfusion;
 var mongoose = require('mongoose');
 //#endregion
 
+const PatientServices = require('../services/patients');
+
 //#region Transfusiones
 exports.GetTrans = async (query, page, limit) => {
     try {
-        var trans = await Transfusion.find(query).populate('paciente');
+        var trans = await Transfusion.find(query).populate({ path:'paciente', populate: {path: 'historiaclinica', populate: {path:'paciente'} } });
         return trans;
     } catch (err) {
         console.log('Error: Obteniendo Transfusiones');
@@ -16,7 +18,7 @@ exports.GetTrans = async (query, page, limit) => {
 exports.GetTran = async (id) => {
     try {
         console.log(id);
-        var tran = await Transfusion.findById(id).populate('paciente');
+        var tran = await Transfusion.findById(id).populate({ path:'paciente', populate: {path: 'historiaclinica',  populate: {path:'paciente'} } });
         return tran;
     } catch (err) {
         console.log('Error: Obteniendo Transfusion con id: ' + id);
@@ -32,7 +34,9 @@ exports.InsertTran = async (body) => {
         await Transfusion.findOne({ paciente: paciente, fecha: fecha })
             .then(doc => {
                 if (doc === null) {
-                    const saved = tran.save();
+                    const saved = tran.save().then(t => {
+                        PatientServices.InsertTranToPatient(t);
+                    });
                     return saved;
                 } else throw Error('Transfusion ya existente');
             }).catch(err => {
@@ -46,7 +50,9 @@ exports.InsertTran = async (body) => {
 }
 exports.DeleteTran = async (id) => {
     try {
-        var removed = await Transfusion.findByIdAndRemove(id);
+        var removed = await Transfusion.findByIdAndRemove(id).then(t => {
+            PatientServices.DeleteTranFromPatient(t);
+        });
         return removed;
     } catch(err) {
         console.log('Error: Eliminando Transfusion' + err);

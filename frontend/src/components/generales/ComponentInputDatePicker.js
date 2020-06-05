@@ -13,7 +13,7 @@ import '../global/css/Gestionar.css';
 
 //#region Constantes
 const definitions = {
-    available: {color: null, label: 'Disponible'},
+    available: {color: null, label: 'Disponible' },
     enquire: {color: '#ffd200', label: 'Preguntar'},
     unavailable: {color: '#78818b', label: 'No Disponible'}
 }
@@ -51,7 +51,7 @@ class ComponentInputDatePicker extends Component {
     handleSelect = (value, states) => {
         this.setState({
             fecha: value,
-            states: states,
+            estados: states,
             modoboton: true
         });
     }
@@ -69,7 +69,7 @@ class ComponentInputDatePicker extends Component {
         //actualizar los states
         this.setState({
             openModal: false,
-            fecha: null,
+            fecha: this.props.fecha,
             estados: null,
             idioma: idioma,
             fechaMinima: null
@@ -87,7 +87,7 @@ class ComponentInputDatePicker extends Component {
                     firstOfWeek={1} numberOfCalendars={1} selectionType='single'
                     stateDefinitions={definitions} dateStates={ranges} 
                     singleDateRange={true}
-                    defaultState='available' showLegend={true} locale={this.state.idioma}
+                    defaultState='available' showLegend={false} locale={this.state.idioma}
                     value={this.state.fecha} onSelect={this.handleSelect}
                     />
                 </Modal.Content>

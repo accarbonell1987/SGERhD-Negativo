@@ -81,7 +81,7 @@ class ComponentSeeClinicHistory extends Component {
                 </Button>
               }
           >
-              <Header icon='clipboard' content='Detalles  ' />
+              <Header icon='clipboard' content='Detalles Paciente' />
               <Modal.Content>
               <Form ref='form' >
                   <Form.Input

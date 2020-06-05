@@ -89,7 +89,7 @@ class ComponentClinicHistory extends Component {
             <Table.Header className='div-table-header'>
               <Table.Row>
                 <Table.HeaderCell />
-                <Table.HeaderCell colSpan='9'>
+                <Table.HeaderCell colSpan='10'>
                   { accesomenu.permisos.crear ?
                     <ComponentAddClinicHistory allClinicsHistory = {this.props.allClinicsHistory} allPatients = {this.props.allPatients} parentState = {this.props.parentState} roles = {this.props.roles} pacientes = {this.props.pacientes} historiasclinicas = {this.props.historiasclinicas} permisos = {this.props.permisos} />:
                     <Button floated='right' icon labelPosition='left' primary size='small' className='modal-button-add' disabled>
@@ -102,6 +102,7 @@ class ComponentClinicHistory extends Component {
                 (this.props.historiasclinicas.length > 0) ? 
                 <Table.Row>
                   <Table.HeaderCell />
+                  <Table.HeaderCell>Fecha Creación</Table.HeaderCell>
                   <Table.HeaderCell>Número</Table.HeaderCell>
                   <Table.HeaderCell>Area de Salud</Table.HeaderCell>
                   <Table.HeaderCell>Vacuna AntiD</Table.HeaderCell>
@@ -117,14 +118,16 @@ class ComponentClinicHistory extends Component {
             <Table.Body>
               { 
                 this.props.historiasclinicas.map(historia => {
-                  // let rolData = this.props.roles.find(element => { return element.key === usuario.rol });
-                  // //para colorear row
-                  // let negative = this.props.parentState.usuario === usuario.nombre;
+                  let fecha = new Date(historia.fechaDeCreacion);
+                  let dia = fecha.getDate(); let mes = fecha.getMonth() + 1; let ano = fecha.getFullYear();
+                  let fechacadena = dia + '/' + mes + '/' + ano;
+                  
                   return(
                     <Table.Row key={historia._id} >
                       <Table.Cell collapsing>
                         <Icon name='clipboard' />
                       </Table.Cell>
+                      <Table.Cell>{fechacadena}</Table.Cell>
                       <Table.Cell>{historia.numerohistoria}</Table.Cell>
                       <Table.Cell>{historia.areaDeSalud}</Table.Cell>
                       <Table.Cell>
@@ -140,7 +143,7 @@ class ComponentClinicHistory extends Component {
                       <Table.Cell>{historia.numeroDePartos}</Table.Cell>
                       <Table.Cell>{historia.numeroDeAbortos}</Table.Cell>
                       <Table.Cell className='cells-max-witdh-2' collapsing>
-                        <ComponentSeePatient historiaclinica = {historia} parentState = {this.props.parentState} roles = {this.props.roles}/>
+                        <ComponentSeePatient paciente = {historia.paciente} parentState = {this.props.parentState} roles = {this.props.roles}/>
                       </Table.Cell>
                       <Table.Cell className='cells-max-witdh-2' collapsing>
                         {

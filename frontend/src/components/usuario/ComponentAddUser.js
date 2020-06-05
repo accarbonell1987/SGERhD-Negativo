@@ -155,7 +155,7 @@ class ComponentAddUser extends Component {
                 </Button>
             }
         >
-            <Header icon='user' content='Adicionar  ' />
+            <Header icon='user' content='Adicionar Usuario' />
             <Modal.Content>
             { this.state.errorform ? <Message error inverted header='Error' content='Error en el formulario' /> : null } 
             <Form ref='form' onSubmit={this.changeModalState}>

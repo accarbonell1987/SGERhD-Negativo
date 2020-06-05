@@ -87,7 +87,7 @@ class ComponentContent extends Component {
       .then(res => res.json())
       .then(data => {
         if (data.status === 200){
-          this.setState({pacientes: data.data});
+          this.setState({transfusiones: data.data});
         }else{
           Swal.fire({ position: 'center', icon: 'error', title: data.message, showConfirmButton: false, timer: 3000 }); 
         }

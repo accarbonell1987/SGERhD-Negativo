@@ -154,7 +154,7 @@ class ComponentChilds extends Component {
                 </Button>
             }
         >
-          <Header icon='child' content='Seleccionar Hijos  ' />
+          <Header icon='child' content='Seleccionar Hijos' />
           <Modal.Content>
           <Form ref='form' onSubmit={this.changeModalState}>
             <Table compact celled definition attached='top' className='div-table-modal'>

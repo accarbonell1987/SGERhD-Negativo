@@ -32,7 +32,7 @@ class ComponentAddTran extends Component {
       super(props);
   
       this.setDate = this.setDate.bind(this);
-      this.addTran = this.addTran.bind(this);
+      this.updateTran = this.updateTran.bind(this);
       this.changeModalInput = this.changeModalInput.bind(this);
       this.changeModalState = this.changeModalState.bind(this);
       this.clearModalState = this.clearModalState.bind(this);
@@ -45,40 +45,37 @@ class ComponentAddTran extends Component {
     componentDidMount() {
         this.clearModalState();
     }
-    //adicionar nuevo paciente
-    addTran = async () => {
+    //modificar usuario
+    updateTran = async (id) => {
       const { fecha, reaccionAdversa, observaciones, paciente, activo } = this.state;
       const tran = {
-        fecha: fecha, reaccionAdversa: reaccionAdversa, observaciones: observaciones, paciente: paciente,activo: activo
+        fecha: fecha, reaccionAdversa: reaccionAdversa, observaciones: observaciones, paciente: paciente, activo: activo
       }
       //la promise debe de devolver un valor RETURN
       try {
-            const res = await fetch(this.props.parentState.endpoint + 'api/transfusion/', {
-                method: 'POST',
-                body: JSON.stringify(tran),
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'access-token': this.props.parentState.token
-                }
-            });
-            let data = await res.json();
-            //capturar respuesta
-            const { status, message } = data;
-            if (status === 200) {
-                this.clearModalState();
-                Swal.fire({ position: 'center', icon: 'success', title: message, showConfirmButton: false, timer: 3000 });
-                return true;
+        const res = await fetch(this.props.parentState.endpoint + 'api/transfusion/' + id, {
+            method: 'PATCH',
+            body: JSON.stringify(tran),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'access-token' : this.props.parentState.token
             }
-            else {
-                Swal.fire({ position: 'center', icon: 'error', title: message, showConfirmButton: false, timer: 5000 });
-                return false;
-            }
+        })
+        let jsondata = await res.json();
+        const { status, message } = jsondata;
+        if (status === 200) {
+          Swal.fire({ position: 'center', icon: 'success', title: message, showConfirmButton: false, timer: 3000 }); //mostrar mensaje
+          return true;
         }
-        catch (err) {
-            Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 5000 });
-            return false;
+        else {
+          Swal.fire({ position: 'center', icon: 'error', title: message, showConfirmButton: false, timer: 5000 }); //mostrar mensaje
+          return false;
         }
+      } catch (err) {
+        Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 5000 }); //mostrar mensaje de error
+        return false;
+      }
     }
     //validar el formulario
     handleSubmit = (evt) => {
@@ -98,17 +95,24 @@ class ComponentAddTran extends Component {
       if ((evt.target.className.includes('modal-button-add')) || (evt.target.className.includes('modal-icon-add')) ||
       (evt.target.className.includes('button-childs')) || (evt.target.className.includes('button-icon-childs'))) {
         this.clearModalState();
-        this.setState({ openModal: true });
+        this.setState({
+          openModal: true,
+          fecha: this.props.tran.fecha,
+          reaccionAdversa: this.props.tran.reaccionAdversa,
+          observaciones: this.props.tran.observaciones,
+          paciente: this.props.tran.paciente,
+          activo: this.props.tran.activo
+        });
       }else if ((evt.target.className.includes('modal-button-cancel')) || (evt.target.className.includes('modal-icon-cancel'))){
         this.setState({ openModal: false });
       }else {
         //si no hay problemas en el formulario
         if (this.handleSubmit(evt) === false) {
           //si no hay problemas en la insercion
-          if (await this.addTran()){
+          if (await this.updateTran(this.props.tran._id)){
             //enviar a recargar los pacientes
-            this.props.allPatients();
             this.props.allTrans();
+            this.props.allPatients();
             this.clearModalState();
           }
         }
@@ -139,46 +143,28 @@ class ComponentAddTran extends Component {
     //capturar fecha
     setDate = (fecha) => {
       this.setState({fecha: fecha});
+      console.log(fecha);
     }
     //#endregion
   
     //#region Render
     render() {
-      const permiso = this.props.permisos.find(p => p.rol === this.props.parentState.rol);
-      //buscar el acceso del menu
-      const accesomenu = permiso.accesos.find(p => p.opcion === 'transfusiones');
-      //chequear si es historiasclinica y tengo permiso
       return (
         <Modal open={this.state.openModal}
             trigger = {
-              accesomenu.permisos.crear ?
-                this.props.cambiarIcono ? 
-                <Button icon labelPosition='right' className='button-childs' onClick={this.changeModalState} >
-                  <Icon name='add circle' className='button-icon-childs' onClick={this.changeModalState}/>Adicionar
-                </Button>
-                :
-                <Button floated='right' icon labelPosition='left' primary size='small' onClick={this.changeModalState} className='modal-button-add'>
-                  <Icon name='add circle' className='modal-icon-add'/>Adicionar
-                </Button>
-              :
-                this.props.cambiarIcono ? 
-                <Button disabled icon labelPosition='right' className='button-childs'>
-                  <Icon name='add circle' className='button-icon-childs'/>Adicionar
-                </Button>
-                :
-                <Button disabled floated='right' icon labelPosition='left' primary size='small'className='modal-button-add'>
-                  <Icon name='add circle' className='modal-icon-add'/>Adicionar
+                <Button className='modal-button-action' onClick={this.changeModalState} >
+                  <Icon name='edit' className='modal-icon' onClick={this.changeModalState}/>
                 </Button>
             }
         >
-            <Header icon='tint' content='Adicionar Transfusión' />
+            <Header icon='tint' content='Modificar Transfusión' />
             <Modal.Content>
             { this.state.errorform ? <Message error inverted header='Error' content='Error en el formulario' /> : null } 
             <Form ref='form' onSubmit={this.changeModalState}>
               <Form.Group>
                 <Segment className='modal-segment-expanded'>
                   <Header as='h5'>Fecha:</Header>
-                  <ComponentInputDatePicker setDate={this.setDate} />
+                  <ComponentInputDatePicker setDate={this.setDate} fecha={this.state.fecha}/>
                 </Segment>
               </Form.Group>
               <Form.Group>
@@ -195,11 +181,10 @@ class ComponentAddTran extends Component {
                 </Segment>
               </Form.Group>
               <Form.TextArea
-                name = 'observaciones' label = 'Observaciones:' placeholder='Observaciones...' value={this.state.observaciones} 
-                onChange = {this.changeModalInput}
+                name = 'observaciones' label = 'Observaciones:' placeholder='Observaciones...' value={this.state.observaciones}
               />
               <Form.Select
-                  name = 'paciente' label = 'Paciente:' placeholder = 'Seleccionar Paciente' options={this.state.opcionPacientes} value={this.state.paciente} onChange = { (e, {value}) => { this.setState({ paciente : value }); } } fluid selection clearable
+                  name = 'paciente' label = 'Paciente:' placeholder = 'Seleccionar Paciente' options={this.state.opcionPacientes} value={this.state.paciente ? this.state.paciente._id : null} onChange = { (e, {value}) => { this.setState({ paciente : value }); } } fluid selection clearable
               />
             </Form>
             </Modal.Content>
@@ -210,7 +195,7 @@ class ComponentAddTran extends Component {
               <Button color='green' onClick={this.changeModalState} className='modal-button-accept' type='submit' disabled={
                   (!this.state.fecha || !this.state.paciente)
                 }>
-                  <Icon name='checkmark' className='modal-icon-accept'/>Aceptar
+                  <Icon name='checkmark' />Aceptar
               </Button>
             </Modal.Actions>
         </Modal>

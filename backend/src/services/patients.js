@@ -6,7 +6,7 @@ var mongoose = require('mongoose');
 //#region Pacientes
 exports.GetPatients = async (query, page, limit) => {
     try {
-        var patients = await Paciente.find(query).populate('historiaclinica').populate('madre');
+        var patients = await Paciente.find(query).populate({path:'historiaclinica', populate: {path:'paciente'} }).populate('madre').populate('transfusiones');
         return patients;
     } catch (err) {
         console.log('Error: Obteniendo Pacientes');
@@ -15,7 +15,7 @@ exports.GetPatients = async (query, page, limit) => {
 }
 exports.GetPatient = async (id) => {
     try {
-        var patient = await Paciente.findById(id).populate('historiaclinica').populate('madre');
+        var patient = await Paciente.findById(id).populate({path:'historiaclinica', populate: {path:'paciente'} }).populate('madre').populate('transfusiones');
         return patient;
     } catch (err) {
         console.log('Error: Obteniendo Paciente con id: ' + id);
@@ -96,6 +96,36 @@ exports.UpdatePatientClinicHistory = async (id, clinichistory) => {
     } catch(err) {
         console.log('Error: (UpdatePatientClinicHistory) Modificando Paciente: ' + err);
         throw Error('(UpdatePatientClinicHistory) Modificando Paciente: ' + err);
+    }
+}
+exports.InsertTranToPatient = (tran) => {
+    try {
+        Paciente.findById(tran.paciente).then(p => {
+            p.transfusiones.push(tran);
+            const saved = p.save();
+            return saved;
+        });
+    } catch(err) {
+        console.log('Error: Insertando Transfusion en Paciente: ' + err);
+        throw Error('Insertando Transfusion en Paciente: ' + err);
+    }
+}
+exports.DeleteTranFromPatient = (tran) => {
+    try {
+        Paciente.findById(tran.paciente).then(p => {
+            console.log(p);
+            let copyOfTrans = {...p.transfusiones};
+            console.log(copyOfTrans);
+            let index = copyOfTrans.indexOf(p => p === tran);
+            console.log(index);
+            p.transfusiones = copyOfTrans.splice(index, 1);
+            console.log(p.transfusiones);
+            const saved = p.save();
+            return saved;
+        });
+    } catch(err) {
+        console.log('Error: Insertando Transfusion en Paciente: ' + err);
+        throw Error('Insertando Transfusion en Paciente: ' + err);
     }
 }
 //#endregion

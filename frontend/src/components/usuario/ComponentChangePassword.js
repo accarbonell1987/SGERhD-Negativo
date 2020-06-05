@@ -155,7 +155,7 @@ class ComponentChangePassword extends Component {
                 </Button>
             }
         >
-            <Header icon='user' content='Cambiar Contraseña  ' />
+            <Header icon='user' content='Cambiar Contraseña' />
             <Modal.Content>
             { this.state.errorform ? <Message error inverted header='Error' content='Error en el formulario' /> : null } 
             <Form ref='form' onSubmit={this.changeModalState}>

@@ -9,7 +9,7 @@ const Patient = require('../services/patients');
 //#region HistoriaClinicas
 exports.GetClinicsHistory = async (query, page, limit) => {
     try {
-        var clinicshistory = await HistoriaClinica.find(query).populate('paciente');
+        var clinicshistory = await HistoriaClinica.find(query).populate({ path:'paciente', populate: {path: 'transfusiones'} });
         return clinicshistory;
     } catch (err) {
         console.log('Error: Obteniendo Historias Clinicas');
@@ -18,7 +18,7 @@ exports.GetClinicsHistory = async (query, page, limit) => {
 }
 exports.GetClinicHistory = async (id) => {
     try {
-        var clinichistory = await HistoriaClinica.findById(id).populate('paciente');
+        var clinichistory = await HistoriaClinica.findById(id).populate({ path:'paciente', populate: {path: 'transfusiones'} });
         return clinichistory;
     } catch (err) {
         console.log('Error: Obteniendo Historia Clinica con id: ' + id);

@@ -79,7 +79,7 @@ class ComponentPatients extends Component {
             <Table.Header className='div-table-header-row'>
               <Table.Row >
                 <Table.HeaderCell />
-                <Table.HeaderCell colSpan='13'>
+                <Table.HeaderCell colSpan='14'>
                   { accesomenu.permisos.crear ?
                     <ComponentAddPatient allPatients = {this.props.allPatients}  parentState = {this.props.parentState} roles = {this.props.roles} />:
                     <Button floated='right' icon labelPosition='left' primary size='small' className='modal-button-add' disabled>
@@ -92,6 +92,7 @@ class ComponentPatients extends Component {
                 (this.props.pacientes.length > 0) ? 
                 <Table.Row>
                   <Table.HeaderCell />
+                  <Table.HeaderCell>Fecha Creación</Table.HeaderCell>
                   <Table.HeaderCell>Nombres y Apellidos</Table.HeaderCell>
                   <Table.HeaderCell>Carnet Identidad</Table.HeaderCell>
                   <Table.HeaderCell>Dirección</Table.HeaderCell>
@@ -110,6 +111,10 @@ class ComponentPatients extends Component {
 
             <Table.Body>
               { this.props.pacientes.map(paciente => {
+                  let fecha = new Date(paciente.fechaDeCreacion);
+                  let dia = fecha.getDate(); let mes = fecha.getMonth() + 1; let ano = fecha.getFullYear();
+                  let fechacadena = dia + '/' + mes + '/' + ano;
+
                   let madre = paciente.madre;
                   let madrenombreyapellido = (madre == null) ? 'Indefinido' : madre.nombre + ' ' + madre.apellidos;
                   // let rolData = this.props.roles.find(element => { return element.key === usuario.rol });
@@ -120,6 +125,7 @@ class ComponentPatients extends Component {
                       <Table.Cell collapsing>
                         <Icon name='wheelchair' />
                       </Table.Cell>
+                      <Table.Cell>{fechacadena}</Table.Cell>
                       <Table.Cell>{paciente.nombre} {paciente.apellidos}</Table.Cell>
                       <Table.Cell>{paciente.ci}</Table.Cell>
                       <Table.Cell>{paciente.direccion}</Table.Cell>
