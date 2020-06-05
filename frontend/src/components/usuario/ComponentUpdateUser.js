@@ -1,6 +1,6 @@
 //Importaciones
 import React, { Component } from 'react';
-import { Button, Icon, Header, Modal, Form, Message } from 'semantic-ui-react'
+import { Button, Icon, Header, Modal, Form, Message, Segment } from 'semantic-ui-react'
 import Swal from 'sweetalert2'
 
 //CSS
@@ -12,6 +12,7 @@ class ComponentUpdateUser extends Component {
       nombre: '',
       email: '',
       rol: '',
+      activo: false,
       erroremail: false,
       errorrol: false,
       errorform: false
@@ -29,11 +30,11 @@ class ComponentUpdateUser extends Component {
     }
     //modificar usuario
     updateUser = async (id) => {
-      const { email, rol } = this.state;
+      const { email, rol, activo } = this.state;
       const usuario = {
         email: email, 
         rol: rol,
-        activo: true
+        activo: activo
       }
       //la promise debe de devolver un valor RETURN
       try {
@@ -100,6 +101,7 @@ class ComponentUpdateUser extends Component {
           nombre: this.props.usuario.nombre,
           email: this.props.usuario.email,
           rol: this.props.usuario.rol,
+          activo: this.props.usuario.activo,
           openModal: true
         });
       } else if ((evt.target.className.includes('modal-button-cancel')) || (evt.target.className.includes('modal-icon-cancel'))){
@@ -143,14 +145,27 @@ class ComponentUpdateUser extends Component {
             { this.state.errorform ? <Message error inverted header='Error' content='Error en el formulario' /> : null } 
             <Form ref='form' onSubmit={this.changeModalState}>
                 <Form.Input 
-                disabled required name = 'nombre' icon = 'user' iconPosition = 'left' label = 'Nombre:' value={this.state.nombre} error={this.state.errornombre} placeholder = 'nombre de usuario' onChange = {this.changeModalInput}
+                  disabled required name = 'nombre' icon = 'user' iconPosition = 'left' label = 'Nombre:' value={this.state.nombre} error={this.state.errornombre} placeholder = 'nombre de usuario' onChange = {this.changeModalInput}
                 />
                 <Form.Input
-                required name = 'email' icon = 'mail' iconPosition = 'left' label = 'Correo Electrónico:' value={this.state.email} error={this.state.erroremail} placeholder = 'correo@host.com' onChange = {this.changeModalInput}
+                  required name = 'email' icon = 'mail' iconPosition = 'left' label = 'Correo Electrónico:' value={this.state.email} error={this.state.erroremail} placeholder = 'correo@host.com' onChange = {this.changeModalInput}
                 />
                 <Form.Select
-                required name = 'rol' label = 'Rol:' placeholder = 'Seleccionar Rol' options={this.props.roles} value={this.state.rol} error={this.state.errorrol} onChange = { (e, {value}) => { this.setState({ rol : value }); } } fluid selection clearable
+                  required name = 'rol' label = 'Rol:' placeholder = 'Seleccionar Rol' options={this.props.roles} value={this.state.rol} error={this.state.errorrol} onChange = { (e, {value}) => { this.setState({ rol : value }); } } fluid selection clearable
                 />
+                <Form.Group>
+                <Segment className='modal-segment-expanded'>
+                  <Header as='h5'>Activo:</Header>
+                  <Form.Checkbox
+                    toggle name='activo' labelPosition='left' label = {this.state.activo === true ? 'Si' : 'No'} value={this.state.activo} onChange = {(evt) => {
+                      evt.preventDefault();
+                      this.setState({
+                        activo: !this.state.activo
+                      });
+                  }}
+                  />
+                </Segment>
+              </Form.Group>
             </Form>
             </Modal.Content>
             <Modal.Actions>

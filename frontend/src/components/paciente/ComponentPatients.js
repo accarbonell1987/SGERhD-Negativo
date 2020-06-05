@@ -111,6 +111,8 @@ class ComponentPatients extends Component {
 
             <Table.Body>
               { this.props.pacientes.map(paciente => {
+                  let negative = !paciente.activo;
+
                   let fecha = new Date(paciente.fechaDeCreacion);
                   let dia = fecha.getDate(); let mes = fecha.getMonth() + 1; let ano = fecha.getFullYear();
                   let fechacadena = dia + '/' + mes + '/' + ano;
@@ -121,7 +123,7 @@ class ComponentPatients extends Component {
                   // //para colorear row
                   // let negative = this.props.parentState.usuario === usuario.nombre;
                   return(
-                    <Table.Row key={paciente._id} >
+                    <Table.Row key={paciente._id} negative={negative}>
                       <Table.Cell collapsing>
                         <Icon name='wheelchair' />
                       </Table.Cell>

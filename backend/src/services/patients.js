@@ -3,10 +3,14 @@ const Paciente = require('../models/models').Paciente;
 var mongoose = require('mongoose');
 //#endregion
 
+//#Servicios
+const ClinicHistoryService = require('../services/historiaclinica');
+//#endregion
+
 //#region Pacientes
 exports.GetPatients = async (query, page, limit) => {
     try {
-        var patients = await Paciente.find(query).populate({path:'historiaclinica', populate: {path:'paciente'} }).populate('madre').populate('transfusiones');
+        var patients = await Paciente.find(query).populate('historiaclinica').populate('madre').populate('transfusiones');
         return patients;
     } catch (err) {
         console.log('Error: Obteniendo Pacientes');
@@ -15,7 +19,7 @@ exports.GetPatients = async (query, page, limit) => {
 }
 exports.GetPatient = async (id) => {
     try {
-        var patient = await Paciente.findById(id).populate({path:'historiaclinica', populate: {path:'paciente'} }).populate('madre').populate('transfusiones');
+        var patient = await Paciente.findById(id).populate('historiaclinica').populate('madre').populate('transfusiones');
         return patient;
     } catch (err) {
         console.log('Error: Obteniendo Paciente con id: ' + id);
@@ -45,7 +49,9 @@ exports.InsertPatient = async (body) => {
 }
 exports.DeletePatient = async (id) => {
     try {
-        var removed = await Paciente.findByIdAndRemove(id);
+        var removed = await Paciente.findByIdAndRemove(id).then(p => {
+            ClinicHistoryService.DeleteClinicHistoryPatient(p, p.historiaclinica);
+        });
         return removed;
     } catch(err) {
         console.log('Error: Eliminando Paciente' + err);
@@ -88,6 +94,16 @@ exports.UpdatePatient = async (id, body) => {
         throw Error('Modificando Paciente: ' + err);
     }
 }
+exports.DesactivatePatient = async (id) => {
+    try {
+        const patient = { activo: false };
+        var updated = await Paciente.findByIdAndUpdate(id, patient);
+        return updated;
+    } catch(err) {
+        console.log('Error: Modificando Paciente: ' + err);
+        throw Error('Modificando Paciente: ' + err);
+    }
+}
 exports.UpdatePatientClinicHistory = async (id, clinichistory) => {
     try {
         const patient = { historiaclinica: clinichistory };
@@ -110,22 +126,21 @@ exports.InsertTranToPatient = (tran) => {
         throw Error('Insertando Transfusion en Paciente: ' + err);
     }
 }
-exports.DeleteTranFromPatient = (tran) => {
+exports.DeleteTranFromPatient = async (tran, pacienteid) => {
     try {
-        Paciente.findById(tran.paciente).then(p => {
-            console.log(p);
-            let copyOfTrans = {...p.transfusiones};
-            console.log(copyOfTrans);
-            let index = copyOfTrans.indexOf(p => p === tran);
-            console.log(index);
-            p.transfusiones = copyOfTrans.splice(index, 1);
-            console.log(p.transfusiones);
-            const saved = p.save();
-            return saved;
+        //buscar el paciente
+        var paciente = await Paciente.findById(pacienteid).then(p => {
+            //buscar el indice del elemento que representa esa transaccion en el arreglo de transacciones del paciente
+            let index = p.transfusiones.indexOf(tran._id);
+            //eliminar del arreglo el elemento
+            let item = p.transfusiones.splice(index, 1);
+            //hacer un update del paciente
+            const patient = { transfusiones: item };
+            Paciente.findByIdAndUpdate(pacienteid, patient);
         });
     } catch(err) {
-        console.log('Error: Insertando Transfusion en Paciente: ' + err);
-        throw Error('Insertando Transfusion en Paciente: ' + err);
+        console.log('Error: DeleteTranFromPatient Transfusion en Paciente: ' + err);
+        throw Error('DeleteTranFromPatient Transfusion en Paciente: ' + err);
     }
 }
 //#endregion

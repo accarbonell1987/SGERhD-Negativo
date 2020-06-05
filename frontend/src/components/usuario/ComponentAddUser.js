@@ -14,6 +14,7 @@ class ComponentAddUser extends Component {
       repetircontraseña: '',
       email: '',
       rol: '',
+      activo: true,
       errornombre: false,
       errorcontraseña: false,
       errorcontraseñacoincide: false,
@@ -39,9 +40,9 @@ class ComponentAddUser extends Component {
 
     //adicionar nuevo usuario
     addUser = async () => {
-      const { nombre, contraseña, repetircontraseña, email, rol } = this.state;
+      const { nombre, contraseña, repetircontraseña, email, rol, activo } = this.state;
       const usuario = {
-        nombre: nombre, contraseña: contraseña, repetircontraseña: repetircontraseña, email: email, rol: rol
+        nombre: nombre, contraseña: contraseña, repetircontraseña: repetircontraseña, email: email, rol: rol, activo: activo
       }
       //la promise debe de devolver un valor RETURN
       try {
@@ -131,18 +132,19 @@ class ComponentAddUser extends Component {
     //limpiar states
     clearModalState = () => {
         this.setState({
-            openModal: false,
-            nombre: '',
-            contraseña: '',
-            repetircontraseña: '',
-            email: '',
-            rol: '',
-            errornombre: false,
-            errorcontraseña: false,
-            errorcontraseñacoincide: false,
-            erroremail: false,
-            errorrol: false,
-            errorform: false
+          openModal: false,
+          nombre: '',
+          contraseña: '',
+          repetircontraseña: '',
+          email: '',
+          rol: '',
+          activo: true,
+          errornombre: false,
+          errorcontraseña: false,
+          errorcontraseñacoincide: false,
+          erroremail: false,
+          errorrol: false,
+          errorform: false
         });
     }
   

@@ -118,12 +118,14 @@ class ComponentClinicHistory extends Component {
             <Table.Body>
               { 
                 this.props.historiasclinicas.map(historia => {
+                  let negative = !historia.activo;
+
                   let fecha = new Date(historia.fechaDeCreacion);
                   let dia = fecha.getDate(); let mes = fecha.getMonth() + 1; let ano = fecha.getFullYear();
                   let fechacadena = dia + '/' + mes + '/' + ano;
                   
                   return(
-                    <Table.Row key={historia._id} >
+                    <Table.Row key={historia._id} negative={negative}>
                       <Table.Cell collapsing>
                         <Icon name='clipboard' />
                       </Table.Cell>

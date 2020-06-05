@@ -112,15 +112,14 @@ class ComponentTrans extends Component {
             <Table.Body>
               { 
                 this.props.transfusiones.map(tran => {
+                  let negative = !tran.activo;
+
                   let fecha = new Date(tran.fecha);
                   let dia = fecha.getDate(); let mes = fecha.getMonth() + 1; let ano = fecha.getFullYear();
                   let fechacadena = dia + '/' + mes + '/' + ano;
 
-                  // let rolData = this.props.roles.find(element => { return element.key === usuario.rol });
-                  // //para colorear row
-                  // let negative = this.props.parentState.usuario === usuario.nombre;
                   return(
-                    <Table.Row key={tran._id} >
+                    <Table.Row key={tran._id} negative={negative}>
                       <Table.Cell collapsing>
                         <Icon name='tint' />
                       </Table.Cell>

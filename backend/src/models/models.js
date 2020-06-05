@@ -65,7 +65,7 @@ db.on('error', console.error.bind(console, 'MongoDB error en conexion:'));
         numeroDeEmbarazos: { type: Number, min: 0 },
         numeroDePartos: { type: Number, min: 0 },
         numeroDeAbortos: { type: Number, min: 0 },
-        paciente: { type: Schema.Types.ObjectId, ref: 'Paciente' },
+        paciente: { type: Schema.Types.ObjectId, ref: 'Paciente', default: mongoose.mongo.ObjectID() },
         activo: { type: Boolean },
         accessToken: { type: String }
     });

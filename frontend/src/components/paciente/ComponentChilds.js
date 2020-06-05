@@ -174,6 +174,8 @@ class ComponentChilds extends Component {
               <Table.Body>
               { this.props.pacientes.map (paciente => 
                 {
+                  let negative = !paciente.activo;
+
                   let madre = this.props.pacientes.find(p => p._id === paciente.madre);
                   let madrenombreyapellido = (madre == null) ? 'Indefinido' : madre.nombre + ' ' + madre.apellidos;
 
@@ -185,12 +187,12 @@ class ComponentChilds extends Component {
                   //chequear que el paciente actual sea diferente al que mando la peticion de escoger los hijos
                   if (paciente._id !== this.props.paciente._id) {
                     return(
-                      <Table.Row key={paciente._id} >
+                      <Table.Row key={paciente._id} negative={negative}>
                         <Table.Cell collapsing>
                           <Icon name='child' />
                         </Table.Cell>
                         <Table.Cell>
-                          <Checkbox key={paciente._id} name={paciente._id} defaultChecked={esHijo} onChange={(e, data) => { this.changeCheckBox(e, data); } }/>
+                          <Checkbox key={paciente._id} name={paciente._id} defaultChecked={esHijo} onChange={(e, data) => { this.changeCheckBox(e, data); } } disabled={negative}/>
                         </Table.Cell>
                         <Table.Cell>{paciente.nombre} {paciente.apellidos}</Table.Cell>
                         <Table.Cell>{paciente.ci}</Table.Cell>

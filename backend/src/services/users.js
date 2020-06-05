@@ -55,6 +55,17 @@ exports.DeleteUser = async (id) => {
         throw Error('Eliminando Usuario: ' + err);
     };
 }
+exports.DesactivateUser = (id) => {
+    const user = { activo: false };
+
+    var d = Usuario.findByIdAndUpdate(id, user)
+    .then(user => user)
+    .catch(err => {
+        console.log('Error: Modificando Usuario: ' + err);
+        throw Error('Modificando Usuario: ' + err);
+    });
+    return d;
+}
 exports.UpdateUser = async (id, body) => {
     try {
         const { email, rol, activo } = body;

@@ -1,6 +1,6 @@
 //Importaciones
 import React, { Component } from 'react';
-import { Button, Grid, Icon, Label, Table, Image } from 'semantic-ui-react'
+import { Button, Grid, Icon, Label, Table, Image, Checkbox } from 'semantic-ui-react'
 import Swal from 'sweetalert2'
 
 //CSS
@@ -20,11 +20,15 @@ class ComponentUsers extends Component {
     this.deleteUser = this.deleteUser.bind(this);
   }
   //eliminar el usuario
-  deleteUser = (id, nombre) => {
+  deleteUser = (usuario) => {
     //Esta seguro?
+    let text = '';
+    if (usuario.activo) text = 'Desea desactivar el usuario: ' + usuario.nombre
+    else text = 'Desea eliminar el usuario: ' + usuario.nombre;
+
     Swal.fire({
       title: '¿Esta seguro?',
-      text: "Desea eliminar el usuario: " + nombre,
+      text: text,
       icon: 'question',
       showCancelButton: true,
       // confirmButtonColor: '#3085d6',
@@ -38,7 +42,7 @@ class ComponentUsers extends Component {
       //si escogio Si
       if (result.value) {
         //enviar al endpoint
-        fetch (this.props.parentState.endpoint + 'api/usuario/' + id, {
+        fetch (this.props.parentState.endpoint + 'api/usuario/' + usuario._id, {
           method: 'DELETE',
           headers: {
             'Accept': 'application/json',
@@ -54,7 +58,7 @@ class ComponentUsers extends Component {
           :
               Swal.fire({ position: 'center', icon: 'error', title: message, showConfirmButton: false, timer: 5000 })
           //Actualizar el listado
-          this.allUsers();
+          this.props.allUsers();
         })
         .catch(err => {
           Swal.fire({ position: 'center', icon: 'error', title: err, showConfirmButton: false, timer: 5000 }); //mostrar mensaje de error
@@ -79,7 +83,7 @@ class ComponentUsers extends Component {
             <Table.Header>
               <Table.Row>
                 <Table.HeaderCell />
-                <Table.HeaderCell colSpan='5'>{
+                <Table.HeaderCell colSpan='6'>{
                   accesomenu.permisos.crear ?
                     <ComponentAddUser allUsers = {this.props.allUsers}  parentState = {this.props.parentState} roles = {this.props.roles} />:
                     <Button floated='right' icon labelPosition='left' primary size='small' className='modal-button-add' disabled>
@@ -95,6 +99,7 @@ class ComponentUsers extends Component {
                   <Table.HeaderCell>Nombre</Table.HeaderCell>
                   <Table.HeaderCell>Correo Electrónico</Table.HeaderCell>
                   <Table.HeaderCell>Rol</Table.HeaderCell>
+                  <Table.HeaderCell>Activo</Table.HeaderCell>
                   <Table.HeaderCell className='cells-max-witdh-2'>Logs</Table.HeaderCell>
                   <Table.HeaderCell className='cells-max-witdh-2'>Acciones</Table.HeaderCell>
                 </Table.Row> : ''
@@ -119,6 +124,11 @@ class ComponentUsers extends Component {
                           <Image src={ rolData.image.src } />{rolData.text}
                         </Label>
                       </Table.Cell>
+                      <Table.Cell>
+                        <Checkbox
+                          toggle name='activo' labelPosition='left' label = {usuario.activo ? 'Si' : 'No'} checked={usuario.activo} disabled
+                        />
+                      </Table.Cell>
                       <Table.Cell className='cell-logs' collapsing>
                         <Button icon labelPosition='right' className='button-logs'>
                           <Icon name='address card outline' className='button-icon-logs'/>Logs
@@ -128,7 +138,7 @@ class ComponentUsers extends Component {
                         {
                           //acceso a eliminar
                           accesomenu.permisos.eliminar && !negative ?
-                          <Button icon='remove user' className = 'button-remove' onClick={() => this.deleteUser(usuario._id, usuario.nombre) } /> : <Button icon='remove user' className = 'button-remove' disabled />
+                          <Button icon='remove user' className = 'button-remove' onClick={() => this.deleteUser(usuario) } /> : <Button icon='remove user' className = 'button-remove' disabled />
                         }
                         {
                           accesomenu.permisos.modificar ?

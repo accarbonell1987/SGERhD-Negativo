@@ -1,9 +1,10 @@
 //#region Modelos
 const HistoriaClinica = require('../models/models').HistoriaClinica;
+var mongoose = require('mongoose');
 //#endregion
 
 //#Servicios
-const Patient = require('../services/patients');
+const PatientService = require('../services/patients');
 //#endregion
 
 //#region HistoriaClinicas
@@ -49,7 +50,7 @@ exports.InsertClinicHistory = async (body) => {
                 } else throw Error('HistoriaClinica ya existente');
             })
             .then(saved => {
-                Patient.UpdatePatientClinicHistory(paciente, saved);
+                PatientService.UpdatePatientClinicHistory(paciente, saved);
             })
             .catch(err => {
                 console.log('Error: Insertando HistoriaClinica: ' + err);
@@ -64,7 +65,7 @@ exports.DeleteClinicHistory = async (id) => {
     try {
         var removed = await HistoriaClinica.findByIdAndRemove(id)
             .then(deleted => {
-                Patient.UpdatePatientClinicHistory(deleted.paciente, null);
+                PatientService.UpdatePatientClinicHistory(deleted.paciente, null);
             });
         return removed;
     } catch(err) {
@@ -79,6 +80,27 @@ exports.UpdateClinicHistory = async (id, body) => {
         const clinichistory = { fechaDeCreacion, areaDeSalud, numerohistoria, vacunaAntiD, numeroDeEmbarazos, numeroDePartos, numeroDeAbortos, paciente, activo };
 
         var updated = await HistoriaClinica.findByIdAndUpdate(id, clinichistory);
+        return updated;
+    } catch(err) {
+        console.log('Error: Modificando HistoriaClinica: ' + err);
+        throw Error('Modificando HistoriaClinica: ' + err);
+    }
+}
+exports.DesactivateClinicHistory = async (id) => {
+    try {
+        const clinichistory = { activo: false };
+        var updated = await HistoriaClinica.findByIdAndUpdate(id, clinichistory);
+        return updated;
+    } catch(err) {
+        console.log('Error: Modificando HistoriaClinica: ' + err);
+        throw Error('Modificando HistoriaClinica: ' + err);
+    }
+}
+exports.DeleteClinicHistoryPatient = async (paciente, historiaclinicaid) => {
+    try {
+        console.log(paciente, historiaclinicaid);
+        const clinichistory = { paciente: mongoose.mongo.ObjectID() };
+        var updated = await HistoriaClinica.findByIdAndUpdate(historiaclinicaid, clinichistory);
         return updated;
     } catch(err) {
         console.log('Error: Modificando HistoriaClinica: ' + err);

@@ -37,9 +37,9 @@ exports.InsertUser = async (req, res, next) => {
 }
 exports.DeleteUser = async (req, res, next) => {
     try {
-        var usuario = await UserServices.DeleteUser(req.params.id);
-        return res.status(200).json({ status: 200, message: 'Eliminado Correctamente', data: usuario });
-    } catch(err) {
+        var user = UserServices.DesactivateUser(req.params.id);
+        return res.status(200).json({ status: 200, message: !user.activo ? 'Desactivado Correctamente' : 'Eliminado Correctamente', data: user });
+    }catch(err) {
         return res.status(400).json({ status: 400, message: err });
     }
 }
@@ -137,7 +137,7 @@ exports.InsertPatient = async (req, res, next) => {
 }
 exports.DeletePatient = async (req, res, next) => {
     try {
-        var paciente = await PatientServices.DeletePatient(req.params.id);
+        var paciente = await PatientServices.DesactivatePatient(req.params.id);
         return res.status(200).json({ status: 200, message: 'Eliminado Correctamente', data: paciente });
     } catch(err) {
         return res.status(400).json({ status: 400, message: err });
@@ -196,7 +196,7 @@ exports.InsertClinicHistory = async (req, res, next) => {
 }
 exports.DeleteClinicHistory = async (req, res, next) => {
     try {
-        var clinichistory = await ClinicHistoryServices.DeleteClinicHistory(req.params.id);
+        var clinichistory = await ClinicHistoryServices.DesactivateClinicHistory(req.params.id);
         return res.status(200).json({ status: 200, message: 'Eliminado Correctamente', data: clinichistory });
     } catch(err) {
         return res.status(400).json({ status: 400, message: err });
@@ -243,7 +243,7 @@ exports.InsertTran = async (req, res, next) => {
 }
 exports.DeleteTran = async (req, res, next) => {
     try {
-        var tran = await TranServices.DeleteTran(req.params.id);
+        var tran = await TranServices.DesactivateTran(req.params.id);
         return res.status(200).json({ status: 200, message: 'Eliminado Correctamente', data: tran });
     } catch(err) {
         return res.status(400).json({ status: 400, message: err });
