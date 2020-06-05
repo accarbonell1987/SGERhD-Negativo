@@ -175,87 +175,100 @@ class ComponentUpdateClinicHistory extends Component {
             <Modal.Content>
             { this.state.errorform ? <Message error inverted header='Error' content='Error en el formulario' /> : null } 
             <Form ref='form' onSubmit={this.changeModalState}>
-                <Form.Input
-                  required disabled name = 'numerohistoria' icon = 'address card outline' iconPosition = 'left' label = 'Numero de Historia:' value={this.state.numerohistoria}
-                />
-                <Segment.Group horizontal className='modal-segment-group'>
-                  <Segment className='modal-segment-longleft'>
-                    <Form.Input
-                    required name = 'areaDeSalud' icon = 'hospital symbol' iconPosition = 'left' label = 'Area de Salud:' value={this.state.areaDeSalud} placeholder = 'Consultorio, Policlinico, Hospital' onChange = {this.changeModalInput}
+              <Form.Input
+                required disabled name = 'numerohistoria' icon = 'address card outline' iconPosition = 'left' label = 'Numero de Historia:' value={this.state.numerohistoria}
+              />
+              <Segment.Group horizontal className='modal-segment-group'>
+                <Segment className='modal-segment-longleft'>
+                  <Form.Input
+                  required name = 'areaDeSalud' icon = 'hospital symbol' iconPosition = 'left' label = 'Area de Salud:' value={this.state.areaDeSalud} placeholder = 'Consultorio, Policlinico, Hospital' onChange = {this.changeModalInput}
+                  />
+                </Segment>
+                <Segment className='modal-segment-shortright'>
+                  <Form.Group>
+                    <Segment className='modal-segment-expanded'>
+                      <Header as='h5'>Vacuna Anti-D:</Header>
+                      <Form.Checkbox
+                          toggle name='vacunaAntiD' labelPosition='left' label = {this.state.vacunaAntiD === true ? 'Si' : 'No'} value={this.state.vacunaAntiD} checked={this.state.vacunaAntiD} onChange = {(evt) => {
+                          evt.preventDefault();
+                          this.setState({
+                            vacunaAntiD: !this.state.vacunaAntiD
+                          });
+                        }}
+                      />
+                    </Segment>
+                  </Form.Group>
+                </Segment>
+              </Segment.Group>
+              <Segment.Group horizontal>
+                <Segment>
+                  <Form.Group>
+                    <Form.Input className='modal-input-30p'
+                      required name = 'numeroDeEmbarazos' icon = 'user md' iconPosition = 'left' label = 'Numero de Embarazos:' value={this.state.numeroDeEmbarazos}
                     />
-                  </Segment>
-                  <Segment className='modal-segment-shortright'>
-                    <Form.Group>
-                      <Segment className='modal-segment-expanded'>
-                        <Header as='h5'>Vacuna Anti-D:</Header>
-                        <Form.Checkbox
-                            toggle name='vacunaAntiD' labelPosition='left' label = {this.state.vacunaAntiD === true ? 'Si' : 'No'} value={this.state.vacunaAntiD} checked={this.state.vacunaAntiD} onChange = {(evt) => {
-                            evt.preventDefault();
-                            this.setState({
-                              vacunaAntiD: !this.state.vacunaAntiD
-                            });
-                          }}
-                        />
-                      </Segment>
-                    </Form.Group>
-                  </Segment>
-                </Segment.Group>
-                <Segment.Group horizontal>
-                  <Segment>
-                    <Form.Group>
-                      <Form.Input className='modal-input-30p'
-                        required name = 'numeroDeEmbarazos' icon = 'user md' iconPosition = 'left' label = 'Numero de Embarazos:' value={this.state.numeroDeEmbarazos}
-                      />
-                      <Button.Group>
-                        <Button className='button-group-addsub' icon='plus' primary onClick={(evt) => { 
-                          evt.preventDefault();
-                          this.setState({numeroDeEmbarazos: this.state.numeroDeEmbarazos + 1 }); 
-                        }} />
-                        <Button className='button-group-addsub' icon='minus' secondary disabled={this.state.numeroDeEmbarazos === 0} onClick={(evt) => { 
-                          evt.preventDefault();
-                          this.setState({numeroDeEmbarazos: this.state.numeroDeEmbarazos - 1 }); 
-                        }} />
-                      </Button.Group>
-                    </Form.Group>
-                  </Segment>
-                  <Segment>
-                    <Form.Group>
-                      <Form.Input className='modal-input-30p'
-                        required name = 'numeroDePartos' icon = 'user md' iconPosition = 'left' label = 'Numero de Partos:' value={this.state.numeroDePartos} 
-                      />
-                      <Button.Group>
-                        <Button className='button-group-addsub' icon='plus' primary onClick={(evt) => { 
-                          evt.preventDefault();
-                          this.setState({numeroDePartos: this.state.numeroDePartos + 1 }); 
-                        }} />
-                        <Button className='button-group-addsub' icon='minus' secondary disabled={this.state.numeroDePartos === 0} onClick={(evt) => { 
-                          evt.preventDefault();
-                          this.setState({numeroDePartos: this.state.numeroDePartos - 1 }); 
-                        }} />
-                      </Button.Group>
-                    </Form.Group>
-                  </Segment>
-                  <Segment>
-                    <Form.Group>
-                      <Form.Input className='modal-input-30p'
-                        required name = 'numeroDeAbortos' icon = 'user md' iconPosition = 'left' label = 'Numero de Abortos:' value={this.state.numeroDeAbortos}
-                      />
-                      <Button.Group>
-                        <Button className='button-group-addsub' icon='plus' primary onClick={(evt) => { 
-                          evt.preventDefault();
-                          this.setState({numeroDeAbortos: this.state.numeroDeAbortos + 1 }); 
-                        }} />
-                        <Button className='button-group-addsub' icon='minus' secondary disabled={this.state.numeroDeAbortos === 0} onClick={(evt) => { 
-                          evt.preventDefault();
-                          this.setState({numeroDeAbortos: this.state.numeroDeAbortos - 1 }); 
-                        }} />
-                      </Button.Group>
-                    </Form.Group>
-                  </Segment>
-                </Segment.Group>
-                <Form.Select
-                    name = 'paciente' label = 'Paciente:' placeholder = 'Seleccionar Paciente' options={this.state.opcionPacientes} value={this.state.paciente._id} onChange = { (e, {value}) => { this.setState({ paciente : value }); } } fluid selection clearable
-                />
+                    <Button.Group>
+                      <Button className='button-group-addsub' icon='plus' primary onClick={(evt) => { 
+                        evt.preventDefault();
+                        this.setState({numeroDeEmbarazos: this.state.numeroDeEmbarazos + 1 }); 
+                      }} />
+                      <Button className='button-group-addsub' icon='minus' secondary disabled={this.state.numeroDeEmbarazos === 0} onClick={(evt) => { 
+                        evt.preventDefault();
+                        this.setState({numeroDeEmbarazos: this.state.numeroDeEmbarazos - 1 }); 
+                      }} />
+                    </Button.Group>
+                  </Form.Group>
+                </Segment>
+                <Segment>
+                  <Form.Group>
+                    <Form.Input className='modal-input-30p'
+                      required name = 'numeroDePartos' icon = 'user md' iconPosition = 'left' label = 'Numero de Partos:' value={this.state.numeroDePartos} 
+                    />
+                    <Button.Group>
+                      <Button className='button-group-addsub' icon='plus' primary onClick={(evt) => { 
+                        evt.preventDefault();
+                        this.setState({numeroDePartos: this.state.numeroDePartos + 1 }); 
+                      }} />
+                      <Button className='button-group-addsub' icon='minus' secondary disabled={this.state.numeroDePartos === 0} onClick={(evt) => { 
+                        evt.preventDefault();
+                        this.setState({numeroDePartos: this.state.numeroDePartos - 1 }); 
+                      }} />
+                    </Button.Group>
+                  </Form.Group>
+                </Segment>
+                <Segment>
+                  <Form.Group>
+                    <Form.Input className='modal-input-30p'
+                      required name = 'numeroDeAbortos' icon = 'user md' iconPosition = 'left' label = 'Numero de Abortos:' value={this.state.numeroDeAbortos}
+                    />
+                    <Button.Group>
+                      <Button className='button-group-addsub' icon='plus' primary onClick={(evt) => { 
+                        evt.preventDefault();
+                        this.setState({numeroDeAbortos: this.state.numeroDeAbortos + 1 }); 
+                      }} />
+                      <Button className='button-group-addsub' icon='minus' secondary disabled={this.state.numeroDeAbortos === 0} onClick={(evt) => { 
+                        evt.preventDefault();
+                        this.setState({numeroDeAbortos: this.state.numeroDeAbortos - 1 }); 
+                      }} />
+                    </Button.Group>
+                  </Form.Group>
+                </Segment>
+              </Segment.Group>
+              <Form.Select
+                  name = 'paciente' label = 'Paciente:' placeholder = 'Seleccionar Paciente' options={this.state.opcionPacientes} value={this.state.paciente._id} onChange = { (e, {value}) => { this.setState({ paciente : value }); } } fluid selection clearable
+              />
+              <Form.Group>
+                <Segment className='modal-segment-expanded'>
+                  <Header as='h5'>Activo:</Header>
+                  <Form.Checkbox
+                    toggle name='activo' labelPosition='left' label = {this.state.activo === true ? 'Si' : 'No'} value={this.state.activo} checked={this.state.activo} onChange = {(evt) => {
+                      evt.preventDefault();
+                      this.setState({
+                        activo: !this.state.activo
+                      });
+                  }}
+                  />
+                </Segment>
+              </Form.Group>
             </Form>
             </Modal.Content>
             <Modal.Actions>

@@ -17,7 +17,6 @@ exports.GetTrans = async (query, page, limit) => {
 }
 exports.GetTran = async (id) => {
     try {
-        console.log(id);
         var tran = await Transfusion.findById(id).populate('paciente');
         return tran;
     } catch (err) {

@@ -154,18 +154,18 @@ class ComponentUpdateUser extends Component {
                   required name = 'rol' label = 'Rol:' placeholder = 'Seleccionar Rol' options={this.props.roles} value={this.state.rol} error={this.state.errorrol} onChange = { (e, {value}) => { this.setState({ rol : value }); } } fluid selection clearable
                 />
                 <Form.Group>
-                <Segment className='modal-segment-expanded'>
-                  <Header as='h5'>Activo:</Header>
-                  <Form.Checkbox
-                    toggle name='activo' labelPosition='left' label = {this.state.activo === true ? 'Si' : 'No'} value={this.state.activo} checked={this.state.activo} onChange = {(evt) => {
-                      evt.preventDefault();
-                      this.setState({
-                        activo: !this.state.activo
-                      });
-                  }}
-                  />
-                </Segment>
-              </Form.Group>
+                  <Segment className='modal-segment-expanded'>
+                    <Header as='h5'>Activo:</Header>
+                    <Form.Checkbox
+                      toggle name='activo' labelPosition='left' label = {this.state.activo === true ? 'Si' : 'No'} value={this.state.activo} checked={this.state.activo} onChange = {(evt) => {
+                        evt.preventDefault();
+                        this.setState({
+                          activo: !this.state.activo
+                        });
+                    }}
+                    />
+                  </Segment>
+                </Form.Group>
             </Form>
             </Modal.Content>
             <Modal.Actions>

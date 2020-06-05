@@ -1,6 +1,6 @@
 //Importaciones
 import React, { Component } from 'react';
-import { Button, Icon, Header, Modal, Form, Message } from 'semantic-ui-react'
+import { Button, Icon, Header, Modal, Form, Message, Segment } from 'semantic-ui-react'
 import Swal from 'sweetalert2'
 
 //CSS
@@ -201,27 +201,40 @@ class ComponentUpdatePatient extends Component {
             <Modal.Content>
             { this.state.errorform ? <Message error inverted header='Error' content='Error en el formulario' /> : null } 
             <Form ref='form' onSubmit={this.changeModalState}>
-            <Form.Input
-                  required name = 'nombre' icon = 'address card outline' iconPosition = 'left' label = 'Nombre:' value={this.state.nombre} placeholder = 'Facundo' error = { this.state.errornombre } onChange = {this.changeModalInput}
-                />
-                <Form.Input
-                  required name = 'apellidos' icon = 'address card outline' iconPosition = 'left' label = 'Apellidos:' value={this.state.apellidos} error={this.state.errorapellidos} placeholder = 'Correcto Inseguro' onChange = {this.changeModalInput}
-                />
-                <Form.Input
-                  required name = 'ci' icon = 'vcard' iconPosition = 'left' label = 'Carnet de Identidad:' value={this.state.ci} placeholder = '90112050112' error = { this.state.errorci } onChange = {this.changeModalInput}
-                />
-                <Form.Input
-                  required name = 'direccion' icon = 'building outline' iconPosition = 'left' label = 'Dirección:' value={this.state.direccion} placeholder = 'Calle 6 No.512...' onChange = {this.changeModalInput}
-                />
-                <Form.Input
-                  name = 'direccionopcional' icon = 'building outline' iconPosition = 'left' label = 'Dirección Opcional:' value={this.state.direccionopcional} placeholder = 'Calle 6 No.512...' onChange = {this.changeModalInput}
-                />
-                <Form.Input
-                  required name = 'telefono' icon = 'phone' iconPosition = 'left' label = 'Teléfono:' value={this.state.telefono} placeholder = '52802640' onChange = {this.changeModalInput} error={this.state.errortelefono}
-                />
-                <Form.Select
+              <Form.Input
+                required name = 'nombre' icon = 'address card outline' iconPosition = 'left' label = 'Nombre:' value={this.state.nombre} placeholder = 'Facundo' error = { this.state.errornombre } onChange = {this.changeModalInput}
+              />
+              <Form.Input
+                required name = 'apellidos' icon = 'address card outline' iconPosition = 'left' label = 'Apellidos:' value={this.state.apellidos} error={this.state.errorapellidos} placeholder = 'Correcto Inseguro' onChange = {this.changeModalInput}
+              />
+              <Form.Input
+                required name = 'ci' icon = 'vcard' iconPosition = 'left' label = 'Carnet de Identidad:' value={this.state.ci} placeholder = '90112050112' error = { this.state.errorci } onChange = {this.changeModalInput}
+              />
+              <Form.Input
+                required name = 'direccion' icon = 'building outline' iconPosition = 'left' label = 'Dirección:' value={this.state.direccion} placeholder = 'Calle 6 No.512...' onChange = {this.changeModalInput}
+              />
+              <Form.Input
+                name = 'direccionopcional' icon = 'building outline' iconPosition = 'left' label = 'Dirección Opcional:' value={this.state.direccionopcional} placeholder = 'Calle 6 No.512...' onChange = {this.changeModalInput}
+              />
+              <Form.Input
+                required name = 'telefono' icon = 'phone' iconPosition = 'left' label = 'Teléfono:' value={this.state.telefono} placeholder = '52802640' onChange = {this.changeModalInput} error={this.state.errortelefono}
+              />
+              <Form.Select
                 required name = 'sexo' label = 'Género:' placeholder = 'Seleccionar Género' options={this.generos} value={this.state.sexo} error={this.state.errorsexo} onChange = { (e, {value}) => { this.setState({ sexo : value }); } } fluid selection clearable
-                />
+              />
+              <Form.Group>
+                <Segment className='modal-segment-expanded'>
+                  <Header as='h5'>Activo:</Header>
+                  <Form.Checkbox
+                    toggle name='activo' labelPosition='left' label = {this.state.activo === true ? 'Si' : 'No'} value={this.state.activo} checked={this.state.activo} onChange = {(evt) => {
+                      evt.preventDefault();
+                      this.setState({
+                        activo: !this.state.activo
+                      });
+                  }}
+                  />
+                </Segment>
+              </Form.Group>
             </Form>
             </Modal.Content>
             <Modal.Actions>

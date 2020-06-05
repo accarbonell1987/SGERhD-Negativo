@@ -143,7 +143,6 @@ class ComponentAddTran extends Component {
     //capturar fecha
     setDate = (fecha) => {
       this.setState({fecha: fecha});
-      console.log(fecha);
     }
     //#endregion
   
@@ -186,6 +185,19 @@ class ComponentAddTran extends Component {
               <Form.Select
                   name = 'paciente' label = 'Paciente:' placeholder = 'Seleccionar Paciente' options={this.state.opcionPacientes} value={this.state.paciente ? this.state.paciente._id : null} onChange = { (e, {value}) => { this.setState({ paciente : value }); } } fluid selection clearable
               />
+              <Form.Group>
+                <Segment className='modal-segment-expanded'>
+                  <Header as='h5'>Activo:</Header>
+                  <Form.Checkbox
+                    toggle name='activo' labelPosition='left' label = {this.state.activo === true ? 'Si' : 'No'} value={this.state.activo} checked={this.state.activo} onChange = {(evt) => {
+                      evt.preventDefault();
+                      this.setState({
+                        activo: !this.state.activo
+                      });
+                  }}
+                  />
+                </Segment>
+              </Form.Group>
             </Form>
             </Modal.Content>
             <Modal.Actions>

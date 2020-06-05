@@ -54,7 +54,6 @@ exports.UpdatePatient = async (id, body) => {
 
         const patient = { nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, historiaclinica, madre, hijos, transfusiones, embarazos, examenes, activo };
         
-        console.log(hijos);
         //asignarle el madre al hijo correspondiente
         if (hijos != null) {
             hijos.map(hijo => {
