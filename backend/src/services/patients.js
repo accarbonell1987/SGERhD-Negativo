@@ -9,37 +9,36 @@ const ClinicHistoryService = require("../services/historiaclinica");
 
 //#region Funciones Ayudantes
 VincularMadre = async (sexo, hijos) => {
-  try {
-    //asignarle el madre al hijo correspondiente
-    if (hijos) {
-      await hijos.forEach(hijo => {
-        var modelhijo = await Paciente.findById(hijo);
-        if (sexo === "F") modelhijo.madre = id;
-          await modelhijo.save();
-      });
-    }
-  } catch (err) {
-    console.log("Error: (VincularMadre) Modificando Paciente: " + err);
+	try {
+		//asignarle el madre al hijo correspondiente
+		if (hijos) {
+			await hijos.forEach(async (hijo) => {
+				var modelhijo = await Paciente.findById(hijo);
+				if (sexo === "F") modelhijo.madre = id;
+				await modelhijo.save();
+			});
+		}
+	} catch (err) {
+		console.log("Error: (VincularMadre) Modificando Paciente: " + err);
 		throw Error("(VincularMadre) Modificando Paciente: " + err);
-  }
-  
-}
+	}
+};
 DesvincularMadre = async (sexo, hijoseliminados) => {
-  try {
-    //asignar null al hijo correspondiente
-    if (hijoseliminados) {
-      //eliminar la madre al hijo
-      await hijoseliminados.forEach(hijo => {
-        var modelhijo = await Paciente.findById(hijo);
-          if (sexo === "F") modelhijo.madre = mongoose.mongo.ObjectID();
-          await modelhijo.save();
-      });
-    }
-  } catch (err) {
-    console.log("Error: (DesvincularMadre) Modificando Paciente: " + err);
+	try {
+		//asignar null al hijo correspondiente
+		if (hijoseliminados) {
+			//eliminar la madre al hijo
+			await hijoseliminados.forEach(async (hijo) => {
+				var modelhijo = await Paciente.findById(hijo);
+				if (sexo === "F") modelhijo.madre = mongoose.mongo.ObjectID();
+				await modelhijo.save();
+			});
+		}
+	} catch (err) {
+		console.log("Error: (DesvincularMadre) Modificando Paciente: " + err);
 		throw Error("(DesvincularMadre) Modificando Paciente: " + err);
-  }
-}
+	}
+};
 //#endregion
 
 //#region Pacientes
@@ -105,12 +104,11 @@ exports.InsertPatient = async (body) => {
 			activo,
 		});
 
-    const modelpaciente = await Paciente.findOne({ ci: ci });
-    if (!modelpaciente) {
-      const saved = await patient.save();
-      return saved;
-    } else 
-      throw Error("Paciente ya existente");
+		const modelpaciente = await Paciente.findOne({ ci: ci });
+		if (modelpaciente == null) {
+			const saved = await patient.save();
+			return saved;
+		} else throw Error("Paciente ya existente");
 	} catch (err) {
 		console.log("Error: Insertando Paciente: " + err);
 		throw Error("Insertando Paciente: " + err);
@@ -152,9 +150,9 @@ exports.UpdatePatient = async (id, body) => {
 			examenes,
 			activo,
 		};
-    
-    await this.VincularMadre(sexo, hijos);
-    await this.DesvincularMadre(sexo, hijoseliminados);
+
+		await this.VincularMadre(sexo, hijos);
+		await this.DesvincularMadre(sexo, hijoseliminados);
 
 		var updated = await Paciente.findByIdAndUpdate(id, patient);
 		return updated;

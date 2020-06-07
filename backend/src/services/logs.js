@@ -30,7 +30,7 @@ exports.InsertLog = async (body) => {
 	const log = new Log({ fecha, usuario });
 	try {
 		const saved = await log.save();
-		await UserServices.InserLogToUser(p);
+		await UserServices.InserLogToUser(saved);
 		return saved;
 	} catch (err) {
 		console.log("Error: Insertando Log: " + err);

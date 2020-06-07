@@ -40,7 +40,7 @@ exports.InsertTran = async (body) => {
 			fecha: fecha,
 		});
 
-		if (!exist) {
+		if (exist == null) {
 			const transaved = await tran.save();
 			const insertedinpatient = await PatientServices.InsertTranToPatient(
 				transaved
@@ -51,21 +51,6 @@ exports.InsertTran = async (body) => {
 		console.log("Error: Insertando Transfusion: " + err);
 		throw Error("Insertando Transfusion: " + err);
 	}
-
-	Transfusion.findOne({ paciente: paciente, fecha: fecha }).then((doc) => {
-		if (!doc) {
-			tran
-				.save()
-				.then((saved) => PatientServices.InsertTranToPatient(saved))
-				.then((saved) => {
-					return saved;
-				})
-				.catch((err) => {
-					console.log("Error: Insertando Transfusion: " + err);
-					throw Error("Insertando Transfusion: " + err);
-				});
-		} else throw Error("Transfusion ya existente");
-	});
 };
 exports.UpdateTran = async (id, body) => {
 	try {

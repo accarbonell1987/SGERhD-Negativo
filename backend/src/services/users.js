@@ -30,7 +30,7 @@ exports.InsertUser = async (body) => {
 		const { nombre, contraseña, rol, email, activo } = body;
 		const user = new Usuario({ nombre, contraseña, rol, email, activo });
 		const modeluser = await Usuario.findOne({ nombre: nombre });
-		if (modeluser) {
+		if (modeluser == null) {
 			const saved = await user.save();
 			return saved;
 		} else throw Error("Usuario ya existente");
@@ -41,7 +41,7 @@ exports.InsertUser = async (body) => {
 };
 exports.InserLogToUser = async (log) => {
 	try {
-		var usuario = Usuario.findById(log.usuario);
+		var usuario = await Usuario.findById(log.usuario);
 		await usuario.logs.push(log);
 		const saved = await usuario.save();
 		return saved;

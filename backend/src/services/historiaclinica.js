@@ -69,7 +69,7 @@ exports.InsertClinicHistory = async (body) => {
 		});
 
 		const modelhistoria = await HistoriaClinica.findOne({ paciente: paciente });
-		if (modelhistoria) {
+		if (modelhistoria == null) {
 			const saved = await clinichistory.save();
 			const updated = await PatientService.UpdatePatientClinicHistory(
 				paciente,
