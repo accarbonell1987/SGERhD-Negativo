@@ -20,7 +20,7 @@ exports.GetUsers = async (req, res, next) => {
 			}
 		);
 	} catch (err) {
-		return res.status(400).json({ status: 400, message: err });
+		return res.status(400).json({ status: 400, message: err.toString() });
 	}
 };
 exports.GetUser = async (req, res, next) => {
@@ -30,7 +30,7 @@ exports.GetUser = async (req, res, next) => {
 			.status(200)
 			.json({ status: 200, message: "Obtenido", data: usuario });
 	} catch (err) {
-		return res.status(400).json({ status: 400, message: err });
+		return res.status(400).json({ status: 400, message: err.toString() });
 	}
 };
 exports.InsertUser = async (req, res, next) => {
@@ -40,7 +40,7 @@ exports.InsertUser = async (req, res, next) => {
 			.status(200)
 			.json({ status: 200, message: "Insertado Correctamente", data: usuario });
 	} catch (err) {
-		return res.status(400).json({ status: 400, message: err });
+		return res.status(400).json({ status: 400, message: err.toString() });
 	}
 };
 exports.DeleteUser = async (req, res, next) => {
@@ -50,7 +50,7 @@ exports.DeleteUser = async (req, res, next) => {
 			.status(200)
 			.json({ status: 200, message: "Eliminado Correctamente", data: user });
 	} catch (err) {
-		return res.status(400).json({ status: 400, message: err });
+		return res.status(400).json({ status: 400, message: err.toString() });
 	}
 };
 exports.DisableUser = async (req, res, next) => {
@@ -63,7 +63,7 @@ exports.DisableUser = async (req, res, next) => {
 		var user = await UserServices.DisableUser(req.params.id, requser);
 		return res.status(200).json({ status: 200, message: message, data: user });
 	} catch (err) {
-		return res.status(400).json({ status: 400, message: err });
+		return res.status(400).json({ status: 400, message: err.toString() });
 	}
 };
 exports.UpdateUser = async (req, res, next) => {
@@ -75,7 +75,7 @@ exports.UpdateUser = async (req, res, next) => {
 			data: usuario,
 		});
 	} catch (err) {
-		return res.status(400).json({ status: 400, message: err });
+		return res.status(400).json({ status: 400, message: err.toString() });
 	}
 };
 exports.UpdateUserPassword = async (req, res, next) => {
@@ -90,7 +90,7 @@ exports.UpdateUserPassword = async (req, res, next) => {
 			data: usuario,
 		});
 	} catch (err) {
-		return res.status(400).json({ status: 400, message: err });
+		return res.status(400).json({ status: 400, message: err.toString() });
 	}
 };
 //#endregion
@@ -106,7 +106,7 @@ exports.GetLogs = async (req, res, next) => {
 			.status(200)
 			.json({ status: 200, message: "Obtenidos", data: logs });
 	} catch (err) {
-		return res.status(400).json({ status: 400, message: err });
+		return res.status(400).json({ status: 400, message: err.toString() });
 	}
 };
 exports.GetLog = async (req, res, next) => {
@@ -116,7 +116,7 @@ exports.GetLog = async (req, res, next) => {
 			.status(200)
 			.json({ status: 200, message: "Obtenido", data: log });
 	} catch (err) {
-		return res.status(400).json({ status: 400, message: err });
+		return res.status(400).json({ status: 400, message: err.toString() });
 	}
 };
 exports.InsertLog = async (req, res, next) => {
@@ -126,7 +126,7 @@ exports.InsertLog = async (req, res, next) => {
 			.status(200)
 			.json({ status: 200, message: "Insertado Correctamente", data: log });
 	} catch (err) {
-		return res.status(400).json({ status: 400, message: err });
+		return res.status(400).json({ status: 400, message: err.toString() });
 	}
 };
 exports.DeleteLog = async (req, res, next) => {
@@ -136,7 +136,7 @@ exports.DeleteLog = async (req, res, next) => {
 			.status(200)
 			.json({ status: 200, message: "Eliminado Correctamente", data: log });
 	} catch (err) {
-		return res.status(400).json({ status: 400, message: err });
+		return res.status(400).json({ status: 400, message: err.toString() });
 	}
 };
 exports.UpdateLog = async (req, res, next) => {
@@ -146,7 +146,7 @@ exports.UpdateLog = async (req, res, next) => {
 			.status(200)
 			.json({ status: 200, message: "Modificado Correctamente", data: log });
 	} catch (err) {
-		return res.status(400).json({ status: 400, message: err });
+		return res.status(400).json({ status: 400, message: err.toString() });
 	}
 };
 //#endregion
@@ -162,7 +162,7 @@ exports.GetPatients = async (req, res, next) => {
 			.status(200)
 			.json({ status: 200, message: "Obtenidos", data: pacientes });
 	} catch (err) {
-		return res.status(400).json({ status: 400, message: err });
+		return res.status(400).json({ status: 400, message: err.toString() });
 	}
 };
 exports.GetPatient = async (req, res, next) => {
@@ -172,7 +172,7 @@ exports.GetPatient = async (req, res, next) => {
 			.status(200)
 			.json({ status: 200, message: "Obtenido", data: paciente });
 	} catch (err) {
-		return res.status(400).json({ status: 400, message: err });
+		return res.status(400).json({ status: 400, message: err.toString() });
 	}
 };
 exports.InsertPatient = async (req, res, next) => {
@@ -184,7 +184,7 @@ exports.InsertPatient = async (req, res, next) => {
 			data: paciente,
 		});
 	} catch (err) {
-		return res.status(400).json({ status: 400, message: err });
+		return res.status(400).json({ status: 400, message: err.toString() });
 	}
 };
 exports.DeletePatient = async (req, res, next) => {
@@ -196,7 +196,7 @@ exports.DeletePatient = async (req, res, next) => {
 			data: paciente,
 		});
 	} catch (err) {
-		return res.status(400).json({ status: 400, message: err });
+		return res.status(400).json({ status: 400, message: err.toString() });
 	}
 };
 exports.DisablePatient = async (req, res, next) => {
@@ -214,7 +214,7 @@ exports.DisablePatient = async (req, res, next) => {
 			.status(200)
 			.json({ status: 200, message: message, data: patient });
 	} catch (err) {
-		return res.status(400).json({ status: 400, message: err });
+		return res.status(400).json({ status: 400, message: err.toString() });
 	}
 };
 exports.UpdatePatient = async (req, res, next) => {
@@ -226,7 +226,7 @@ exports.UpdatePatient = async (req, res, next) => {
 			data: paciente,
 		});
 	} catch (err) {
-		return res.status(400).json({ status: 400, message: err });
+		return res.status(400).json({ status: 400, message: err.toString() });
 	}
 };
 //#endregion
@@ -246,7 +246,7 @@ exports.GetClinicsHistory = async (req, res, next) => {
 			.status(200)
 			.json({ status: 200, message: "Obtenidos", data: clinicshistory });
 	} catch (err) {
-		return res.status(400).json({ status: 400, message: err });
+		return res.status(400).json({ status: 400, message: err.toString() });
 	}
 };
 exports.GetClinicHistory = async (req, res, next) => {
@@ -265,7 +265,7 @@ exports.GetClinicHistory = async (req, res, next) => {
 			.status(200)
 			.json({ status: 200, message: "Obtenido", data: clinichistory });
 	} catch (err) {
-		return res.status(400).json({ status: 400, message: err });
+		return res.status(400).json({ status: 400, message: err.toString() });
 	}
 };
 exports.GetClinicHistoryLastInserted = async (req, res, next) => {
@@ -275,7 +275,7 @@ exports.GetClinicHistoryLastInserted = async (req, res, next) => {
 			.status(200)
 			.json({ status: 200, message: "Obtenido", data: clinichistory });
 	} catch (err) {
-		return res.status(400).json({ status: 400, message: err });
+		return res.status(400).json({ status: 400, message: err.toString() });
 	}
 };
 exports.InsertClinicHistory = async (req, res, next) => {
@@ -289,7 +289,7 @@ exports.InsertClinicHistory = async (req, res, next) => {
 			data: clinichistory,
 		});
 	} catch (err) {
-		return res.status(400).json({ status: 400, message: err });
+		return res.status(400).json({ status: 400, message: err.toString() });
 	}
 };
 exports.DeleteClinicHistory = async (req, res, next) => {
@@ -303,7 +303,7 @@ exports.DeleteClinicHistory = async (req, res, next) => {
 			data: clinichistory,
 		});
 	} catch (err) {
-		return res.status(400).json({ status: 400, message: err });
+		return res.status(400).json({ status: 400, message: err.toString() });
 	}
 };
 exports.DisableClinicHistory = async (req, res, next) => {
@@ -321,7 +321,7 @@ exports.DisableClinicHistory = async (req, res, next) => {
 			.status(200)
 			.json({ status: 200, message: message, data: clinichistory });
 	} catch (err) {
-		return res.status(400).json({ status: 400, message: err });
+		return res.status(400).json({ status: 400, message: err.toString() });
 	}
 };
 exports.UpdateClinicHistory = async (req, res, next) => {
@@ -336,7 +336,7 @@ exports.UpdateClinicHistory = async (req, res, next) => {
 			data: clinichistory,
 		});
 	} catch (err) {
-		return res.status(400).json({ status: 400, message: err });
+		return res.status(400).json({ status: 400, message: err.toString() });
 	}
 };
 //#endregion
@@ -352,7 +352,7 @@ exports.GetTrans = async (req, res, next) => {
 			.status(200)
 			.json({ status: 200, message: "Obtenidos", data: trans });
 	} catch (err) {
-		return res.status(400).json({ status: 400, message: err });
+		return res.status(400).json({ status: 400, message: err.toString() });
 	}
 };
 exports.GetTran = async (req, res, next) => {
@@ -363,7 +363,7 @@ exports.GetTran = async (req, res, next) => {
 			.status(200)
 			.json({ status: 200, message: "Obtenido", data: tran });
 	} catch (err) {
-		return res.status(400).json({ status: 400, message: err });
+		return res.status(400).json({ status: 400, message: err.toString() });
 	}
 };
 exports.InsertTran = async (req, res, next) => {
@@ -373,7 +373,7 @@ exports.InsertTran = async (req, res, next) => {
 			.status(200)
 			.json({ status: 200, message: "Insertado Correctamente", data: tran });
 	} catch (err) {
-		return res.status(400).json({ status: 400, message: err });
+		return res.status(400).json({ status: 400, message: err.toString() });
 	}
 };
 exports.DeleteTran = async (req, res, next) => {
@@ -383,7 +383,7 @@ exports.DeleteTran = async (req, res, next) => {
 			.status(200)
 			.json({ status: 200, message: "Eliminado Correctamente", data: tran });
 	} catch (err) {
-		return res.status(400).json({ status: 400, message: err });
+		return res.status(400).json({ status: 400, message: err.toString() });
 	}
 };
 exports.DisableTran = async (req, res, next) => {
@@ -396,7 +396,7 @@ exports.DisableTran = async (req, res, next) => {
 		var tran = await TranServices.DisableTran(req.params.id, reqtran);
 		return res.status(200).json({ status: 200, message: message, data: tran });
 	} catch (err) {
-		return res.status(400).json({ status: 400, message: err });
+		return res.status(400).json({ status: 400, message: err.toString() });
 	}
 };
 exports.UpdateTran = async (req, res, next) => {
@@ -406,7 +406,7 @@ exports.UpdateTran = async (req, res, next) => {
 			.status(200)
 			.json({ status: 200, message: "Modificado Correctamente", data: tran });
 	} catch (err) {
-		return res.status(400).json({ status: 400, message: err });
+		return res.status(400).json({ status: 400, message: err.toString() });
 	}
 };
 //#endregion

@@ -3,7 +3,7 @@ const HistoriaClinica = require("../models/models").HistoriaClinica;
 var mongoose = require("mongoose");
 //#endregion
 
-//#Servicios
+//#region Servicios
 const PatientService = require("../services/patients");
 //#endregion
 
@@ -16,8 +16,7 @@ exports.GetClinicsHistory = async (query, page, limit) => {
 		});
 		return clinicshistory;
 	} catch (err) {
-		console.log("Error: Obteniendo Historias Clinicas");
-		throw Error("Obteniendo Historias Clinicas");
+		throw Error("GetClinicsHistory -> Obteniendo Historias Clinicas.");
 	}
 };
 exports.GetClinicHistory = async (id) => {
@@ -28,8 +27,9 @@ exports.GetClinicHistory = async (id) => {
 		});
 		return clinichistory;
 	} catch (err) {
-		console.log("Error: Obteniendo Historia Clinica con id: " + id);
-		throw Error("Obteniendo Historia Clinica con id: " + id);
+		throw Error(
+			"GetClinicHistory -> Obteniendo Historia Clinica con id: " + id
+		);
 	}
 };
 exports.GetClinicHistoryLastInserted = async () => {
@@ -38,8 +38,7 @@ exports.GetClinicHistoryLastInserted = async () => {
 		return clinichistory;
 		// return null;
 	} catch (err) {
-		console.log("Error: Obteniendo Ultimo");
-		throw Error("Obteniendo Ultimo");
+		throw Error("GetClinicHistoryLastInserted -> Obteniendo Ultimo");
 	}
 };
 exports.InsertClinicHistory = async (body) => {
@@ -78,8 +77,7 @@ exports.InsertClinicHistory = async (body) => {
 			return saved;
 		} else throw Error("HistoriaClinica ya existente");
 	} catch (err) {
-		console.log("Error: Insertando HistoriaClinica: " + err);
-		throw Error("Insertando HistoriaClinica: " + err);
+		throw Error("InsertClinicHistory -> Insertando HistoriaClinica \n" + err);
 	}
 };
 exports.UpdateClinicHistory = async (id, body) => {
@@ -111,8 +109,7 @@ exports.UpdateClinicHistory = async (id, body) => {
 		var updated = await HistoriaClinica.findByIdAndUpdate(id, clinichistory);
 		return updated;
 	} catch (err) {
-		console.log("Error: Modificando HistoriaClinica: " + err);
-		throw Error("Modificando HistoriaClinica: " + err);
+		throw Error("UpdateClinicHistory -> Modificando HistoriaClinica \n" + err);
 	}
 };
 exports.DeleteClinicHistory = async (clinichistory) => {
@@ -123,8 +120,7 @@ exports.DeleteClinicHistory = async (clinichistory) => {
 		);
 		return removed;
 	} catch (err) {
-		console.log("Error: Eliminando Historia Clinica" + err);
-		throw Error("Eliminando Historia Clinica: " + err);
+		throw Error("DeleteClinicHistory -> Eliminando Historia Clinica \n" + err);
 	}
 };
 exports.DeleteClinicHistoryFromPatient = async (patient) => {
@@ -134,12 +130,8 @@ exports.DeleteClinicHistoryFromPatient = async (patient) => {
 		);
 		return removed;
 	} catch (err) {
-		console.log(
-			"Error: (DeleteClinicHistoryFromPatient) Eliminando Historia Clinica" +
-				err
-		);
 		throw Error(
-			"(DeleteClinicHistoryFromPatient) Eliminando Historia Clinica: " + err
+			"DeleteClinicHistoryFromPatient -> Eliminando Historia Clinica \n" + err
 		);
 	}
 };
@@ -153,8 +145,9 @@ exports.DisableClinicHistory = async (id, clinichistory) => {
 			return await exports.DeleteClinicHistory(clinichistory);
 		}
 	} catch (err) {
-		console.log("Error: Desactivando Historia Clinica: " + err);
-		throw Error("Desactivando Historia Clinica: " + err);
+		throw Error(
+			"DisableClinicHistory -> Desactivando Historia Clinica \n" + err
+		);
 	}
 };
 //#endregion

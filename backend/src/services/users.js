@@ -2,7 +2,7 @@
 const Usuario = require("../models/models").Usuario;
 //#endregion
 
-//#Servicios
+//#region Servicios
 const LogServices = require("../services/logs");
 //#endregion
 
@@ -12,8 +12,7 @@ exports.GetUsers = async (query, page, limit) => {
 		const users = await Usuario.find(query).populate("logs");
 		return users;
 	} catch (err) {
-		console.log("Error: Obteniendo Usuarios");
-		throw Error("Obteniendo Usuarios");
+		throw Error("GetUsers -> Obteniendo Usuarios.");
 	}
 };
 exports.GetUser = async (id) => {
@@ -21,8 +20,7 @@ exports.GetUser = async (id) => {
 		const user = await Usuario.findById(id).populate("logs");
 		return users;
 	} catch (err) {
-		console.log("Error: Obteniendo Usuario con id: " + id);
-		throw Error("Obteniendo Usuario con id: " + id);
+		throw Error("GetUser -> Obteniendo Usuario con id: " + id);
 	}
 };
 exports.InsertUser = async (body) => {
@@ -35,8 +33,7 @@ exports.InsertUser = async (body) => {
 			return saved;
 		} else throw Error("Usuario ya existente");
 	} catch (err) {
-		console.log("Error: Insertando Usuario: " + err);
-		throw Error("Insertando Usuario: " + err);
+		throw Error("InsertUser -> Insertando Usuario \n" + err);
 	}
 };
 exports.InserLogToUser = async (log) => {
@@ -46,8 +43,7 @@ exports.InserLogToUser = async (log) => {
 		const saved = await usuario.save();
 		return saved;
 	} catch (err) {
-		console.log("Error: Insertando Log en Usuario: " + err);
-		throw Error("Insertando Log en Usuario: " + err);
+		throw Error("InserLogToUser -> Insertando Log en Usuario \n" + err);
 	}
 };
 exports.UpdateUser = async (id, body) => {
@@ -57,8 +53,7 @@ exports.UpdateUser = async (id, body) => {
 		var updated = await Usuario.findByIdAndUpdate(id, user);
 		return updated;
 	} catch (err) {
-		console.log("Error: Modificando Usuario: " + err);
-		throw Error("Modificando Usuario: " + err);
+		throw Error("UpdateUser -> Modificando Usuario \n" + err);
 	}
 };
 exports.UpdateUserPassword = async (id, body) => {
@@ -68,8 +63,9 @@ exports.UpdateUserPassword = async (id, body) => {
 		var updated = await Usuario.findByIdAndUpdate(id, user);
 		return updated;
 	} catch (err) {
-		console.log("Error: Modificando Contraseña Usuario: " + err);
-		throw Error("Modificando Contraseña Usuario: " + err);
+		throw Error(
+			"UpdateUserPassword -> Modificando Contraseña Usuario \n" + err
+		);
 	}
 };
 exports.DeleteUser = async (id) => {
@@ -78,8 +74,7 @@ exports.DeleteUser = async (id) => {
 		const deleted = await LogServices.DeleteLogByUserId(id);
 		return removed;
 	} catch (err) {
-		console.log("Error: Eliminando Usuario" + err);
-		throw Error("Eliminando Usuario: " + err);
+		throw Error("DeleteUser -> Eliminando Usuario \n" + err);
 	}
 };
 exports.DisableUser = async (id, user) => {
@@ -92,8 +87,7 @@ exports.DisableUser = async (id, user) => {
 			return await exports.DeleteUser(id);
 		}
 	} catch (err) {
-		console.log("Error: Modificando Usuario: " + err);
-		throw Error("Modificando Usuario: " + err);
+		throw Error("DisableUser -> Modificando Usuario \n" + err);
 	}
 };
 //#endregion

@@ -2,7 +2,7 @@
 const Log = require("../models/models").LogAcceso;
 //#endregion
 
-//#Servicios
+//#region Servicios
 const UserServices = require("../services/users");
 //#endregion
 
@@ -12,8 +12,7 @@ exports.GetLogs = async (query, page, limit) => {
 		var logs = await Log.find(query).populate("usuario");
 		return logs;
 	} catch (err) {
-		console.log("Error: Obteniendo Logs");
-		throw Error("Obteniendo Logs");
+		throw Error("GetLogs -> Obteniendo Logs.");
 	}
 };
 exports.GetLog = async (id) => {
@@ -21,8 +20,7 @@ exports.GetLog = async (id) => {
 		var log = await Log.findById(id).populate("usuario");
 		return log;
 	} catch (err) {
-		console.log("Error: Obteniendo Log con id: " + id);
-		throw Error("Obteniendo Log con id: " + id);
+		throw Error("GetLog -> Obteniendo Log con id: " + id);
 	}
 };
 exports.InsertLog = async (body) => {
@@ -33,8 +31,7 @@ exports.InsertLog = async (body) => {
 		await UserServices.InserLogToUser(saved);
 		return saved;
 	} catch (err) {
-		console.log("Error: Insertando Log: " + err);
-		throw Error("Insertando Log: " + err);
+		throw Error("InsertLog -> Insertando Log \n" + err);
 	}
 };
 exports.DeleteLog = async (id) => {
@@ -42,8 +39,7 @@ exports.DeleteLog = async (id) => {
 		var removed = await Log.findByIdAndRemove(id);
 		return removed;
 	} catch (err) {
-		console.log("Error: Eliminando Logs" + err);
-		throw Error("Eliminando Log: " + err);
+		throw Error("DeleteLog -> Eliminando Log \n" + err);
 	}
 };
 exports.DeleteLogByUserId = async (id) => {
@@ -51,16 +47,14 @@ exports.DeleteLogByUserId = async (id) => {
 		var deleated = await Log.deleteMany({ usuario: id });
 		return deleated;
 	} catch (err) {
-		console.log("Error: Eliminando Log por Id de Usuario: " + id);
-		throw Error("Eliminando Log por Id de Usuario: " + id);
+		throw Error("DeleteLogByUserId -> Eliminando Log por Id de Usuario: " + id);
 	}
 };
 exports.UpdateLog = async () => {
 	try {
 		throw Error("No Permitido, Modificar Log: " + err);
 	} catch (err) {
-		console.log("Error: Modificando Log: " + err);
-		throw Error("Modificando Log: " + err);
+		throw Error("UpdateLog -> Modificando Log \n" + err);
 	}
 };
 //#endregion

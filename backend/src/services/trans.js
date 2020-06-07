@@ -3,7 +3,9 @@ const Transfusion = require("../models/models").Transfusion;
 var mongoose = require("mongoose");
 //#endregion
 
+//#region Servicios
 const PatientServices = require("../services/patients");
+//#endregion
 
 //#region Transfusiones
 exports.GetTrans = async (query, page, limit) => {
@@ -11,8 +13,7 @@ exports.GetTrans = async (query, page, limit) => {
 		var trans = await Transfusion.find(query).populate("paciente");
 		return trans;
 	} catch (err) {
-		console.log("Error: Obteniendo Transfusiones");
-		throw Error("Obteniendo Transfusiones");
+		throw Error("GetTrans -> Obteniendo Transfusiones.");
 	}
 };
 exports.GetTran = async (id) => {
@@ -20,8 +21,7 @@ exports.GetTran = async (id) => {
 		var tran = await Transfusion.findById(id).populate("paciente");
 		return tran;
 	} catch (err) {
-		console.log("Error: Obteniendo Transfusion con id: " + id);
-		throw Error("Obteniendo Transfusion con id: " + id);
+		throw Error("GetTran -> Obteniendo Transfusion con id: " + id);
 	}
 };
 exports.InsertTran = async (body) => {
@@ -48,8 +48,7 @@ exports.InsertTran = async (body) => {
 			return transaved;
 		}
 	} catch (err) {
-		console.log("Error: Insertando Transfusion: " + err);
-		throw Error("Insertando Transfusion: " + err);
+		throw Error("InsertTran -> Insertando Transfusion \n" + err);
 	}
 };
 exports.UpdateTran = async (id, body) => {
@@ -60,8 +59,7 @@ exports.UpdateTran = async (id, body) => {
 		const updated = await Transfusion.findByIdAndUpdate(id, tran);
 		return updated;
 	} catch (err) {
-		console.log("Error: Modificando Transfusion: " + err);
-		throw Error("Modificando Transfusion: " + err);
+		throw Error("UpdateTran -> Modificando Transfusion \n" + err);
 	}
 };
 exports.DeleteTran = async (tran) => {
@@ -70,8 +68,7 @@ exports.DeleteTran = async (tran) => {
 		const deletetrans = await PatientServices.DeleteTranInPatient(tran);
 		return removed;
 	} catch (err) {
-		console.log("Error: Eliminando Transfusion" + err);
-		throw Error("Eliminando Transfusion: " + err);
+		throw Error("DeleteTran -> Eliminando Transfusion \n" + err);
 	}
 };
 exports.DisableTran = async (id, tran) => {
@@ -84,8 +81,7 @@ exports.DisableTran = async (id, tran) => {
 			return await exports.DeleteTran(tran);
 		}
 	} catch (err) {
-		console.log("Error: Desactivando Transfusion: " + err);
-		throw Error("Desactivando Transfusion: " + err);
+		throw Error("DisableTran -> Desactivando Transfusion \n" + err);
 	}
 };
 //#endregion
