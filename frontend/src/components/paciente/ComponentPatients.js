@@ -26,13 +26,7 @@ class ComponentPatients extends Component {
 		let { text, accion } = "";
 		if (paciente.activo) accion = "Desactivar";
 		else accion = "Eliminar";
-		text =
-			"Desea " +
-			accion +
-			" el paciente: " +
-			paciente.nombre +
-			" " +
-			paciente.apellidos;
+		text = "Desea " + accion + " el paciente: " + paciente.nombre + " " + paciente.apellidos;
 
 		Swal.fire({
 			title: "¿Esta seguro?",
@@ -47,18 +41,15 @@ class ComponentPatients extends Component {
 			//si escogio Si
 			if (result.value) {
 				//enviar al endpoint
-				fetch(
-					this.props.parentState.endpoint + "api/paciente/" + paciente._id,
-					{
-						method: "PUT",
-						body: JSON.stringify(paciente),
-						headers: {
-							Accept: "application/json",
-							"Content-Type": "application/json",
-							"access-token": this.props.parentState.token,
-						},
-					}
-				)
+				fetch(this.props.parentState.endpoint + "api/paciente/" + paciente._id, {
+					method: "PUT",
+					body: JSON.stringify(paciente),
+					headers: {
+						Accept: "application/json",
+						"Content-Type": "application/json",
+						"access-token": this.props.parentState.token,
+					},
+				})
 					.then((res) => res.json())
 					.then((data) => {
 						const { status, message } = data;
@@ -96,26 +87,15 @@ class ComponentPatients extends Component {
 
 	render() {
 		//buscar el permiso del rol
-		const permiso = this.props.permisos.find(
-			(p) => p.rol === this.props.parentState.rol
-		);
+		const permiso = this.props.permisos.find((p) => p.rol === this.props.parentState.rol);
 		//buscar el acceso del menu
 		const accesomenu = permiso.accesos.find((p) => p.opcion === "pacientes");
 		//chequear si es paciente y tengo permiso
 		return (
-			<Grid
-				textAlign="center"
-				verticalAlign="top"
-				className="gestionar-allgrid"
-			>
+			<Grid textAlign="center" verticalAlign="top" className="gestionar-allgrid">
 				<Grid.Column className="gestionar-allcolumn">
-					<Label
-						attached="top left"
-						className="div-label-attached"
-						size="large"
-					>
-						<Icon name="wheelchair" size="large" inverted /> Gestión de
-						Pacientes
+					<Label attached="top left" className="div-label-attached" size="large">
+						<Icon name="wheelchair" size="large" inverted /> Gestión de Pacientes
 					</Label>
 					<Table compact celled definition attached="top" className="div-table">
 						<Table.Header className="div-table-header-row">
@@ -123,21 +103,9 @@ class ComponentPatients extends Component {
 								<Table.HeaderCell />
 								<Table.HeaderCell colSpan="15">
 									{accesomenu.permisos.crear ? (
-										<ComponentAddPatient
-											allPatients={this.props.allPatients}
-											parentState={this.props.parentState}
-											roles={this.props.roles}
-										/>
+										<ComponentAddPatient allPatients={this.props.allPatients} parentState={this.props.parentState} roles={this.props.roles} />
 									) : (
-										<Button
-											floated="right"
-											icon
-											labelPosition="left"
-											primary
-											size="small"
-											className="modal-button-add"
-											disabled
-										>
+										<Button floated="right" icon labelPosition="left" primary size="small" className="modal-button-add" disabled>
 											<Icon name="add circle" />
 											Adicionar
 										</Button>
@@ -153,30 +121,14 @@ class ComponentPatients extends Component {
 									<Table.HeaderCell>Dirección</Table.HeaderCell>
 									<Table.HeaderCell>Teléfonos</Table.HeaderCell>
 									<Table.HeaderCell>Madre</Table.HeaderCell>
-									<Table.HeaderCell className="cells-max-witdh-2">
-										Género
-									</Table.HeaderCell>
-									<Table.HeaderCell className="cells-max-witdh-2">
-										Hijos
-									</Table.HeaderCell>
-									<Table.HeaderCell className="cells-max-witdh-2">
-										Historia Clínica
-									</Table.HeaderCell>
-									<Table.HeaderCell className="cells-max-witdh-2">
-										Transfusiones
-									</Table.HeaderCell>
-									<Table.HeaderCell className="cells-max-witdh-2">
-										Embarazos
-									</Table.HeaderCell>
-									<Table.HeaderCell className="cells-max-witdh-2">
-										Examenes
-									</Table.HeaderCell>
-									<Table.HeaderCell className="cells-max-witdh-2">
-										Activo
-									</Table.HeaderCell>
-									<Table.HeaderCell className="cells-max-witdh-2">
-										Acciones
-									</Table.HeaderCell>
+									<Table.HeaderCell className="cells-max-witdh-2">Género</Table.HeaderCell>
+									<Table.HeaderCell className="cells-max-witdh-2">Hijos</Table.HeaderCell>
+									<Table.HeaderCell className="cells-max-witdh-2">Historia Clínica</Table.HeaderCell>
+									<Table.HeaderCell className="cells-max-witdh-2">Transfusiones</Table.HeaderCell>
+									<Table.HeaderCell className="cells-max-witdh-2">Embarazos</Table.HeaderCell>
+									<Table.HeaderCell className="cells-max-witdh-2">Examenes</Table.HeaderCell>
+									<Table.HeaderCell className="cells-max-witdh-2">Activo</Table.HeaderCell>
+									<Table.HeaderCell className="cells-max-witdh-2">Acciones</Table.HeaderCell>
 								</Table.Row>
 							) : (
 								""
@@ -194,10 +146,7 @@ class ComponentPatients extends Component {
 								let fechacadena = dia + "/" + mes + "/" + ano;
 
 								let madre = paciente.madre;
-								let madrenombreyapellido =
-									madre == null
-										? "Indefinido"
-										: madre.nombre + " " + madre.apellidos;
+								let madrenombreyapellido = madre == null ? "Indefinido" : madre.nombre + " " + madre.apellidos;
 								// let rolData = this.props.roles.find(element => { return element.key === usuario.rol });
 								// //para colorear row
 								// let negative = this.props.parentState.usuario === usuario.nombre;
@@ -214,31 +163,19 @@ class ComponentPatients extends Component {
 										<Table.Cell>{paciente.direccion}</Table.Cell>
 										<Table.Cell>{paciente.telefono}</Table.Cell>
 										<Table.Cell>
-											<Button
-												icon
-												labelPosition="right"
-												className="button-childs"
-											>
+											<Button icon labelPosition="right" className="button-childs">
 												<Icon name="venus" className="button-icon-childs" />
 												{madrenombreyapellido}
 											</Button>
 										</Table.Cell>
 										<Table.Cell>
 											{paciente.sexo === "M" ? (
-												<Button
-													icon
-													labelPosition="right"
-													className="button-childs"
-												>
+												<Button icon labelPosition="right" className="button-childs">
 													<Icon name="man" className="button-icon-childs" />
 													Masculino
 												</Button>
 											) : (
-												<Button
-													icon
-													labelPosition="right"
-													className="button-childs"
-												>
+												<Button icon labelPosition="right" className="button-childs">
 													<Icon name="woman" className="button-icon-childs" />
 													Femenino
 												</Button>
@@ -246,24 +183,11 @@ class ComponentPatients extends Component {
 										</Table.Cell>
 										<Table.Cell className="cells-max-witdh-2" collapsing>
 											{accesomenu.permisos.modificar ? (
-												<ComponentChilds
-													parentState={this.props.parentState}
-													paciente={paciente}
-													pacientes={this.props.pacientes}
-													allPatients={this.props.allPatients}
-												/>
+												<ComponentChilds parentState={this.props.parentState} paciente={paciente} pacientes={this.props.pacientes} allPatients={this.props.allPatients} />
 											) : (
-												<Button
-													icon
-													labelPosition="right"
-													className="modal-button-other"
-												>
+												<Button icon labelPosition="right" className="modal-button-other">
 													<Icon name="child" className="modal-icon-other" />
-													{paciente.hijos !== null
-														? paciente.hijos.length > 0
-															? paciente.hijos.length
-															: 0
-														: ""}
+													{paciente.hijos !== null ? (paciente.hijos.length > 0 ? paciente.hijos.length : 0) : ""}
 												</Button>
 											)}
 										</Table.Cell>
@@ -280,68 +204,31 @@ class ComponentPatients extends Component {
 											/>
 										</Table.Cell>
 										<Table.Cell className="cells-max-witdh-2" collapsing>
-											<Button
-												icon
-												labelPosition="right"
-												className="button-childs"
-											>
+											<Button icon labelPosition="right" className="button-childs">
 												<Icon name="tint" className="button-icon-childs" />0
 											</Button>
 										</Table.Cell>
 										<Table.Cell className="cells-max-witdh-2" collapsing>
-											<Button
-												icon
-												labelPosition="right"
-												className="button-childs"
-											>
-												<Icon name="heartbeat" className="button-icon-childs" />
-												0
+											<Button icon labelPosition="right" className="button-childs">
+												<Icon name="heartbeat" className="button-icon-childs" />0
 											</Button>
 										</Table.Cell>
 										<Table.Cell className="cells-max-witdh-2" collapsing>
-											<Button
-												icon
-												labelPosition="right"
-												className="button-childs"
-											>
-												<Icon
-													name="clipboard list"
-													className="button-icon-childs"
-												/>
-												0
+											<Button icon labelPosition="right" className="button-childs">
+												<Icon name="clipboard list" className="button-icon-childs" />0
 											</Button>
 										</Table.Cell>
 										<Table.Cell className="cells-max-witdh-2" collapsing>
-											<Checkbox
-												toggle
-												name="activo"
-												labelPosition="left"
-												label={paciente.activo ? "Si" : "No"}
-												checked={paciente.activo}
-												disabled
-											/>
+											<Checkbox toggle name="activo" labelPosition="left" label={paciente.activo ? "Si" : "No"} checked={paciente.activo} disabled />
 										</Table.Cell>
 										<Table.Cell className="cells-max-witdh-2" collapsing>
 											{accesomenu.permisos.eliminar ? (
-												<Button
-													icon="remove circle"
-													className="button-remove"
-													onClick={() => this.deletePatient(paciente)}
-												/>
+												<Button icon="remove circle" className="button-remove" onClick={() => this.deletePatient(paciente)} />
 											) : (
-												<Button
-													icon="remove circle"
-													className="button-remove"
-													disabled
-												/>
+												<Button icon="remove circle" className="button-remove" disabled />
 											)}
 											{accesomenu.permisos.modificar ? (
-												<ComponentUpdatePatient
-													allPatients={this.props.allPatients}
-													paciente={paciente}
-													parentState={this.props.parentState}
-													roles={this.props.roles}
-												/>
+												<ComponentUpdatePatient allPatients={this.props.allPatients} paciente={paciente} parentState={this.props.parentState} roles={this.props.roles} />
 											) : (
 												<Button icon="edit" disabled />
 											)}

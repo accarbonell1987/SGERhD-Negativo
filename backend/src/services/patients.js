@@ -29,7 +29,8 @@ DesvincularMadre = async (sexo, hijoseliminados) => {
 			//eliminar la madre al hijo
 			await hijoseliminados.forEach(async (hijo) => {
 				var modelhijo = await Paciente.findById(hijo);
-				if (sexo === "F") modelhijo.madre = mongoose.mongo.ObjectID();
+				console.log(modelhijo);
+				if (sexo === "F") modelhijo.madre = null;
 				await modelhijo.save();
 			});
 		}
@@ -41,10 +42,11 @@ EliminarHijoDeMadre = async (hijo) => {
 	try {
 		if (hijo.madre != null) {
 			var madre = hijo.madre;
+			var hijos = [...madre.hijos];
 			//buscar el indice del elemento que representa esa tranfusion en el arreglo de tranfusiones del paciente
-			let index = await madre.hijos.indexOf(hijo._id);
+			let index = hijos[hijo._id];
 			//eliminar del arreglo el elemento
-			let hijos = await madre.hijos.splice(index, 1);
+			hijos.splice(index, 1);
 			//hacer un update del paciente
 			const update = { hijos: hijos };
 			var updated = await Paciente.findByIdAndUpdate(madre._id, update);
@@ -60,10 +62,7 @@ EliminarHijoDeMadre = async (hijo) => {
 //#region Pacientes
 exports.GetPatients = async (query, page, limit) => {
 	try {
-		var patients = await Paciente.find(query)
-			.populate("historiaclinica")
-			.populate("madre")
-			.populate("transfusiones");
+		var patients = await Paciente.find(query).populate("historiaclinica").populate("madre").populate("transfusiones");
 		return patients;
 	} catch (err) {
 		throw Error("GetPatients -> Obteniendo Pacientes.");
@@ -71,10 +70,7 @@ exports.GetPatients = async (query, page, limit) => {
 };
 exports.GetPatient = async (id) => {
 	try {
-		var patient = await Paciente.findById(id)
-			.populate("historiaclinica")
-			.populate("madre")
-			.populate("transfusiones");
+		var patient = await Paciente.findById(id).populate("historiaclinica").populate("madre").populate("transfusiones");
 		return patient;
 	} catch (err) {
 		throw Error("GetPatient -> Obteniendo Paciente con id: " + id);
@@ -82,23 +78,7 @@ exports.GetPatient = async (id) => {
 };
 exports.InsertPatient = async (body) => {
 	try {
-		var {
-			fechaDeCreacion,
-			nombre,
-			apellidos,
-			ci,
-			direccion,
-			direccionopcional,
-			telefono,
-			sexo,
-			historiaclinica,
-			madre,
-			hijos,
-			transfusiones,
-			embarazos,
-			examenes,
-			activo,
-		} = body;
+		var { fechaDeCreacion, nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, historiaclinica, madre, hijos, transfusiones, embarazos, examenes, activo } = body;
 
 		const patient = new Paciente({
 			fechaDeCreacion,
@@ -129,23 +109,7 @@ exports.InsertPatient = async (body) => {
 };
 exports.UpdatePatient = async (id, body) => {
 	try {
-		const {
-			nombre,
-			apellidos,
-			ci,
-			direccion,
-			direccionopcional,
-			telefono,
-			sexo,
-			historiaclinica,
-			madre,
-			hijos,
-			transfusiones,
-			embarazos,
-			examenes,
-			activo,
-			hijoseliminados,
-		} = body;
+		const { nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, historiaclinica, madre, hijos, transfusiones, embarazos, examenes, activo, hijoseliminados } = body;
 
 		const patient = {
 			nombre,
@@ -163,18 +127,14 @@ exports.UpdatePatient = async (id, body) => {
 			examenes,
 			activo,
 		};
-
 		var findpatient = await Paciente.findOne({ ci: patient.ci });
-		if (findpatient == null) {
+		if (findpatient == null || findpatient._id == id) {
 			await VincularMadre(id, sexo, hijos);
 			await DesvincularMadre(sexo, hijoseliminados);
 
 			var updated = await Paciente.findByIdAndUpdate(id, patient);
 			return updated;
-		} else
-			throw Error(
-				"Existe un paciente con el carnet de identidad: " + patient.ci
-			);
+		} else throw Error("Existe un paciente con el carnet de identidad: " + patient.ci);
 	} catch (err) {
 		throw Error("UpdatePatient -> Modificando Paciente \n" + err);
 	}
@@ -182,10 +142,15 @@ exports.UpdatePatient = async (id, body) => {
 exports.DisablePatient = async (id, patient) => {
 	try {
 		if (patient.activo) {
-			patient = { activo: false };
-			var updated = await Paciente.findByIdAndUpdate(id, patient);
 			//desactivar todo lo que tiene que ver con el paciente
 			//transfusiones, examenes, historiaclinica, embarazos
+			if (patient.historiaclinica != null) {
+				await ClinicHistoryService.DisableClinicHistory(patient.historiaclinica._id, patient.historiaclinica);
+			}
+
+			patient = { activo: false };
+			var updated = await Paciente.findByIdAndUpdate(id, patient);
+
 			return updated;
 		} else {
 			return await exports.DeletePatient(patient);
@@ -200,11 +165,13 @@ exports.DeletePatient = async (patient) => {
 		if (patient.hijos.length > 0) {
 			await DesvincularMadre(patient.sexo, patient.hijos);
 		}
-		var removed = await Paciente.findByIdAndRemove(patient._id);
 		//eliminar todo lo que tiene que ver con el paciente
 		//transfusiones, examenes, historiaclinica, embarazos
 		await EliminarHijoDeMadre(patient);
-		await ClinicHistoryService.DeleteClinicHistoryFromPatient(patient);
+		if (patient.historiaclinica != null) {
+			await ClinicHistoryService.DeleteClinicHistoryFromPatient(patient);
+		}
+		var removed = await Paciente.findByIdAndRemove(patient._id);
 		return removed;
 	} catch (err) {
 		throw Error("DeletePatient -> Eliminando Paciente: \n" + err);
@@ -217,10 +184,7 @@ exports.UpdatePatientClinicHistory = async (id, clinichistory) => {
 		var updated = await Paciente.findByIdAndUpdate(id, patient);
 		return updated;
 	} catch (err) {
-		throw Error(
-			"UpdatePatientClinicHistory -> Actualizando Historia Clinica del Paciente \n" +
-				err
-		);
+		throw Error("UpdatePatientClinicHistory -> Actualizando Historia Clinica del Paciente \n" + err);
 	}
 };
 //insertar una transfusion perteneciente al paciente
@@ -231,9 +195,7 @@ exports.InsertTranToPatient = async (tran) => {
 		const saved = await patient.save();
 		return saved;
 	} catch (err) {
-		throw Error(
-			"InsertTranToPatient -> Insertando Transfusion en Paciente \n" + err
-		);
+		throw Error("InsertTranToPatient -> Insertando Transfusion en Paciente \n" + err);
 	}
 };
 //eliminar una transfusion perteneciente al paciente
@@ -250,9 +212,7 @@ exports.DeleteTranInPatient = async (tran) => {
 		var updated = await Paciente.findByIdAndUpdate(paciente._id, patient);
 		return updated;
 	} catch (err) {
-		throw Error(
-			"DeleteTranInPatient -> Eliminando Transfusion en Paciente \n" + err
-		);
+		throw Error("DeleteTranInPatient -> Eliminando Transfusion en Paciente \n" + err);
 	}
 };
 //cuando se elimina la historia clinica perteneciente al paciente se le asinga un
@@ -262,14 +222,11 @@ exports.DeleteClinicHistoryInPatient = async (clinichistory) => {
 		//paciente perteneciente a la historia clinica
 		var paciente = clinichistory.paciente;
 		//asigno nuevo id a la historiaclinica del paciente el cual no tiene relacion
-		const patient = { historiaclinica: new mongoose.ObjectId() };
+		const patient = { historiaclinica: null };
 		var updated = await Paciente.findByIdAndUpdate(paciente._id, patient);
 		return updated;
 	} catch (err) {
-		throw Error(
-			"DeleteClinicHistoryInPatient -> Eliminando Historia Clinica en Paciente \n" +
-				err
-		);
+		throw Error("DeleteClinicHistoryInPatient -> Eliminando Historia Clinica en Paciente \n" + err);
 	}
 };
 //#endregion

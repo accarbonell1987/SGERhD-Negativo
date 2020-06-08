@@ -1,20 +1,16 @@
-//Importaciones
+//#region Importaciones
 import React, { Component } from "react";
-import {
-	Button,
-	Icon,
-	Header,
-	Modal,
-	Form,
-	Message,
-	Segment,
-} from "semantic-ui-react";
+import { Button, Icon, Header, Modal, Form, Message, Segment } from "semantic-ui-react";
 import Swal from "sweetalert2";
+//#endregion
 
-//CSS
+//#region CSS
 import "../global/css/Gestionar.css";
+//#endregion
 
+//#region Definicion de Clase
 class ComponentUpdatePatient extends Component {
+	//#region Estados y Declaraciones
 	state = {
 		openModal: false,
 		nombre: "",
@@ -26,6 +22,7 @@ class ComponentUpdatePatient extends Component {
 		sexo: "",
 		madre: "",
 		hijos: [],
+		historiaclinica: null,
 		transfusiones: [],
 		embarazos: [],
 		examenes: [],
@@ -42,8 +39,9 @@ class ComponentUpdatePatient extends Component {
 		{ key: "M", text: "Masculino", value: "M", icon: "man" },
 		{ key: "F", text: "Femenino", value: "F", icon: "woman" },
 	];
+	//#endregion
 
-	//constructor
+	//#region Constructor
 	constructor(props) {
 		super(props);
 
@@ -53,24 +51,22 @@ class ComponentUpdatePatient extends Component {
 		this.changeModalState = this.changeModalState.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
+	//#endregion
+
+	//#region Metodos y Eventos
+	SwalAlert = (posicion, icon, mensaje, tiempo) => {
+		Swal.fire({
+			position: posicion,
+			icon: icon,
+			title: mensaje,
+			showConfirmButton: false,
+			timer: tiempo,
+		});
+	};
 
 	//modificar paciente
 	updatePatient = async (id) => {
-		const {
-			nombre,
-			apellidos,
-			ci,
-			direccion,
-			direccionopcional,
-			telefono,
-			sexo,
-			madre,
-			hijos,
-			transfusiones,
-			embarazos,
-			examenes,
-			activo,
-		} = this.state;
+		const { nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, hijos, historiaclinica, transfusiones, embarazos, examenes, activo } = this.state;
 		const paciente = {
 			nombre: nombre,
 			apellidos: apellidos,
@@ -81,6 +77,7 @@ class ComponentUpdatePatient extends Component {
 			sexo: sexo,
 			madre: madre,
 			hijos: hijos,
+			historiaclinica: historiaclinica,
 			transfusiones: transfusiones,
 			embarazos: embarazos,
 			examenes: examenes,
@@ -88,47 +85,26 @@ class ComponentUpdatePatient extends Component {
 		};
 		//la promise debe de devolver un valor RETURN
 		try {
-			const res = await fetch(
-				this.props.parentState.endpoint + "api/paciente/" + id,
-				{
-					method: "PATCH",
-					body: JSON.stringify(paciente),
-					headers: {
-						Accept: "application/json",
-						"Content-Type": "application/json",
-						"access-token": this.props.parentState.token,
-					},
-				}
-			);
+			const res = await fetch(this.props.parentState.endpoint + "api/paciente/" + id, {
+				method: "PATCH",
+				body: JSON.stringify(paciente),
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+					"access-token": this.props.parentState.token,
+				},
+			});
 			let jsondata = await res.json();
 			const { status, message } = jsondata;
 			if (status === 200) {
-				Swal.fire({
-					position: "center",
-					icon: "success",
-					title: message,
-					showConfirmButton: false,
-					timer: 3000,
-				});
+				this.SwalAlert("center", "success", message, 3000);
 				return true;
 			} else {
-				Swal.fire({
-					position: "center",
-					icon: "error",
-					title: message,
-					showConfirmButton: false,
-					timer: 5000,
-				});
+				this.SwalAlert("center", "error", message, 5000);
 				return false;
 			}
 		} catch (err) {
-			Swal.fire({
-				position: "center",
-				icon: "error",
-				title: err,
-				showConfirmButton: false,
-				timer: 5000,
-			});
+			this.SwalAlert("center", "error", err, 5000);
 			return false;
 		}
 	};
@@ -141,18 +117,12 @@ class ComponentUpdatePatient extends Component {
 		let soloLetras = /^[a-zA-Z ]+$/;
 		let soloNumeros = /^([0-9])*$/;
 
-		let errornombre = !this.state.nombre.match(soloLetras)
-			? { content: "El nombre solo debe de contener letras", pointing: "below" }
-			: false;
-		let errorapellidos = !this.state.apellidos.match(soloLetras)
-			? { content: "Apellidos solo debe de contener letras", pointing: "below" }
-			: false;
+		let errornombre = !this.state.nombre.match(soloLetras) ? { content: "El nombre solo debe de contener letras", pointing: "below" } : false;
+		let errorapellidos = !this.state.apellidos.match(soloLetras) ? { content: "Apellidos solo debe de contener letras", pointing: "below" } : false;
 		let errorci =
-			!this.state.ci.toString().match(soloNumeros) ||
-			this.state.ci.length !== 11
+			!this.state.ci.toString().match(soloNumeros) || this.state.ci.length !== 11
 				? {
-						content:
-							"El carnet de identidad solo debe de contener números y ser igual a 11 dígitos",
+						content: "El carnet de identidad solo debe de contener números y ser igual a 11 dígitos",
 						pointing: "below",
 				  }
 				: false;
@@ -190,10 +160,7 @@ class ComponentUpdatePatient extends Component {
 	};
 	//cambiar el estado en el MODAL para adicionar paciente
 	changeModalState = async (evt) => {
-		if (
-			evt.target.className.includes("modal-button-action") ||
-			evt.target.className.includes("modal-icon")
-		) {
+		if (evt.target.className.includes("modal-button-action") || evt.target.className.includes("modal-icon")) {
 			this.setState({
 				openModal: true,
 				nombre: this.props.paciente.nombre,
@@ -204,16 +171,14 @@ class ComponentUpdatePatient extends Component {
 				telefono: this.props.paciente.telefono,
 				sexo: this.props.paciente.sexo,
 				madre: this.props.paciente.madre,
+				historiaclinica: this.props.paciente.historiaclinica,
 				hijos: this.props.paciente.hijos,
 				transfusiones: this.props.paciente.transfusiones,
 				embarazos: this.props.paciente.embarazos,
 				examenes: this.props.paciente.examenes,
 				activo: this.props.paciente.activo,
 			});
-		} else if (
-			evt.target.className.includes("modal-button-cancel") ||
-			evt.target.className.includes("modal-icon-cancel")
-		) {
+		} else if (evt.target.className.includes("modal-button-cancel") || evt.target.className.includes("modal-icon-cancel")) {
 			this.clearModalState();
 		} else {
 			//si no hay problemas en el formulario
@@ -239,6 +204,7 @@ class ComponentUpdatePatient extends Component {
 			telefono: "",
 			sexo: "",
 			madre: "",
+			historiaclinica: null,
 			hijos: [],
 			transfusiones: [],
 			embarazos: [],
@@ -252,34 +218,22 @@ class ComponentUpdatePatient extends Component {
 			errorform: false,
 		});
 	};
+	//#endregion
 
+	//#region Render
 	render() {
 		return (
 			<Modal
 				open={this.state.openModal}
 				trigger={
-					<Button
-						className="modal-button-action"
-						onClick={this.changeModalState}
-					>
-						<Icon
-							name="edit"
-							className="modal-icon"
-							onClick={this.changeModalState}
-						/>
+					<Button className="modal-button-action" onClick={this.changeModalState}>
+						<Icon name="edit" className="modal-icon" onClick={this.changeModalState} />
 					</Button>
 				}
 			>
 				<Header icon="wheelchair" content="Modificar Paciente" />
 				<Modal.Content>
-					{this.state.errorform ? (
-						<Message
-							error
-							inverted
-							header="Error"
-							content="Error en el formulario"
-						/>
-					) : null}
+					{this.state.errorform ? <Message error inverted header="Error" content="Error en el formulario" /> : null}
 					<Form ref="form" onSubmit={this.changeModalState}>
 						<Form.Input
 							required
@@ -371,9 +325,14 @@ class ComponentUpdatePatient extends Component {
 									checked={this.state.activo}
 									onChange={(evt) => {
 										evt.preventDefault();
-										this.setState({
-											activo: !this.state.activo,
-										});
+										//solo permito activar y en caso de que este desactivado
+										if (!this.state.activo)
+											this.setState({
+												activo: !this.state.activo,
+											});
+										else {
+											this.SwalAlert("center", "warning", "Solo se permite desactivar desde el bóton de Desactivar/Eliminar", 5000);
+										}
 									}}
 								/>
 							</Segment>
@@ -381,12 +340,7 @@ class ComponentUpdatePatient extends Component {
 					</Form>
 				</Modal.Content>
 				<Modal.Actions>
-					<Button
-						color="red"
-						onClick={this.changeModalState}
-						className="modal-button-cancel"
-						type
-					>
+					<Button color="red" onClick={this.changeModalState} className="modal-button-cancel" type>
 						<Icon name="remove" className="modal-icon-cancel" /> Cancelar
 					</Button>
 					<Button
@@ -394,14 +348,7 @@ class ComponentUpdatePatient extends Component {
 						onClick={this.changeModalState}
 						className="modal-button-acept"
 						type="submit"
-						disabled={
-							!this.state.nombre ||
-							!this.state.apellidos ||
-							!this.state.ci ||
-							!this.state.direccion ||
-							!this.state.telefono ||
-							!this.state.sexo
-						}
+						disabled={!this.state.nombre || !this.state.apellidos || !this.state.ci || !this.state.direccion || !this.state.telefono || !this.state.sexo}
 					>
 						<Icon name="checkmark" /> Aceptar
 					</Button>
@@ -409,6 +356,10 @@ class ComponentUpdatePatient extends Component {
 			</Modal>
 		);
 	}
+	//#endregion
 }
+//#endregion
 
+//#region Exports
 export default ComponentUpdatePatient;
+//#endregion

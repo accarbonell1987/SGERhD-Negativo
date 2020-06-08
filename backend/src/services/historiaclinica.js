@@ -137,6 +137,7 @@ exports.DeleteClinicHistoryFromPatient = async (patient) => {
 };
 exports.DisableClinicHistory = async (id, clinichistory) => {
 	try {
+		console.log(clinichistory);
 		if (clinichistory.activo) {
 			clinichistory = { activo: false };
 			var updated = await HistoriaClinica.findByIdAndUpdate(id, clinichistory);
