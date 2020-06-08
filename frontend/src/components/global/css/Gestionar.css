@@ -25,6 +25,14 @@
     position: relative !important;
     border-collapse: collapse !important; */
 }
+.div-table-detail {
+	margin-top: 0 !important;
+	/* max-height: 670px;
+    overflow-y: scroll;
+    display: block; 
+    position: relative !important;
+    border-collapse: collapse !important; */
+}
 
 .div-table-header {
 	position: sticky !important;
@@ -99,7 +107,8 @@
 }
 
 .modal-datepicker {
-	width: 20% !important;
+	width: 350px !important;
+	min-width: 350px !important;
 }
 
 .modal-action-centered {

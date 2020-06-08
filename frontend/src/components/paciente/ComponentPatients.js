@@ -1,18 +1,23 @@
-//Importaciones
+//#region Importaciones
 import React, { Component } from "react";
 import { Button, Grid, Icon, Label, Table, Checkbox } from "semantic-ui-react";
 import Swal from "sweetalert2";
+import moment from "moment";
+//#endregion
 
-//CSS
+//#region CSS
 import "../global/css/Gestionar.css";
+//#endregion
 
-//Componentes
+//#region Componentes
 import ComponentAddPatient from "./ComponentAddPatient";
 import ComponentUpdatePatient from "./ComponentUpdatePatient";
 import ComponentChilds from "./ComponentChilds";
 import ComponentSeeClinicHistory from "../historiaclinica/ComponentSeeClinicHistory";
+import ComponentModalTran from "../transfusiones/ComponentModalTrans";
+//#endregion
 
-//Defincion de la clase
+//#region Defincion de la clase
 class ComponentPatients extends Component {
 	constructor(props) {
 		super(props);
@@ -69,8 +74,7 @@ class ComponentPatients extends Component {
 									timer: 5000,
 							  });
 
-						this.props.allClinicsHistory();
-						this.props.allPatients();
+						this.props.reloadFromServer();
 					})
 					.catch((err) => {
 						Swal.fire({
@@ -103,7 +107,7 @@ class ComponentPatients extends Component {
 								<Table.HeaderCell />
 								<Table.HeaderCell colSpan="15">
 									{accesomenu.permisos.crear ? (
-										<ComponentAddPatient allPatients={this.props.allPatients} parentState={this.props.parentState} roles={this.props.roles} />
+										<ComponentAddPatient reloadFromServer={this.props.reloadFromServer} parentState={this.props.parentState} roles={this.props.roles} />
 									) : (
 										<Button floated="right" icon labelPosition="left" primary size="small" className="modal-button-add" disabled>
 											<Icon name="add circle" />
@@ -138,12 +142,7 @@ class ComponentPatients extends Component {
 						<Table.Body>
 							{this.props.pacientes.map((paciente) => {
 								let negative = !paciente.activo;
-
-								let fecha = new Date(paciente.fechaDeCreacion);
-								let dia = fecha.getDate();
-								let mes = fecha.getMonth() + 1;
-								let ano = fecha.getFullYear();
-								let fechacadena = dia + "/" + mes + "/" + ano;
+								let fechacadena = moment(new Date(paciente.fechaDeCreacion)).format("DD-MM-YYYY");
 
 								let madre = paciente.madre;
 								let madrenombreyapellido = madre == null ? "Indefinido" : madre.nombre + " " + madre.apellidos;
@@ -183,7 +182,7 @@ class ComponentPatients extends Component {
 										</Table.Cell>
 										<Table.Cell className="cells-max-witdh-2" collapsing>
 											{accesomenu.permisos.modificar ? (
-												<ComponentChilds parentState={this.props.parentState} paciente={paciente} pacientes={this.props.pacientes} allPatients={this.props.allPatients} />
+												<ComponentChilds parentState={this.props.parentState} paciente={paciente} pacientes={this.props.pacientes} reloadFromServer={this.props.reloadFromServer} />
 											) : (
 												<Button icon labelPosition="right" className="modal-button-other">
 													<Icon name="child" className="modal-icon-other" />
@@ -192,21 +191,10 @@ class ComponentPatients extends Component {
 											)}
 										</Table.Cell>
 										<Table.Cell className="cells-max-witdh-2" collapsing>
-											<ComponentSeeClinicHistory
-												allClinicsHistory={this.props.allClinicsHistory}
-												allPatients={this.props.allPatients}
-												parentState={this.props.parentState}
-												paciente={paciente}
-												pacientes={this.props.pacientes}
-												historiasclinicas={this.props.historiasclinicas}
-												roles={this.props.roles}
-												permisos={this.props.permisos}
-											/>
+											<ComponentSeeClinicHistory reloadFromServer={this.props.reloadFromServer} parentState={this.props.parentState} paciente={paciente} pacientes={this.props.pacientes} historiasclinicas={this.props.historiasclinicas} roles={this.props.roles} permisos={this.props.permisos} />
 										</Table.Cell>
 										<Table.Cell className="cells-max-witdh-2" collapsing>
-											<Button icon labelPosition="right" className="button-childs">
-												<Icon name="tint" className="button-icon-childs" />0
-											</Button>
+											<ComponentModalTran parentState={this.props.parentState} roles={this.props.roles} permisos={this.props.permisos} pacientes={this.props.pacientes} paciente={paciente} transfusiones={paciente.transfusiones} reloadFromServer={this.props.reloadFromServer} cambiarIcono={true} />
 										</Table.Cell>
 										<Table.Cell className="cells-max-witdh-2" collapsing>
 											<Button icon labelPosition="right" className="button-childs">
@@ -222,16 +210,8 @@ class ComponentPatients extends Component {
 											<Checkbox toggle name="activo" labelPosition="left" label={paciente.activo ? "Si" : "No"} checked={paciente.activo} disabled />
 										</Table.Cell>
 										<Table.Cell className="cells-max-witdh-2" collapsing>
-											{accesomenu.permisos.eliminar ? (
-												<Button icon="remove circle" className="button-remove" onClick={() => this.deletePatient(paciente)} />
-											) : (
-												<Button icon="remove circle" className="button-remove" disabled />
-											)}
-											{accesomenu.permisos.modificar ? (
-												<ComponentUpdatePatient allPatients={this.props.allPatients} paciente={paciente} parentState={this.props.parentState} roles={this.props.roles} />
-											) : (
-												<Button icon="edit" disabled />
-											)}
+											{accesomenu.permisos.eliminar ? <Button icon="remove circle" className="button-remove" onClick={() => this.deletePatient(paciente)} /> : <Button icon="remove circle" className="button-remove" disabled />}
+											{accesomenu.permisos.modificar ? <ComponentUpdatePatient reloadFromServer={this.props.reloadFromServer} paciente={paciente} parentState={this.props.parentState} roles={this.props.roles} /> : <Button icon="edit" disabled />}
 										</Table.Cell>
 									</Table.Row>
 								);
@@ -243,5 +223,8 @@ class ComponentPatients extends Component {
 		);
 	}
 }
+//#endregion
 
+//#region Exports
 export default ComponentPatients;
+//#endregion

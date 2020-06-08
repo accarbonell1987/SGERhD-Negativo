@@ -42,9 +42,7 @@ exports.InsertTran = async (body) => {
 
 		if (exist == null) {
 			const transaved = await tran.save();
-			const insertedinpatient = await PatientServices.InsertTranToPatient(
-				transaved
-			);
+			const insertedinpatient = await PatientServices.InsertTranToPatient(transaved);
 			return transaved;
 		}
 	} catch (err) {
@@ -53,8 +51,9 @@ exports.InsertTran = async (body) => {
 };
 exports.UpdateTran = async (id, body) => {
 	try {
-		var { fecha, observaciones, reacionAdversa, paciente, activo } = body;
-		const tran = { fecha, observaciones, reacionAdversa, paciente, activo };
+		var { fecha, observaciones, reaccionAdversa, paciente, activo } = body;
+		const tran = { fecha, observaciones, reaccionAdversa, paciente, activo };
+		console.log(tran);
 
 		const updated = await Transfusion.findByIdAndUpdate(id, tran);
 		return updated;
@@ -64,11 +63,20 @@ exports.UpdateTran = async (id, body) => {
 };
 exports.DeleteTran = async (tran) => {
 	try {
-		const removed = await Transfusion.findByIdAndRemove(tran._id);
 		const deletetrans = await PatientServices.DeleteTranInPatient(tran);
+		const removed = await Transfusion.findByIdAndRemove(tran._id);
 		return removed;
 	} catch (err) {
 		throw Error("DeleteTran -> Eliminando Transfusion \n" + err);
+	}
+};
+exports.DeleteTrans = async (trans) => {
+	try {
+		await trans.forEach(async (tran) => {
+			await Transfusion.findByIdAndRemove(tran._id);
+		});
+	} catch (err) {
+		throw Error("DeleteTrans -> Eliminando Transfusiones \n" + err);
 	}
 };
 exports.DisableTran = async (id, tran) => {
@@ -80,6 +88,16 @@ exports.DisableTran = async (id, tran) => {
 		} else {
 			return await exports.DeleteTran(tran);
 		}
+	} catch (err) {
+		throw Error("DisableTran -> Desactivando Transfusion \n" + err);
+	}
+};
+exports.DisableTrans = async (trans) => {
+	try {
+		await trans.forEach(async (tran) => {
+			const update = { activo: false };
+			await Transfusion.findByIdAndUpdate(tran._id, update);
+		});
 	} catch (err) {
 		throw Error("DisableTran -> Desactivando Transfusion \n" + err);
 	}

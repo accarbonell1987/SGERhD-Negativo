@@ -141,8 +141,7 @@ class ComponentUpdateClinicHistory extends Component {
 				//si no hay problemas en la insercion
 				if (await this.updateClinicHistory(this.props.historiaclinica._id)) {
 					//enviar a recargar los usuarios
-					this.props.allClinicsHistory();
-					this.props.allPatients();
+					this.props.reloadFromServer();
 					this.clearModalState();
 				}
 			}
@@ -215,16 +214,7 @@ class ComponentUpdateClinicHistory extends Component {
 						<Form.Input required disabled name="numerohistoria" icon="address card outline" iconPosition="left" label="Numero de Historia:" value={this.state.numerohistoria} />
 						<Segment.Group horizontal className="modal-segment-group">
 							<Segment className="modal-segment-longleft">
-								<Form.Input
-									required
-									name="areaDeSalud"
-									icon="hospital symbol"
-									iconPosition="left"
-									label="Area de Salud:"
-									value={this.state.areaDeSalud}
-									placeholder="Consultorio, Policlinico, Hospital"
-									onChange={this.changeModalInput}
-								/>
+								<Form.Input required name="areaDeSalud" icon="hospital symbol" iconPosition="left" label="Area de Salud:" value={this.state.areaDeSalud} placeholder="Consultorio, Policlinico, Hospital" onChange={this.changeModalInput} />
 							</Segment>
 							<Segment className="modal-segment-shortright">
 								<Form.Group>

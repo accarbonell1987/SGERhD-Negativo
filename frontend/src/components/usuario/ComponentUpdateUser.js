@@ -128,7 +128,7 @@ class ComponentUpdateUser extends Component {
 				//si no hay problemas en la insercion
 				if (await this.updateUser(this.props.usuario._id)) {
 					//enviar a recargar los usuarios
-					this.props.allUsers();
+					this.props.reloadFromServer();
 					this.clearModalState();
 				}
 			}
@@ -163,29 +163,8 @@ class ComponentUpdateUser extends Component {
 				<Modal.Content>
 					{this.state.errorform ? <Message error inverted header="Error" content="Error en el formulario" /> : null}
 					<Form ref="form" onSubmit={this.changeModalState}>
-						<Form.Input
-							disabled
-							required
-							name="nombre"
-							icon="user"
-							iconPosition="left"
-							label="Nombre:"
-							value={this.state.nombre}
-							error={this.state.errornombre}
-							placeholder="nombre de usuario"
-							onChange={this.changeModalInput}
-						/>
-						<Form.Input
-							required
-							name="email"
-							icon="mail"
-							iconPosition="left"
-							label="Correo Electrónico:"
-							value={this.state.email}
-							error={this.state.erroremail}
-							placeholder="correo@host.com"
-							onChange={this.changeModalInput}
-						/>
+						<Form.Input disabled required name="nombre" icon="user" iconPosition="left" label="Nombre:" value={this.state.nombre} error={this.state.errornombre} placeholder="nombre de usuario" onChange={this.changeModalInput} />
+						<Form.Input required name="email" icon="mail" iconPosition="left" label="Correo Electrónico:" value={this.state.email} error={this.state.erroremail} placeholder="correo@host.com" onChange={this.changeModalInput} />
 						<Form.Select
 							required
 							name="rol"

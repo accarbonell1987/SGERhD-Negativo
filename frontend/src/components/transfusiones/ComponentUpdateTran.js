@@ -13,7 +13,7 @@ import ComponentInputDatePicker from "../generales/ComponentInputDatePicker";
 //#endregion
 
 //#region Definicion Clase
-class ComponentAddTran extends Component {
+class ComponentUpdateTran extends Component {
 	//#region Estados y Declaraciones
 	state = {
 		openModal: false,
@@ -65,6 +65,7 @@ class ComponentAddTran extends Component {
 			paciente: paciente,
 			activo: activo,
 		};
+		console.log(tran);
 		//la promise debe de devolver un valor RETURN
 		try {
 			const res = await fetch(this.props.parentState.endpoint + "api/transfusion/" + id, {
@@ -105,16 +106,14 @@ class ComponentAddTran extends Component {
 	};
 	//cambiar el estado en el MODAL para adicionar
 	changeModalState = async (evt) => {
-		if (
-			evt.target.className.includes("modal-button-add") ||
-			evt.target.className.includes("modal-icon-add") ||
-			evt.target.className.includes("button-childs") ||
-			evt.target.className.includes("button-icon-childs")
-		) {
+		if (evt.target.className.includes("modal-button-action") || evt.target.className.includes("modal-icon")) {
 			this.clearModalState();
+
+			let fecha = new Date(this.props.tran.fecha);
+
 			this.setState({
 				openModal: true,
-				fecha: this.props.tran.fecha,
+				fecha: fecha,
 				reaccionAdversa: this.props.tran.reaccionAdversa,
 				observaciones: this.props.tran.observaciones,
 				paciente: this.props.tran.paciente,
@@ -128,8 +127,7 @@ class ComponentAddTran extends Component {
 				//si no hay problemas en la insercion
 				if (await this.updateTran(this.props.tran._id)) {
 					//enviar a recargar los pacientes
-					this.props.allTrans();
-					this.props.allPatients();
+					this.props.reloadFromServer();
 					this.clearModalState();
 				}
 			}
@@ -203,7 +201,7 @@ class ComponentAddTran extends Component {
 								/>
 							</Segment>
 						</Form.Group>
-						<Form.TextArea name="observaciones" label="Observaciones:" placeholder="Observaciones..." value={this.state.observaciones} />
+						<Form.TextArea name="observaciones" label="Observaciones:" placeholder="Observaciones..." value={this.state.observaciones} onChange={this.changeModalInput} />
 						<Form.Select
 							name="paciente"
 							label="Paciente:"
@@ -261,5 +259,5 @@ class ComponentAddTran extends Component {
 //#endregion
 
 //#region Exports
-export default ComponentAddTran;
+export default ComponentUpdateTran;
 //#endregion

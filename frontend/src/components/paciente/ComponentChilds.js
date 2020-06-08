@@ -1,14 +1,6 @@
 //Importaciones
 import React, { Component } from "react";
-import {
-	Button,
-	Icon,
-	Header,
-	Modal,
-	Form,
-	Table,
-	Checkbox,
-} from "semantic-ui-react";
+import { Button, Icon, Header, Modal, Form, Table, Checkbox } from "semantic-ui-react";
 import Swal from "sweetalert2";
 
 //CSS
@@ -47,18 +39,15 @@ class ComponentChilds extends Component {
 
 		//la promise debe de devolver un valor RETURN
 		try {
-			const res = await fetch(
-				this.props.parentState.endpoint + "api/paciente/" + id,
-				{
-					method: "PATCH",
-					body: JSON.stringify(this.props.paciente),
-					headers: {
-						Accept: "application/json",
-						"Content-Type": "application/json",
-						"access-token": this.props.parentState.token,
-					},
-				}
-			);
+			const res = await fetch(this.props.parentState.endpoint + "api/paciente/" + id, {
+				method: "PATCH",
+				body: JSON.stringify(this.props.paciente),
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+					"access-token": this.props.parentState.token,
+				},
+			});
 			let jsondata = await res.json();
 			const { status, message } = jsondata;
 			if (status === 200) {
@@ -101,12 +90,7 @@ class ComponentChilds extends Component {
 	};
 	//cambiar el estado en el MODAL para adicionar usuario
 	changeModalState = async (evt) => {
-		if (
-			evt.target.className.includes("modal-button-action") ||
-			evt.target.className.includes("modal-icon") ||
-			evt.target.className.includes("modal-button-other") ||
-			evt.target.className.includes("modal-icon-other")
-		) {
+		if (evt.target.className.includes("modal-button-action") || evt.target.className.includes("modal-icon") || evt.target.className.includes("modal-button-other") || evt.target.className.includes("modal-icon-other")) {
 			this.setState({
 				nombre: this.props.paciente.nombre,
 				apellidos: this.props.paciente.apellidos,
@@ -119,7 +103,7 @@ class ComponentChilds extends Component {
 			//si no hay problemas en la insercion
 			if (await this.updatePatient(this.props.paciente._id)) {
 				//enviar a recargar los usuarios
-				this.props.allPatients();
+				this.props.reloadFromServer();
 				this.clearModalState();
 			}
 		}
@@ -161,9 +145,7 @@ class ComponentChilds extends Component {
 		} else {
 			this.setState((s) => {
 				const hijos = [...this.state.hijos, data.name];
-				const hijoseliminados = this.state.hijoseliminados.filter(
-					(p) => p !== data.name
-				);
+				const hijoseliminados = this.state.hijoseliminados.filter((p) => p !== data.name);
 				return {
 					hijos: hijos,
 					hijoseliminados: hijoseliminados,
@@ -189,35 +171,16 @@ class ComponentChilds extends Component {
 			<Modal
 				open={this.state.openModal}
 				trigger={
-					<Button
-						icon
-						labelPosition="right"
-						className="modal-button-other"
-						onClick={this.changeModalState}
-					>
-						<Icon
-							name="child"
-							className="modal-icon-other"
-							onClick={this.changeModalState}
-						/>
-						{this.props.paciente.hijos !== null
-							? this.props.paciente.hijos.length > 0
-								? this.props.paciente.hijos.length
-								: 0
-							: ""}
+					<Button icon labelPosition="right" primary className="modal-button-other" onClick={this.changeModalState}>
+						<Icon name="child" className="modal-icon-other" onClick={this.changeModalState} />
+						{this.props.paciente.hijos !== null ? (this.props.paciente.hijos.length > 0 ? this.props.paciente.hijos.length : 0) : ""}
 					</Button>
 				}
 			>
 				<Header icon="child" content="Seleccionar Hijos" />
 				<Modal.Content>
 					<Form ref="form" onSubmit={this.changeModalState}>
-						<Table
-							compact
-							celled
-							definition
-							attached="top"
-							className="div-table-modal"
-						>
+						<Table compact celled definition attached="top" className="div-table-modal">
 							<Table.Header>
 								{this.props.pacientes.length > 0 ? (
 									<Table.Row>
@@ -226,9 +189,7 @@ class ComponentChilds extends Component {
 										<Table.HeaderCell>Nombres y Apellidos</Table.HeaderCell>
 										<Table.HeaderCell>Carnet Identidad</Table.HeaderCell>
 										<Table.HeaderCell>Madre</Table.HeaderCell>
-										<Table.HeaderCell className="cells-max-witdh-2">
-											Género
-										</Table.HeaderCell>
+										<Table.HeaderCell className="cells-max-witdh-2">Género</Table.HeaderCell>
 									</Table.Row>
 								) : (
 									""
@@ -237,10 +198,7 @@ class ComponentChilds extends Component {
 							<Table.Body>
 								{this.props.pacientes.map((paciente) => {
 									let negative = !paciente.activo;
-									let madrenombreyapellido =
-										paciente.madre == null
-											? "Indefinido"
-											: paciente.madre.nombre + " " + paciente.madre.apellidos;
+									let madrenombreyapellido = paciente.madre == null ? "Indefinido" : paciente.madre.nombre + " " + paciente.madre.apellidos;
 
 									let esHijo = false;
 									//buscar si el tengo que marcar el checkbox
@@ -270,35 +228,20 @@ class ComponentChilds extends Component {
 												</Table.Cell>
 												<Table.Cell>{paciente.ci}</Table.Cell>
 												<Table.Cell>
-													<Button
-														icon
-														labelPosition="right"
-														className="button-childs"
-													>
+													<Button icon labelPosition="right" className="button-childs">
 														<Icon name="venus" className="button-icon-childs" />
 														{madrenombreyapellido}
 													</Button>
 												</Table.Cell>
 												<Table.Cell>
 													{paciente.sexo === "M" ? (
-														<Button
-															icon
-															labelPosition="right"
-															className="button-childs"
-														>
+														<Button icon labelPosition="right" className="button-childs">
 															<Icon name="man" className="button-icon-childs" />
 															Masculino
 														</Button>
 													) : (
-														<Button
-															icon
-															labelPosition="right"
-															className="button-childs"
-														>
-															<Icon
-																name="woman"
-																className="button-icon-childs"
-															/>
+														<Button icon labelPosition="right" className="button-childs">
+															<Icon name="woman" className="button-icon-childs" />
 															Femenino
 														</Button>
 													)}
@@ -312,20 +255,10 @@ class ComponentChilds extends Component {
 					</Form>
 				</Modal.Content>
 				<Modal.Actions>
-					<Button
-						color="red"
-						onClick={this.changeModalState}
-						className="modal-button-cancel"
-						type
-					>
+					<Button color="red" onClick={this.changeModalState} className="modal-button-cancel" type>
 						<Icon name="remove" /> Cancelar
 					</Button>
-					<Button
-						color="green"
-						onClick={this.changeModalState}
-						className="modal-button-accept"
-						type="submit"
-					>
+					<Button color="green" onClick={this.changeModalState} className="modal-button-accept" type="submit">
 						<Icon name="checkmark" /> Aceptar
 					</Button>
 				</Modal.Actions>

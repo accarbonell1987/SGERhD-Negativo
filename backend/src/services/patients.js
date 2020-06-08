@@ -5,6 +5,7 @@ var mongoose = require("mongoose");
 
 //#region Servicios
 const ClinicHistoryService = require("../services/historiaclinica");
+const TransService = require("../services/trans");
 //#endregion
 
 //#region Funciones Ayudantes
@@ -45,12 +46,14 @@ EliminarHijoDeMadre = async (hijo) => {
 			var hijos = [...madre.hijos];
 			//buscar el indice del elemento que representa esa tranfusion en el arreglo de tranfusiones del paciente
 			let index = hijos[hijo._id];
-			//eliminar del arreglo el elemento
-			hijos.splice(index, 1);
-			//hacer un update del paciente
-			const update = { hijos: hijos };
-			var updated = await Paciente.findByIdAndUpdate(madre._id, update);
-			return updated;
+			if (index) {
+				//eliminar del arreglo el elemento
+				hijos.splice(index, 1);
+				//hacer un update del paciente
+				const update = { hijos: hijos };
+				var updated = await Paciente.findByIdAndUpdate(madre._id, update);
+				return updated;
+			}
 		}
 	} catch (err) {
 		throw Error("EliminarHijoDeMadre: " + err);
@@ -62,7 +65,10 @@ EliminarHijoDeMadre = async (hijo) => {
 //#region Pacientes
 exports.GetPatients = async (query, page, limit) => {
 	try {
-		var patients = await Paciente.find(query).populate("historiaclinica").populate("madre").populate("transfusiones");
+		var patients = await Paciente.find(query)
+			.populate("historiaclinica")
+			.populate("madre")
+			.populate({ path: "transfusiones", populate: { path: "paciente" } });
 		return patients;
 	} catch (err) {
 		throw Error("GetPatients -> Obteniendo Pacientes.");
@@ -147,7 +153,9 @@ exports.DisablePatient = async (id, patient) => {
 			if (patient.historiaclinica != null) {
 				await ClinicHistoryService.DisableClinicHistory(patient.historiaclinica._id, patient.historiaclinica);
 			}
-
+			if (patient.transfusiones.length > 0) {
+				await TransService.DisableTrans(patient.transfusiones);
+			}
 			patient = { activo: false };
 			var updated = await Paciente.findByIdAndUpdate(id, patient);
 
@@ -165,11 +173,14 @@ exports.DeletePatient = async (patient) => {
 		if (patient.hijos.length > 0) {
 			await DesvincularMadre(patient.sexo, patient.hijos);
 		}
+		await EliminarHijoDeMadre(patient);
 		//eliminar todo lo que tiene que ver con el paciente
 		//transfusiones, examenes, historiaclinica, embarazos
-		await EliminarHijoDeMadre(patient);
 		if (patient.historiaclinica != null) {
 			await ClinicHistoryService.DeleteClinicHistoryFromPatient(patient);
+		}
+		if (patient.transfusiones.length > 0) {
+			await TransService.DeleteTrans(patient.transfusiones);
 		}
 		var removed = await Paciente.findByIdAndRemove(patient._id);
 		return removed;
@@ -191,7 +202,7 @@ exports.UpdatePatientClinicHistory = async (id, clinichistory) => {
 exports.InsertTranToPatient = async (tran) => {
 	try {
 		const patient = await Paciente.findById(tran.paciente);
-		await patient.push(tran);
+		await patient.transfusiones.push(tran);
 		const saved = await patient.save();
 		return saved;
 	} catch (err) {
@@ -201,15 +212,17 @@ exports.InsertTranToPatient = async (tran) => {
 //eliminar una transfusion perteneciente al paciente
 exports.DeleteTranInPatient = async (tran) => {
 	try {
-		//paciente perteneciente a la transfusion
-		var paciente = tran.paciente;
+		transfusionespaciente = [...tran.paciente.transfusiones];
 		//buscar el indice del elemento que representa esa tranfusion en el arreglo de tranfusiones del paciente
-		let index = await paciente.transfusiones.indexOf(tran._id);
-		//eliminar del arreglo el elemento
-		let trans = await paciente.transfusiones.splice(index, 1);
-		//hacer un update del paciente
-		const patient = { transfusiones: trans };
-		var updated = await Paciente.findByIdAndUpdate(paciente._id, patient);
+		let index = tran.paciente.transfusiones.indexOf(tran._id);
+		if (index) {
+			//eliminar del arreglo el elemento
+			transfusionespaciente.splice(index, 1);
+			//hacer un update del paciente
+			const patient = { transfusiones: transfusionespaciente };
+			console.log(tran.paciente.transfusiones, tran._id, index, patient);
+			var updated = await Paciente.findByIdAndUpdate(tran.paciente._id, patient);
+		}
 		return updated;
 	} catch (err) {
 		throw Error("DeleteTranInPatient -> Eliminando Transfusion en Paciente \n" + err);

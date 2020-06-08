@@ -1,14 +1,6 @@
 //#region Importaciones
 import React, { Component } from "react";
-import {
-	Button,
-	Icon,
-	Header,
-	Modal,
-	Form,
-	Message,
-	Segment,
-} from "semantic-ui-react";
+import { Button, Icon, Header, Modal, Form, Message, Segment } from "semantic-ui-react";
 import Swal from "sweetalert2";
 //#endregion
 
@@ -46,9 +38,7 @@ class ComponentAddClinicHistory extends Component {
 	constructor(props) {
 		super(props);
 
-		this.getLastInsertedClinicHistory = this.getLastInsertedClinicHistory.bind(
-			this
-		);
+		this.getLastInsertedClinicHistory = this.getLastInsertedClinicHistory.bind(this);
 		this.addClinicHistory = this.addClinicHistory.bind(this);
 		this.changeModalInput = this.changeModalInput.bind(this);
 		this.changeModalState = this.changeModalState.bind(this);
@@ -64,16 +54,7 @@ class ComponentAddClinicHistory extends Component {
 	}
 	//adicionar nuevo paciente
 	addClinicHistory = async () => {
-		const {
-			areaDeSalud,
-			numerohistoria,
-			vacunaAntiD,
-			numeroDeEmbarazos,
-			numeroDePartos,
-			numeroDeAbortos,
-			paciente,
-			activo,
-		} = this.state;
+		const { areaDeSalud, numerohistoria, vacunaAntiD, numeroDeEmbarazos, numeroDePartos, numeroDeAbortos, paciente, activo } = this.state;
 
 		const fecha = new Date();
 		const historiaclinica = {
@@ -89,18 +70,15 @@ class ComponentAddClinicHistory extends Component {
 		};
 		//la promise debe de devolver un valor RETURN
 		try {
-			const res = await fetch(
-				this.props.parentState.endpoint + "api/historiaclinica/",
-				{
-					method: "POST",
-					body: JSON.stringify(historiaclinica),
-					headers: {
-						Accept: "application/json",
-						"Content-Type": "application/json",
-						"access-token": this.props.parentState.token,
-					},
-				}
-			);
+			const res = await fetch(this.props.parentState.endpoint + "api/historiaclinica/", {
+				method: "POST",
+				body: JSON.stringify(historiaclinica),
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+					"access-token": this.props.parentState.token,
+				},
+			});
 			let data = await res.json();
 			//capturar respuesta
 			const { status, message } = data;
@@ -138,15 +116,12 @@ class ComponentAddClinicHistory extends Component {
 	//obtener el ultimo
 	getLastInsertedClinicHistory = async () => {
 		//enviar al endpoint
-		const res = await fetch(
-			this.props.parentState.endpoint + "api/historiaclinica/-1",
-			{
-				method: "GET",
-				headers: {
-					"access-token": this.props.parentState.token,
-				},
-			}
-		);
+		const res = await fetch(this.props.parentState.endpoint + "api/historiaclinica/-1", {
+			method: "GET",
+			headers: {
+				"access-token": this.props.parentState.token,
+			},
+		});
 		let json = await res.json();
 		//capturar respuesta
 		const { status, message, data } = json;
@@ -183,18 +158,10 @@ class ComponentAddClinicHistory extends Component {
 	};
 	//cambiar el estado en el MODAL para adicionar
 	changeModalState = async (evt) => {
-		if (
-			evt.target.className.includes("modal-button-add") ||
-			evt.target.className.includes("modal-icon-add") ||
-			evt.target.className.includes("button-childs") ||
-			evt.target.className.includes("button-icon-childs")
-		) {
+		if (evt.target.className.includes("modal-button-add") || evt.target.className.includes("modal-icon-add") || evt.target.className.includes("button-childs") || evt.target.className.includes("button-icon-childs")) {
 			this.clearModalState();
 			this.setState({ openModal: true });
-		} else if (
-			evt.target.className.includes("modal-button-cancel") ||
-			evt.target.className.includes("modal-icon-cancel")
-		) {
+		} else if (evt.target.className.includes("modal-button-cancel") || evt.target.className.includes("modal-icon-cancel")) {
 			this.setState({ openModal: false });
 		} else {
 			//si no hay problemas en el formulario
@@ -202,8 +169,7 @@ class ComponentAddClinicHistory extends Component {
 				//si no hay problemas en la insercion
 				if (await this.addClinicHistory()) {
 					//enviar a recargar los pacientes
-					this.props.allClinicsHistory();
-					this.props.allPatients();
+					this.props.reloadFromServer();
 					this.clearModalState();
 				}
 			}
@@ -217,9 +183,7 @@ class ComponentAddClinicHistory extends Component {
 			//en caso de que sea mayor que cero
 			if (this.props.historiasclinicas.length > 0) {
 				//busco los pacientes que no tengan historias validas
-				if (
-					!this.props.historiasclinicas.some((h) => h.paciente._id === p._id)
-				) {
+				if (!this.props.historiasclinicas.some((h) => h.paciente._id === p._id)) {
 					let nombreyapellidos = p.nombre + " " + p.apellidos;
 					let cur = {
 						key: p._id,
@@ -271,8 +235,7 @@ class ComponentAddClinicHistory extends Component {
 			this.setState({ numerohistoria: numero });
 		});
 
-		const pacienteid =
-			this.props.paciente != null ? this.props.paciente._id : "";
+		const pacienteid = this.props.paciente != null ? this.props.paciente._id : "";
 		//actualizar los states
 		this.setState({
 			openModal: false,
@@ -294,13 +257,9 @@ class ComponentAddClinicHistory extends Component {
 
 	//#region Render
 	render() {
-		const permiso = this.props.permisos.find(
-			(p) => p.rol === this.props.parentState.rol
-		);
+		const permiso = this.props.permisos.find((p) => p.rol === this.props.parentState.rol);
 		//buscar el acceso del menu
-		const accesomenu = permiso.accesos.find(
-			(p) => p.opcion === "historiaclinica"
-		);
+		const accesomenu = permiso.accesos.find((p) => p.opcion === "historiaclinica");
 		//chequear si es historiasclinica y tengo permiso
 		return (
 			<Modal
@@ -308,52 +267,20 @@ class ComponentAddClinicHistory extends Component {
 				trigger={
 					accesomenu.permisos.crear ? (
 						this.props.cambiarIcono ? (
-							<Button
-								icon
-								labelPosition="right"
-								className="button-childs"
-								onClick={this.changeModalState}
-							>
-								<Icon
-									name="add circle"
-									className="button-icon-childs"
-									onClick={this.changeModalState}
-								/>{" "}
-								Adicionar
+							<Button icon labelPosition="right" className="button-childs" primary onClick={this.changeModalState}>
+								<Icon name="clipboard" className="button-icon-childs" onClick={this.changeModalState} /> Adicionar
 							</Button>
 						) : (
-							<Button
-								floated="right"
-								icon
-								labelPosition="left"
-								primary
-								size="small"
-								onClick={this.changeModalState}
-								className="modal-button-add"
-							>
+							<Button floated="right" icon labelPosition="left" primary size="small" onClick={this.changeModalState} className="modal-button-add">
 								<Icon name="add circle" className="modal-icon-add" /> Adicionar
 							</Button>
 						)
 					) : this.props.cambiarIcono ? (
-						<Button
-							disabled
-							icon
-							labelPosition="right"
-							className="button-childs"
-						>
-							<Icon name="add circle" className="button-icon-childs" />{" "}
-							Adicionar
+						<Button disabled icon labelPosition="right" primary className="button-childs">
+							<Icon name="clipboard" className="button-icon-childs" /> Adicionar
 						</Button>
 					) : (
-						<Button
-							disabled
-							floated="right"
-							icon
-							labelPosition="left"
-							primary
-							size="small"
-							className="modal-button-add"
-						>
+						<Button disabled floated="right" icon labelPosition="left" primary size="small" className="modal-button-add">
 							<Icon name="add circle" className="modal-icon-add" /> Adicionar
 						</Button>
 					)
@@ -361,36 +288,12 @@ class ComponentAddClinicHistory extends Component {
 			>
 				<Header icon="clipboard" content="Adicionar Historia Clínica" />
 				<Modal.Content>
-					{this.state.errorform ? (
-						<Message
-							error
-							inverted
-							header="Error"
-							content="Error en el formulario"
-						/>
-					) : null}
+					{this.state.errorform ? <Message error inverted header="Error" content="Error en el formulario" /> : null}
 					<Form ref="form" onSubmit={this.changeModalState}>
-						<Form.Input
-							required
-							disabled
-							name="numerohistoria"
-							icon="address card outline"
-							iconPosition="left"
-							label="Numero de Historia:"
-							value={this.state.numerohistoria}
-						/>
+						<Form.Input required disabled name="numerohistoria" icon="address card outline" iconPosition="left" label="Numero de Historia:" value={this.state.numerohistoria} />
 						<Segment.Group horizontal className="modal-segment-group">
 							<Segment className="modal-segment-longleft">
-								<Form.Input
-									required
-									name="areaDeSalud"
-									icon="hospital symbol"
-									iconPosition="left"
-									label="Area de Salud:"
-									value={this.state.areaDeSalud}
-									placeholder="Consultorio, Policlinico, Hospital"
-									onChange={this.changeModalInput}
-								/>
+								<Form.Input required name="areaDeSalud" icon="hospital symbol" iconPosition="left" label="Area de Salud:" value={this.state.areaDeSalud} placeholder="Consultorio, Policlinico, Hospital" onChange={this.changeModalInput} />
 							</Segment>
 							<Segment className="modal-segment-shortright">
 								<Form.Group>
@@ -416,15 +319,7 @@ class ComponentAddClinicHistory extends Component {
 						<Segment.Group horizontal>
 							<Segment>
 								<Form.Group>
-									<Form.Input
-										className="modal-input-30p"
-										required
-										name="numeroDeEmbarazos"
-										icon="user md"
-										iconPosition="left"
-										label="Numero de Embarazos:"
-										value={this.state.numeroDeEmbarazos}
-									/>
+									<Form.Input className="modal-input-30p" required name="numeroDeEmbarazos" icon="user md" iconPosition="left" label="Numero de Embarazos:" value={this.state.numeroDeEmbarazos} />
 									<Button.Group>
 										<Button
 											className="button-group-addsub"
@@ -454,15 +349,7 @@ class ComponentAddClinicHistory extends Component {
 							</Segment>
 							<Segment>
 								<Form.Group>
-									<Form.Input
-										className="modal-input-30p"
-										required
-										name="numeroDePartos"
-										icon="user md"
-										iconPosition="left"
-										label="Numero de Partos:"
-										value={this.state.numeroDePartos}
-									/>
+									<Form.Input className="modal-input-30p" required name="numeroDePartos" icon="user md" iconPosition="left" label="Numero de Partos:" value={this.state.numeroDePartos} />
 									<Button.Group>
 										<Button
 											className="button-group-addsub"
@@ -492,15 +379,7 @@ class ComponentAddClinicHistory extends Component {
 							</Segment>
 							<Segment>
 								<Form.Group>
-									<Form.Input
-										className="modal-input-30p"
-										required
-										name="numeroDeAbortos"
-										icon="user md"
-										iconPosition="left"
-										label="Numero de Abortos:"
-										value={this.state.numeroDeAbortos}
-									/>
+									<Form.Input className="modal-input-30p" required name="numeroDeAbortos" icon="user md" iconPosition="left" label="Numero de Abortos:" value={this.state.numeroDeAbortos} />
 									<Button.Group>
 										<Button
 											className="button-group-addsub"
@@ -545,26 +424,11 @@ class ComponentAddClinicHistory extends Component {
 					</Form>
 				</Modal.Content>
 				<Modal.Actions>
-					<Button
-						color="red"
-						onClick={this.changeModalState}
-						className="modal-button-cancel"
-						type
-					>
+					<Button color="red" onClick={this.changeModalState} className="modal-button-cancel" type>
 						<Icon name="remove" className="modal-icon-cancel" />
 						Cancelar
 					</Button>
-					<Button
-						color="green"
-						onClick={this.changeModalState}
-						className="modal-button-accept"
-						type="submit"
-						disabled={
-							!this.state.numerohistoria ||
-							!this.state.areaDeSalud ||
-							!this.state.paciente
-						}
-					>
+					<Button color="green" onClick={this.changeModalState} className="modal-button-accept" type="submit" disabled={!this.state.numerohistoria || !this.state.areaDeSalud || !this.state.paciente}>
 						<Icon name="checkmark" />
 						Aceptar
 					</Button>
