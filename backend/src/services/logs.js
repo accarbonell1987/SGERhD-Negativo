@@ -1,69 +1,60 @@
 //#region Modelos
-const Log = require('../models/models').LogAcceso;
+const Log = require("../models/models").LogAcceso;
 //#endregion
 
-//#Servicios
-const UserServices = require('../services/users');
+//#region Servicios
+const UserServices = require("../services/users");
 //#endregion
 
 //#region Logs
 exports.GetLogs = async (query, page, limit) => {
-    try {
-        var logs = await Log.find(query).populate('usuario');
-        return logs;
-    } catch (err) {
-        console.log('Error: Obteniendo Logs');
-        throw Error('Obteniendo Logs');
-    }
-}
+	try {
+		var logs = await Log.find(query).populate("usuario");
+		return logs;
+	} catch (err) {
+		throw Error("GetLogs -> Obteniendo Logs.");
+	}
+};
 exports.GetLog = async (id) => {
-    try {
-        var log = await Log.findById(id);
-        return log;
-    } catch (err) {
-        console.log('Error: Obteniendo Log con id: ' + id);
-        throw Error('Obteniendo Log con id: ' + id);
-    }
-}
+	try {
+		var log = await Log.findById(id).populate("usuario");
+		return log;
+	} catch (err) {
+		throw Error("GetLog -> Obteniendo Log con id: " + id);
+	}
+};
 exports.InsertLog = async (body) => {
-    const { fecha, usuario } = body;
-    const log = new Log({ fecha, usuario });
-    try {
-        const saved = log.save()
-            .then(p => {
-                //adicionando el log al usuario
-                UserServices.InserLogToUser(p);
-            });
-        return saved;
-    } catch(err) {
-        console.log('Error: Insertando Log: ' + err);
-        throw Error('Insertando Log: ' + err);
-    };
-}
+	const { fecha, usuario } = body;
+	const log = new Log({ fecha, usuario });
+	try {
+		const saved = await log.save();
+		await UserServices.InserLogToUser(saved);
+		return saved;
+	} catch (err) {
+		throw Error("InsertLog -> Insertando Log \n" + err);
+	}
+};
 exports.DeleteLog = async (id) => {
-    try {
-        var removed = await Log.findByIdAndRemove(id);
-        return removed;
-    } catch(err) {
-        console.log('Error: Eliminando Logs' + err);
-        throw Error('Eliminando Log: ' + err);
-    };
-}
+	try {
+		var removed = await Log.findByIdAndRemove(id);
+		return removed;
+	} catch (err) {
+		throw Error("DeleteLog -> Eliminando Log \n" + err);
+	}
+};
 exports.DeleteLogByUserId = async (id) => {
-    try {
-        var deleated = Log.deleteMany({ usuario: id});
-        return deleated;
-    } catch (err) {
-        console.log('Error: Eliminando Log por Id de Usuario: ' + id);
-        throw Error('Eliminando Log por Id de Usuario: ' + id);
-    }
-}
+	try {
+		var deleated = await Log.deleteMany({ usuario: id });
+		return deleated;
+	} catch (err) {
+		throw Error("DeleteLogByUserId -> Eliminando Log por Id de Usuario: " + id);
+	}
+};
 exports.UpdateLog = async () => {
-    try {
-        throw Error('No Permitido, Modificar Log: ' + err);
-    } catch(err) {
-        console.log('Error: Modificando Log: ' + err);
-        throw Error('Modificando Log: ' + err);
-    }
-}
+	try {
+		throw Error("No Permitido, Modificar Log: " + err);
+	} catch (err) {
+		throw Error("UpdateLog -> Modificando Log \n" + err);
+	}
+};
 //#endregion
