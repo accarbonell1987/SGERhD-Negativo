@@ -92,6 +92,16 @@ class ComponentClinicHistory extends Component {
 			}
 		});
 	};
+	checkAddAllowAndReturnButton = (middleButtonAdd, allow) => {
+		if (allow) return <ComponentAddClinicHistory reloadFromServer={this.props.reloadFromServer} parentState={this.props.parentState} roles={this.props.roles} pacientes={this.props.pacientes} historiasclinicas={this.props.historiasclinicas} permisos={this.props.permisos} />;
+		else
+			return (
+				<Button floated="right" icon labelPosition="left" primary size="small" className="modal-button-add" disabled>
+					<Icon name="add circle" />
+					Adicionar
+				</Button>
+			);
+	};
 	//#endregion
 
 	//#region Render
@@ -107,22 +117,13 @@ class ComponentClinicHistory extends Component {
 					<Label attached="top left" className="div-label-attached" size="large">
 						<Icon name="clipboard" size="large" inverted /> Gestión de Historias Clínicas
 					</Label>
-					<Table compact celled definition attached="top" className="div-table">
-						<Table.Header className="div-table-header">
-							<Table.Row>
-								<Table.HeaderCell />
-								<Table.HeaderCell colSpan="11">
-									{accesomenu.permisos.crear ? (
-										<ComponentAddClinicHistory reloadFromServer={this.props.reloadFromServer} parentState={this.props.parentState} roles={this.props.roles} pacientes={this.props.pacientes} historiasclinicas={this.props.historiasclinicas} permisos={this.props.permisos} />
-									) : (
-										<Button floated="right" icon labelPosition="left" primary size="small" className="modal-button-add" disabled>
-											<Icon name="add circle" />
-											Adicionar
-										</Button>
-									)}
-								</Table.HeaderCell>
-							</Table.Row>
-							{this.props.historiasclinicas.length > 0 ? (
+					{this.props.historiasclinicas.length > 0 ? (
+						<Table compact celled definition attached="top" className="div-table">
+							<Table.Header className="div-table-header">
+								<Table.Row>
+									<Table.HeaderCell />
+									<Table.HeaderCell colSpan="11">{this.checkAddAllowAndReturnButton(false, accesomenu.permisos.crear)}</Table.HeaderCell>
+								</Table.Row>
 								<Table.Row>
 									<Table.HeaderCell />
 									<Table.HeaderCell>Fecha Creación</Table.HeaderCell>
@@ -136,50 +137,50 @@ class ComponentClinicHistory extends Component {
 									<Table.HeaderCell>Activo</Table.HeaderCell>
 									<Table.HeaderCell className="cells-max-witdh-2">Acciones</Table.HeaderCell>
 								</Table.Row>
-							) : (
-								""
-							)}
-						</Table.Header>
+							</Table.Header>
 
-						<Table.Body>
-							{this.props.historiasclinicas.map((historia) => {
-								let negative = !historia.activo;
-								let fechacadena = moment(new Date(historia.fechaDeCreacion)).format("DD-MM-YYYY");
+							<Table.Body>
+								{this.props.historiasclinicas.map((historia) => {
+									let negative = !historia.activo;
+									let fechacadena = moment(new Date(historia.fechaDeCreacion)).format("DD-MM-YYYY");
 
-								return (
-									<Table.Row key={historia._id} negative={negative}>
-										<Table.Cell collapsing>
-											<Icon name="clipboard" />
-										</Table.Cell>
-										<Table.Cell>{fechacadena}</Table.Cell>
-										<Table.Cell>{historia.numerohistoria}</Table.Cell>
-										<Table.Cell>{historia.areaDeSalud}</Table.Cell>
-										<Table.Cell>
-											<Checkbox toggle name="vacunaAntiD" labelPosition="left" checked={historia.vacunaAntiD} label={historia.vacunaAntiD ? "Si" : "No"} disabled />
-										</Table.Cell>
-										<Table.Cell className="cells-max-witdh-2">
-											<Button icon labelPosition="right" className="button-childs">
-												<Icon name="heartbeat" className="button-icon-childs" />
-												{historia.numeroDeEmbarazos}
-											</Button>
-										</Table.Cell>
-										<Table.Cell>{historia.numeroDePartos}</Table.Cell>
-										<Table.Cell>{historia.numeroDeAbortos}</Table.Cell>
-										<Table.Cell className="cells-max-witdh-2" collapsing>
-											<ComponentSeePatient paciente={historia.paciente} parentState={this.props.parentState} roles={this.props.roles} />
-										</Table.Cell>
-										<Table.Cell className="cells-max-witdh-2" collapsing>
-											<Checkbox toggle name="activo" labelPosition="left" label={historia.activo ? "Si" : "No"} checked={historia.activo} disabled />
-										</Table.Cell>
-										<Table.Cell className="cells-max-witdh-2" collapsing>
-											{accesomenu.permisos.eliminar ? <Button icon="remove circle" className="button-remove" onClick={() => this.deleteClinicHistory(historia)} /> : <Button icon="remove circle" className="button-remove" disabled />}
-											{accesomenu.permisos.modificar ? <ComponentUpdateClinicHistory reloadFromServer={this.props.reloadFromServer} historiaclinica={historia} parentState={this.props.parentState} roles={this.props.roles} pacientes={this.props.pacientes} historiasclinicas={this.props.historiasclinicas} /> : <Button icon="edit" disabled />}
-										</Table.Cell>
-									</Table.Row>
-								);
-							})}
-						</Table.Body>
-					</Table>
+									return (
+										<Table.Row key={historia._id} negative={negative}>
+											<Table.Cell collapsing>
+												<Icon name="clipboard" />
+											</Table.Cell>
+											<Table.Cell>{fechacadena}</Table.Cell>
+											<Table.Cell>{historia.numerohistoria}</Table.Cell>
+											<Table.Cell>{historia.areaDeSalud}</Table.Cell>
+											<Table.Cell>
+												<Checkbox toggle name="vacunaAntiD" labelPosition="left" checked={historia.vacunaAntiD} label={historia.vacunaAntiD ? "Si" : "No"} disabled />
+											</Table.Cell>
+											<Table.Cell className="cells-max-witdh-2">
+												<Button icon labelPosition="right" className="button-childs">
+													<Icon name="heartbeat" className="button-icon-childs" />
+													{historia.numeroDeEmbarazos}
+												</Button>
+											</Table.Cell>
+											<Table.Cell>{historia.numeroDePartos}</Table.Cell>
+											<Table.Cell>{historia.numeroDeAbortos}</Table.Cell>
+											<Table.Cell className="cells-max-witdh-2" collapsing>
+												<ComponentSeePatient paciente={historia.paciente} parentState={this.props.parentState} roles={this.props.roles} />
+											</Table.Cell>
+											<Table.Cell className="cells-max-witdh-2" collapsing>
+												<Checkbox toggle name="activo" labelPosition="left" label={historia.activo ? "Si" : "No"} checked={historia.activo} disabled />
+											</Table.Cell>
+											<Table.Cell className="cells-max-witdh-2" collapsing>
+												{accesomenu.permisos.eliminar ? <Button icon="remove circle" className="button-remove" onClick={() => this.deleteClinicHistory(historia)} /> : <Button icon="remove circle" className="button-remove" disabled />}
+												{accesomenu.permisos.modificar ? <ComponentUpdateClinicHistory reloadFromServer={this.props.reloadFromServer} historiaclinica={historia} parentState={this.props.parentState} roles={this.props.roles} pacientes={this.props.pacientes} historiasclinicas={this.props.historiasclinicas} /> : <Button icon="edit" disabled />}
+											</Table.Cell>
+										</Table.Row>
+									);
+								})}
+							</Table.Body>
+						</Table>
+					) : (
+						this.checkAddAllowAndReturnButton(this.props.middleButtonAdd, accesomenu.permisos.crear)
+					)}
 				</Grid.Column>
 			</Grid>
 		);

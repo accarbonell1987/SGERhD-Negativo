@@ -175,17 +175,27 @@ class ComponentAddPatient extends Component {
 			errorform: false,
 		});
 	};
+	changeIconInAddButton = (change) => {
+		const position = this.props.middleButtonAdd ? "middle" : "right";
+		if (change)
+			return (
+				<Button icon floated={position} labelPosition="right" className="modal-button-add" onClick={this.changeModalState}>
+					<Icon name="add circle" className="modal-icon-add" onClick={this.changeModalState} />
+					Adicionar
+				</Button>
+			);
+		else
+			return (
+				<Button floated={position} icon labelPosition="left" primary size="small" onClick={this.changeModalState} className="modal-button-add">
+					<Icon name="add circle" className="modal-icon-add" />
+					Adicionar
+				</Button>
+			);
+	};
 
 	render() {
 		return (
-			<Modal
-				open={this.state.openModal}
-				trigger={
-					<Button floated="right" icon labelPosition="left" primary size="small" onClick={this.changeModalState} className="modal-button-add">
-						<Icon name="add circle" className="modal-icon-add" /> Adicionar
-					</Button>
-				}
-			>
+			<Modal open={this.state.openModal} trigger={this.changeIconInAddButton(this.props.cambiarIcono)}>
 				<Header icon="wheelchair" content="Adicionar Paciente" />
 				<Modal.Content>
 					{this.state.errorform ? <Message error inverted header="Error" content="Error en el formulario" /> : null}

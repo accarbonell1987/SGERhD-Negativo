@@ -253,39 +253,29 @@ class ComponentAddClinicHistory extends Component {
 			errorform: false,
 		});
 	};
+	changeIconInAddButton = (change) => {
+		const position = this.props.middleButtonAdd ? "middle" : "right";
+		if (change)
+			return (
+				<Button icon floated={position} labelPosition="right" className="modal-button-add" onClick={this.changeModalState}>
+					<Icon name="add circle" className="modal-icon-add" onClick={this.changeModalState} />
+					Adicionar
+				</Button>
+			);
+		else
+			return (
+				<Button floated={position} icon labelPosition="left" primary size="small" onClick={this.changeModalState} className="modal-button-add">
+					<Icon name="add circle" className="modal-icon-add" />
+					Adicionar
+				</Button>
+			);
+	};
 	//#endregion
 
 	//#region Render
 	render() {
-		const permiso = this.props.permisos.find((p) => p.rol === this.props.parentState.rol);
-		//buscar el acceso del menu
-		const accesomenu = permiso.accesos.find((p) => p.opcion === "historiaclinica");
-		//chequear si es historiasclinica y tengo permiso
 		return (
-			<Modal
-				open={this.state.openModal}
-				trigger={
-					accesomenu.permisos.crear ? (
-						this.props.cambiarIcono ? (
-							<Button icon labelPosition="right" className="button-childs" primary onClick={this.changeModalState}>
-								<Icon name="clipboard" className="button-icon-childs" onClick={this.changeModalState} /> Adicionar
-							</Button>
-						) : (
-							<Button floated="right" icon labelPosition="left" primary size="small" onClick={this.changeModalState} className="modal-button-add">
-								<Icon name="add circle" className="modal-icon-add" /> Adicionar
-							</Button>
-						)
-					) : this.props.cambiarIcono ? (
-						<Button disabled icon labelPosition="right" primary className="button-childs">
-							<Icon name="clipboard" className="button-icon-childs" /> Adicionar
-						</Button>
-					) : (
-						<Button disabled floated="right" icon labelPosition="left" primary size="small" className="modal-button-add">
-							<Icon name="add circle" className="modal-icon-add" /> Adicionar
-						</Button>
-					)
-				}
-			>
+			<Modal open={this.state.openModal} trigger={this.changeIconInAddButton(this.props.cambiarIcono)}>
 				<Header icon="clipboard" content="Adicionar Historia Clínica" />
 				<Modal.Content>
 					{this.state.errorform ? <Message error inverted header="Error" content="Error en el formulario" /> : null}

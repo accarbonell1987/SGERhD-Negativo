@@ -63,6 +63,16 @@ class ComponentUsers extends Component {
 			}
 		});
 	};
+	checkAddAllowAndReturnButton = (middleButtonAdd, allow) => {
+		if (allow) return <ComponentAddUser middleButtonAdd={middleButtonAdd} parentState={this.props.parentState} roles={this.props.roles} permisos={this.props.permisos} reloadFromServer={this.props.reloadFromServer} />;
+		else
+			return (
+				<Button floated="right" icon labelPosition="left" primary size="small" className="modal-button-add" disabled>
+					<Icon name="add user" />
+					Adicionar
+				</Button>
+			);
+	};
 
 	render() {
 		//buscar el permiso del rol
@@ -80,15 +90,7 @@ class ComponentUsers extends Component {
 						<Table.Header>
 							<Table.Row>
 								<Table.HeaderCell />
-								<Table.HeaderCell colSpan="6">
-									{accesomenu.permisos.crear ? (
-										<ComponentAddUser reloadFromServer={this.props.reloadFromServer} parentState={this.props.parentState} roles={this.props.roles} />
-									) : (
-										<Button floated="right" icon labelPosition="left" primary size="small" className="modal-button-add" disabled>
-											<Icon name="add user" /> Adicionar
-										</Button>
-									)}
-								</Table.HeaderCell>
+								<Table.HeaderCell colSpan="6">{this.checkAddAllowAndReturnButton(false, accesomenu.permisos.crear)}</Table.HeaderCell>
 							</Table.Row>
 							{this.props.usuarios.length > 0 ? (
 								<Table.Row>

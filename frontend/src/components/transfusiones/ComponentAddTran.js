@@ -96,22 +96,20 @@ class ComponentAddTran extends Component {
 		});
 	};
 	//cambiar el estado en el MODAL para adicionar
-	changeModalState = async (evt, allow) => {
-		if (allow) {
-			if (evt.target.className.includes("modal-button-add") || evt.target.className.includes("modal-icon-add")) {
-				this.clearModalState();
-				this.setState({ openModal: true });
-			} else if (evt.target.className.includes("modal-button-cancel") || evt.target.className.includes("modal-icon-cancel")) {
-				this.setState({ openModal: false });
-			} else {
-				//si no hay problemas en el formulario
-				if (this.handleSubmit(evt) === false) {
-					//si no hay problemas en la insercion
-					if (await this.addTran()) {
-						//enviar a recargar los pacientes
-						this.props.reloadFromServer();
-						this.clearModalState();
-					}
+	changeModalState = async (evt) => {
+		if (evt.target.className.includes("modal-button-add") || evt.target.className.includes("modal-icon-add")) {
+			this.clearModalState();
+			this.setState({ openModal: true });
+		} else if (evt.target.className.includes("modal-button-cancel") || evt.target.className.includes("modal-icon-cancel")) {
+			this.setState({ openModal: false });
+		} else {
+			//si no hay problemas en el formulario
+			if (this.handleSubmit(evt) === false) {
+				//si no hay problemas en la insercion
+				if (await this.addTran()) {
+					//enviar a recargar los pacientes
+					this.props.reloadFromServer();
+					this.clearModalState();
 				}
 			}
 		}
@@ -142,42 +140,18 @@ class ComponentAddTran extends Component {
 	setDate = (fecha) => {
 		this.setState({ fecha: fecha });
 	};
-	changeIconInAddButton = (allow, change) => {
+	changeIconInAddButton = (change) => {
 		const position = this.props.middleButtonAdd ? "middle" : "right";
 		if (change)
 			return (
-				<Button
-					icon
-					floated={position}
-					labelPosition="right"
-					className="modal-button-add"
-					onClick={(evt) => {
-						this.changeModalState(evt, allow);
-					}}
-				>
-					<Icon
-						name="add circle"
-						className="modal-icon-add"
-						onClick={(evt) => {
-							this.changeModalState(evt, allow);
-						}}
-					/>
+				<Button icon floated={position} labelPosition="right" className="modal-button-add" onClick={this.changeModalState}>
+					<Icon name="add circle" className="modal-icon-add" onClick={this.changeModalState} />
 					Adicionar
 				</Button>
 			);
 		else
 			return (
-				<Button
-					floated={position}
-					icon
-					labelPosition="left"
-					primary
-					size="small"
-					onClick={(evt) => {
-						this.changeModalState(evt, allow);
-					}}
-					className="modal-button-add"
-				>
+				<Button icon floated={position} labelPosition="left" primary size="small" onClick={this.changeModalState} className="modal-button-add">
 					<Icon name="add circle" className="modal-icon-add" />
 					Adicionar
 				</Button>
@@ -187,12 +161,8 @@ class ComponentAddTran extends Component {
 
 	//#region Render
 	render() {
-		const permiso = this.props.permisos.find((p) => p.rol === this.props.parentState.rol);
-		//buscar el acceso del menu
-		const accesomenu = permiso.accesos.find((p) => p.opcion === "transfusiones");
-		//chequear si es historiasclinica y tengo permiso
 		return (
-			<Modal open={this.state.openModal} trigger={accesomenu.permisos.crear ? this.changeIconInAddButton(true, this.props.cambiarIcono) : this.changeIconInAddButton(false, this.props.cambiarIcono)}>
+			<Modal open={this.state.openModal} trigger={this.changeIconInAddButton(this.props.cambiarIcono)}>
 				<Header icon="tint" content="Adicionar Transfusión" />
 				<Modal.Content>
 					{this.state.errorform ? <Message error inverted header="Error" content="Error en el formulario" /> : null}

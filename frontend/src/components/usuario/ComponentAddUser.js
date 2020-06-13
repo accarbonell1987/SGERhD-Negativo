@@ -150,17 +150,55 @@ class ComponentAddUser extends Component {
 			errorform: false,
 		});
 	};
+	changeIconInAddButton = (allow, change) => {
+		const position = this.props.middleButtonAdd ? "middle" : "right";
+		if (change)
+			return (
+				<Button
+					icon
+					floated={position}
+					labelPosition="right"
+					className="modal-button-add"
+					onClick={(evt) => {
+						this.changeModalState(evt, allow);
+					}}
+				>
+					<Icon
+						name="add user"
+						className="modal-icon-add"
+						onClick={(evt) => {
+							this.changeModalState(evt, allow);
+						}}
+					/>
+					Adicionar
+				</Button>
+			);
+		else
+			return (
+				<Button
+					floated={position}
+					icon
+					labelPosition="left"
+					primary
+					size="small"
+					onClick={(evt) => {
+						this.changeModalState(evt, allow);
+					}}
+					className="modal-button-add"
+				>
+					<Icon name="add user" className="modal-icon-add" />
+					Adicionar
+				</Button>
+			);
+	};
 
 	render() {
+		const permiso = this.props.permisos.find((p) => p.rol === this.props.parentState.rol);
+		//buscar el acceso del menu
+		const accesomenu = permiso.accesos.find((p) => p.opcion === "transfusiones");
+		//chequear si es historiasclinica y tengo permiso
 		return (
-			<Modal
-				open={this.state.openModal}
-				trigger={
-					<Button floated="right" icon labelPosition="left" primary size="small" onClick={this.changeModalState} className="modal-button-add">
-						<Icon name="add user" /> Adicionar
-					</Button>
-				}
-			>
+			<Modal open={this.state.openModal} trigger={accesomenu.permisos.crear ? this.changeIconInAddButton(true, this.props.cambiarIcono) : this.changeIconInAddButton(false, this.props.cambiarIcono)}>
 				<Header icon="user" content="Adicionar Usuario" />
 				<Modal.Content>
 					{this.state.errorform ? <Message error inverted header="Error" content="Error en el formulario" /> : null}

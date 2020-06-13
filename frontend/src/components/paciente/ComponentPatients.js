@@ -88,6 +88,16 @@ class ComponentPatients extends Component {
 			}
 		});
 	};
+	checkAddAllowAndReturnButton = (middleButtonAdd, allow) => {
+		if (allow) return <ComponentAddPatient middleButtonAdd={middleButtonAdd} reloadFromServer={this.props.reloadFromServer} parentState={this.props.parentState} roles={this.props.roles} />;
+		else
+			return (
+				<Button floated="right" icon labelPosition="left" primary size="small" className="modal-button-add" disabled>
+					<Icon name="add circle" />
+					Adicionar
+				</Button>
+			);
+	};
 
 	render() {
 		//buscar el permiso del rol
@@ -101,22 +111,13 @@ class ComponentPatients extends Component {
 					<Label attached="top left" className="div-label-attached" size="large">
 						<Icon name="wheelchair" size="large" inverted /> Gestión de Pacientes
 					</Label>
-					<Table compact celled definition attached="top" className="div-table">
-						<Table.Header className="div-table-header-row">
-							<Table.Row>
-								<Table.HeaderCell />
-								<Table.HeaderCell colSpan="15">
-									{accesomenu.permisos.crear ? (
-										<ComponentAddPatient reloadFromServer={this.props.reloadFromServer} parentState={this.props.parentState} roles={this.props.roles} />
-									) : (
-										<Button floated="right" icon labelPosition="left" primary size="small" className="modal-button-add" disabled>
-											<Icon name="add circle" />
-											Adicionar
-										</Button>
-									)}
-								</Table.HeaderCell>
-							</Table.Row>
-							{this.props.pacientes.length > 0 ? (
+					{this.props.pacientes.length > 0 ? (
+						<Table compact celled definition attached="top" className="div-table">
+							<Table.Header className="div-table-header-row">
+								<Table.Row>
+									<Table.HeaderCell />
+									<Table.HeaderCell colSpan="15">{this.checkAddAllowAndReturnButton(false, accesomenu.permisos.crear)}</Table.HeaderCell>
+								</Table.Row>
 								<Table.Row>
 									<Table.HeaderCell />
 									<Table.HeaderCell>Fecha Creación</Table.HeaderCell>
@@ -134,90 +135,90 @@ class ComponentPatients extends Component {
 									<Table.HeaderCell className="cells-max-witdh-2">Activo</Table.HeaderCell>
 									<Table.HeaderCell className="cells-max-witdh-2">Acciones</Table.HeaderCell>
 								</Table.Row>
-							) : (
-								""
-							)}
-						</Table.Header>
+							</Table.Header>
 
-						<Table.Body>
-							{this.props.pacientes.map((paciente) => {
-								let negative = !paciente.activo;
-								let fechacadena = moment(new Date(paciente.fechaDeCreacion)).format("DD-MM-YYYY");
+							<Table.Body>
+								{this.props.pacientes.map((paciente) => {
+									let negative = !paciente.activo;
+									let fechacadena = moment(new Date(paciente.fechaDeCreacion)).format("DD-MM-YYYY");
 
-								let madre = paciente.madre;
-								let madrenombreyapellido = madre == null ? "Indefinido" : madre.nombre + " " + madre.apellidos;
-								// let rolData = this.props.roles.find(element => { return element.key === usuario.rol });
-								// //para colorear row
-								// let negative = this.props.parentState.usuario === usuario.nombre;
-								return (
-									<Table.Row key={paciente._id} negative={negative}>
-										<Table.Cell collapsing>
-											<Icon name="wheelchair" />
-										</Table.Cell>
-										<Table.Cell>{fechacadena}</Table.Cell>
-										<Table.Cell>
-											{paciente.nombre} {paciente.apellidos}
-										</Table.Cell>
-										<Table.Cell>{paciente.ci}</Table.Cell>
-										<Table.Cell>{paciente.direccion}</Table.Cell>
-										<Table.Cell>{paciente.telefono}</Table.Cell>
-										<Table.Cell>
-											<Button icon labelPosition="right" className="button-childs">
-												<Icon name="venus" className="button-icon-childs" />
-												{madrenombreyapellido}
-											</Button>
-										</Table.Cell>
-										<Table.Cell>
-											{paciente.sexo === "M" ? (
+									let madre = paciente.madre;
+									let madrenombreyapellido = madre == null ? "Indefinido" : madre.nombre + " " + madre.apellidos;
+									// let rolData = this.props.roles.find(element => { return element.key === usuario.rol });
+									// //para colorear row
+									// let negative = this.props.parentState.usuario === usuario.nombre;
+									return (
+										<Table.Row key={paciente._id} negative={negative}>
+											<Table.Cell collapsing>
+												<Icon name="wheelchair" />
+											</Table.Cell>
+											<Table.Cell>{fechacadena}</Table.Cell>
+											<Table.Cell>
+												{paciente.nombre} {paciente.apellidos}
+											</Table.Cell>
+											<Table.Cell>{paciente.ci}</Table.Cell>
+											<Table.Cell>{paciente.direccion}</Table.Cell>
+											<Table.Cell>{paciente.telefono}</Table.Cell>
+											<Table.Cell>
 												<Button icon labelPosition="right" className="button-childs">
-													<Icon name="man" className="button-icon-childs" />
-													Masculino
+													<Icon name="venus" className="button-icon-childs" />
+													{madrenombreyapellido}
 												</Button>
-											) : (
+											</Table.Cell>
+											<Table.Cell>
+												{paciente.sexo === "M" ? (
+													<Button icon labelPosition="right" className="button-childs">
+														<Icon name="man" className="button-icon-childs" />
+														Masculino
+													</Button>
+												) : (
+													<Button icon labelPosition="right" className="button-childs">
+														<Icon name="woman" className="button-icon-childs" />
+														Femenino
+													</Button>
+												)}
+											</Table.Cell>
+											<Table.Cell className="cells-max-witdh-2" collapsing>
+												{accesomenu.permisos.modificar ? (
+													<ComponentChilds parentState={this.props.parentState} paciente={paciente} pacientes={this.props.pacientes} reloadFromServer={this.props.reloadFromServer} />
+												) : (
+													<Button icon labelPosition="right" className="modal-button-other">
+														<Icon name="child" className="modal-icon-other" />
+														{paciente.hijos !== null ? (paciente.hijos.length > 0 ? paciente.hijos.length : 0) : ""}
+													</Button>
+												)}
+											</Table.Cell>
+											<Table.Cell className="cells-max-witdh-2" collapsing>
+												<ComponentSeeClinicHistory reloadFromServer={this.props.reloadFromServer} parentState={this.props.parentState} paciente={paciente} pacientes={this.props.pacientes} historiasclinicas={this.props.historiasclinicas} roles={this.props.roles} permisos={this.props.permisos} />
+											</Table.Cell>
+											<Table.Cell className="cells-max-witdh-2" collapsing>
+												<ComponentModalTran parentState={this.props.parentState} roles={this.props.roles} permisos={this.props.permisos} pacientes={this.props.pacientes} paciente={paciente} transfusiones={paciente.transfusiones} reloadFromServer={this.props.reloadFromServer} cambiarIcono={true} />
+											</Table.Cell>
+											<Table.Cell className="cells-max-witdh-2" collapsing>
 												<Button icon labelPosition="right" className="button-childs">
-													<Icon name="woman" className="button-icon-childs" />
-													Femenino
+													<Icon name="heartbeat" className="button-icon-childs" />0
 												</Button>
-											)}
-										</Table.Cell>
-										<Table.Cell className="cells-max-witdh-2" collapsing>
-											{accesomenu.permisos.modificar ? (
-												<ComponentChilds parentState={this.props.parentState} paciente={paciente} pacientes={this.props.pacientes} reloadFromServer={this.props.reloadFromServer} />
-											) : (
-												<Button icon labelPosition="right" className="modal-button-other">
-													<Icon name="child" className="modal-icon-other" />
-													{paciente.hijos !== null ? (paciente.hijos.length > 0 ? paciente.hijos.length : 0) : ""}
+											</Table.Cell>
+											<Table.Cell className="cells-max-witdh-2" collapsing>
+												<Button icon labelPosition="right" className="button-childs">
+													<Icon name="clipboard list" className="button-icon-childs" />0
 												</Button>
-											)}
-										</Table.Cell>
-										<Table.Cell className="cells-max-witdh-2" collapsing>
-											<ComponentSeeClinicHistory reloadFromServer={this.props.reloadFromServer} parentState={this.props.parentState} paciente={paciente} pacientes={this.props.pacientes} historiasclinicas={this.props.historiasclinicas} roles={this.props.roles} permisos={this.props.permisos} />
-										</Table.Cell>
-										<Table.Cell className="cells-max-witdh-2" collapsing>
-											<ComponentModalTran parentState={this.props.parentState} roles={this.props.roles} permisos={this.props.permisos} pacientes={this.props.pacientes} paciente={paciente} transfusiones={paciente.transfusiones} reloadFromServer={this.props.reloadFromServer} cambiarIcono={true} />
-										</Table.Cell>
-										<Table.Cell className="cells-max-witdh-2" collapsing>
-											<Button icon labelPosition="right" className="button-childs">
-												<Icon name="heartbeat" className="button-icon-childs" />0
-											</Button>
-										</Table.Cell>
-										<Table.Cell className="cells-max-witdh-2" collapsing>
-											<Button icon labelPosition="right" className="button-childs">
-												<Icon name="clipboard list" className="button-icon-childs" />0
-											</Button>
-										</Table.Cell>
-										<Table.Cell className="cells-max-witdh-2" collapsing>
-											<Checkbox toggle name="activo" labelPosition="left" label={paciente.activo ? "Si" : "No"} checked={paciente.activo} disabled />
-										</Table.Cell>
-										<Table.Cell className="cells-max-witdh-2" collapsing>
-											{accesomenu.permisos.eliminar ? <Button icon="remove circle" className="button-remove" onClick={() => this.deletePatient(paciente)} /> : <Button icon="remove circle" className="button-remove" disabled />}
-											{accesomenu.permisos.modificar ? <ComponentUpdatePatient reloadFromServer={this.props.reloadFromServer} paciente={paciente} parentState={this.props.parentState} roles={this.props.roles} /> : <Button icon="edit" disabled />}
-										</Table.Cell>
-									</Table.Row>
-								);
-							})}
-						</Table.Body>
-					</Table>
+											</Table.Cell>
+											<Table.Cell className="cells-max-witdh-2" collapsing>
+												<Checkbox toggle name="activo" labelPosition="left" label={paciente.activo ? "Si" : "No"} checked={paciente.activo} disabled />
+											</Table.Cell>
+											<Table.Cell className="cells-max-witdh-2" collapsing>
+												{accesomenu.permisos.eliminar ? <Button icon="remove circle" className="button-remove" onClick={() => this.deletePatient(paciente)} /> : <Button icon="remove circle" className="button-remove" disabled />}
+												{accesomenu.permisos.modificar ? <ComponentUpdatePatient reloadFromServer={this.props.reloadFromServer} paciente={paciente} parentState={this.props.parentState} roles={this.props.roles} /> : <Button icon="edit" disabled />}
+											</Table.Cell>
+										</Table.Row>
+									);
+								})}
+							</Table.Body>
+						</Table>
+					) : (
+						this.checkAddAllowAndReturnButton(false, accesomenu.permisos.crear)
+					)}
 				</Grid.Column>
 			</Grid>
 		);

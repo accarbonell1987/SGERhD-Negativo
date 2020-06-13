@@ -147,7 +147,7 @@ class ComponentTrans extends Component {
 							</Table.Body>
 						</Table>
 					) : (
-						this.checkAddAllowAndReturnButton(true, accesomenu.permisos.crear)
+						this.checkAddAllowAndReturnButton(this.props.middleButtonAdd, accesomenu.permisos.crear)
 					)}
 				</Grid.Column>
 			</Grid>

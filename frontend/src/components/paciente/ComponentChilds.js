@@ -179,10 +179,10 @@ class ComponentChilds extends Component {
 			>
 				<Header icon="child" content="Seleccionar Hijos" />
 				<Modal.Content>
-					<Form ref="form" onSubmit={this.changeModalState}>
-						<Table compact celled definition attached="top" className="div-table-modal">
-							<Table.Header>
-								{this.props.pacientes.length > 0 ? (
+					{this.props.pacientes.length > 1 ? (
+						<Form ref="form" onSubmit={this.changeModalState}>
+							<Table compact celled definition attached="top" className="div-table-modal">
+								<Table.Header>
 									<Table.Row>
 										<Table.HeaderCell />
 										<Table.HeaderCell>Selección</Table.HeaderCell>
@@ -191,74 +191,74 @@ class ComponentChilds extends Component {
 										<Table.HeaderCell>Madre</Table.HeaderCell>
 										<Table.HeaderCell className="cells-max-witdh-2">Género</Table.HeaderCell>
 									</Table.Row>
-								) : (
-									""
-								)}
-							</Table.Header>
-							<Table.Body>
-								{this.props.pacientes.map((paciente) => {
-									let negative = !paciente.activo;
-									let madrenombreyapellido = paciente.madre == null ? "Indefinido" : paciente.madre.nombre + " " + paciente.madre.apellidos;
+								</Table.Header>
+								<Table.Body>
+									{this.props.pacientes.map((paciente) => {
+										let negative = !paciente.activo;
+										let madrenombreyapellido = paciente.madre == null ? "Indefinido" : paciente.madre.nombre + " " + paciente.madre.apellidos;
 
-									let esHijo = false;
-									//buscar si el tengo que marcar el checkbox
-									if (this.state.hijos !== null) {
-										esHijo = this.state.hijos.includes(paciente._id);
-									}
-									//chequear que el paciente actual sea diferente al que mando la peticion de escoger los hijos
-									if (paciente._id !== this.props.paciente._id) {
-										return (
-											<Table.Row key={paciente._id} negative={negative}>
-												<Table.Cell collapsing>
-													<Icon name="child" />
-												</Table.Cell>
-												<Table.Cell>
-													<Checkbox
-														key={paciente._id}
-														name={paciente._id}
-														defaultChecked={esHijo}
-														onChange={(e, data) => {
-															this.changeCheckBox(e, data);
-														}}
-														disabled={negative}
-													/>
-												</Table.Cell>
-												<Table.Cell>
-													{paciente.nombre} {paciente.apellidos}
-												</Table.Cell>
-												<Table.Cell>{paciente.ci}</Table.Cell>
-												<Table.Cell>
-													<Button icon labelPosition="right" className="button-childs">
-														<Icon name="venus" className="button-icon-childs" />
-														{madrenombreyapellido}
-													</Button>
-												</Table.Cell>
-												<Table.Cell>
-													{paciente.sexo === "M" ? (
+										let esHijo = false;
+										//buscar si el tengo que marcar el checkbox
+										if (this.state.hijos !== null) {
+											esHijo = this.state.hijos.includes(paciente._id);
+										}
+										//chequear que el paciente actual sea diferente al que mando la peticion de escoger los hijos
+										if (paciente._id !== this.props.paciente._id) {
+											return (
+												<Table.Row key={paciente._id} negative={negative}>
+													<Table.Cell collapsing>
+														<Icon name="child" />
+													</Table.Cell>
+													<Table.Cell>
+														<Checkbox
+															key={paciente._id}
+															name={paciente._id}
+															defaultChecked={esHijo}
+															onChange={(e, data) => {
+																this.changeCheckBox(e, data);
+															}}
+															disabled={negative}
+														/>
+													</Table.Cell>
+													<Table.Cell>
+														{paciente.nombre} {paciente.apellidos}
+													</Table.Cell>
+													<Table.Cell>{paciente.ci}</Table.Cell>
+													<Table.Cell>
 														<Button icon labelPosition="right" className="button-childs">
-															<Icon name="man" className="button-icon-childs" />
-															Masculino
+															<Icon name="venus" className="button-icon-childs" />
+															{madrenombreyapellido}
 														</Button>
-													) : (
-														<Button icon labelPosition="right" className="button-childs">
-															<Icon name="woman" className="button-icon-childs" />
-															Femenino
-														</Button>
-													)}
-												</Table.Cell>
-											</Table.Row>
-										);
-									} else return "";
-								})}
-							</Table.Body>
-						</Table>
-					</Form>
+													</Table.Cell>
+													<Table.Cell>
+														{paciente.sexo === "M" ? (
+															<Button icon labelPosition="right" className="button-childs">
+																<Icon name="man" className="button-icon-childs" />
+																Masculino
+															</Button>
+														) : (
+															<Button icon labelPosition="right" className="button-childs">
+																<Icon name="woman" className="button-icon-childs" />
+																Femenino
+															</Button>
+														)}
+													</Table.Cell>
+												</Table.Row>
+											);
+										} else return "";
+									})}
+								</Table.Body>
+							</Table>
+						</Form>
+					) : (
+						"Sin pacientes disponibles para selección"
+					)}
 				</Modal.Content>
 				<Modal.Actions>
 					<Button color="red" onClick={this.changeModalState} className="modal-button-cancel" type>
 						<Icon name="remove" /> Cancelar
 					</Button>
-					<Button color="green" onClick={this.changeModalState} className="modal-button-accept" type="submit">
+					<Button color="green" onClick={this.changeModalState} className="modal-button-accept" type="submit" disabled={!(this.props.pacientes.length > 1)}>
 						<Icon name="checkmark" /> Aceptar
 					</Button>
 				</Modal.Actions>
