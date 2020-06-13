@@ -209,6 +209,17 @@ exports.InsertTranToPatient = async (tran) => {
 		throw Error("InsertTranToPatient -> Insertando Transfusion en Paciente \n" + err);
 	}
 };
+//insertar el embarazo en el paciente que pertence
+exports.InsertPregnancyToPatient = async (pregnancy) => {
+	try {
+		const patient = await Paciente.findById(pregnancy.paciente);
+		await patient.embarazos.push(pregnancy);
+		const saved = await patient.save();
+		return saved;
+	} catch (err) {
+		throw Error("InsertPregnancyToPatient -> Insertando Embarazo en Paciente \n" + err);
+	}
+};
 //eliminar una transfusion perteneciente al paciente
 exports.DeleteTranInPatient = async (tran) => {
 	try {
@@ -226,6 +237,24 @@ exports.DeleteTranInPatient = async (tran) => {
 		return updated;
 	} catch (err) {
 		throw Error("DeleteTranInPatient -> Eliminando Transfusion en Paciente \n" + err);
+	}
+};
+exports.DeletePregnancyInPatient = async (pregnancy) => {
+	try {
+		embarazospaciente = [...pregnancy.paciente.embarazos];
+		//buscar el indice del elemento que representa ese embarazo en el arreglo de embarazos del paciente
+		let index = pregnancy.paciente.embarazos.indexOf(pregnancy._id);
+		if (index) {
+			//eliminar del arreglo el elemento
+			embarazospaciente.splice(index, 1);
+			//hacer un update del paciente
+			const patient = { embarazos: embarazospaciente };
+			console.log(pregnancy.paciente.embarazos, pregnancy._id, index, patient);
+			var updated = await Paciente.findByIdAndUpdate(pregnancy.paciente._id, patient);
+		}
+		return updated;
+	} catch (err) {
+		throw Error("DeletePregnancyInPatient -> Eliminando Embarazo en Paciente \n" + err);
 	}
 };
 //cuando se elimina la historia clinica perteneciente al paciente se le asinga un

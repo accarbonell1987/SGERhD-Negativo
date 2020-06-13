@@ -1,89 +1,51 @@
-//Requeridos
-const express = require('express');
+//#region Requeridos
+const express = require("express");
 const router = express.Router();
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
+//#endregion
 
-//Modelos
-const Embarazo = require('../models/models').embarazo;
+//#region Controladora
+var bll = require("../controller/bll");
+//#endregion
 
-//CONSTANTES
+//#region Constantes
 const jwtkey = process.env.JWT_KEY;
+//#endregion
 
-//JWT Middleware
+//#region Middlewares
 router.use((req, res, next) => {
-    const token = req.headers['access-token'];
+	const token = req.headers["access-token"];
 
-    if (token) {
-        jwt.verify(token, jwtkey, (err, decoded) => {
-            if (err) {
-                return res.json({ status: 'FAILED', message: 'TOKEN invalida' });
-            } else {
-                req.decoded = decoded;
-                next();
-            }
-        });
-    } else {
-        res.send({
-            status: 'FAILED',
-            message: 'TOKEN no proveido'
-        });
-    }
+	if (token) {
+		jwt.verify(token, jwtkey, (err, decoded) => {
+			if (err) {
+				return res.status(400).json({ status: 400, message: "Invalid Token" });
+			} else {
+				req.decoded = decoded;
+				next();
+			}
+		});
+	} else {
+		res.status(400).json({ status: 400, message: "Not Token" });
+	}
 });
+//#endregion
 
+//#region Rutas
 //GET - Todos
-router.get('/embarazo', async (req, res) => {
-    try {
-        const embarazos = await embarazo.find();
-        res.json({ status: 'OK', message: 'Obtenidos', data: embarazos });
-    } catch(err) {
-        res.json({ status: 'FAILED', message: err });
-    }
-});
-
+router.get("/embarazo", bll.GetPregnancies);
 //GET - por id
-router.get('/embarazo/:id', async (req, res) => {
-    try {
-        const embarazo = await embarazo.findById(req.params.id);
-        res.json({ status: 'OK', message: 'Obtenido', data: embarazo });
-    } catch(err) {
-        res.json({ status: 'FAILED', message: err });
-    }
-});
-
+router.get("/embarazo/:id", bll.GetPregnancy);
 //POST - {json}
-router.post('/embarazo', async (req, res) => {
-    try {
-        const { fecha, tiempoDeGestacion, observaciones, examenes, tipos, findeembarazo, findeaborto, findeparto, paciente, activo } = req.body;
-        const embarazo = new embarazo({ fecha, tiempoDeGestacion, observaciones, examenes, tipos, findeembarazo, findeaborto, findeparto, paciente, activo });
-        const saved = embarazo.save();
-        res.json({ status: 'OK', message: 'Insertado correctamente...', data: saved });
-    } catch(err) {
-        res.json({ status: 'FAILED', message: err });
-    };
-    
-});
+router.post("/embarazo", bll.InsertPregnancy);
+//DELETE - Un transfusion por id /transfusion/id
+router.delete("/embarazo/:id", bll.DeletePregnancy);
+//PUT - lo usaremos para el eliminar
+router.put("/embarazo/:id", bll.DisablePregnancy);
+//PATCH - Un transfusion por id /transfusion/id - {json}
+router.patch("/embarazo/:id", bll.UpdatePregnancy);
+//#endregion
 
-//DELETE - Un embarazo por id /embarazo/id
-router.delete('/embarazo/:id', async (req, res) => {
-    try {
-        const removed = await embarazo.findByIdAndRemove(req.params.id);
-        res.json({ status: 'OK', message: 'Eliminado correctamente...', data: removed });
-    } catch(err) {
-        res.json({ status: 'FAILED', message: err });
-    }
-});
-
-//PATCH - Un embarazo por id /embarazo/id - {json}
-router.patch('/embarazo/:id', async (req, res) => {
-    try {
-        const { fecha, tiempoDeGestacion, observaciones, examenes, tipos, findeembarazo, findeaborto, findeparto, paciente, activo } = req.body;
-        const embarazo = { fecha, tiempoDeGestacion, observaciones, examenes, tipos, findeembarazo, findeaborto, findeparto, paciente, activo };
-        
-        await embarazo.findByIdAndUpdate(req.params.id, embarazo);
-        res.json({ status: 'OK', message: 'Modificado correctamente...', data: embarazo });
-    } catch(err) {
-        res.json({ status: 'FAILED', message: err });
-    }
-});
-
+//#region Exports
 module.exports = router;
+//#endregion

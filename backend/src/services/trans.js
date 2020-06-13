@@ -53,8 +53,6 @@ exports.UpdateTran = async (id, body) => {
 	try {
 		var { fecha, observaciones, reaccionAdversa, paciente, activo } = body;
 		const tran = { fecha, observaciones, reaccionAdversa, paciente, activo };
-		console.log(tran);
-
 		const updated = await Transfusion.findByIdAndUpdate(id, tran);
 		return updated;
 	} catch (err) {

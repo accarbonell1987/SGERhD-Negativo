@@ -4,6 +4,7 @@ const PatientServices = require("../services/patients");
 const UserServices = require("../services/users");
 const LogServices = require("../services/logs");
 const TranServices = require("../services/trans");
+const PregnancyServices = require("../services/embarazo");
 //#endregion
 
 //#region Usuarios
@@ -329,6 +330,65 @@ exports.UpdateTran = async (req, res, next) => {
 	try {
 		var tran = await TranServices.UpdateTran(req.params.id, req.body);
 		return res.status(200).json({ status: 200, message: "Modificado Correctamente", data: tran });
+	} catch (err) {
+		return res.status(400).json({ status: 400, message: err.toString() });
+	}
+};
+//#endregion
+
+//#region Embarazo
+exports.GetPregnancies = async (req, res, next) => {
+	var page = req.params.page ? req.params.page : 1;
+	var limit = req.params.limit ? req.params.limit : -1;
+
+	try {
+		var pregnancies = await PregnancyServices.GetPregnancies({}, page, limit);
+		return res.status(200).json({ status: 200, message: "Obtenidos", data: pregnancies });
+	} catch (err) {
+		return res.status(400).json({ status: 400, message: err.toString() });
+	}
+};
+exports.GetPregnancy = async (req, res, next) => {
+	try {
+		const id = req.params.id;
+		var pregnancy = await PregnancyServices.GetPregnancy(req.params.id);
+		return res.status(200).json({ status: 200, message: "Obtenido", data: pregnancy });
+	} catch (err) {
+		return res.status(400).json({ status: 400, message: err.toString() });
+	}
+};
+exports.InsertPregnancy = async (req, res, next) => {
+	try {
+		var pregnancy = await PregnancyServices.InsertPregnancy(req.body);
+		return res.status(200).json({ status: 200, message: "Insertado Correctamente", data: pregnancy });
+	} catch (err) {
+		return res.status(400).json({ status: 400, message: err.toString() });
+	}
+};
+exports.DeletePregnancy = async (req, res, next) => {
+	try {
+		return res.status(400).json({ status: 400, message: "Operacion en Servidor No Permitida" });
+	} catch (err) {
+		return res.status(400).json({ status: 400, message: err.toString() });
+	}
+};
+exports.DisablePregnancy = async (req, res, next) => {
+	try {
+		let reqpregnancy = req.body;
+
+		let message = "Eliminado Correctamente";
+		if (reqpregnancy.activo) message = "Desactivado Correctamente";
+
+		var pregnancy = await PregnancyServices.DisablePregnancy(req.params.id, reqpregnancy);
+		return res.status(200).json({ status: 200, message: message, data: pregnancy });
+	} catch (err) {
+		return res.status(400).json({ status: 400, message: err.toString() });
+	}
+};
+exports.UpdatePregnancy = async (req, res, next) => {
+	try {
+		var pregnancy = await PregnancyServices.UpdatePregnancy(req.params.id, req.body);
+		return res.status(200).json({ status: 200, message: "Modificado Correctamente", data: pregnancy });
 	} catch (err) {
 		return res.status(400).json({ status: 400, message: err.toString() });
 	}

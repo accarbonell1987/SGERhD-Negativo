@@ -32,13 +32,14 @@ var logacceso_schema = new Schema({
 //EMBARAZO
 var embarazo_schema = new Schema({
 	fecha: { type: Date, required: true, default: new Date() },
-	tiempoDeGestacion: { type: Number, required: true },
 	observaciones: { type: String },
-	examenes: [],
-	tipos: { type: String, default: "nuevo", require: "Debe de escoger el tipo de embarazo" },
-	findeembarazo: { type: String, default: "parto", require: "Debe de escoger el fin de embarazo" },
-	findeaborto: { type: String, default: "interrumpido" },
-	findeparto: { type: String, default: "natural" },
+	examenes: [{ type: Schema.Types.ObjectId, ref: "Examen" }],
+	tipo: { type: String, default: "nuevo", require: "Debe de escoger el tipo de embarazo" },
+	semanas: { type: Number },
+	dias: { type: Number },
+	findeembarazo: { type: String, default: "parto" }, //parto o aborto
+	findeaborto: { type: String, default: "interrumpido" }, //natural o interrumpido
+	findeparto: { type: String, default: "natural" }, //natural o cesarea
 	paciente: { type: Schema.Types.ObjectId, ref: "Paciente" },
 	activo: { type: Boolean },
 	accessToken: { type: String },

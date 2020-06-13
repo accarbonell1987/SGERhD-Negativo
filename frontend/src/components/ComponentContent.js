@@ -13,6 +13,7 @@ import ComponentPatients from "./paciente/ComponentPatients";
 import ComponentClinicHistory from "./historiaclinica/ComponentClinicHistory";
 import ComponentTrans from "./transfusiones/ComponentTrans";
 import ComponentFooter from "./ComponentFooter";
+import ComponentPregnancies from "./embarazo/ComponentPregnancies";
 //#endregion
 
 //#region Defincion de la clase
@@ -22,6 +23,7 @@ class ComponentContent extends Component {
 		usuarios: [],
 		historiasclinicas: [],
 		transfusiones: [],
+		embarazos: [],
 	};
 
 	constructor(props) {
@@ -38,6 +40,7 @@ class ComponentContent extends Component {
 		this.allClinicsHistory();
 		this.allPatients();
 		this.allUsers();
+		this.allPregnancies();
 	};
 
 	//obtener todos los historia clinica desde la API
@@ -91,6 +94,25 @@ class ComponentContent extends Component {
 			.then((data) => {
 				if (data.status === 200) {
 					this.setState({ transfusiones: data.data });
+				} else {
+					Swal.fire({ position: "center", icon: "error", title: data.message, showConfirmButton: false, timer: 3000 });
+				}
+			})
+			.catch((err) => {
+				Swal.fire({ position: "center", icon: "error", title: err, showConfirmButton: false, timer: 3000 });
+			});
+	};
+	allPregnancies = async () => {
+		await fetch(this.props.parentState.endpoint + "api/embarazo", {
+			method: "GET",
+			headers: {
+				"access-token": this.props.parentState.token,
+			},
+		})
+			.then((res) => res.json())
+			.then((data) => {
+				if (data.status === 200) {
+					this.setState({ embarazos: data.data });
 				} else {
 					Swal.fire({ position: "center", icon: "error", title: data.message, showConfirmButton: false, timer: 3000 });
 				}
@@ -153,6 +175,13 @@ class ComponentContent extends Component {
 			return (
 				<div className="Content">
 					<ComponentTrans parentState={this.props.parentState} roles={this.props.roles} permisos={this.props.permisos} pacientes={this.state.pacientes} transfusiones={this.state.transfusiones} reloadFromServer={this.reloadFromServer} />
+					<ComponentFooter />
+				</div>
+			);
+		} else if (this.props.opcionmenu === "embarazos" && accesomenu.permisos.menu) {
+			return (
+				<div className="Content">
+					<ComponentPregnancies parentState={this.props.parentState} roles={this.props.roles} permisos={this.props.permisos} pacientes={this.state.pacientes} embarazos={this.state.embarazos} reloadFromServer={this.reloadFromServer} />
 					<ComponentFooter />
 				</div>
 			);

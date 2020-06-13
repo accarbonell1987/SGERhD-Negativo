@@ -96,20 +96,22 @@ class ComponentAddTran extends Component {
 		});
 	};
 	//cambiar el estado en el MODAL para adicionar
-	changeModalState = async (evt) => {
-		if (evt.target.className.includes("modal-button-add") || evt.target.className.includes("modal-icon-add") || evt.target.className.includes("button-childs") || evt.target.className.includes("button-icon-childs")) {
-			this.clearModalState();
-			this.setState({ openModal: true });
-		} else if (evt.target.className.includes("modal-button-cancel") || evt.target.className.includes("modal-icon-cancel")) {
-			this.setState({ openModal: false });
-		} else {
-			//si no hay problemas en el formulario
-			if (this.handleSubmit(evt) === false) {
-				//si no hay problemas en la insercion
-				if (await this.addTran()) {
-					//enviar a recargar los pacientes
-					this.props.reloadFromServer();
-					this.clearModalState();
+	changeModalState = async (evt, allow) => {
+		if (allow) {
+			if (evt.target.className.includes("modal-button-add") || evt.target.className.includes("modal-icon-add")) {
+				this.clearModalState();
+				this.setState({ openModal: true });
+			} else if (evt.target.className.includes("modal-button-cancel") || evt.target.className.includes("modal-icon-cancel")) {
+				this.setState({ openModal: false });
+			} else {
+				//si no hay problemas en el formulario
+				if (this.handleSubmit(evt) === false) {
+					//si no hay problemas en la insercion
+					if (await this.addTran()) {
+						//enviar a recargar los pacientes
+						this.props.reloadFromServer();
+						this.clearModalState();
+					}
 				}
 			}
 		}
@@ -140,6 +142,47 @@ class ComponentAddTran extends Component {
 	setDate = (fecha) => {
 		this.setState({ fecha: fecha });
 	};
+	changeIconInAddButton = (allow, change) => {
+		const position = this.props.middleButtonAdd ? "middle" : "right";
+		if (change)
+			return (
+				<Button
+					icon
+					floated={position}
+					labelPosition="right"
+					className="modal-button-add"
+					onClick={(evt) => {
+						this.changeModalState(evt, allow);
+					}}
+				>
+					<Icon
+						name="add circle"
+						className="modal-icon-add"
+						onClick={(evt) => {
+							this.changeModalState(evt, allow);
+						}}
+					/>
+					Adicionar
+				</Button>
+			);
+		else
+			return (
+				<Button
+					floated={position}
+					icon
+					labelPosition="left"
+					primary
+					size="small"
+					onClick={(evt) => {
+						this.changeModalState(evt, allow);
+					}}
+					className="modal-button-add"
+				>
+					<Icon name="add circle" className="modal-icon-add" />
+					Adicionar
+				</Button>
+			);
+	};
 	//#endregion
 
 	//#region Render
@@ -149,34 +192,7 @@ class ComponentAddTran extends Component {
 		const accesomenu = permiso.accesos.find((p) => p.opcion === "transfusiones");
 		//chequear si es historiasclinica y tengo permiso
 		return (
-			<Modal
-				open={this.state.openModal}
-				trigger={
-					accesomenu.permisos.crear ? (
-						this.props.cambiarIcono ? (
-							<Button icon labelPosition="right" className="button-childs" onClick={this.changeModalState}>
-								<Icon name="add circle" className="button-icon-childs" onClick={this.changeModalState} />
-								Adicionar
-							</Button>
-						) : (
-							<Button floated="right" icon labelPosition="left" primary size="small" onClick={this.changeModalState} className="modal-button-add">
-								<Icon name="add circle" className="modal-icon-add" />
-								Adicionar
-							</Button>
-						)
-					) : this.props.cambiarIcono ? (
-						<Button disabled icon labelPosition="right" className="button-childs">
-							<Icon name="add circle" className="button-icon-childs" />
-							Adicionar
-						</Button>
-					) : (
-						<Button disabled floated="right" icon labelPosition="left" primary size="small" className="modal-button-add">
-							<Icon name="add circle" className="modal-icon-add" />
-							Adicionar
-						</Button>
-					)
-				}
-			>
+			<Modal open={this.state.openModal} trigger={accesomenu.permisos.crear ? this.changeIconInAddButton(true, this.props.cambiarIcono) : this.changeIconInAddButton(false, this.props.cambiarIcono)}>
 				<Header icon="tint" content="Adicionar Transfusión" />
 				<Modal.Content>
 					{this.state.errorform ? <Message error inverted header="Error" content="Error en el formulario" /> : null}
