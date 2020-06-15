@@ -60,7 +60,7 @@ class ComponentInputDatePicker extends Component {
 		});
 	};
 	changeModalState = async (evt) => {
-		if (evt.target.className.includes("modal-icon-fire") || evt.target.className.includes("modal-input-60p")) {
+		if (evt.target.className.includes("modal-icon-fire") || evt.target.className.includes("modal-input-100p")) {
 			this.clearModalState();
 			this.setState({ openModal: true });
 		} else {
@@ -87,7 +87,7 @@ class ComponentInputDatePicker extends Component {
 				open={this.state.openModal}
 				trigger={
 					<Input
-						className="modal-input-60p"
+						className="modal-input-100p"
 						icon={<Icon name="calendar alternate" className="modal-icon-fire" circular onClick={this.changeModalState} />}
 						placeholder="Fecha..."
 						onClick={(evt) => {
@@ -100,19 +100,7 @@ class ComponentInputDatePicker extends Component {
 			>
 				<Modal.Header icon="calendar alternate">Escoger Fecha</Modal.Header>
 				<Modal.Content>
-					<DateRangePicker
-						firstOfWeek={1}
-						numberOfCalendars={1}
-						selectionType="single"
-						stateDefinitions={definitions}
-						dateStates={ranges}
-						singleDateRange={true}
-						defaultState="available"
-						showLegend={false}
-						locale={this.state.idioma}
-						value={moment(this.state.fecha)}
-						onSelect={this.handleSelect}
-					/>
+					<DateRangePicker firstOfWeek={1} numberOfCalendars={1} selectionType="single" stateDefinitions={definitions} dateStates={ranges} singleDateRange={true} defaultState="available" showLegend={false} locale={this.state.idioma} value={moment(this.state.fecha)} onSelect={this.handleSelect} />
 				</Modal.Content>
 				<Modal.Actions className="modal-action-centered">
 					{this.state.modoboton ? (

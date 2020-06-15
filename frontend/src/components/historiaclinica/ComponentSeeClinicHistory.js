@@ -109,17 +109,17 @@ class ComponentSeeClinicHistory extends Component {
 							<Segment.Group horizontal>
 								<Segment>
 									<Form.Group>
-										<Form.Input className="modal-input-60p" name="numeroDeEmbarazos" icon="user md" iconPosition="left" label="Numero de Embarazos:" value={historia.numeroDeEmbarazos} />
+										<Form.Input className="modal-input-100p" name="numeroDeEmbarazos" icon="user md" iconPosition="left" label="Numero de Embarazos:" value={historia.numeroDeEmbarazos} />
 									</Form.Group>
 								</Segment>
 								<Segment>
 									<Form.Group>
-										<Form.Input className="modal-input-60p" name="numeroDePartos" icon="user md" iconPosition="left" label="Numero de Partos:" value={historia.numeroDePartos} />
+										<Form.Input className="modal-input-100p" name="numeroDePartos" icon="user md" iconPosition="left" label="Numero de Partos:" value={historia.numeroDePartos} />
 									</Form.Group>
 								</Segment>
 								<Segment>
 									<Form.Group>
-										<Form.Input className="modal-input-60p" name="numeroDeAbortos" icon="user md" iconPosition="left" label="Numero de Abortos:" value={historia.numeroDeAbortos} />
+										<Form.Input className="modal-input-100p" name="numeroDeAbortos" icon="user md" iconPosition="left" label="Numero de Abortos:" value={historia.numeroDeAbortos} />
 									</Form.Group>
 								</Segment>
 							</Segment.Group>

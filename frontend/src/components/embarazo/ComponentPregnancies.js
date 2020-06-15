@@ -10,7 +10,7 @@ import "../global/css/Gestionar.css";
 //#endregion
 
 //#region Componentes
-// import ComponentAddTran from "./ComponentAddTran";
+import ComponentAddPregnancy from "./ComponentAddPregnancy";
 // import ComponentUpdateTran from "./ComponentUpdateTran";
 // import ComponentSeePatient from "../paciente/ComponentSeePatient";
 //#endregion
@@ -69,6 +69,16 @@ class ComponentPregnancies extends Component {
 			}
 		});
 	};
+	checkAddAllowAndReturnButton = (middleButtonAdd, allow) => {
+		if (allow) return <ComponentAddPregnancy middleButtonAdd={middleButtonAdd} parentState={this.props.parentState} roles={this.props.roles} pacientes={this.props.pacientes} reloadFromServer={this.props.reloadFromServer} paciente={this.props.paciente} />;
+		else
+			return (
+				<Button floated="right" icon labelPosition="left" primary size="small" className="modal-button-add" disabled>
+					<Icon name="add circle" />
+					Adicionar
+				</Button>
+			);
+	};
 	//#endregion
 
 	//#region Render
@@ -89,23 +99,13 @@ class ComponentPregnancies extends Component {
 					) : (
 						""
 					)}
-					<Table compact celled definition attached="top" className={classNameTable}>
-						<Table.Header className="div-table-header">
-							<Table.Row>
-								<Table.HeaderCell />
-								<Table.HeaderCell colSpan="8">
-									{accesomenu.permisos.crear ? (
-										// <ComponentAddTran parentState={this.props.parentState} roles={this.props.roles} pacientes={this.props.pacientes} permisos={this.props.permisos} reloadFromServer={this.props.reloadFromServer} paciente={this.props.paciente} />
-										""
-									) : (
-										<Button floated="right" icon labelPosition="left" primary size="small" className="modal-button-add" disabled>
-											<Icon name="add circle" />
-											Adicionar
-										</Button>
-									)}
-								</Table.HeaderCell>
-							</Table.Row>
-							{this.props.embarazos.length > 0 ? (
+					{this.props.embarazos.length > 0 ? (
+						<Table compact celled definition attached="top" className={classNameTable}>
+							<Table.Header className="div-table-header">
+								<Table.Row>
+									<Table.HeaderCell />
+									<Table.HeaderCell colSpan="8">{this.checkAddAllowAndReturnButton(false, accesomenu.permisos.crear)}</Table.HeaderCell>
+								</Table.Row>
 								<Table.Row>
 									<Table.HeaderCell />
 									<Table.HeaderCell>Fecha</Table.HeaderCell>
@@ -116,41 +116,41 @@ class ComponentPregnancies extends Component {
 									<Table.HeaderCell className="cells-max-witdh-2">Activo</Table.HeaderCell>
 									<Table.HeaderCell className="cells-max-witdh-2">Acciones</Table.HeaderCell>
 								</Table.Row>
-							) : (
-								""
-							)}
-						</Table.Header>
-						<Table.Body>
-							{this.props.embarazos.map((embarazo) => {
-								let negative = !embarazo.activo;
-								let fechacadena = moment(new Date(embarazo.fecha)).format("DD-MM-YYYY");
-								return (
-									<Table.Row key={embarazo._id} negative={negative}>
-										<Table.Cell collapsing>
-											<Icon name="tint" />
-										</Table.Cell>
-										<Table.Cell>{fechacadena}</Table.Cell>
-										<Table.Cell>
-											{/* <Checkbox toggle name="reaccionAdversa" labelPosition="left" checked={tran.reaccionAdversa} label={tran.reaccionAdversa ? "Si" : "No"} disabled /> */}
-											{embarazo.tipo}
-										</Table.Cell>
-										<Table.Cell>{embarazo.observaciones}</Table.Cell>
-										<Table.Cell>DETALLES</Table.Cell>
-										<Table.Cell className="cells-max-witdh-2" collapsing>
-											{/* <ComponentSeePatient paciente={tran.paciente} parentState={this.props.parentState} roles={this.props.roles} /> */}
-										</Table.Cell>
-										<Table.Cell className="cells-max-witdh-2" collapsing>
-											<Checkbox toggle name="activo" labelPosition="left" label={embarazo.activo ? "Si" : "No"} checked={embarazo.activo} disabled />
-										</Table.Cell>
-										<Table.Cell className="cells-max-witdh-2" collapsing>
-											{accesomenu.permisos.eliminar ? <Button icon="remove circle" className="button-remove" onClick={() => this.deleteTran(embarazo)} /> : <Button icon="remove circle" className="button-remove" disabled />}
-											{accesomenu.permisos.modificar ? /*<ComponentUpdateTran reloadFromServer={this.props.reloadFromServer} parentState={this.props.parentState} roles={this.props.roles} pacientes={this.props.pacientes} tran={tran} />*/ "" : <Button icon="edit" disabled />}
-										</Table.Cell>
-									</Table.Row>
-								);
-							})}
-						</Table.Body>
-					</Table>
+							</Table.Header>
+							<Table.Body>
+								{this.props.embarazos.map((embarazo) => {
+									let negative = !embarazo.activo;
+									let fechacadena = moment(new Date(embarazo.fecha)).format("DD-MM-YYYY");
+									return (
+										<Table.Row key={embarazo._id} negative={negative}>
+											<Table.Cell collapsing>
+												<Icon name="tint" />
+											</Table.Cell>
+											<Table.Cell>{fechacadena}</Table.Cell>
+											<Table.Cell>
+												{/* <Checkbox toggle name="reaccionAdversa" labelPosition="left" checked={tran.reaccionAdversa} label={tran.reaccionAdversa ? "Si" : "No"} disabled /> */}
+												{embarazo.tipo}
+											</Table.Cell>
+											<Table.Cell>{embarazo.observaciones}</Table.Cell>
+											<Table.Cell>DETALLES</Table.Cell>
+											<Table.Cell className="cells-max-witdh-2" collapsing>
+												{/* <ComponentSeePatient paciente={tran.paciente} parentState={this.props.parentState} roles={this.props.roles} /> */}
+											</Table.Cell>
+											<Table.Cell className="cells-max-witdh-2" collapsing>
+												<Checkbox toggle name="activo" labelPosition="left" label={embarazo.activo ? "Si" : "No"} checked={embarazo.activo} disabled />
+											</Table.Cell>
+											<Table.Cell className="cells-max-witdh-2" collapsing>
+												{accesomenu.permisos.eliminar ? <Button icon="remove circle" className="button-remove" onClick={() => this.deleteTran(embarazo)} /> : <Button icon="remove circle" className="button-remove" disabled />}
+												{accesomenu.permisos.modificar ? /*<ComponentUpdateTran reloadFromServer={this.props.reloadFromServer} parentState={this.props.parentState} roles={this.props.roles} pacientes={this.props.pacientes} tran={tran} />*/ "" : <Button icon="edit" disabled />}
+											</Table.Cell>
+										</Table.Row>
+									);
+								})}
+							</Table.Body>
+						</Table>
+					) : (
+						this.checkAddAllowAndReturnButton(this.props.middleButtonAdd, accesomenu.permisos.crear)
+					)}
 				</Grid.Column>
 			</Grid>
 		);

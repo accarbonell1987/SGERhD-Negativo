@@ -71,7 +71,7 @@ class ComponentTrans extends Component {
 		});
 	};
 	checkAddAllowAndReturnButton = (middleButtonAdd, allow) => {
-		if (allow) return <ComponentAddTran middleButtonAdd={middleButtonAdd} parentState={this.props.parentState} roles={this.props.roles} pacientes={this.props.pacientes} permisos={this.props.permisos} reloadFromServer={this.props.reloadFromServer} paciente={this.props.paciente} />;
+		if (allow) return <ComponentAddTran middleButtonAdd={middleButtonAdd} parentState={this.props.parentState} roles={this.props.roles} pacientes={this.props.pacientes} reloadFromServer={this.props.reloadFromServer} paciente={this.props.paciente} />;
 		else
 			return (
 				<Button floated="right" icon labelPosition="left" primary size="small" className="modal-button-add" disabled>
