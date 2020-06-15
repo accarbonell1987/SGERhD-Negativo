@@ -79,6 +79,11 @@ class ComponentPregnancies extends Component {
 				</Button>
 			);
 	};
+	detailFromType = (tipo) => {
+		if (tipo === "nuevo") {
+		} else {
+		}
+	};
 	//#endregion
 
 	//#region Render
@@ -132,7 +137,7 @@ class ComponentPregnancies extends Component {
 												{embarazo.tipo}
 											</Table.Cell>
 											<Table.Cell>{embarazo.observaciones}</Table.Cell>
-											<Table.Cell>DETALLES</Table.Cell>
+											<Table.Cell>{this.detailFromType(embarazo.tipo)}</Table.Cell>
 											<Table.Cell className="cells-max-witdh-2" collapsing>
 												{/* <ComponentSeePatient paciente={tran.paciente} parentState={this.props.parentState} roles={this.props.roles} /> */}
 											</Table.Cell>
