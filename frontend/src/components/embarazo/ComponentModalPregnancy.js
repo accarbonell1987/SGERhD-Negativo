@@ -8,11 +8,11 @@ import "../global/css/Gestionar.css";
 //#endregion
 
 //#region Componentes
-import ComponentTrans from "./ComponentTrans";
+import ComponentPregnancies from "./ComponentPregnancies";
 //#endregion
 
 //#region Defincion de la clase
-class ComponentModalTrans extends Component {
+class ComponentModalPregnancy extends Component {
   state = {
     openModal: false,
   };
@@ -37,41 +37,43 @@ class ComponentModalTrans extends Component {
   };
   changeIconInAddButton = (allow, change) => {
     const position = this.props.middleButtonAdd ? "middle" : "right";
-    const cantTransfusiones = this.props.transfusiones ? this.props.transfusiones.length : 0;
+    const cantEmbarazos = this.props.embarazos ? this.props.embarazos.length : 0;
+    const permitir = allow && this.props.paciente.sexo === "F";
+    console.log(this.props.paciente, permitir);
     if (change)
       return (
         <Button
-          disabled={!allow}
+          disabled={!permitir}
           icon
           floated={position}
           labelPosition="right"
           className="modal-button-add"
           primary
           onClick={(evt) => {
-            this.changeModalState(evt, allow);
+            this.changeModalState(evt, permitir);
           }}
         >
           <Icon
             name="tint"
             className="modal-icon-add"
             onClick={(evt) => {
-              this.changeModalState(evt, allow);
+              this.changeModalState(evt, permitir);
             }}
           />
-          {cantTransfusiones}
+          {cantEmbarazos}
         </Button>
       );
     else
       return (
         <Button
-          disabled={!allow}
+          disabled={!permitir}
           floated="right"
           icon
           labelPosition="left"
           primary
           size="small"
           onClick={(evt) => {
-            this.changeModalState(evt, allow);
+            this.changeModalState(evt, permitir);
           }}
           className="modal-button-add"
         >
@@ -79,10 +81,10 @@ class ComponentModalTrans extends Component {
             name="tint"
             className="modal-icon-add"
             onClick={(evt) => {
-              this.changeModalState(evt, allow);
+              this.changeModalState(evt, permitir);
             }}
           />
-          {cantTransfusiones}
+          {cantEmbarazos}
         </Button>
       );
   };
@@ -93,20 +95,20 @@ class ComponentModalTrans extends Component {
     //buscar el permiso del rol
     const permiso = this.props.permisos.find((p) => p.rol === this.props.parentState.rol);
     //buscar el acceso del menu
-    const accesomenu = permiso.accesos.find((p) => p.opcion === "transfusiones");
-    const headerlabel = "Listado de Transfusiones De: " + this.props.paciente.nombre + " " + this.props.paciente.apellidos;
-    //chequear si es transfusiones y tengo permiso
+    const accesomenu = permiso.accesos.find((p) => p.opcion === "embarazos");
+    const headerlabel = "Listado de Embarazos De: " + this.props.paciente.nombre + " " + this.props.paciente.apellidos;
+    //chequear si es embarazos y tengo permiso
     return (
-      <Modal open={this.state.openModal} trigger={this.changeIconInAddButton(accesomenu.permisos.menu, this.props.cambiarIcono)}>
-        <Header icon="wheelchair" content={headerlabel} />
+      <Modal className="modal-windows-pregnancies" open={this.state.openModal} trigger={this.changeIconInAddButton(accesomenu.permisos.menu, this.props.cambiarIcono)}>
+        <Header icon="heartbeat" content={headerlabel} />
         <Modal.Content>
-          <ComponentTrans
+          <ComponentPregnancies
             middleButtonAdd={true}
             parentState={this.props.parentState}
             roles={this.props.roles}
             permisos={this.props.permisos}
             pacientes={this.props.pacientes}
-            transfusiones={this.props.transfusiones}
+            embarazos={this.props.embarazos}
             reloadFromServer={this.props.reloadFromServer}
             detail={true}
             paciente={this.props.paciente}
@@ -126,5 +128,5 @@ class ComponentModalTrans extends Component {
 //#endregion
 
 //#region Export
-export default ComponentModalTrans;
+export default ComponentModalPregnancy;
 //#endregion
