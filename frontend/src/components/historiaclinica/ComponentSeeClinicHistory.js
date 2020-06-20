@@ -172,7 +172,7 @@ class ComponentSeeClinicHistory extends Component {
       return (
         <ComponentAddClinicHistory
           GetDataFromServer={this.props.GetDataFromServer}
-          parentState={this.props.parentState}
+          global={this.props.global}
           roles={this.props.roles}
           pacientes={this.props.pacientes}
           historiasclinicas={this.props.historiasclinicas}

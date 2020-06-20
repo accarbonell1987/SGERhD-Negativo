@@ -35,7 +35,7 @@ class ComponentModalTrans extends Component {
   ClearModalState = () => {
     this.setState({ openModal: false });
   };
-  changeIconInAddButton = (allow, change) => {
+  ChangeIconInAddButton = (allow, change) => {
     const position = this.props.middleButtonAdd ? "middle" : "right";
     const cantTransfusiones = this.props.transfusiones ? this.props.transfusiones.length : 0;
     if (change)
@@ -91,18 +91,18 @@ class ComponentModalTrans extends Component {
   //#region Render
   render() {
     //buscar el permiso del rol
-    const permiso = this.props.permisos.find((p) => p.rol === this.props.parentState.rol);
+    const permiso = this.props.permisos.find((p) => p.rol === this.props.global.rol);
     //buscar el acceso del menu
     const accesomenu = permiso.accesos.find((p) => p.opcion === "transfusiones");
     const headerlabel = "Listado de Transfusiones De: " + this.props.paciente.nombre + " " + this.props.paciente.apellidos;
     //chequear si es transfusiones y tengo permiso
     return (
-      <Modal open={this.state.openModal} trigger={this.changeIconInAddButton(accesomenu.permisos.menu, this.props.cambiarIcono)}>
+      <Modal open={this.state.openModal} trigger={this.ChangeIconInAddButton(accesomenu.permisos.menu, this.props.cambiarIcono)}>
         <Header icon="wheelchair" content={headerlabel} />
         <Modal.Content>
           <ComponentTrans
             middleButtonAdd={true}
-            parentState={this.props.parentState}
+            global={this.props.global}
             roles={this.props.roles}
             permisos={this.props.permisos}
             pacientes={this.props.pacientes}

@@ -47,41 +47,42 @@ class ComponentAddUser extends Component {
     //chequear que las cookies tengan los datos necesarios
     const data = this.props.global.cookies();
     if (!data) this.props.Deslogin();
-
-    const { nombre, contraseña, repetircontraseña, email, rol, activo } = this.state;
-    const usuario = {
-      nombre: nombre,
-      contraseña: contraseña,
-      repetircontraseña: repetircontraseña,
-      email: email,
-      rol: rol,
-      activo: activo,
-    };
-    //la promise debe de devolver un valor RETURN
-    try {
-      const res = await fetch(this.props.global.endpoint + "api/usuario/", {
-        method: "POST",
-        body: JSON.stringify(usuario),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "access-token": data.token,
-        },
-      });
-      let serverdata = await res.json();
-      //capturar respuesta
-      const { status, message } = serverdata;
-      if (status === 200) {
-        this.ClearModalState();
-        Swal.fire({ position: "center", icon: "success", title: message, showConfirmButton: false, timer: 3000 }); //mostrar mensaje
-        return true;
-      } else {
-        Swal.fire({ position: "center", icon: "error", title: message, showConfirmButton: false, timer: 5000 }); //mostrar mensaje
+    else {
+      const { nombre, contraseña, repetircontraseña, email, rol, activo } = this.state;
+      const usuario = {
+        nombre: nombre,
+        contraseña: contraseña,
+        repetircontraseña: repetircontraseña,
+        email: email,
+        rol: rol,
+        activo: activo,
+      };
+      //la promise debe de devolver un valor RETURN
+      try {
+        const res = await fetch(this.props.global.endpoint + "api/usuario/", {
+          method: "POST",
+          body: JSON.stringify(usuario),
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "access-token": data.token,
+          },
+        });
+        let serverdata = await res.json();
+        //capturar respuesta
+        const { status, message } = serverdata;
+        if (status === 200) {
+          this.ClearModalState();
+          Swal.fire({ position: "center", icon: "success", title: message, showConfirmButton: false, timer: 3000 }); //mostrar mensaje
+          return true;
+        } else {
+          Swal.fire({ position: "center", icon: "error", title: message, showConfirmButton: false, timer: 5000 }); //mostrar mensaje
+          return false;
+        }
+      } catch (err) {
+        Swal.fire({ position: "center", icon: "error", title: err, showConfirmButton: false, timer: 5000 }); //mostrar mensaje de error
         return false;
       }
-    } catch (err) {
-      Swal.fire({ position: "center", icon: "error", title: err, showConfirmButton: false, timer: 5000 }); //mostrar mensaje de error
-      return false;
     }
   };
   //validar el formulario

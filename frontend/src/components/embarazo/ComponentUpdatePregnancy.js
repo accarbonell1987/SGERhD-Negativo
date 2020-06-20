@@ -91,13 +91,13 @@ class ComponentUpdatePregnancy extends Component {
     };
     //la promise debe de devolver un valor RETURN
     try {
-      const res = await fetch(this.props.parentState.endpoint + "api/embarazo/", {
+      const res = await fetch(this.props.global.endpoint + "api/embarazo/", {
         method: "POST",
         body: JSON.stringify(pregnancy),
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          "access-token": this.props.parentState.token,
+          "access-token": this.props.global.token,
         },
       });
       let data = await res.json();
@@ -153,13 +153,13 @@ class ComponentUpdatePregnancy extends Component {
     };
     //la promise debe de devolver un valor RETURN
     try {
-      const res = await fetch(this.props.parentState.endpoint + "api/embarazo/" + id, {
+      const res = await fetch(this.props.global.endpoint + "api/embarazo/" + id, {
         method: "PATCH",
         body: JSON.stringify(pregnancy),
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          "access-token": this.props.parentState.token,
+          "access-token": this.props.global.token,
         },
       });
       let jsondata = await res.json();

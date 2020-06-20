@@ -46,13 +46,13 @@ class ComponentPregnancies extends Component {
       //si escogio Si
       if (result.value) {
         //enviar al endpoint
-        fetch(this.props.parentState.endpoint + "api/embarazo/" + pregnancy._id, {
+        fetch(this.props.global.endpoint + "api/embarazo/" + pregnancy._id, {
           method: "PUT",
           body: JSON.stringify(pregnancy),
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
-            "access-token": this.props.parentState.token,
+            "access-token": this.props.global.token,
           },
         })
           .then((res) => res.json())
@@ -94,7 +94,7 @@ class ComponentPregnancies extends Component {
       return (
         <ComponentAddPregnancy
           middleButtonAdd={middleButtonAdd}
-          parentState={this.props.parentState}
+          global={this.props.global}
           roles={this.props.roles}
           pacientes={this.props.pacientes}
           GetDataFromServer={this.props.GetDataFromServer}
@@ -163,7 +163,7 @@ class ComponentPregnancies extends Component {
   //#region Render
   render() {
     //buscar el permiso del rol
-    const permiso = this.props.permisos.find((p) => p.rol === this.props.parentState.rol);
+    const permiso = this.props.permisos.find((p) => p.rol === this.props.global.rol);
     //buscar el acceso del menu
     const accesomenu = permiso.accesos.find((p) => p.opcion === "embarazos");
     const classNameTable = this.props.detail ? "div-table-detail" : "div-table";
@@ -219,7 +219,7 @@ class ComponentPregnancies extends Component {
                         </Button>
                       </Table.Cell>
                       <Table.Cell className="cells-max-witdh-2" collapsing>
-                        <ComponentSeePatient paciente={embarazo.paciente} parentState={this.props.parentState} roles={this.props.roles} />
+                        <ComponentSeePatient paciente={embarazo.paciente} global={this.props.global} roles={this.props.roles} />
                       </Table.Cell>
                       <Table.Cell className="cells-max-witdh-2" collapsing>
                         <Checkbox toggle name="activo" labelPosition="left" label={embarazo.activo ? "Si" : "No"} checked={embarazo.activo} disabled />
@@ -233,7 +233,7 @@ class ComponentPregnancies extends Component {
                         {accesomenu.permisos.modificar ? (
                           <ComponentUpdatePregnancy
                             GetDataFromServer={this.props.GetDataFromServer}
-                            parentState={this.props.parentState}
+                            global={this.props.global}
                             roles={this.props.roles}
                             pacientes={this.props.pacientes}
                             pregnancy={embarazo}

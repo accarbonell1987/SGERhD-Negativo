@@ -67,13 +67,13 @@ class ComponentUpdateTran extends Component {
     };
     //la promise debe de devolver un valor RETURN
     try {
-      const res = await fetch(this.props.parentState.endpoint + "api/transfusion/" + id, {
+      const res = await fetch(this.props.global.endpoint + "api/transfusion/" + id, {
         method: "PATCH",
         body: JSON.stringify(tran),
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          "access-token": this.props.parentState.token,
+          "access-token": this.props.global.token,
         },
       });
       let jsondata = await res.json();

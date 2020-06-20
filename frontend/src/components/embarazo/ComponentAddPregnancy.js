@@ -81,13 +81,13 @@ class ComponentAddPregnancy extends Component {
     };
     //la promise debe de devolver un valor RETURN
     try {
-      const res = await fetch(this.props.parentState.endpoint + "api/embarazo/", {
+      const res = await fetch(this.props.global.endpoint + "api/embarazo/", {
         method: "POST",
         body: JSON.stringify(pregnancy),
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          "access-token": this.props.parentState.token,
+          "access-token": this.props.global.token,
         },
       });
       let data = await res.json();
@@ -241,7 +241,7 @@ class ComponentAddPregnancy extends Component {
       dias: dias,
     });
   };
-  changeIconInAddButton = (change) => {
+  ChangeIconInAddButton = (change) => {
     const position = this.props.middleButtonAdd ? "middle" : "right";
     if (change)
       return (
@@ -458,7 +458,7 @@ class ComponentAddPregnancy extends Component {
   //#region Render
   render() {
     return (
-      <Modal open={this.state.openModal} trigger={this.changeIconInAddButton(this.props.cambiarIcono)}>
+      <Modal open={this.state.openModal} trigger={this.ChangeIconInAddButton(this.props.cambiarIcono)}>
         <Header icon="heartbeat" content="Adicionar Embarazo" />
         <Modal.Content>
           {this.state.errorform ? <Message error inverted header="Error" content="Error en el formulario" /> : null}

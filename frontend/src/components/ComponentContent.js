@@ -39,12 +39,13 @@ class ComponentContent extends Component {
     //chequear que las cookies tengan los datos necesarios
     const data = this.props.global.cookies();
     if (!data) this.props.Deslogin();
-
-    this.AllTrans();
-    this.AllClinicsHistory();
-    this.AllPatients();
-    this.AllUsers();
-    this.AllPregnancies();
+    else {
+      this.AllTrans();
+      this.AllClinicsHistory();
+      this.AllPatients();
+      this.AllUsers();
+      this.AllPregnancies();
+    }
   };
 
   //obtener todos los historia clinica desde la API
@@ -91,6 +92,7 @@ class ComponentContent extends Component {
         Swal.fire({ position: "center", icon: "error", title: err, showConfirmButton: false, timer: 3000 });
       });
   };
+  //obtener todas las transfusiones desde la API
   AllTrans = async () => {
     const data = this.props.global.cookies();
 
@@ -112,6 +114,7 @@ class ComponentContent extends Component {
         Swal.fire({ position: "center", icon: "error", title: err, showConfirmButton: false, timer: 3000 });
       });
   };
+  //obtener todos los embarazos desde la API
   AllPregnancies = async () => {
     const data = this.props.global.cookies();
 
@@ -175,6 +178,7 @@ class ComponentContent extends Component {
       return (
         <div className="Content">
           <ComponentPatients
+            Deslogin={this.props.Deslogin}
             global={this.props.global}
             pacientes={this.state.pacientes}
             historiasclinicas={this.state.historiasclinicas}
@@ -188,6 +192,7 @@ class ComponentContent extends Component {
       return (
         <div className="Content">
           <ComponentClinicHistory
+            Deslogin={this.props.Deslogin}
             global={this.props.global}
             pacientes={this.state.pacientes}
             historiasclinicas={this.state.historiasclinicas}
@@ -199,14 +204,26 @@ class ComponentContent extends Component {
     } else if (this.props.opcionmenu === "transfusiones" && accesomenu.permisos.menu) {
       return (
         <div className="Content">
-          <ComponentTrans global={this.props.global} pacientes={this.state.pacientes} transfusiones={this.state.transfusiones} GetDataFromServer={this.GetDataFromServer} />
+          <ComponentTrans
+            Deslogin={this.props.Deslogin}
+            global={this.props.global}
+            pacientes={this.state.pacientes}
+            transfusiones={this.state.transfusiones}
+            GetDataFromServer={this.GetDataFromServer}
+          />
           <ComponentFooter />
         </div>
       );
     } else if (this.props.opcionmenu === "embarazos" && accesomenu.permisos.menu) {
       return (
         <div className="Content">
-          <ComponentPregnancies global={this.props.global} pacientes={this.state.pacientes} embarazos={this.state.embarazos} GetDataFromServer={this.GetDataFromServer} />
+          <ComponentPregnancies
+            Deslogin={this.props.Deslogin}
+            global={this.props.global}
+            pacientes={this.state.pacientes}
+            embarazos={this.state.embarazos}
+            GetDataFromServer={this.GetDataFromServer}
+          />
           <ComponentFooter />
         </div>
       );

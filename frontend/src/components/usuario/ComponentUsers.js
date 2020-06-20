@@ -23,52 +23,54 @@ class ComponentUsers extends Component {
     //chequear que las cookies tengan los datos necesarios
     const data = this.props.global.cookies();
     if (!data) this.props.Deslogin();
+    else {
+      //Esta seguro?
+      let { text, accion } = "";
+      if (usuario.activo) accion = "Desactivar";
+      else accion = "Eliminar";
+      text = "Desea " + accion + " el usuario: " + usuario.nombre;
 
-    //Esta seguro?
-    let { text, accion } = "";
-    if (usuario.activo) accion = "Desactivar";
-    else accion = "Eliminar";
-    text = "Desea " + accion + " el usuario: " + usuario.nombre;
-
-    Swal.fire({
-      title: "¿Esta seguro?",
-      text: text,
-      icon: "question",
-      showCancelButton: true,
-      // confirmButtonColor: '#3085d6',
-      cancelButtonColor: "#db2828",
-      confirmButtonColor: "#21ba45",
-      // cancelButtonColor: '#d33',
-      confirmButtonText: "Si, " + accion,
-      reverseButtons: true,
-    }).then((result) => {
-      //si escogio Si
-      if (result.value) {
-        //enviar al endpoint
-        fetch(this.props.global.endpoint + "api/usuario/" + usuario._id, {
-          method: "PUT",
-          body: JSON.stringify(usuario),
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "access-token": data.token,
-          },
-        })
-          .then((res) => res.json())
-          .then((serverdata) => {
-            const { status, message } = serverdata;
-            status === 200
-              ? Swal.fire({ position: "center", icon: "success", title: message, showConfirmButton: false, timer: 3000 })
-              : Swal.fire({ position: "center", icon: "error", title: message, showConfirmButton: false, timer: 5000 });
-            //Actualizar el listado
-            this.props.GetDataFromServer();
+      Swal.fire({
+        title: "¿Esta seguro?",
+        text: text,
+        icon: "question",
+        showCancelButton: true,
+        // confirmButtonColor: '#3085d6',
+        cancelButtonColor: "#db2828",
+        confirmButtonColor: "#21ba45",
+        // cancelButtonColor: '#d33',
+        confirmButtonText: "Si, " + accion,
+        reverseButtons: true,
+      }).then((result) => {
+        //si escogio Si
+        if (result.value) {
+          //enviar al endpoint
+          fetch(this.props.global.endpoint + "api/usuario/" + usuario._id, {
+            method: "PUT",
+            body: JSON.stringify(usuario),
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "access-token": data.token,
+            },
           })
-          .catch((err) => {
-            Swal.fire({ position: "center", icon: "error", title: err, showConfirmButton: false, timer: 5000 }); //mostrar mensaje de error
-          });
-      }
-    });
+            .then((res) => res.json())
+            .then((serverdata) => {
+              const { status, message } = serverdata;
+              status === 200
+                ? Swal.fire({ position: "center", icon: "success", title: message, showConfirmButton: false, timer: 3000 })
+                : Swal.fire({ position: "center", icon: "error", title: message, showConfirmButton: false, timer: 5000 });
+              //Actualizar el listado
+              this.props.GetDataFromServer();
+            })
+            .catch((err) => {
+              Swal.fire({ position: "center", icon: "error", title: err, showConfirmButton: false, timer: 5000 }); //mostrar mensaje de error
+            });
+        }
+      });
+    }
   };
+
   CheckAndAllowAddButton = (middleButtonAdd, allow) => {
     if (allow)
       return <ComponentAddUser middleButtonAdd={middleButtonAdd} Deslogin={this.props.Deslogin} global={this.props.global} GetDataFromServer={this.props.GetDataFromServer} />;

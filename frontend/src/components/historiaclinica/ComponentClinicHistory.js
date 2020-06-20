@@ -47,13 +47,13 @@ class ComponentClinicHistory extends Component {
       //si escogio Si
       if (result.value) {
         //enviar al endpoint
-        fetch(this.props.parentState.endpoint + "api/historiaclinica/" + historia._id, {
+        fetch(this.props.global.endpoint + "api/historiaclinica/" + historia._id, {
           method: "PUT",
           body: JSON.stringify(historia),
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
-            "access-token": this.props.parentState.token,
+            "access-token": this.props.global.token,
           },
         })
           .then((res) => res.json())
@@ -97,7 +97,7 @@ class ComponentClinicHistory extends Component {
       return (
         <ComponentAddClinicHistory
           GetDataFromServer={this.props.GetDataFromServer}
-          parentState={this.props.parentState}
+          global={this.props.global}
           roles={this.props.roles}
           pacientes={this.props.pacientes}
           historiasclinicas={this.props.historiasclinicas}
@@ -117,7 +117,7 @@ class ComponentClinicHistory extends Component {
   //#region Render
   render() {
     //buscar el permiso del rol
-    const permiso = this.props.permisos.find((p) => p.rol === this.props.parentState.rol);
+    const permiso = this.props.permisos.find((p) => p.rol === this.props.global.rol);
     //buscar el acceso del menu
     const accesomenu = permiso.accesos.find((p) => p.opcion === "historiaclinica");
     //chequear si es historiasclinica y tengo permiso
@@ -174,7 +174,7 @@ class ComponentClinicHistory extends Component {
                       <Table.Cell>{historia.numeroDePartos}</Table.Cell>
                       <Table.Cell>{historia.numeroDeAbortos}</Table.Cell>
                       <Table.Cell className="cells-max-witdh-2" collapsing>
-                        <ComponentSeePatient paciente={historia.paciente} parentState={this.props.parentState} roles={this.props.roles} />
+                        <ComponentSeePatient paciente={historia.paciente} global={this.props.global} roles={this.props.roles} />
                       </Table.Cell>
                       <Table.Cell className="cells-max-witdh-2" collapsing>
                         <Checkbox toggle name="activo" labelPosition="left" label={historia.activo ? "Si" : "No"} checked={historia.activo} disabled />
@@ -189,7 +189,7 @@ class ComponentClinicHistory extends Component {
                           <ComponentUpdateClinicHistory
                             GetDataFromServer={this.props.GetDataFromServer}
                             historiaclinica={historia}
-                            parentState={this.props.parentState}
+                            global={this.props.global}
                             roles={this.props.roles}
                             pacientes={this.props.pacientes}
                             historiasclinicas={this.props.historiasclinicas}

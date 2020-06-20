@@ -1,11 +1,14 @@
-//Importaciones
+//#region Importaciones
 import React, { Component } from "react";
 import { Button, Icon, Header, Modal, Form, Table, Checkbox } from "semantic-ui-react";
 import Swal from "sweetalert2";
+//#endregion
 
-//CSS
+//#region CSS
 import "../global/css/Gestionar.css";
+//#endregion
 
+//#region Definicion de Clase
 class ComponentChilds extends Component {
   state = {
     openModal: false,
@@ -25,59 +28,64 @@ class ComponentChilds extends Component {
     super(props);
 
     this.ClearModalState = this.ClearModalState.bind(this);
-    this.updatePatient = this.updatePatient.bind(this);
+    this.UpdatePatient = this.UpdatePatient.bind(this);
     this.ChangeModalInput = this.ChangeModalInput.bind(this);
     this.ChangeModalState = this.ChangeModalState.bind(this);
-    this.changeCheckBox = this.changeCheckBox.bind(this);
+    this.ChangeCheckBox = this.ChangeCheckBox.bind(this);
   }
   //modificar paciente
-  updatePatient = async (id) => {
-    const { hijos, hijoseliminados } = this.state;
+  UpdatePatient = async (id) => {
+    //chequear que las cookies tengan los datos necesarios
+    const data = this.props.global.cookies();
+    if (!data) this.props.Deslogin();
+    else {
+      const { hijos, hijoseliminados } = this.state;
 
-    this.props.paciente.hijos = hijos;
-    this.props.paciente.hijoseliminados = hijoseliminados;
+      this.props.paciente.hijos = hijos;
+      this.props.paciente.hijoseliminados = hijoseliminados;
 
-    //la promise debe de devolver un valor RETURN
-    try {
-      const res = await fetch(this.props.parentState.endpoint + "api/paciente/" + id, {
-        method: "PATCH",
-        body: JSON.stringify(this.props.paciente),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "access-token": this.props.parentState.token,
-        },
-      });
-      let jsondata = await res.json();
-      const { status, message } = jsondata;
-      if (status === 200) {
-        Swal.fire({
-          position: "center",
-          icon: "success",
-          title: message,
-          showConfirmButton: false,
-          timer: 3000,
+      //la promise debe de devolver un valor RETURN
+      try {
+        const res = await fetch(this.props.global.endpoint + "api/paciente/" + id, {
+          method: "PATCH",
+          body: JSON.stringify(this.props.paciente),
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "access-token": data.token,
+          },
         });
-        return true;
-      } else {
+        let serverdata = await res.json();
+        const { status, message } = serverdata;
+        if (status === 200) {
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            title: message,
+            showConfirmButton: false,
+            timer: 3000,
+          });
+          return true;
+        } else {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: message,
+            showConfirmButton: false,
+            timer: 5000,
+          });
+          return false;
+        }
+      } catch (err) {
         Swal.fire({
           position: "center",
           icon: "error",
-          title: message,
+          title: err,
           showConfirmButton: false,
           timer: 5000,
         });
         return false;
       }
-    } catch (err) {
-      Swal.fire({
-        position: "center",
-        icon: "error",
-        title: err,
-        showConfirmButton: false,
-        timer: 5000,
-      });
-      return false;
     }
   };
   //Actualiza los inputs con los valores que vamos escribiendo
@@ -106,7 +114,7 @@ class ComponentChilds extends Component {
       this.ClearModalState();
     } else if (evt.target.className.includes("modal-button-accept")) {
       //si no hay problemas en la insercion
-      if (await this.updatePatient(this.props.paciente._id)) {
+      if (await this.UpdatePatient(this.props.paciente._id)) {
         //enviar a recargar los usuarios
         this.props.GetDataFromServer();
         this.ClearModalState();
@@ -124,12 +132,12 @@ class ComponentChilds extends Component {
     });
   };
   //cambiar el CheckBox
-  changeCheckBox = (evt, data) => {
+  ChangeCheckBox = (evt, data) => {
     try {
       if (data.checked) {
-        this.addChild(data);
+        this.AddChild(data);
       } else {
-        this.delChild(data);
+        this.DelChild(data);
       }
     } catch (err) {
       Swal.fire({
@@ -141,7 +149,7 @@ class ComponentChilds extends Component {
       });
     }
   };
-  addChild = (data) => {
+  AddChild = (data) => {
     if (this.state.hijos === null) {
       this.setState((s) => {
         const hijos = [data.name];
@@ -158,7 +166,7 @@ class ComponentChilds extends Component {
       });
     }
   };
-  delChild = (data) => {
+  DelChild = (data) => {
     if (this.state.hijos !== null) {
       this.setState((s) => {
         const hijos = this.state.hijos.filter((p) => p !== data.name);
@@ -220,7 +228,7 @@ class ComponentChilds extends Component {
                               name={paciente._id}
                               defaultChecked={esHijo}
                               onChange={(e, data) => {
-                                this.changeCheckBox(e, data);
+                                this.ChangeCheckBox(e, data);
                               }}
                               disabled={negative}
                             />
@@ -271,5 +279,8 @@ class ComponentChilds extends Component {
     );
   }
 }
+//#endregion
 
+//#region Exports
 export default ComponentChilds;
+//#endregion

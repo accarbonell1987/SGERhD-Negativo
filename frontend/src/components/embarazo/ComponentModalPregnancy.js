@@ -35,7 +35,7 @@ class ComponentModalPregnancy extends Component {
   ClearModalState = () => {
     this.setState({ openModal: false });
   };
-  changeIconInAddButton = (allow, change) => {
+  ChangeIconInAddButton = (allow, change) => {
     const position = this.props.middleButtonAdd ? "middle" : "right";
     const cantEmbarazos = this.props.embarazos ? this.props.embarazos.length : 0;
     const permitir = allow && this.props.paciente.sexo === "F";
@@ -93,18 +93,18 @@ class ComponentModalPregnancy extends Component {
   //#region Render
   render() {
     //buscar el permiso del rol
-    const permiso = this.props.permisos.find((p) => p.rol === this.props.parentState.rol);
+    const permiso = this.props.permisos.find((p) => p.rol === this.props.global.rol);
     //buscar el acceso del menu
     const accesomenu = permiso.accesos.find((p) => p.opcion === "embarazos");
     const headerlabel = "Listado de Embarazos De: " + this.props.paciente.nombre + " " + this.props.paciente.apellidos;
     //chequear si es embarazos y tengo permiso
     return (
-      <Modal className="modal-windows-pregnancies" open={this.state.openModal} trigger={this.changeIconInAddButton(accesomenu.permisos.menu, this.props.cambiarIcono)}>
+      <Modal className="modal-windows-pregnancies" open={this.state.openModal} trigger={this.ChangeIconInAddButton(accesomenu.permisos.menu, this.props.cambiarIcono)}>
         <Header icon="heartbeat" content={headerlabel} />
         <Modal.Content>
           <ComponentPregnancies
             middleButtonAdd={true}
-            parentState={this.props.parentState}
+            global={this.props.global}
             roles={this.props.roles}
             permisos={this.props.permisos}
             pacientes={this.props.pacientes}

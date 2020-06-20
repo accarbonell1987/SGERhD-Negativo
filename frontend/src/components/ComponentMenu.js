@@ -30,11 +30,11 @@ class ComponentMenu extends Component {
   constructor(props) {
     super(props);
 
-    this.handleItemClick = this.handleItemClick.bind(this);
+    this.HandleItemClick = this.HandleItemClick.bind(this);
   }
 
-  handleItemClick = (e, { name }) => {
-    this.props.changeMenuOption(name);
+  HandleItemClick = (e, { name }) => {
+    this.props.ChangeMenuOption(name);
   };
 
   render() {
@@ -50,7 +50,7 @@ class ComponentMenu extends Component {
           //chequear su (menu) es true
           if (accesomenu.permisos.menu && menu.enabled) {
             return (
-              <Menu.Item key={menu.name} name={menu.name} active={this.props.opcionmenu === menu.name} onClick={this.handleItemClick}>
+              <Menu.Item key={menu.name} name={menu.name} active={this.props.opcionmenu === menu.name} onClick={this.HandleItemClick}>
                 <Icon name={menu.icon} /> {menu.label}
               </Menu.Item>
             );

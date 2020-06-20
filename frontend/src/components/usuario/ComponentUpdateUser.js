@@ -50,36 +50,37 @@ class ComponentUpdateUser extends Component {
     //chequear que las cookies tengan los datos necesarios
     const data = this.props.global.cookies();
     if (!data) this.props.Deslogin();
-
-    const { email, rol, activo } = this.state;
-    const usuario = {
-      email: email,
-      rol: rol,
-      activo: activo,
-    };
-    //la promise debe de devolver un valor RETURN
-    try {
-      const res = await fetch(this.props.global.endpoint + "api/usuario/" + id, {
-        method: "PATCH",
-        body: JSON.stringify(usuario),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "access-token": data.token,
-        },
-      });
-      let serverdata = await res.json();
-      const { status, message } = serverdata;
-      if (status === 200) {
-        this.SwalAlert("center", "success", message, 3000);
-        return true;
-      } else {
-        this.SwalAlert("center", "error", message, 5000);
+    else {
+      const { email, rol, activo } = this.state;
+      const usuario = {
+        email: email,
+        rol: rol,
+        activo: activo,
+      };
+      //la promise debe de devolver un valor RETURN
+      try {
+        const res = await fetch(this.props.global.endpoint + "api/usuario/" + id, {
+          method: "PATCH",
+          body: JSON.stringify(usuario),
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "access-token": data.token,
+          },
+        });
+        let serverdata = await res.json();
+        const { status, message } = serverdata;
+        if (status === 200) {
+          this.SwalAlert("center", "success", message, 3000);
+          return true;
+        } else {
+          this.SwalAlert("center", "error", message, 5000);
+          return false;
+        }
+      } catch (err) {
+        this.SwalAlert("center", "error", err, 5000);
         return false;
       }
-    } catch (err) {
-      this.SwalAlert("center", "error", err, 5000);
-      return false;
     }
   };
   //validar el formulario

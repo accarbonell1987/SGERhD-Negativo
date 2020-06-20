@@ -35,13 +35,13 @@ class ComponentChangePassword extends Component {
     const usuario = { contraseña };
     //la promise debe de devolver un valor RETURN
     try {
-      const res = await fetch(this.props.parentState.endpoint + "api/usuario/password/" + id, {
+      const res = await fetch(this.props.global.endpoint + "api/usuario/password/" + id, {
         method: "PATCH",
         body: JSON.stringify(usuario),
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          "access-token": this.props.parentState.token,
+          "access-token": this.props.global.token,
         },
       });
       let jsondata = await res.json();

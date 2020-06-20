@@ -70,13 +70,13 @@ class ComponentAddClinicHistory extends Component {
     };
     //la promise debe de devolver un valor RETURN
     try {
-      const res = await fetch(this.props.parentState.endpoint + "api/historiaclinica/", {
+      const res = await fetch(this.props.global.endpoint + "api/historiaclinica/", {
         method: "POST",
         body: JSON.stringify(historiaclinica),
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          "access-token": this.props.parentState.token,
+          "access-token": this.props.global.token,
         },
       });
       let data = await res.json();
@@ -116,10 +116,10 @@ class ComponentAddClinicHistory extends Component {
   //obtener el ultimo
   getLastInsertedClinicHistory = async () => {
     //enviar al endpoint
-    const res = await fetch(this.props.parentState.endpoint + "api/historiaclinica/-1", {
+    const res = await fetch(this.props.global.endpoint + "api/historiaclinica/-1", {
       method: "GET",
       headers: {
-        "access-token": this.props.parentState.token,
+        "access-token": this.props.global.token,
       },
     });
     let json = await res.json();
@@ -258,7 +258,7 @@ class ComponentAddClinicHistory extends Component {
       errorform: false,
     });
   };
-  changeIconInAddButton = (change) => {
+  ChangeIconInAddButton = (change) => {
     const position = this.props.middleButtonAdd ? "middle" : "right";
     if (change)
       return (
@@ -280,7 +280,7 @@ class ComponentAddClinicHistory extends Component {
   //#region Render
   render() {
     return (
-      <Modal open={this.state.openModal} trigger={this.changeIconInAddButton(this.props.cambiarIcono)}>
+      <Modal open={this.state.openModal} trigger={this.ChangeIconInAddButton(this.props.cambiarIcono)}>
         <Header icon="clipboard" content="Adicionar Historia Clínica" />
         <Modal.Content>
           {this.state.errorform ? <Message error inverted header="Error" content="Error en el formulario" /> : null}

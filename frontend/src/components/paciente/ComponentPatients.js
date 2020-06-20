@@ -23,77 +23,81 @@ class ComponentPatients extends Component {
   constructor(props) {
     super(props);
 
-    this.deletePatient = this.deletePatient.bind(this);
+    this.DeletePatient = this.DeletePatient.bind(this);
   }
 
   //eliminar el paciente
-  deletePatient = (paciente) => {
-    //Esta seguro?
-    let { text, accion } = "";
-    if (paciente.activo) accion = "Desactivar";
-    else accion = "Eliminar";
-    text = "Desea " + accion + " el paciente: " + paciente.nombre + " " + paciente.apellidos;
+  DeletePatient = (paciente) => {
+    //chequear que las cookies tengan los datos necesarios
+    const data = this.props.global.cookies();
+    if (!data) this.props.Deslogin();
+    else {
+      //Esta seguro?
+      let { text, accion } = "";
+      if (paciente.activo) accion = "Desactivar";
+      else accion = "Eliminar";
+      text = "Desea " + accion + " el paciente: " + paciente.nombre + " " + paciente.apellidos;
 
-    Swal.fire({
-      title: "¿Esta seguro?",
-      text: text,
-      icon: "question",
-      showCancelButton: true,
-      cancelButtonColor: "#db2828",
-      confirmButtonColor: "#21ba45",
-      confirmButtonText: "Si, " + accion,
-      reverseButtons: true,
-    }).then((result) => {
-      //si escogio Si
-      if (result.value) {
-        //enviar al endpoint
-        fetch(this.props.parentState.endpoint + "api/paciente/" + paciente._id, {
-          method: "PUT",
-          body: JSON.stringify(paciente),
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "access-token": this.props.parentState.token,
-          },
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            const { status, message } = data;
-            status === 200
-              ? Swal.fire({
-                  position: "center",
-                  icon: "success",
-                  title: message,
-                  showConfirmButton: false,
-                  timer: 3000,
-                })
-              : Swal.fire({
-                  position: "center",
-                  icon: "error",
-                  title: message,
-                  showConfirmButton: false,
-                  timer: 5000,
-                });
-
-            this.props.GetDataFromServer();
+      Swal.fire({
+        title: "¿Esta seguro?",
+        text: text,
+        icon: "question",
+        showCancelButton: true,
+        cancelButtonColor: "#db2828",
+        confirmButtonColor: "#21ba45",
+        confirmButtonText: "Si, " + accion,
+        reverseButtons: true,
+      }).then((result) => {
+        //si escogio Si
+        if (result.value) {
+          //enviar al endpoint
+          fetch(this.props.global.endpoint + "api/paciente/" + paciente._id, {
+            method: "PUT",
+            body: JSON.stringify(paciente),
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "access-token": data.token,
+            },
           })
-          .catch((err) => {
-            Swal.fire({
-              position: "center",
-              icon: "error",
-              title: err,
-              showConfirmButton: false,
-              timer: 5000,
+            .then((res) => res.json())
+            .then((serverdata) => {
+              const { status, message } = serverdata;
+              status === 200
+                ? Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: message,
+                    showConfirmButton: false,
+                    timer: 3000,
+                  })
+                : Swal.fire({
+                    position: "center",
+                    icon: "error",
+                    title: message,
+                    showConfirmButton: false,
+                    timer: 5000,
+                  });
+
+              this.props.GetDataFromServer();
+            })
+            .catch((err) => {
+              Swal.fire({
+                position: "center",
+                icon: "error",
+                title: err,
+                showConfirmButton: false,
+                timer: 5000,
+              });
             });
-          });
-      }
-    });
+        }
+      });
+    }
   };
+
   CheckAndAllowAddButton = (middleButtonAdd, allow) => {
     if (allow)
-      return (
-        <ComponentAddPatient middleButtonAdd={middleButtonAdd} GetDataFromServer={this.props.GetDataFromServer} parentState={this.props.parentState} roles={this.props.roles} />
-      );
+      return <ComponentAddPatient middleButtonAdd={middleButtonAdd} Deslogin={this.props.Deslogin} global={this.props.global} GetDataFromServer={this.props.GetDataFromServer} />;
     else
       return (
         <Button floated="right" icon labelPosition="left" primary size="small" className="modal-button-add" disabled>
@@ -104,8 +108,9 @@ class ComponentPatients extends Component {
   };
 
   render() {
+    const data = this.props.global.cookies();
     //buscar el permiso del rol
-    const permiso = this.props.permisos.find((p) => p.rol === this.props.parentState.rol);
+    const permiso = this.props.global.permisos.find((p) => p.rol === data.rol);
     //buscar el acceso del menu
     const accesomenu = permiso.accesos.find((p) => p.opcion === "pacientes");
     //chequear si es paciente y tengo permiso
@@ -148,9 +153,6 @@ class ComponentPatients extends Component {
 
                   let madre = paciente.madre;
                   let madrenombreyapellido = madre == null ? "Indefinido" : madre.nombre + " " + madre.apellidos;
-                  // let rolData = this.props.roles.find(element => { return element.key === usuario.rol });
-                  // //para colorear row
-                  // let negative = this.props.parentState.usuario === usuario.nombre;
                   return (
                     <Table.Row key={paciente._id} negative={negative}>
                       <Table.Cell collapsing>
@@ -184,12 +186,7 @@ class ComponentPatients extends Component {
                       </Table.Cell>
                       <Table.Cell className="cells-max-witdh-2" collapsing>
                         {accesomenu.permisos.modificar ? (
-                          <ComponentChilds
-                            parentState={this.props.parentState}
-                            paciente={paciente}
-                            pacientes={this.props.pacientes}
-                            GetDataFromServer={this.props.GetDataFromServer}
-                          />
+                          <ComponentChilds global={this.props.global} paciente={paciente} pacientes={this.props.pacientes} GetDataFromServer={this.props.GetDataFromServer} />
                         ) : (
                           <Button icon labelPosition="right" className="modal-button-other">
                             <Icon name="child" className="modal-icon-other" />
@@ -198,39 +195,35 @@ class ComponentPatients extends Component {
                         )}
                       </Table.Cell>
                       <Table.Cell className="cells-max-witdh-2" collapsing>
-                        <ComponentSeeClinicHistory
+                        {/* <ComponentSeeClinicHistory
                           GetDataFromServer={this.props.GetDataFromServer}
-                          parentState={this.props.parentState}
+                          global={this.props.global}
                           paciente={paciente}
                           pacientes={this.props.pacientes}
                           historiasclinicas={this.props.historiasclinicas}
-                          roles={this.props.roles}
-                          permisos={this.props.permisos}
-                        />
+                        /> */}
                       </Table.Cell>
                       <Table.Cell className="cells-max-witdh-2" collapsing>
-                        <ComponentModalTran
-                          parentState={this.props.parentState}
-                          roles={this.props.roles}
-                          permisos={this.props.permisos}
+                        {/* <ComponentModalTran
+                          Deslogin={this.props.Deslogin}
+                          global={this.props.global}
                           pacientes={this.props.pacientes}
                           paciente={paciente}
                           transfusiones={paciente.transfusiones}
                           GetDataFromServer={this.props.GetDataFromServer}
                           cambiarIcono={true}
-                        />
+                        /> */}
                       </Table.Cell>
                       <Table.Cell className="cells-max-witdh-2" collapsing>
-                        <ComponentModalPregnancy
-                          parentState={this.props.parentState}
-                          roles={this.props.roles}
-                          permisos={this.props.permisos}
+                        {/* <ComponentModalPregnancy
+                          Deslogin={this.props.Deslogin}
+                          global={this.props.global}
                           pacientes={this.props.pacientes}
                           paciente={paciente}
                           embarazos={paciente.embarazos}
                           GetDataFromServer={this.props.GetDataFromServer}
                           cambiarIcono={true}
-                        />
+                        /> */}
                       </Table.Cell>
                       <Table.Cell className="cells-max-witdh-2" collapsing>
                         <Button icon labelPosition="right" className="button-childs">
@@ -242,17 +235,12 @@ class ComponentPatients extends Component {
                       </Table.Cell>
                       <Table.Cell className="cells-max-witdh-2" collapsing>
                         {accesomenu.permisos.eliminar ? (
-                          <Button icon="remove circle" className="button-remove" onClick={() => this.deletePatient(paciente)} />
+                          <Button icon="remove circle" className="button-remove" onClick={() => this.DeletePatient(paciente)} />
                         ) : (
                           <Button icon="remove circle" className="button-remove" disabled />
                         )}
                         {accesomenu.permisos.modificar ? (
-                          <ComponentUpdatePatient
-                            GetDataFromServer={this.props.GetDataFromServer}
-                            paciente={paciente}
-                            parentState={this.props.parentState}
-                            roles={this.props.roles}
-                          />
+                          <ComponentUpdatePatient Deslogin={this.props.Deslogin} GetDataFromServer={this.props.GetDataFromServer} paciente={paciente} global={this.props.global} />
                         ) : (
                           <Button icon="edit" disabled />
                         )}

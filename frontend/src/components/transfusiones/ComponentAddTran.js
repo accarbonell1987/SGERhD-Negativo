@@ -57,13 +57,13 @@ class ComponentAddTran extends Component {
     };
     //la promise debe de devolver un valor RETURN
     try {
-      const res = await fetch(this.props.parentState.endpoint + "api/transfusion/", {
+      const res = await fetch(this.props.global.endpoint + "api/transfusion/", {
         method: "POST",
         body: JSON.stringify(tran),
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          "access-token": this.props.parentState.token,
+          "access-token": this.props.global.token,
         },
       });
       let data = await res.json();
@@ -140,7 +140,7 @@ class ComponentAddTran extends Component {
   setDate = (fecha) => {
     this.setState({ fecha: fecha });
   };
-  changeIconInAddButton = (change) => {
+  ChangeIconInAddButton = (change) => {
     const position = this.props.middleButtonAdd ? "middle" : "right";
     if (change)
       return (
@@ -162,7 +162,7 @@ class ComponentAddTran extends Component {
   //#region Render
   render() {
     return (
-      <Modal open={this.state.openModal} trigger={this.changeIconInAddButton(this.props.cambiarIcono)}>
+      <Modal open={this.state.openModal} trigger={this.ChangeIconInAddButton(this.props.cambiarIcono)}>
         <Header icon="tint" content="Adicionar Transfusión" />
         <Modal.Content>
           {this.state.errorform ? <Message error inverted header="Error" content="Error en el formulario" /> : null}

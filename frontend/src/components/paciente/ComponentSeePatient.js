@@ -1,10 +1,13 @@
-//Importaciones
+//#region Importaciones
 import React, { Component } from "react";
 import { Button, Icon, Header, Modal, Form } from "semantic-ui-react";
+//#endregion
 
-//CSS
+//#region CSS
 import "../global/css/Gestionar.css";
+//#endregion
 
+//#region Definicion de Clase
 class ComponentSeePatient extends Component {
   state = {
     openModal: false,
@@ -97,5 +100,8 @@ class ComponentSeePatient extends Component {
     );
   }
 }
+//#endregion
 
+//#region Exports
 export default ComponentSeePatient;
+//#endregion

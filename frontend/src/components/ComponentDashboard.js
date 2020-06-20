@@ -15,7 +15,7 @@ import ComponentMenu from "./ComponentMenu";
 //#region Definicion de la clase
 class ComponentDashboard extends Component {
   state = {
-    opcionmenu: "usuarios",
+    opcionmenu: "pacientes",
   };
 
   constructor(props) {

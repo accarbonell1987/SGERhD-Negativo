@@ -46,7 +46,7 @@ class ComponentUpdatePatient extends Component {
     super(props);
 
     this.ClearModalState = this.ClearModalState.bind(this);
-    this.updatePatient = this.updatePatient.bind(this);
+    this.UpdatePatient = this.UpdatePatient.bind(this);
     this.ChangeModalInput = this.ChangeModalInput.bind(this);
     this.ChangeModalState = this.ChangeModalState.bind(this);
     this.HandleSubmit = this.HandleSubmit.bind(this);
@@ -65,47 +65,52 @@ class ComponentUpdatePatient extends Component {
   };
 
   //modificar paciente
-  updatePatient = async (id) => {
-    const { nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, hijos, historiaclinica, transfusiones, embarazos, examenes, activo } = this.state;
-    const paciente = {
-      nombre: nombre,
-      apellidos: apellidos,
-      ci: ci,
-      direccion: direccion,
-      direccionopcional: direccionopcional,
-      telefono: telefono,
-      sexo: sexo,
-      madre: madre,
-      hijos: hijos,
-      historiaclinica: historiaclinica,
-      transfusiones: transfusiones,
-      embarazos: embarazos,
-      examenes: examenes,
-      activo: activo,
-    };
-    //la promise debe de devolver un valor RETURN
-    try {
-      const res = await fetch(this.props.parentState.endpoint + "api/paciente/" + id, {
-        method: "PATCH",
-        body: JSON.stringify(paciente),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "access-token": this.props.parentState.token,
-        },
-      });
-      let jsondata = await res.json();
-      const { status, message } = jsondata;
-      if (status === 200) {
-        this.SwalAlert("center", "success", message, 3000);
-        return true;
-      } else {
-        this.SwalAlert("center", "error", message, 5000);
+  UpdatePatient = async (id) => {
+    //chequear que las cookies tengan los datos necesarios
+    const data = this.props.global.cookies();
+    if (!data) this.props.Deslogin();
+    else {
+      const { nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, hijos, historiaclinica, transfusiones, embarazos, examenes, activo } = this.state;
+      const paciente = {
+        nombre: nombre,
+        apellidos: apellidos,
+        ci: ci,
+        direccion: direccion,
+        direccionopcional: direccionopcional,
+        telefono: telefono,
+        sexo: sexo,
+        madre: madre,
+        hijos: hijos,
+        historiaclinica: historiaclinica,
+        transfusiones: transfusiones,
+        embarazos: embarazos,
+        examenes: examenes,
+        activo: activo,
+      };
+      //la promise debe de devolver un valor RETURN
+      try {
+        const res = await fetch(this.props.global.endpoint + "api/paciente/" + id, {
+          method: "PATCH",
+          body: JSON.stringify(paciente),
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "access-token": data.token,
+          },
+        });
+        let serverdata = await res.json();
+        const { status, message } = serverdata;
+        if (status === 200) {
+          this.SwalAlert("center", "success", message, 3000);
+          return true;
+        } else {
+          this.SwalAlert("center", "error", message, 5000);
+          return false;
+        }
+      } catch (err) {
+        this.SwalAlert("center", "error", err, 5000);
         return false;
       }
-    } catch (err) {
-      this.SwalAlert("center", "error", err, 5000);
-      return false;
     }
   };
   //validar el formulario
@@ -158,6 +163,25 @@ class ComponentUpdatePatient extends Component {
       [name]: value,
     });
   };
+  OnPressEnter = (evt) => {
+    const disabled = !this.state.nombre || !this.state.apellidos || !this.state.ci || !this.state.direccion || !this.state.telefono || !this.state.sexo;
+    if (evt.keyCode === 13 && !evt.shiftKey && !disabled) {
+      evt.preventDefault();
+      this.OnSubmit(evt);
+    }
+  };
+  //al enviar a aplicar el formulario
+  OnSubmit = async (evt) => {
+    //si no hay problemas en el formulario
+    if (this.HandleSubmit(evt) === false) {
+      //si no hay problemas en la insercion
+      if (await this.UpdatePatient(this.props.paciente._id)) {
+        //enviar a recargar los usuarios
+        this.props.GetDataFromServer();
+        this.ClearModalState();
+      }
+    }
+  };
   //cambiar el estado en el MODAL para adicionar paciente
   ChangeModalState = async (evt) => {
     if (evt.target.className.includes("modal-button-action") || evt.target.className.includes("modal-icon")) {
@@ -181,15 +205,7 @@ class ComponentUpdatePatient extends Component {
     } else if (evt.target.className.includes("modal-button-cancel") || evt.target.className.includes("modal-icon-cancel")) {
       this.ClearModalState();
     } else {
-      //si no hay problemas en el formulario
-      if (this.HandleSubmit(evt) === false) {
-        //si no hay problemas en la insercion
-        if (await this.updatePatient(this.props.paciente._id)) {
-          //enviar a recargar los usuarios
-          this.props.GetDataFromServer();
-          this.ClearModalState();
-        }
-      }
+      await this.OnSubmit(evt);
     }
   };
   //limpiar states
@@ -245,6 +261,7 @@ class ComponentUpdatePatient extends Component {
               placeholder="Facundo"
               error={this.state.errornombre}
               onChange={this.ChangeModalInput}
+              onKeyDown={this.OnPressEnter}
             />
             <Form.Input
               required
@@ -256,6 +273,7 @@ class ComponentUpdatePatient extends Component {
               error={this.state.errorapellidos}
               placeholder="Correcto Inseguro"
               onChange={this.ChangeModalInput}
+              onKeyDown={this.OnPressEnter}
             />
             <Form.Input
               required
@@ -267,6 +285,7 @@ class ComponentUpdatePatient extends Component {
               placeholder="90112050112"
               error={this.state.errorci}
               onChange={this.ChangeModalInput}
+              onKeyDown={this.OnPressEnter}
             />
             <Form.Input
               required
@@ -277,6 +296,7 @@ class ComponentUpdatePatient extends Component {
               value={this.state.direccion}
               placeholder="Calle 6 No.512..."
               onChange={this.ChangeModalInput}
+              onKeyDown={this.OnPressEnter}
             />
             <Form.Input
               name="direccionopcional"
@@ -286,6 +306,7 @@ class ComponentUpdatePatient extends Component {
               value={this.state.direccionopcional}
               placeholder="Calle 6 No.512..."
               onChange={this.ChangeModalInput}
+              onKeyDown={this.OnPressEnter}
             />
             <Form.Input
               required
@@ -296,6 +317,7 @@ class ComponentUpdatePatient extends Component {
               value={this.state.telefono}
               placeholder="52802640"
               onChange={this.ChangeModalInput}
+              onKeyDown={this.OnPressEnter}
               error={this.state.errortelefono}
             />
             <Form.Select

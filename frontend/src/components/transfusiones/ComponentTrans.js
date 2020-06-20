@@ -46,13 +46,13 @@ class ComponentTrans extends Component {
       //si escogio Si
       if (result.value) {
         //enviar al endpoint
-        fetch(this.props.parentState.endpoint + "api/transfusion/" + tran._id, {
+        fetch(this.props.global.endpoint + "api/transfusion/" + tran._id, {
           method: "PUT",
           body: JSON.stringify(tran),
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
-            "access-token": this.props.parentState.token,
+            "access-token": this.props.global.token,
           },
         })
           .then((res) => res.json())
@@ -77,7 +77,7 @@ class ComponentTrans extends Component {
       return (
         <ComponentAddTran
           middleButtonAdd={middleButtonAdd}
-          parentState={this.props.parentState}
+          global={this.props.global}
           roles={this.props.roles}
           pacientes={this.props.pacientes}
           GetDataFromServer={this.props.GetDataFromServer}
@@ -97,7 +97,7 @@ class ComponentTrans extends Component {
   //#region Render
   render() {
     //buscar el permiso del rol
-    const permiso = this.props.permisos.find((p) => p.rol === this.props.parentState.rol);
+    const permiso = this.props.permisos.find((p) => p.rol === this.props.global.rol);
     //buscar el acceso del menu
     const accesomenu = permiso.accesos.find((p) => p.opcion === "transfusiones");
     const classNameTable = this.props.detail ? "div-table-detail" : "div-table";
@@ -144,7 +144,7 @@ class ComponentTrans extends Component {
                       </Table.Cell>
                       <Table.Cell>{tran.observaciones}</Table.Cell>
                       <Table.Cell className="cells-max-witdh-2" collapsing>
-                        <ComponentSeePatient paciente={tran.paciente} parentState={this.props.parentState} roles={this.props.roles} />
+                        <ComponentSeePatient paciente={tran.paciente} global={this.props.global} roles={this.props.roles} />
                       </Table.Cell>
                       <Table.Cell className="cells-max-witdh-2" collapsing>
                         <Checkbox toggle name="activo" labelPosition="left" label={tran.activo ? "Si" : "No"} checked={tran.activo} disabled />
@@ -158,7 +158,7 @@ class ComponentTrans extends Component {
                         {accesomenu.permisos.modificar ? (
                           <ComponentUpdateTran
                             GetDataFromServer={this.props.GetDataFromServer}
-                            parentState={this.props.parentState}
+                            global={this.props.global}
                             roles={this.props.roles}
                             pacientes={this.props.pacientes}
                             tran={tran}
