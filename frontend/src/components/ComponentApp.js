@@ -102,6 +102,8 @@ class ComponentApp extends Component {
   Login = (usuario, rol, token) => {
     //setear en las cookies los valores que necesito durante todo el life
     const { cookies } = this.props;
+    //eliminar las cookies para recomenzar el tiempo de expiracion
+    cookies.remove("data");
 
     const data = {
       autenticado: true,
@@ -110,22 +112,20 @@ class ComponentApp extends Component {
       logintime: new Date(),
       token: token,
     };
-    cookies.set("data", data, { maxAge: 1400 });
+    cookies.set("data", data, { maxAge: 300 });
     //setear el state autenticado en true
     this.setState({ autenticado: true });
   };
-
   //Desloguearse
   Deslogin = () => {
     //cambiando el estado para renderizar el componente
     this.setState({ autenticado: false });
   };
-
   GetCookies = () => {
     //obtener las cookies
     const { cookies } = this.props;
-    const cookieData = cookies.get("data");
-    return cookieData;
+    const data = cookies.get("data");
+    return data;
   };
 
   render() {

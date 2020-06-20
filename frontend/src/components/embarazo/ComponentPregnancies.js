@@ -75,7 +75,7 @@ class ComponentPregnancies extends Component {
                   timer: 5000,
                 });
             //recargar
-            this.props.reloadFromServer();
+            this.props.GetDataFromServer();
           })
           .catch((err) => {
             Swal.fire({
@@ -89,7 +89,7 @@ class ComponentPregnancies extends Component {
       }
     });
   };
-  checkAndAllowAddButton = (middleButtonAdd, allow) => {
+  CheckAndAllowAddButton = (middleButtonAdd, allow) => {
     if (allow)
       return (
         <ComponentAddPregnancy
@@ -97,7 +97,7 @@ class ComponentPregnancies extends Component {
           parentState={this.props.parentState}
           roles={this.props.roles}
           pacientes={this.props.pacientes}
-          reloadFromServer={this.props.reloadFromServer}
+          GetDataFromServer={this.props.GetDataFromServer}
           paciente={this.props.paciente}
         />
       );
@@ -183,7 +183,7 @@ class ComponentPregnancies extends Component {
               <Table.Header className="div-table-header">
                 <Table.Row>
                   <Table.HeaderCell />
-                  <Table.HeaderCell colSpan="8">{this.checkAndAllowAddButton(false, accesomenu.permisos.crear)}</Table.HeaderCell>
+                  <Table.HeaderCell colSpan="8">{this.CheckAndAllowAddButton(false, accesomenu.permisos.crear)}</Table.HeaderCell>
                 </Table.Row>
                 <Table.Row>
                   <Table.HeaderCell />
@@ -232,7 +232,7 @@ class ComponentPregnancies extends Component {
                         )}
                         {accesomenu.permisos.modificar ? (
                           <ComponentUpdatePregnancy
-                            reloadFromServer={this.props.reloadFromServer}
+                            GetDataFromServer={this.props.GetDataFromServer}
                             parentState={this.props.parentState}
                             roles={this.props.roles}
                             pacientes={this.props.pacientes}
@@ -248,7 +248,7 @@ class ComponentPregnancies extends Component {
               </Table.Body>
             </Table>
           ) : (
-            this.checkAndAllowAddButton(this.props.middleButtonAdd, accesomenu.permisos.crear)
+            this.CheckAndAllowAddButton(this.props.middleButtonAdd, accesomenu.permisos.crear)
           )}
         </Grid.Column>
       </Grid>

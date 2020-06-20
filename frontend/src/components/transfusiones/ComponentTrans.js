@@ -64,7 +64,7 @@ class ComponentTrans extends Component {
               : Swal.fire({ position: "center", icon: "error", title: message, showConfirmButton: false, timer: 5000 });
 
             //recargar
-            this.props.reloadFromServer();
+            this.props.GetDataFromServer();
           })
           .catch((err) => {
             Swal.fire({ position: "center", icon: "error", title: err, showConfirmButton: false, timer: 5000 });
@@ -72,7 +72,7 @@ class ComponentTrans extends Component {
       }
     });
   };
-  checkAndAllowAddButton = (middleButtonAdd, allow) => {
+  CheckAndAllowAddButton = (middleButtonAdd, allow) => {
     if (allow)
       return (
         <ComponentAddTran
@@ -80,7 +80,7 @@ class ComponentTrans extends Component {
           parentState={this.props.parentState}
           roles={this.props.roles}
           pacientes={this.props.pacientes}
-          reloadFromServer={this.props.reloadFromServer}
+          GetDataFromServer={this.props.GetDataFromServer}
           paciente={this.props.paciente}
         />
       );
@@ -117,7 +117,7 @@ class ComponentTrans extends Component {
               <Table.Header className="div-table-header">
                 <Table.Row>
                   <Table.HeaderCell />
-                  <Table.HeaderCell colSpan="7">{this.checkAndAllowAddButton(false, accesomenu.permisos.crear)}</Table.HeaderCell>
+                  <Table.HeaderCell colSpan="7">{this.CheckAndAllowAddButton(false, accesomenu.permisos.crear)}</Table.HeaderCell>
                 </Table.Row>
                 <Table.Row>
                   <Table.HeaderCell />
@@ -157,7 +157,7 @@ class ComponentTrans extends Component {
                         )}
                         {accesomenu.permisos.modificar ? (
                           <ComponentUpdateTran
-                            reloadFromServer={this.props.reloadFromServer}
+                            GetDataFromServer={this.props.GetDataFromServer}
                             parentState={this.props.parentState}
                             roles={this.props.roles}
                             pacientes={this.props.pacientes}
@@ -173,7 +173,7 @@ class ComponentTrans extends Component {
               </Table.Body>
             </Table>
           ) : (
-            this.checkAndAllowAddButton(this.props.middleButtonAdd, accesomenu.permisos.crear)
+            this.CheckAndAllowAddButton(this.props.middleButtonAdd, accesomenu.permisos.crear)
           )}
         </Grid.Column>
       </Grid>

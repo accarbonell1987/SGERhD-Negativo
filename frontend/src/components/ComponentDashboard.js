@@ -1,7 +1,5 @@
 //#region Importaciones
 import React, { Component } from "react";
-import { instanceOf } from "prop-types";
-import { withCookies, Cookies } from "react-cookie";
 //#endregion
 
 //#region CSS
@@ -16,35 +14,31 @@ import ComponentMenu from "./ComponentMenu";
 
 //#region Definicion de la clase
 class ComponentDashboard extends Component {
-  static propTypes = {
-    cookies: instanceOf(Cookies).isRequired,
-  };
-
   state = {
-    opcionmenu: "embarazos",
+    opcionmenu: "usuarios",
   };
 
   constructor(props) {
     super(props);
-    this.changeMenuOption = this.changeMenuOption.bind(this);
+    this.ChangeMenuOption = this.ChangeMenuOption.bind(this);
   }
 
-  changeMenuOption = (opcion) => {
-    const cookieData = this.props.global.cookies();
+  ChangeMenuOption = (opcion) => {
+    const data = this.props.global.cookies();
 
-    if (!cookieData) this.props.Deslogin();
+    if (!data) this.props.Deslogin();
     else this.setState({ opcionmenu: opcion });
   };
 
   render() {
-    const cookieData = this.props.global.cookies();
+    const data = this.props.global.cookies();
     //chequear si esta autenticado
-    if (cookieData.autenticado) {
+    if (data.autenticado) {
       return (
         <div className="Dashboard">
           <ComponentHeader global={this.props.global} Deslogin={this.props.Deslogin} />
-          <ComponentMenu changeMenuOption={this.changeMenuOption} opcionmenu={this.state.opcionmenu} global={this.props.global} />
-          {/* <ComponentContent UnSetLogin={this.props.UnSetLogin} opcionmenu={this.state.opcionmenu} global={this.props.global} /> */}
+          <ComponentMenu ChangeMenuOption={this.ChangeMenuOption} opcionmenu={this.state.opcionmenu} global={this.props.global} />
+          <ComponentContent Deslogin={this.props.Deslogin} opcionmenu={this.state.opcionmenu} global={this.props.global} />
         </div>
       );
     }
@@ -53,5 +47,5 @@ class ComponentDashboard extends Component {
 //#endregion
 
 //#region Exports
-export default withCookies(ComponentDashboard);
+export default ComponentDashboard;
 //#endregion

@@ -18,21 +18,21 @@ class ComponentModalPregnancy extends Component {
   };
 
   componentDidMount = () => {
-    this.clearModalState();
+    this.ClearModalState();
   };
 
   //#region Metodos y Eventos
-  changeModalState = async (evt, allow) => {
+  ChangeModalState = async (evt, allow) => {
     if (allow) {
       if (evt.target.className.includes("modal-button-add") || evt.target.className.includes("modal-icon-add")) {
-        this.clearModalState();
+        this.ClearModalState();
         this.setState({ openModal: true });
       } else if (evt.target.className.includes("modal-button-cancel") || evt.target.className.includes("modal-icon-cancel")) {
         this.setState({ openModal: false });
       }
     }
   };
-  clearModalState = () => {
+  ClearModalState = () => {
     this.setState({ openModal: false });
   };
   changeIconInAddButton = (allow, change) => {
@@ -50,14 +50,14 @@ class ComponentModalPregnancy extends Component {
           className="modal-button-add"
           primary
           onClick={(evt) => {
-            this.changeModalState(evt, permitir);
+            this.ChangeModalState(evt, permitir);
           }}
         >
           <Icon
             name="tint"
             className="modal-icon-add"
             onClick={(evt) => {
-              this.changeModalState(evt, permitir);
+              this.ChangeModalState(evt, permitir);
             }}
           />
           {cantEmbarazos}
@@ -73,7 +73,7 @@ class ComponentModalPregnancy extends Component {
           primary
           size="small"
           onClick={(evt) => {
-            this.changeModalState(evt, permitir);
+            this.ChangeModalState(evt, permitir);
           }}
           className="modal-button-add"
         >
@@ -81,7 +81,7 @@ class ComponentModalPregnancy extends Component {
             name="tint"
             className="modal-icon-add"
             onClick={(evt) => {
-              this.changeModalState(evt, permitir);
+              this.ChangeModalState(evt, permitir);
             }}
           />
           {cantEmbarazos}
@@ -109,13 +109,13 @@ class ComponentModalPregnancy extends Component {
             permisos={this.props.permisos}
             pacientes={this.props.pacientes}
             embarazos={this.props.embarazos}
-            reloadFromServer={this.props.reloadFromServer}
+            GetDataFromServer={this.props.GetDataFromServer}
             detail={true}
             paciente={this.props.paciente}
           />
         </Modal.Content>
         <Modal.Actions>
-          <Button color="red" onClick={this.changeModalState} className="modal-button-cancel" type>
+          <Button color="red" onClick={this.ChangeModalState} className="modal-button-cancel" type>
             <Icon name="remove" className="modal-icon-cancel" />
             Cerrar
           </Button>

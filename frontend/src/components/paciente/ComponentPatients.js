@@ -75,7 +75,7 @@ class ComponentPatients extends Component {
                   timer: 5000,
                 });
 
-            this.props.reloadFromServer();
+            this.props.GetDataFromServer();
           })
           .catch((err) => {
             Swal.fire({
@@ -89,9 +89,11 @@ class ComponentPatients extends Component {
       }
     });
   };
-  checkAndAllowAddButton = (middleButtonAdd, allow) => {
+  CheckAndAllowAddButton = (middleButtonAdd, allow) => {
     if (allow)
-      return <ComponentAddPatient middleButtonAdd={middleButtonAdd} reloadFromServer={this.props.reloadFromServer} parentState={this.props.parentState} roles={this.props.roles} />;
+      return (
+        <ComponentAddPatient middleButtonAdd={middleButtonAdd} GetDataFromServer={this.props.GetDataFromServer} parentState={this.props.parentState} roles={this.props.roles} />
+      );
     else
       return (
         <Button floated="right" icon labelPosition="left" primary size="small" className="modal-button-add" disabled>
@@ -118,7 +120,7 @@ class ComponentPatients extends Component {
               <Table.Header className="div-table-header-row">
                 <Table.Row>
                   <Table.HeaderCell />
-                  <Table.HeaderCell colSpan="15">{this.checkAndAllowAddButton(false, accesomenu.permisos.crear)}</Table.HeaderCell>
+                  <Table.HeaderCell colSpan="15">{this.CheckAndAllowAddButton(false, accesomenu.permisos.crear)}</Table.HeaderCell>
                 </Table.Row>
                 <Table.Row>
                   <Table.HeaderCell />
@@ -186,7 +188,7 @@ class ComponentPatients extends Component {
                             parentState={this.props.parentState}
                             paciente={paciente}
                             pacientes={this.props.pacientes}
-                            reloadFromServer={this.props.reloadFromServer}
+                            GetDataFromServer={this.props.GetDataFromServer}
                           />
                         ) : (
                           <Button icon labelPosition="right" className="modal-button-other">
@@ -197,7 +199,7 @@ class ComponentPatients extends Component {
                       </Table.Cell>
                       <Table.Cell className="cells-max-witdh-2" collapsing>
                         <ComponentSeeClinicHistory
-                          reloadFromServer={this.props.reloadFromServer}
+                          GetDataFromServer={this.props.GetDataFromServer}
                           parentState={this.props.parentState}
                           paciente={paciente}
                           pacientes={this.props.pacientes}
@@ -214,7 +216,7 @@ class ComponentPatients extends Component {
                           pacientes={this.props.pacientes}
                           paciente={paciente}
                           transfusiones={paciente.transfusiones}
-                          reloadFromServer={this.props.reloadFromServer}
+                          GetDataFromServer={this.props.GetDataFromServer}
                           cambiarIcono={true}
                         />
                       </Table.Cell>
@@ -226,7 +228,7 @@ class ComponentPatients extends Component {
                           pacientes={this.props.pacientes}
                           paciente={paciente}
                           embarazos={paciente.embarazos}
-                          reloadFromServer={this.props.reloadFromServer}
+                          GetDataFromServer={this.props.GetDataFromServer}
                           cambiarIcono={true}
                         />
                       </Table.Cell>
@@ -246,7 +248,7 @@ class ComponentPatients extends Component {
                         )}
                         {accesomenu.permisos.modificar ? (
                           <ComponentUpdatePatient
-                            reloadFromServer={this.props.reloadFromServer}
+                            GetDataFromServer={this.props.GetDataFromServer}
                             paciente={paciente}
                             parentState={this.props.parentState}
                             roles={this.props.roles}
@@ -261,7 +263,7 @@ class ComponentPatients extends Component {
               </Table.Body>
             </Table>
           ) : (
-            this.checkAndAllowAddButton(false, accesomenu.permisos.crear)
+            this.CheckAndAllowAddButton(false, accesomenu.permisos.crear)
           )}
         </Grid.Column>
       </Grid>

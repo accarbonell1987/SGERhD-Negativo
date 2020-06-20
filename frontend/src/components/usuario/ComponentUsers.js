@@ -16,10 +16,14 @@ class ComponentUsers extends Component {
   constructor(props) {
     super(props);
 
-    this.deleteUser = this.deleteUser.bind(this);
+    this.DeleteUser = this.DeleteUser.bind(this);
   }
   //eliminar el usuario
-  deleteUser = (usuario) => {
+  DeleteUser = (usuario) => {
+    //chequear que las cookies tengan los datos necesarios
+    const data = this.props.global.cookies();
+    if (!data) this.props.Deslogin();
+
     //Esta seguro?
     let { text, accion } = "";
     if (usuario.activo) accion = "Desactivar";
@@ -41,23 +45,23 @@ class ComponentUsers extends Component {
       //si escogio Si
       if (result.value) {
         //enviar al endpoint
-        fetch(this.props.parentState.endpoint + "api/usuario/" + usuario._id, {
+        fetch(this.props.global.endpoint + "api/usuario/" + usuario._id, {
           method: "PUT",
           body: JSON.stringify(usuario),
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
-            "access-token": this.props.parentState.token,
+            "access-token": data.token,
           },
         })
           .then((res) => res.json())
-          .then((data) => {
-            const { status, message } = data;
+          .then((serverdata) => {
+            const { status, message } = serverdata;
             status === 200
               ? Swal.fire({ position: "center", icon: "success", title: message, showConfirmButton: false, timer: 3000 })
               : Swal.fire({ position: "center", icon: "error", title: message, showConfirmButton: false, timer: 5000 });
             //Actualizar el listado
-            this.props.reloadFromServer();
+            this.props.GetDataFromServer();
           })
           .catch((err) => {
             Swal.fire({ position: "center", icon: "error", title: err, showConfirmButton: false, timer: 5000 }); //mostrar mensaje de error
@@ -65,17 +69,9 @@ class ComponentUsers extends Component {
       }
     });
   };
-  checkAndAllowAddButton = (middleButtonAdd, allow) => {
+  CheckAndAllowAddButton = (middleButtonAdd, allow) => {
     if (allow)
-      return (
-        <ComponentAddUser
-          middleButtonAdd={middleButtonAdd}
-          parentState={this.props.parentState}
-          roles={this.props.roles}
-          permisos={this.props.permisos}
-          reloadFromServer={this.props.reloadFromServer}
-        />
-      );
+      return <ComponentAddUser middleButtonAdd={middleButtonAdd} Deslogin={this.props.Deslogin} global={this.props.global} GetDataFromServer={this.props.GetDataFromServer} />;
     else
       return (
         <Button floated="right" icon labelPosition="left" primary size="small" className="modal-button-add" disabled>
@@ -86,8 +82,9 @@ class ComponentUsers extends Component {
   };
 
   render() {
+    const data = this.props.global.cookies();
     //buscar el permiso del rol
-    const permiso = this.props.permisos.find((p) => p.rol === this.props.parentState.rol);
+    const permiso = this.props.global.permisos.find((p) => p.rol === data.rol);
     //buscar el acceso del menu
     const accesomenu = permiso.accesos.find((p) => p.opcion === "usuarios");
     //chequear si es usuario y tengo permiso
@@ -101,7 +98,7 @@ class ComponentUsers extends Component {
             <Table.Header>
               <Table.Row>
                 <Table.HeaderCell />
-                <Table.HeaderCell colSpan="6">{this.checkAndAllowAddButton(false, accesomenu.permisos.crear)}</Table.HeaderCell>
+                <Table.HeaderCell colSpan="6">{this.CheckAndAllowAddButton(false, accesomenu.permisos.crear)}</Table.HeaderCell>
               </Table.Row>
               {this.props.usuarios.length > 0 ? (
                 <Table.Row>
@@ -120,11 +117,11 @@ class ComponentUsers extends Component {
 
             <Table.Body>
               {this.props.usuarios.map((usuario) => {
-                let rolData = this.props.roles.find((element) => {
+                let rolData = this.props.global.roles.find((element) => {
                   return element.key === usuario.rol;
                 });
                 //para colorear row
-                let negative = this.props.parentState.usuario === usuario.nombre || usuario.nombre === "administrador";
+                let negative = data.usuario === usuario.nombre || usuario.nombre === "administrador";
                 return (
                   <Table.Row key={usuario._id} negative={negative}>
                     <Table.Cell collapsing>
@@ -151,18 +148,18 @@ class ComponentUsers extends Component {
                       {
                         //acceso a eliminar
                         accesomenu.permisos.eliminar && !negative ? (
-                          <Button icon="remove user" className="button-remove" onClick={() => this.deleteUser(usuario)} />
+                          <Button icon="remove user" className="button-remove" onClick={() => this.DeleteUser(usuario)} />
                         ) : (
                           <Button icon="remove user" className="button-remove" disabled />
                         )
                       }
                       {accesomenu.permisos.modificar ? (
-                        <ComponentUpdateUser reloadFromServer={this.props.reloadFromServer} usuario={usuario} parentState={this.props.parentState} roles={this.props.roles} />
+                        <ComponentUpdateUser usuario={usuario} Deslogin={this.props.Deslogin} global={this.props.global} GetDataFromServer={this.props.GetDataFromServer} />
                       ) : (
                         <Button icon="edit" disabled />
                       )}
-                      {this.props.parentState.rol === "informatico" ? (
-                        <ComponentChangePassword parentState={this.props.parentState} usuario={usuario} gestion={true} />
+                      {this.props.global.rol === "informatico" ? (
+                        <ComponentChangePassword usuario={usuario} gestion={true} global={this.props.global} />
                       ) : (
                         <Button icon="key" disabled />
                       )}

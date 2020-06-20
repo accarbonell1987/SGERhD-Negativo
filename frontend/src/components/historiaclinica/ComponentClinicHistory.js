@@ -78,7 +78,7 @@ class ComponentClinicHistory extends Component {
                   timer: 5000,
                 });
 
-            this.props.reloadFromServer();
+            this.props.GetDataFromServer();
           })
           .catch((err) => {
             Swal.fire({
@@ -92,11 +92,11 @@ class ComponentClinicHistory extends Component {
       }
     });
   };
-  checkAndAllowAddButton = (middleButtonAdd, allow) => {
+  CheckAndAllowAddButton = (middleButtonAdd, allow) => {
     if (allow)
       return (
         <ComponentAddClinicHistory
-          reloadFromServer={this.props.reloadFromServer}
+          GetDataFromServer={this.props.GetDataFromServer}
           parentState={this.props.parentState}
           roles={this.props.roles}
           pacientes={this.props.pacientes}
@@ -132,7 +132,7 @@ class ComponentClinicHistory extends Component {
               <Table.Header className="div-table-header">
                 <Table.Row>
                   <Table.HeaderCell />
-                  <Table.HeaderCell colSpan="11">{this.checkAndAllowAddButton(false, accesomenu.permisos.crear)}</Table.HeaderCell>
+                  <Table.HeaderCell colSpan="11">{this.CheckAndAllowAddButton(false, accesomenu.permisos.crear)}</Table.HeaderCell>
                 </Table.Row>
                 <Table.Row>
                   <Table.HeaderCell />
@@ -187,7 +187,7 @@ class ComponentClinicHistory extends Component {
                         )}
                         {accesomenu.permisos.modificar ? (
                           <ComponentUpdateClinicHistory
-                            reloadFromServer={this.props.reloadFromServer}
+                            GetDataFromServer={this.props.GetDataFromServer}
                             historiaclinica={historia}
                             parentState={this.props.parentState}
                             roles={this.props.roles}
@@ -204,7 +204,7 @@ class ComponentClinicHistory extends Component {
               </Table.Body>
             </Table>
           ) : (
-            this.checkAndAllowAddButton(this.props.middleButtonAdd, accesomenu.permisos.crear)
+            this.CheckAndAllowAddButton(this.props.middleButtonAdd, accesomenu.permisos.crear)
           )}
         </Grid.Column>
       </Grid>

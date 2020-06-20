@@ -33,17 +33,17 @@ class ComponentAddTran extends Component {
 
     this.setDate = this.setDate.bind(this);
     this.addTran = this.addTran.bind(this);
-    this.changeModalInput = this.changeModalInput.bind(this);
-    this.changeModalState = this.changeModalState.bind(this);
-    this.clearModalState = this.clearModalState.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.ChangeModalInput = this.ChangeModalInput.bind(this);
+    this.ChangeModalState = this.ChangeModalState.bind(this);
+    this.ClearModalState = this.ClearModalState.bind(this);
+    this.HandleSubmit = this.HandleSubmit.bind(this);
   }
   //#endregion
 
   //#region Metodos y Eventos
   //componente se monto
   componentDidMount() {
-    this.clearModalState();
+    this.ClearModalState();
   }
   //adicionar nuevo paciente
   addTran = async () => {
@@ -70,7 +70,7 @@ class ComponentAddTran extends Component {
       //capturar respuesta
       const { status, message } = data;
       if (status === 200) {
-        this.clearModalState();
+        this.ClearModalState();
         Swal.fire({ position: "center", icon: "success", title: message, showConfirmButton: false, timer: 3000 });
         return true;
       } else {
@@ -83,12 +83,12 @@ class ComponentAddTran extends Component {
     }
   };
   //validar el formulario
-  handleSubmit = (evt) => {
+  HandleSubmit = (evt) => {
     evt.preventDefault();
     return false;
   };
   //Actualiza los inputs con los valores que vamos escribiendo
-  changeModalInput = (evt) => {
+  ChangeModalInput = (evt) => {
     const { name, value } = evt.target;
 
     this.setState({
@@ -96,26 +96,26 @@ class ComponentAddTran extends Component {
     });
   };
   //cambiar el estado en el MODAL para adicionar
-  changeModalState = async (evt) => {
+  ChangeModalState = async (evt) => {
     if (evt.target.className.includes("modal-button-add") || evt.target.className.includes("modal-icon-add")) {
-      this.clearModalState();
+      this.ClearModalState();
       this.setState({ openModal: true });
     } else if (evt.target.className.includes("modal-button-cancel") || evt.target.className.includes("modal-icon-cancel")) {
       this.setState({ openModal: false });
     } else {
       //si no hay problemas en el formulario
-      if (this.handleSubmit(evt) === false) {
+      if (this.HandleSubmit(evt) === false) {
         //si no hay problemas en la insercion
         if (await this.addTran()) {
           //enviar a recargar los pacientes
-          this.props.reloadFromServer();
-          this.clearModalState();
+          this.props.GetDataFromServer();
+          this.ClearModalState();
         }
       }
     }
   };
   //limpiar states
-  clearModalState = () => {
+  ClearModalState = () => {
     let opcion = [];
     this.props.pacientes.forEach((p) => {
       let nombreyapellidos = p.nombre + " " + p.apellidos;
@@ -144,14 +144,14 @@ class ComponentAddTran extends Component {
     const position = this.props.middleButtonAdd ? "middle" : "right";
     if (change)
       return (
-        <Button icon floated={position} labelPosition="right" className="modal-button-add" onClick={this.changeModalState}>
-          <Icon name="add circle" className="modal-icon-add" onClick={this.changeModalState} />
+        <Button icon floated={position} labelPosition="right" className="modal-button-add" onClick={this.ChangeModalState}>
+          <Icon name="add circle" className="modal-icon-add" onClick={this.ChangeModalState} />
           Adicionar
         </Button>
       );
     else
       return (
-        <Button icon floated={position} labelPosition="left" primary size="small" onClick={this.changeModalState} className="modal-button-add">
+        <Button icon floated={position} labelPosition="left" primary size="small" onClick={this.ChangeModalState} className="modal-button-add">
           <Icon name="add circle" className="modal-icon-add" />
           Adicionar
         </Button>
@@ -166,7 +166,7 @@ class ComponentAddTran extends Component {
         <Header icon="tint" content="Adicionar Transfusión" />
         <Modal.Content>
           {this.state.errorform ? <Message error inverted header="Error" content="Error en el formulario" /> : null}
-          <Form ref="form" onSubmit={this.changeModalState}>
+          <Form ref="form" onSubmit={this.ChangeModalState}>
             <Form.Group>
               <Segment className="modal-segment-expanded">
                 <Header as="h5">Fecha:</Header>
@@ -191,7 +191,7 @@ class ComponentAddTran extends Component {
                 />
               </Segment>
             </Form.Group>
-            <Form.TextArea name="observaciones" label="Observaciones:" placeholder="Observaciones..." value={this.state.observaciones} onChange={this.changeModalInput} />
+            <Form.TextArea name="observaciones" label="Observaciones:" placeholder="Observaciones..." value={this.state.observaciones} onChange={this.ChangeModalInput} />
             <Form.Select
               name="paciente"
               label="Paciente:"
@@ -208,11 +208,11 @@ class ComponentAddTran extends Component {
           </Form>
         </Modal.Content>
         <Modal.Actions>
-          <Button color="red" onClick={this.changeModalState} className="modal-button-cancel" type>
+          <Button color="red" onClick={this.ChangeModalState} className="modal-button-cancel" type>
             <Icon name="remove" className="modal-icon-cancel" />
             Cancelar
           </Button>
-          <Button color="green" onClick={this.changeModalState} className="modal-button-accept" type="submit" disabled={!this.state.fecha || !this.state.paciente}>
+          <Button color="green" onClick={this.ChangeModalState} className="modal-button-accept" type="submit" disabled={!this.state.fecha || !this.state.paciente}>
             <Icon name="checkmark" className="modal-icon-accept" />
             Aceptar
           </Button>
