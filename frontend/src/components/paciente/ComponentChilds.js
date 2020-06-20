@@ -33,6 +33,14 @@ class ComponentChilds extends Component {
     this.ChangeModalState = this.ChangeModalState.bind(this);
     this.ChangeCheckBox = this.ChangeCheckBox.bind(this);
   }
+  shouldComponentUpdate() {
+    const data = this.props.global.cookies();
+    if (!data) {
+      this.props.Deslogin();
+      return false;
+    }
+    return true;
+  }
   //modificar paciente
   UpdatePatient = async (id) => {
     //chequear que las cookies tengan los datos necesarios

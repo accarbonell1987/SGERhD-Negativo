@@ -21,81 +21,94 @@ class ComponentPregnancies extends Component {
   constructor(props) {
     super(props);
 
-    this.deletePregnancy = this.deletePregnancy.bind(this);
+    this.DeletePregnancy = this.DeletePregnancy.bind(this);
   }
   //#endregion
 
   //#region Metodos y Eventos
-  deletePregnancy = (pregnancy) => {
-    //Esta seguro?
-    let { text, accion } = "";
-    if (pregnancy.activo) accion = "Desactivar";
-    else accion = "Eliminar";
-    text = "Desea " + accion + " el embarazo perteneciente al paciente: " + pregnancy.paciente.nombre + " " + pregnancy.paciente.apellidos;
+  shouldComponentUpdate() {
+    const data = this.props.global.cookies();
+    if (!data) {
+      this.props.Deslogin();
+      return false;
+    }
+    return true;
+  }
+  DeletePregnancy = (pregnancy) => {
+    //chequear que las cookies tengan los datos necesarios
+    const data = this.props.global.cookies();
+    if (!data) this.props.Deslogin();
+    else {
+      //Esta seguro?
+      let { text, accion } = "";
+      if (pregnancy.activo) accion = "Desactivar";
+      else accion = "Eliminar";
+      text = "Desea " + accion + " el embarazo perteneciente al paciente: " + pregnancy.paciente.nombre + " " + pregnancy.paciente.apellidos;
 
-    Swal.fire({
-      title: "¿Esta seguro?",
-      text: text,
-      icon: "question",
-      showCancelButton: true,
-      cancelButtonColor: "#db2828",
-      confirmButtonColor: "#21ba45",
-      confirmButtonText: "Si, " + accion,
-      reverseButtons: true,
-    }).then((result) => {
-      //si escogio Si
-      if (result.value) {
-        //enviar al endpoint
-        fetch(this.props.global.endpoint + "api/embarazo/" + pregnancy._id, {
-          method: "PUT",
-          body: JSON.stringify(pregnancy),
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "access-token": this.props.global.token,
-          },
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            const { status, message } = data;
-            //chequear el mensaje
-            status === 200
-              ? Swal.fire({
-                  position: "center",
-                  icon: "success",
-                  title: message,
-                  showConfirmButton: false,
-                  timer: 3000,
-                })
-              : Swal.fire({
-                  position: "center",
-                  icon: "error",
-                  title: message,
-                  showConfirmButton: false,
-                  timer: 5000,
-                });
-            //recargar
-            this.props.GetDataFromServer();
+      Swal.fire({
+        title: "¿Esta seguro?",
+        text: text,
+        icon: "question",
+        showCancelButton: true,
+        cancelButtonColor: "#db2828",
+        confirmButtonColor: "#21ba45",
+        confirmButtonText: "Si, " + accion,
+        reverseButtons: true,
+      }).then((result) => {
+        //si escogio Si
+        if (result.value) {
+          //enviar al endpoint
+          fetch(this.props.global.endpoint + "api/embarazo/" + pregnancy._id, {
+            method: "PUT",
+            body: JSON.stringify(pregnancy),
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "access-token": data.token,
+            },
           })
-          .catch((err) => {
-            Swal.fire({
-              position: "center",
-              icon: "error",
-              title: err,
-              showConfirmButton: false,
-              timer: 5000,
+            .then((res) => res.json())
+            .then((serverdata) => {
+              const { status, message } = serverdata;
+              //chequear el mensaje
+              status === 200
+                ? Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: message,
+                    showConfirmButton: false,
+                    timer: 3000,
+                  })
+                : Swal.fire({
+                    position: "center",
+                    icon: "error",
+                    title: message,
+                    showConfirmButton: false,
+                    timer: 5000,
+                  });
+              //recargar
+              this.props.GetDataFromServer();
+            })
+            .catch((err) => {
+              Swal.fire({
+                position: "center",
+                icon: "error",
+                title: err,
+                showConfirmButton: false,
+                timer: 5000,
+              });
             });
-          });
-      }
-    });
+        }
+      });
+    }
   };
   CheckAndAllowAddButton = (middleButtonAdd, allow) => {
     if (allow)
       return (
         <ComponentAddPregnancy
+          Deslogin={this.props.Deslogin}
           middleButtonAdd={middleButtonAdd}
           global={this.props.global}
-          roles={this.props.roles}
           pacientes={this.props.pacientes}
           GetDataFromServer={this.props.GetDataFromServer}
           paciente={this.props.paciente}
@@ -109,7 +122,7 @@ class ComponentPregnancies extends Component {
         </Button>
       );
   };
-  detailFromType = (embarazo) => {
+  DetailFromType = (embarazo) => {
     if (embarazo.tipo === "Nuevo") {
       return (
         <Label.Group className="button-pregnancy-separate">
@@ -162,8 +175,9 @@ class ComponentPregnancies extends Component {
 
   //#region Render
   render() {
+    const data = this.props.global.cookies();
     //buscar el permiso del rol
-    const permiso = this.props.permisos.find((p) => p.rol === this.props.global.rol);
+    const permiso = this.props.global.permisos.find((p) => p.rol === data.rol);
     //buscar el acceso del menu
     const accesomenu = permiso.accesos.find((p) => p.opcion === "embarazos");
     const classNameTable = this.props.detail ? "div-table-detail" : "div-table";
@@ -212,29 +226,29 @@ class ComponentPregnancies extends Component {
                         {embarazo.tipo}
                       </Table.Cell>
                       <Table.Cell>{embarazo.observaciones}</Table.Cell>
-                      <Table.Cell>{this.detailFromType(embarazo)}</Table.Cell>
+                      <Table.Cell>{this.DetailFromType(embarazo)}</Table.Cell>
                       <Table.Cell className="cells-max-witdh-2" collapsing>
                         <Button icon labelPosition="right" className="button-childs">
                           <Icon name="clipboard list" className="button-icon-childs" />0
                         </Button>
                       </Table.Cell>
                       <Table.Cell className="cells-max-witdh-2" collapsing>
-                        <ComponentSeePatient paciente={embarazo.paciente} global={this.props.global} roles={this.props.roles} />
+                        <ComponentSeePatient Deslogin={this.props.Deslogin} paciente={embarazo.paciente} global={this.props.global} />
                       </Table.Cell>
                       <Table.Cell className="cells-max-witdh-2" collapsing>
                         <Checkbox toggle name="activo" labelPosition="left" label={embarazo.activo ? "Si" : "No"} checked={embarazo.activo} disabled />
                       </Table.Cell>
                       <Table.Cell className="cells-max-witdh-2" collapsing>
                         {accesomenu.permisos.eliminar ? (
-                          <Button icon="remove circle" className="button-remove" onClick={() => this.deletePregnancy(embarazo)} />
+                          <Button icon="remove circle" className="button-remove" onClick={() => this.DeletePregnancy(embarazo)} />
                         ) : (
                           <Button icon="remove circle" className="button-remove" disabled />
                         )}
                         {accesomenu.permisos.modificar ? (
                           <ComponentUpdatePregnancy
+                            Deslogin={this.props.Deslogin}
                             GetDataFromServer={this.props.GetDataFromServer}
                             global={this.props.global}
-                            roles={this.props.roles}
                             pacientes={this.props.pacientes}
                             pregnancy={embarazo}
                           />

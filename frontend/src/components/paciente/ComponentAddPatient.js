@@ -52,7 +52,14 @@ class ComponentAddPatient extends Component {
   componentDidMount() {
     this.ClearModalState();
   }
-
+  shouldComponentUpdate() {
+    const data = this.props.global.cookies();
+    if (!data) {
+      this.props.Deslogin();
+      return false;
+    }
+    return true;
+  }
   //adicionar nuevo paciente
   AddPatient = async () => {
     //chequear que las cookies tengan los datos necesarios

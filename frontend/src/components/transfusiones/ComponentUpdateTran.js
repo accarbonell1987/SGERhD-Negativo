@@ -31,8 +31,8 @@ class ComponentUpdateTran extends Component {
   constructor(props) {
     super(props);
 
-    this.setDate = this.setDate.bind(this);
-    this.updateTran = this.updateTran.bind(this);
+    this.SetDate = this.SetDate.bind(this);
+    this.UpdateTran = this.UpdateTran.bind(this);
     this.ChangeModalInput = this.ChangeModalInput.bind(this);
     this.ChangeModalState = this.ChangeModalState.bind(this);
     this.ClearModalState = this.ClearModalState.bind(this);
@@ -41,6 +41,17 @@ class ComponentUpdateTran extends Component {
   //#endregion
 
   //#region Metodos y Eventos
+  componentDidMount() {
+    this.ClearModalState();
+  }
+  shouldComponentUpdate() {
+    const data = this.props.global.cookies();
+    if (!data) {
+      this.props.Deslogin();
+      return false;
+    }
+    return true;
+  }
   SwalAlert = (posicion, icon, mensaje, tiempo) => {
     Swal.fire({
       position: posicion,
@@ -50,44 +61,44 @@ class ComponentUpdateTran extends Component {
       timer: tiempo,
     });
   };
-
-  //componente se monto
-  componentDidMount() {
-    this.ClearModalState();
-  }
   //modificar usuario
-  updateTran = async (id) => {
-    const { fecha, reaccionAdversa, observaciones, paciente, activo } = this.state;
-    const tran = {
-      fecha: fecha,
-      reaccionAdversa: reaccionAdversa,
-      observaciones: observaciones,
-      paciente: paciente,
-      activo: activo,
-    };
-    //la promise debe de devolver un valor RETURN
-    try {
-      const res = await fetch(this.props.global.endpoint + "api/transfusion/" + id, {
-        method: "PATCH",
-        body: JSON.stringify(tran),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "access-token": this.props.global.token,
-        },
-      });
-      let jsondata = await res.json();
-      const { status, message } = jsondata;
-      if (status === 200) {
-        this.SwalAlert("center", "success", message, 3000);
-        return true;
-      } else {
-        this.SwalAlert("center", "error", message, 5000);
+  UpdateTran = async (id) => {
+    //chequear que las cookies tengan los datos necesarios
+    const data = this.props.global.cookies();
+    if (!data) this.props.Deslogin();
+    else {
+      const { fecha, reaccionAdversa, observaciones, paciente, activo } = this.state;
+      const tran = {
+        fecha: fecha,
+        reaccionAdversa: reaccionAdversa,
+        observaciones: observaciones,
+        paciente: paciente,
+        activo: activo,
+      };
+      //la promise debe de devolver un valor RETURN
+      try {
+        const res = await fetch(this.props.global.endpoint + "api/transfusion/" + id, {
+          method: "PATCH",
+          body: JSON.stringify(tran),
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "access-token": data.token,
+          },
+        });
+        let serverdata = await res.json();
+        const { status, message } = serverdata;
+        if (status === 200) {
+          this.SwalAlert("center", "success", message, 3000);
+          return true;
+        } else {
+          this.SwalAlert("center", "error", message, 5000);
+          return false;
+        }
+      } catch (err) {
+        this.SwalAlert("center", "error", err, 5000);
         return false;
       }
-    } catch (err) {
-      this.SwalAlert("center", "error", err, 5000);
-      return false;
     }
   };
   //validar el formulario
@@ -102,6 +113,26 @@ class ComponentUpdateTran extends Component {
     this.setState({
       [name]: value,
     });
+  };
+  //al presionar la tecla de ENTER
+  OnPressEnter = (evt) => {
+    const disabled = !this.state.fecha || !this.state.paciente;
+    if (evt.keyCode === 13 && !evt.shiftKey && !disabled) {
+      evt.preventDefault();
+      this.OnSubmit(evt);
+    }
+  };
+  //al enviar a aplicar el formulario
+  OnSubmit = async (evt) => {
+    //si no hay problemas en el formulario
+    if (this.HandleSubmit(evt) === false) {
+      //si no hay problemas en la insercion
+      if (await this.UpdateTran(this.props.tran._id)) {
+        //enviar a recargar los pacientes
+        this.props.GetDataFromServer();
+        this.ClearModalState();
+      }
+    }
   };
   //cambiar el estado en el MODAL para adicionar
   ChangeModalState = async (evt) => {
@@ -121,15 +152,7 @@ class ComponentUpdateTran extends Component {
     } else if (evt.target.className.includes("modal-button-cancel") || evt.target.className.includes("modal-icon-cancel")) {
       this.setState({ openModal: false });
     } else {
-      //si no hay problemas en el formulario
-      if (this.HandleSubmit(evt) === false) {
-        //si no hay problemas en la insercion
-        if (await this.updateTran(this.props.tran._id)) {
-          //enviar a recargar los pacientes
-          this.props.GetDataFromServer();
-          this.ClearModalState();
-        }
-      }
+      this.OnSubmit(evt);
     }
   };
   //limpiar states
@@ -155,7 +178,7 @@ class ComponentUpdateTran extends Component {
     });
   };
   //capturar fecha
-  setDate = (fecha) => {
+  SetDate = (fecha) => {
     this.setState({ fecha: fecha });
   };
   //#endregion
@@ -178,7 +201,7 @@ class ComponentUpdateTran extends Component {
             <Form.Group>
               <Segment className="modal-segment-expanded">
                 <Header as="h5">Fecha:</Header>
-                <ComponentInputDatePicker setDate={this.setDate} fecha={this.state.fecha} />
+                <ComponentInputDatePicker SetDate={this.SetDate} fecha={this.state.fecha} />
               </Segment>
             </Form.Group>
             <Form.Group>

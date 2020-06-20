@@ -39,7 +39,7 @@ class ComponentUpdateClinicHistory extends Component {
     super(props);
 
     this.ClearModalState = this.ClearModalState.bind(this);
-    this.updateClinicHistory = this.updateClinicHistory.bind(this);
+    this.UpdateClinicHistory = this.UpdateClinicHistory.bind(this);
     this.ChangeModalInput = this.ChangeModalInput.bind(this);
     this.ChangeModalState = this.ChangeModalState.bind(this);
     this.HandleSubmit = this.HandleSubmit.bind(this);
@@ -47,6 +47,14 @@ class ComponentUpdateClinicHistory extends Component {
   //#endregion
 
   //#region Metodos y Eventos
+  shouldComponentUpdate() {
+    const data = this.props.global.cookies();
+    if (!data) {
+      this.props.Deslogin();
+      return false;
+    }
+    return true;
+  }
   SwalAlert = (posicion, icon, mensaje, tiempo) => {
     Swal.fire({
       position: posicion,
@@ -57,44 +65,49 @@ class ComponentUpdateClinicHistory extends Component {
     });
   };
   //modificar paciente
-  updateClinicHistory = async (id) => {
-    const { areaDeSalud, numerohistoria, vacunaAntiD, numeroDeEmbarazos, numeroDePartos, numeroDeAbortos, paciente, activo } = this.state;
+  UpdateClinicHistory = async (id) => {
+    //chequear que las cookies tengan los datos necesarios
+    const data = this.props.global.cookies();
+    if (!data) this.props.Deslogin();
+    else {
+      const { areaDeSalud, numerohistoria, vacunaAntiD, numeroDeEmbarazos, numeroDePartos, numeroDeAbortos, paciente, activo } = this.state;
 
-    const fecha = new Date();
-    const historiaclinica = {
-      fechaDeCreacion: fecha,
-      areaDeSalud: areaDeSalud,
-      numerohistoria: numerohistoria,
-      vacunaAntiD: vacunaAntiD,
-      numeroDeEmbarazos: numeroDeEmbarazos,
-      numeroDePartos: numeroDePartos,
-      numeroDeAbortos: numeroDeAbortos,
-      paciente: paciente,
-      activo: activo,
-    };
-    //la promise debe de devolver un valor RETURN
-    try {
-      const res = await fetch(this.props.global.endpoint + "api/historiaclinica/" + id, {
-        method: "PATCH",
-        body: JSON.stringify(historiaclinica),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "access-token": this.props.global.token,
-        },
-      });
-      let jsondata = await res.json();
-      const { status, message } = jsondata;
-      if (status === 200) {
-        this.SwalAlert("center", "success", message, 3000);
-        return true;
-      } else {
-        this.SwalAlert("center", "error", message, 5000);
+      const fecha = new Date();
+      const historiaclinica = {
+        fechaDeCreacion: fecha,
+        areaDeSalud: areaDeSalud,
+        numerohistoria: numerohistoria,
+        vacunaAntiD: vacunaAntiD,
+        numeroDeEmbarazos: numeroDeEmbarazos,
+        numeroDePartos: numeroDePartos,
+        numeroDeAbortos: numeroDeAbortos,
+        paciente: paciente,
+        activo: activo,
+      };
+      //la promise debe de devolver un valor RETURN
+      try {
+        const res = await fetch(this.props.global.endpoint + "api/historiaclinica/" + id, {
+          method: "PATCH",
+          body: JSON.stringify(historiaclinica),
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "access-token": data.token,
+          },
+        });
+        let serverdata = await res.json();
+        const { status, message } = serverdata;
+        if (status === 200) {
+          this.SwalAlert("center", "success", message, 3000);
+          return true;
+        } else {
+          this.SwalAlert("center", "error", message, 5000);
+          return false;
+        }
+      } catch (err) {
+        this.SwalAlert("center", "error", err, 5000);
         return false;
       }
-    } catch (err) {
-      this.SwalAlert("center", "error", err, 5000);
-      return false;
     }
   };
   //validar el formulario
@@ -118,6 +131,26 @@ class ComponentUpdateClinicHistory extends Component {
       [name]: value,
     });
   };
+  //al presionar la tecla de ENTER
+  OnPressEnter = (evt) => {
+    const disabled = !this.state.numerohistoria || !this.state.areaDeSalud || !this.state.paciente;
+    if (evt.keyCode === 13 && !evt.shiftKey && !disabled) {
+      evt.preventDefault();
+      this.OnSubmit(evt);
+    }
+  };
+  //al enviar a aplicar el formulario
+  OnSubmit = async (evt) => {
+    //si no hay problemas en el formulario
+    if (this.HandleSubmit(evt) === false) {
+      //si no hay problemas en la insercion
+      if (await this.UpdateClinicHistory(this.props.historiaclinica._id)) {
+        //enviar a recargar los usuarios
+        this.props.GetDataFromServer();
+        this.ClearModalState();
+      }
+    }
+  };
   //cambiar el estado en el MODAL para adicionar usuario
   ChangeModalState = async (evt) => {
     if (evt.target.className.includes("modal-button-action") || evt.target.className.includes("modal-icon")) {
@@ -136,15 +169,7 @@ class ComponentUpdateClinicHistory extends Component {
     } else if (evt.target.className.includes("modal-button-cancel") || evt.target.className.includes("modal-icon-cancel")) {
       this.ClearModalState();
     } else {
-      //si no hay problemas en el formulario
-      if (this.HandleSubmit(evt) === false) {
-        //si no hay problemas en la insercion
-        if (await this.updateClinicHistory(this.props.historiaclinica._id)) {
-          //enviar a recargar los usuarios
-          this.props.GetDataFromServer();
-          this.ClearModalState();
-        }
-      }
+      this.OnSubmit(evt);
     }
   };
   //limpiar states
@@ -223,6 +248,7 @@ class ComponentUpdateClinicHistory extends Component {
                   value={this.state.areaDeSalud}
                   placeholder="Consultorio, Policlinico, Hospital"
                   onChange={this.ChangeModalInput}
+                  onKeyDown={this.OnPressEnter}
                 />
               </Segment>
               <Segment className="modal-segment-shortright">

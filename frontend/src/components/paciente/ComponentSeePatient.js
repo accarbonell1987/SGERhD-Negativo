@@ -28,6 +28,14 @@ class ComponentSeePatient extends Component {
     this.HandleSubmit = this.HandleSubmit.bind(this);
   }
 
+  shouldComponentUpdate() {
+    const data = this.props.global.cookies();
+    if (!data) {
+      this.props.Deslogin();
+      return false;
+    }
+    return true;
+  }
   //validar el formulario
   HandleSubmit = (evt) => {
     evt.preventDefault();

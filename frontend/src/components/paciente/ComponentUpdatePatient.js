@@ -54,6 +54,14 @@ class ComponentUpdatePatient extends Component {
   //#endregion
 
   //#region Metodos y Eventos
+  shouldComponentUpdate() {
+    const data = this.props.global.cookies();
+    if (!data) {
+      this.props.Deslogin();
+      return false;
+    }
+    return true;
+  }
   SwalAlert = (posicion, icon, mensaje, tiempo) => {
     Swal.fire({
       position: posicion,
@@ -63,7 +71,6 @@ class ComponentUpdatePatient extends Component {
       timer: tiempo,
     });
   };
-
   //modificar paciente
   UpdatePatient = async (id) => {
     //chequear que las cookies tengan los datos necesarios

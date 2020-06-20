@@ -65,7 +65,7 @@ class ComponentInputDatePicker extends Component {
       this.setState({ openModal: true });
     } else {
       this.setState({ openModal: false });
-      this.props.setDate(this.state.fecha);
+      this.props.SetDate(this.state.fecha);
     }
   };
   ClearModalState = () => {

@@ -15,7 +15,7 @@ import ComponentMenu from "./ComponentMenu";
 //#region Definicion de la clase
 class ComponentDashboard extends Component {
   state = {
-    opcionmenu: "pacientes",
+    opcionmenu: this.props.menu,
   };
 
   constructor(props) {
@@ -23,11 +23,20 @@ class ComponentDashboard extends Component {
     this.ChangeMenuOption = this.ChangeMenuOption.bind(this);
   }
 
-  ChangeMenuOption = (opcion) => {
+  componentDidMount() {
+    this.props.SetMenuCookie(this.props.menu);
+  }
+  shouldComponentUpdate() {
     const data = this.props.global.cookies();
-
-    if (!data) this.props.Deslogin();
-    else this.setState({ opcionmenu: opcion });
+    if (!data) {
+      this.props.Deslogin();
+      return false;
+    }
+    return true;
+  }
+  ChangeMenuOption = (opcion) => {
+    this.props.SetMenuCookie(opcion);
+    this.setState({ opcionmenu: opcion });
   };
 
   render() {

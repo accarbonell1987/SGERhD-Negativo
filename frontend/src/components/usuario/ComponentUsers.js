@@ -18,6 +18,15 @@ class ComponentUsers extends Component {
 
     this.DeleteUser = this.DeleteUser.bind(this);
   }
+
+  shouldComponentUpdate() {
+    const data = this.props.global.cookies();
+    if (!data) {
+      this.props.Deslogin();
+      return false;
+    }
+    return true;
+  }
   //eliminar el usuario
   DeleteUser = (usuario) => {
     //chequear que las cookies tengan los datos necesarios

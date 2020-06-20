@@ -96,14 +96,20 @@ class ComponentApp extends Component {
     this.Login = this.Login.bind(this);
     this.Deslogin = this.Deslogin.bind(this);
     this.GetCookies = this.GetCookies.bind(this);
+    this.SetMenuCookie = this.SetMenuCookie.bind(this);
   }
 
+  componentDidMount() {
+    const auth = this.GetCookies() || false;
+    this.setState({ autenticado: auth });
+  }
   //Loguearse
   Login = (usuario, rol, token) => {
     //setear en las cookies los valores que necesito durante todo el life
     const { cookies } = this.props;
     //eliminar las cookies para recomenzar el tiempo de expiracion
     cookies.remove("data");
+    cookies.remove("menu");
 
     const data = {
       autenticado: true,
@@ -118,13 +124,31 @@ class ComponentApp extends Component {
   };
   //Desloguearse
   Deslogin = () => {
+    //eliminando las cookies
+    const { cookies } = this.props;
+    cookies.remove("data");
+    cookies.remove("menu");
     //cambiando el estado para renderizar el componente
     this.setState({ autenticado: false });
   };
+  //Obtener las cookies con los datos relacionados al Login
   GetCookies = () => {
     //obtener las cookies
     const { cookies } = this.props;
     const data = cookies.get("data");
+    return data;
+  };
+  //establecer la ultima opcion en la cookie menu con el ultimo menu seleccionado
+  SetMenuCookie = (opcionmenu) => {
+    const { cookies } = this.props;
+    //setear el ultimo menu seleccionado
+    cookies.set("menu", opcionmenu);
+  };
+  //obtener el ultimo menu seleccionado
+  GetMenuCookies = () => {
+    //obtener las cookies
+    const { cookies } = this.props;
+    const data = cookies.get("menu");
     return data;
   };
 
@@ -136,8 +160,10 @@ class ComponentApp extends Component {
       endpoint: process.env.REACT_APP_API_PATH_LOCAL,
       cookies: () => this.GetCookies(),
     };
+    const menu = this.GetMenuCookies() || "pacientes";
+
     if (this.state.autenticado) {
-      return <ComponentDashboard global={global} Deslogin={this.Deslogin} />;
+      return <ComponentDashboard global={global} Deslogin={this.Deslogin} menu={menu} SetMenuCookie={this.SetMenuCookie} />;
     } else {
       return <ComponentLogin Login={this.Login} global={global} />;
     }

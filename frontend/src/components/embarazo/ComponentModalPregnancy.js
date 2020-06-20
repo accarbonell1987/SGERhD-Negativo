@@ -20,7 +20,14 @@ class ComponentModalPregnancy extends Component {
   componentDidMount = () => {
     this.ClearModalState();
   };
-
+  shouldComponentUpdate() {
+    const data = this.props.global.cookies();
+    if (!data) {
+      this.props.Deslogin();
+      return false;
+    }
+    return true;
+  }
   //#region Metodos y Eventos
   ChangeModalState = async (evt, allow) => {
     if (allow) {
@@ -92,8 +99,9 @@ class ComponentModalPregnancy extends Component {
 
   //#region Render
   render() {
+    const data = this.props.global.cookies();
     //buscar el permiso del rol
-    const permiso = this.props.permisos.find((p) => p.rol === this.props.global.rol);
+    const permiso = this.props.permisos.find((p) => p.rol === data.rol);
     //buscar el acceso del menu
     const accesomenu = permiso.accesos.find((p) => p.opcion === "embarazos");
     const headerlabel = "Listado de Embarazos De: " + this.props.paciente.nombre + " " + this.props.paciente.apellidos;
@@ -103,10 +111,9 @@ class ComponentModalPregnancy extends Component {
         <Header icon="heartbeat" content={headerlabel} />
         <Modal.Content>
           <ComponentPregnancies
+            Deslogin={this.props.Deslogin}
             middleButtonAdd={true}
             global={this.props.global}
-            roles={this.props.roles}
-            permisos={this.props.permisos}
             pacientes={this.props.pacientes}
             embarazos={this.props.embarazos}
             GetDataFromServer={this.props.GetDataFromServer}

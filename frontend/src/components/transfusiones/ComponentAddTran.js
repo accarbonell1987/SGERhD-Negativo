@@ -31,8 +31,8 @@ class ComponentAddTran extends Component {
   constructor(props) {
     super(props);
 
-    this.setDate = this.setDate.bind(this);
-    this.addTran = this.addTran.bind(this);
+    this.SetDate = this.SetDate.bind(this);
+    this.AddTran = this.AddTran.bind(this);
     this.ChangeModalInput = this.ChangeModalInput.bind(this);
     this.ChangeModalState = this.ChangeModalState.bind(this);
     this.ClearModalState = this.ClearModalState.bind(this);
@@ -45,41 +45,54 @@ class ComponentAddTran extends Component {
   componentDidMount() {
     this.ClearModalState();
   }
+  shouldComponentUpdate() {
+    const data = this.props.global.cookies();
+    if (!data) {
+      this.props.Deslogin();
+      return false;
+    }
+    return true;
+  }
   //adicionar nuevo paciente
-  addTran = async () => {
-    const { fecha, reaccionAdversa, observaciones, paciente, activo } = this.state;
-    const tran = {
-      fecha: fecha,
-      reaccionAdversa: reaccionAdversa,
-      observaciones: observaciones,
-      paciente: paciente,
-      activo: activo,
-    };
-    //la promise debe de devolver un valor RETURN
-    try {
-      const res = await fetch(this.props.global.endpoint + "api/transfusion/", {
-        method: "POST",
-        body: JSON.stringify(tran),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "access-token": this.props.global.token,
-        },
-      });
-      let data = await res.json();
-      //capturar respuesta
-      const { status, message } = data;
-      if (status === 200) {
-        this.ClearModalState();
-        Swal.fire({ position: "center", icon: "success", title: message, showConfirmButton: false, timer: 3000 });
-        return true;
-      } else {
-        Swal.fire({ position: "center", icon: "error", title: message, showConfirmButton: false, timer: 5000 });
+  AddTran = async () => {
+    //chequear que las cookies tengan los datos necesarios
+    const data = this.props.global.cookies();
+    if (!data) this.props.Deslogin();
+    else {
+      const { fecha, reaccionAdversa, observaciones, paciente, activo } = this.state;
+      const tran = {
+        fecha: fecha,
+        reaccionAdversa: reaccionAdversa,
+        observaciones: observaciones,
+        paciente: paciente,
+        activo: activo,
+      };
+      //la promise debe de devolver un valor RETURN
+      try {
+        const res = await fetch(this.props.global.endpoint + "api/transfusion/", {
+          method: "POST",
+          body: JSON.stringify(tran),
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "access-token": data.token,
+          },
+        });
+        let serverdata = await res.json();
+        //capturar respuesta
+        const { status, message } = serverdata;
+        if (status === 200) {
+          this.ClearModalState();
+          Swal.fire({ position: "center", icon: "success", title: message, showConfirmButton: false, timer: 3000 });
+          return true;
+        } else {
+          Swal.fire({ position: "center", icon: "error", title: message, showConfirmButton: false, timer: 5000 });
+          return false;
+        }
+      } catch (err) {
+        Swal.fire({ position: "center", icon: "error", title: err, showConfirmButton: false, timer: 5000 });
         return false;
       }
-    } catch (err) {
-      Swal.fire({ position: "center", icon: "error", title: err, showConfirmButton: false, timer: 5000 });
-      return false;
     }
   };
   //validar el formulario
@@ -95,6 +108,26 @@ class ComponentAddTran extends Component {
       [name]: value,
     });
   };
+  //al presionar la tecla de ENTER
+  OnPressEnter = (evt) => {
+    const disabled = !this.state.fecha || !this.state.paciente;
+    if (evt.keyCode === 13 && !evt.shiftKey && !disabled) {
+      evt.preventDefault();
+      this.OnSubmit(evt);
+    }
+  };
+  //al enviar a aplicar el formulario
+  OnSubmit = async (evt) => {
+    //si no hay problemas en el formulario
+    if (this.HandleSubmit(evt) === false) {
+      //si no hay problemas en la insercion
+      if (await this.AddTran()) {
+        //enviar a recargar los pacientes
+        this.props.GetDataFromServer();
+        this.ClearModalState();
+      }
+    }
+  };
   //cambiar el estado en el MODAL para adicionar
   ChangeModalState = async (evt) => {
     if (evt.target.className.includes("modal-button-add") || evt.target.className.includes("modal-icon-add")) {
@@ -103,15 +136,7 @@ class ComponentAddTran extends Component {
     } else if (evt.target.className.includes("modal-button-cancel") || evt.target.className.includes("modal-icon-cancel")) {
       this.setState({ openModal: false });
     } else {
-      //si no hay problemas en el formulario
-      if (this.HandleSubmit(evt) === false) {
-        //si no hay problemas en la insercion
-        if (await this.addTran()) {
-          //enviar a recargar los pacientes
-          this.props.GetDataFromServer();
-          this.ClearModalState();
-        }
-      }
+      this.OnSubmit(evt);
     }
   };
   //limpiar states
@@ -137,7 +162,7 @@ class ComponentAddTran extends Component {
     });
   };
   //capturar fecha
-  setDate = (fecha) => {
+  SetDate = (fecha) => {
     this.setState({ fecha: fecha });
   };
   ChangeIconInAddButton = (change) => {
@@ -170,7 +195,7 @@ class ComponentAddTran extends Component {
             <Form.Group>
               <Segment className="modal-segment-expanded">
                 <Header as="h5">Fecha:</Header>
-                <ComponentInputDatePicker setDate={this.setDate} />
+                <ComponentInputDatePicker SetDate={this.SetDate} />
               </Segment>
             </Form.Group>
             <Form.Group>

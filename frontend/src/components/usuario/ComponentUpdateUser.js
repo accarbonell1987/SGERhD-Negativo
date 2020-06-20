@@ -36,6 +36,14 @@ class ComponentUpdateUser extends Component {
   //#endregion
 
   //#region Metodos y Eventos
+  shouldComponentUpdate() {
+    const data = this.props.global.cookies();
+    if (!data) {
+      this.props.Deslogin();
+      return false;
+    }
+    return true;
+  }
   SwalAlert = (posicion, icon, mensaje, tiempo) => {
     Swal.fire({
       position: posicion,

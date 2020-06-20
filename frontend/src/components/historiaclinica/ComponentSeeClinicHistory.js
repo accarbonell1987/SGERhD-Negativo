@@ -1,13 +1,17 @@
-//Importaciones
+//#region Importaciones
 import React, { Component } from "react";
 import { Button, Icon, Header, Modal, Form, Segment } from "semantic-ui-react";
+//#endregion
 
-//CSS
+//#region CSS
 import "../global/css/Gestionar.css";
+//#endregion
 
-//Componentes
+//#region Componentes
 import ComponentAddClinicHistory from "./ComponentAddClinicHistory";
+//#endregion
 
+//#region Definicion de Clase
 class ComponentSeeClinicHistory extends Component {
   state = {
     openModal: false,
@@ -171,17 +175,19 @@ class ComponentSeeClinicHistory extends Component {
     } else
       return (
         <ComponentAddClinicHistory
+          Deslogin={this.props.Deslogin}
           GetDataFromServer={this.props.GetDataFromServer}
           global={this.props.global}
-          roles={this.props.roles}
           pacientes={this.props.pacientes}
           historiasclinicas={this.props.historiasclinicas}
           cambiarIcono={true}
           paciente={this.props.paciente}
-          permisos={this.props.permisos}
         />
       );
   }
 }
+//#endregion
 
+//#region Exports
 export default ComponentSeeClinicHistory;
+//#endregion

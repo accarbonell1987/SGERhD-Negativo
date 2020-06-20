@@ -21,87 +21,99 @@ class ComponentClinicHistory extends Component {
   constructor(props) {
     super(props);
 
-    this.deleteClinicHistory = this.deleteClinicHistory.bind(this);
+    this.DeleteClinicHistory = this.DeleteClinicHistory.bind(this);
   }
   //#endregion
 
   //#region Metodos y Eventos
+  shouldComponentUpdate() {
+    const data = this.props.global.cookies();
+    if (!data) {
+      this.props.Deslogin();
+      return false;
+    }
+    return true;
+  }
   //eliminar el historia clinica
-  deleteClinicHistory = (historia) => {
-    //Esta seguro?
-    let { text, accion } = "";
-    if (historia.activo) accion = "Desactivar";
-    else accion = "Eliminar";
-    text = "Desea " + accion + " la historia clinica perteneciente al paciente: " + historia.paciente.nombre + " " + historia.paciente.apellidos;
+  DeleteClinicHistory = (historia) => {
+    //chequear que las cookies tengan los datos necesarios
+    const data = this.props.global.cookies();
+    if (!data) this.props.Deslogin();
+    else {
+      //Esta seguro?
+      let { text, accion } = "";
+      if (historia.activo) accion = "Desactivar";
+      else accion = "Eliminar";
+      text = "Desea " + accion + " la historia clinica perteneciente al paciente: " + historia.paciente.nombre + " " + historia.paciente.apellidos;
 
-    Swal.fire({
-      title: "¿Esta seguro?",
-      text: text,
-      icon: "question",
-      showCancelButton: true,
-      cancelButtonColor: "#db2828",
-      confirmButtonColor: "#21ba45",
-      confirmButtonText: "Si, " + accion,
-      reverseButtons: true,
-    }).then((result) => {
-      //si escogio Si
-      if (result.value) {
-        //enviar al endpoint
-        fetch(this.props.global.endpoint + "api/historiaclinica/" + historia._id, {
-          method: "PUT",
-          body: JSON.stringify(historia),
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "access-token": this.props.global.token,
-          },
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            const { status, message } = data;
-            //recargar todas las historias y todos los pacientes
-
-            //chequear el mensaje
-            status === 200
-              ? Swal.fire({
-                  position: "center",
-                  icon: "success",
-                  title: message,
-                  showConfirmButton: false,
-                  timer: 3000,
-                })
-              : Swal.fire({
-                  position: "center",
-                  icon: "error",
-                  title: message,
-                  showConfirmButton: false,
-                  timer: 5000,
-                });
-
-            this.props.GetDataFromServer();
+      Swal.fire({
+        title: "¿Esta seguro?",
+        text: text,
+        icon: "question",
+        showCancelButton: true,
+        cancelButtonColor: "#db2828",
+        confirmButtonColor: "#21ba45",
+        confirmButtonText: "Si, " + accion,
+        reverseButtons: true,
+      }).then((result) => {
+        //si escogio Si
+        if (result.value) {
+          //enviar al endpoint
+          fetch(this.props.global.endpoint + "api/historiaclinica/" + historia._id, {
+            method: "PUT",
+            body: JSON.stringify(historia),
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "access-token": data.token,
+            },
           })
-          .catch((err) => {
-            Swal.fire({
-              position: "center",
-              icon: "error",
-              title: err,
-              showConfirmButton: false,
-              timer: 5000,
+            .then((res) => res.json())
+            .then((serverdata) => {
+              const { status, message } = serverdata;
+              //recargar todas las historias y todos los pacientes
+
+              //chequear el mensaje
+              status === 200
+                ? Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: message,
+                    showConfirmButton: false,
+                    timer: 3000,
+                  })
+                : Swal.fire({
+                    position: "center",
+                    icon: "error",
+                    title: message,
+                    showConfirmButton: false,
+                    timer: 5000,
+                  });
+
+              this.props.GetDataFromServer();
+            })
+            .catch((err) => {
+              Swal.fire({
+                position: "center",
+                icon: "error",
+                title: err,
+                showConfirmButton: false,
+                timer: 5000,
+              });
             });
-          });
-      }
-    });
+        }
+      });
+    }
   };
   CheckAndAllowAddButton = (middleButtonAdd, allow) => {
     if (allow)
       return (
         <ComponentAddClinicHistory
+          Deslogin={this.props.Deslogin}
           GetDataFromServer={this.props.GetDataFromServer}
           global={this.props.global}
-          roles={this.props.roles}
           pacientes={this.props.pacientes}
           historiasclinicas={this.props.historiasclinicas}
-          permisos={this.props.permisos}
         />
       );
     else
@@ -116,8 +128,9 @@ class ComponentClinicHistory extends Component {
 
   //#region Render
   render() {
+    const data = this.props.global.cookies();
     //buscar el permiso del rol
-    const permiso = this.props.permisos.find((p) => p.rol === this.props.global.rol);
+    const permiso = this.props.global.permisos.find((p) => p.rol === data.rol);
     //buscar el acceso del menu
     const accesomenu = permiso.accesos.find((p) => p.opcion === "historiaclinica");
     //chequear si es historiasclinica y tengo permiso
@@ -174,23 +187,23 @@ class ComponentClinicHistory extends Component {
                       <Table.Cell>{historia.numeroDePartos}</Table.Cell>
                       <Table.Cell>{historia.numeroDeAbortos}</Table.Cell>
                       <Table.Cell className="cells-max-witdh-2" collapsing>
-                        <ComponentSeePatient paciente={historia.paciente} global={this.props.global} roles={this.props.roles} />
+                        <ComponentSeePatient Deslogin={this.props.Deslogin} paciente={historia.paciente} global={this.props.global} roles={this.props.roles} />
                       </Table.Cell>
                       <Table.Cell className="cells-max-witdh-2" collapsing>
                         <Checkbox toggle name="activo" labelPosition="left" label={historia.activo ? "Si" : "No"} checked={historia.activo} disabled />
                       </Table.Cell>
                       <Table.Cell className="cells-max-witdh-2" collapsing>
                         {accesomenu.permisos.eliminar ? (
-                          <Button icon="remove circle" className="button-remove" onClick={() => this.deleteClinicHistory(historia)} />
+                          <Button icon="remove circle" className="button-remove" onClick={() => this.DeleteClinicHistory(historia)} />
                         ) : (
                           <Button icon="remove circle" className="button-remove" disabled />
                         )}
                         {accesomenu.permisos.modificar ? (
                           <ComponentUpdateClinicHistory
+                            Deslogin={this.props.Deslogin}
                             GetDataFromServer={this.props.GetDataFromServer}
                             historiaclinica={historia}
                             global={this.props.global}
-                            roles={this.props.roles}
                             pacientes={this.props.pacientes}
                             historiasclinicas={this.props.historiasclinicas}
                           />

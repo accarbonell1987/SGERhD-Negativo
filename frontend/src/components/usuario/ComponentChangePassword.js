@@ -29,6 +29,14 @@ class ComponentChangePassword extends Component {
     this.ChangeModalState = this.ChangeModalState.bind(this);
     this.HandleSubmit = this.HandleSubmit.bind(this);
   }
+  shouldComponentUpdate() {
+    const data = this.props.global.cookies();
+    if (!data) {
+      this.props.Deslogin();
+      return false;
+    }
+    return true;
+  }
   //modificar usuario
   updateUser = async (id) => {
     const { contraseña } = this.state;

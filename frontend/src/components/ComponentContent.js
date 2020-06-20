@@ -34,6 +34,14 @@ class ComponentContent extends Component {
   componentDidMount = () => {
     this.GetDataFromServer();
   };
+  shouldComponentUpdate() {
+    const data = this.props.global.cookies();
+    if (!data) {
+      this.props.Deslogin();
+      return false;
+    }
+    return true;
+  }
 
   GetDataFromServer = () => {
     //chequear que las cookies tengan los datos necesarios

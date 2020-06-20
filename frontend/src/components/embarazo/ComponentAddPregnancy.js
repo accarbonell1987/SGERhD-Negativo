@@ -39,8 +39,8 @@ class ComponentAddPregnancy extends Component {
   constructor(props) {
     super(props);
 
-    this.setDate = this.setDate.bind(this);
-    this.addPregnancy = this.addPregnancy.bind(this);
+    this.SetDate = this.SetDate.bind(this);
+    this.AddPregnancy = this.AddPregnancy.bind(this);
     this.ChangeModalInput = this.ChangeModalInput.bind(this);
     this.ChangeModalState = this.ChangeModalState.bind(this);
     this.ClearModalState = this.ClearModalState.bind(this);
@@ -53,75 +53,88 @@ class ComponentAddPregnancy extends Component {
   componentDidMount() {
     this.ClearModalState();
   }
-  //adicionar nuevo paciente
-  addPregnancy = async () => {
-    let { fecha, observaciones, examenes, tipo, semanas, dias, findeembarazo, findeaborto, findeparto, paciente, activo } = this.state;
-    //limpiar segun el tip de embarazo
-    if (tipo === "Nuevo") {
-      findeembarazo = null;
-      findeaborto = null;
-      findeparto = null;
-    } else {
-      semanas = 0;
-      dias = 0;
+  shouldComponentUpdate() {
+    const data = this.props.global.cookies();
+    if (!data) {
+      this.props.Deslogin();
+      return false;
     }
-
-    const pregnancy = {
-      fecha: fecha,
-      observaciones: observaciones,
-      examenes: examenes,
-      tipo: tipo,
-      semanas: semanas,
-      dias: dias,
-      findeembarazo: findeembarazo,
-      findeaborto: findeaborto,
-      findeparto: findeparto,
-      paciente: paciente,
-      activo: activo,
-    };
-    //la promise debe de devolver un valor RETURN
-    try {
-      const res = await fetch(this.props.global.endpoint + "api/embarazo/", {
-        method: "POST",
-        body: JSON.stringify(pregnancy),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "access-token": this.props.global.token,
-        },
-      });
-      let data = await res.json();
-      //capturar respuesta
-      const { status, message } = data;
-      if (status === 200) {
-        this.ClearModalState();
-        Swal.fire({
-          position: "center",
-          icon: "success",
-          title: message,
-          showConfirmButton: false,
-          timer: 3000,
-        });
-        return true;
+    return true;
+  }
+  //adicionar nuevo paciente
+  AddPregnancy = async () => {
+    //chequear que las cookies tengan los datos necesarios
+    const data = this.props.global.cookies();
+    if (!data) this.props.Deslogin();
+    else {
+      let { fecha, observaciones, examenes, tipo, semanas, dias, findeembarazo, findeaborto, findeparto, paciente, activo } = this.state;
+      //limpiar segun el tip de embarazo
+      if (tipo === "Nuevo") {
+        findeembarazo = null;
+        findeaborto = null;
+        findeparto = null;
       } else {
+        semanas = 0;
+        dias = 0;
+      }
+
+      const pregnancy = {
+        fecha: fecha,
+        observaciones: observaciones,
+        examenes: examenes,
+        tipo: tipo,
+        semanas: semanas,
+        dias: dias,
+        findeembarazo: findeembarazo,
+        findeaborto: findeaborto,
+        findeparto: findeparto,
+        paciente: paciente,
+        activo: activo,
+      };
+      //la promise debe de devolver un valor RETURN
+      try {
+        const res = await fetch(this.props.global.endpoint + "api/embarazo/", {
+          method: "POST",
+          body: JSON.stringify(pregnancy),
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "access-token": data.token,
+          },
+        });
+        let serverdata = await res.json();
+        //capturar respuesta
+        const { status, message } = serverdata;
+        if (status === 200) {
+          this.ClearModalState();
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            title: message,
+            showConfirmButton: false,
+            timer: 3000,
+          });
+          return true;
+        } else {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: message,
+            showConfirmButton: false,
+            timer: 5000,
+          });
+          return false;
+        }
+      } catch (err) {
         Swal.fire({
           position: "center",
           icon: "error",
-          title: message,
+          title: err,
           showConfirmButton: false,
           timer: 5000,
         });
         return false;
       }
-    } catch (err) {
-      Swal.fire({
-        position: "center",
-        icon: "error",
-        title: err,
-        showConfirmButton: false,
-        timer: 5000,
-      });
-      return false;
     }
   };
   //validar el formulario
@@ -157,6 +170,26 @@ class ComponentAddPregnancy extends Component {
       [name]: value,
     });
   };
+  //al presionar la tecla de ENTER
+  OnPressEnter = (evt) => {
+    const disabled = !this.state.fecha || !this.state.paciente;
+    if (evt.keyCode === 13 && !evt.shiftKey && !disabled) {
+      evt.preventDefault();
+      this.OnSubmit(evt);
+    }
+  };
+  //al enviar a aplicar el formulario
+  OnSubmit = async (evt) => {
+    //si no hay problemas en el formulario
+    if (this.HandleSubmit(evt) === false) {
+      //si no hay problemas en la insercion
+      if (await this.AddPregnancy()) {
+        //enviar a recargar los pacientes
+        this.props.GetDataFromServer();
+        this.ClearModalState();
+      }
+    }
+  };
   //cambiar el estado en el MODAL para adicionar
   ChangeModalState = async (evt) => {
     if (evt.target.className.includes("modal-button-add") || evt.target.className.includes("modal-icon-add")) {
@@ -165,15 +198,7 @@ class ComponentAddPregnancy extends Component {
     } else if (evt.target.className.includes("modal-button-cancel") || evt.target.className.includes("modal-icon-cancel")) {
       this.setState({ openModal: false });
     } else {
-      //si no hay problemas en el formulario
-      if (this.HandleSubmit(evt) === false) {
-        //si no hay problemas en la insercion
-        if (await this.addPregnancy()) {
-          //enviar a recargar los pacientes
-          this.props.GetDataFromServer();
-          this.ClearModalState();
-        }
-      }
+      this.OnSubmit(evt);
     }
   };
   //limpiar states
@@ -214,7 +239,7 @@ class ComponentAddPregnancy extends Component {
     });
   };
   //capturar fecha
-  setDate = (fecha) => {
+  SetDate = (fecha) => {
     //calcular el dia de la semana
     const ahora = moment();
     const fechaSeleccionada = moment(fecha);
@@ -258,7 +283,7 @@ class ComponentAddPregnancy extends Component {
         </Button>
       );
   };
-  choseEndOfPregnancy = () => {
+  ChoseEndOfPregnancy = () => {
     if (this.state.findeembarazo === "Parto") {
       return (
         <Form.Group inline>
@@ -323,7 +348,7 @@ class ComponentAddPregnancy extends Component {
       );
     }
   };
-  choseType = () => {
+  ChoseType = () => {
     if (this.state.tipo === "Nuevo") {
       return (
         <Segment.Group className="segmentgroup-correct">
@@ -446,7 +471,7 @@ class ComponentAddPregnancy extends Component {
                   }}
                 />
               </Form.Group>
-              <Segment>{this.choseEndOfPregnancy()}</Segment>
+              <Segment>{this.ChoseEndOfPregnancy()}</Segment>
             </Segment>
           </Segment.Group>
         </Segment.Group>
@@ -466,7 +491,7 @@ class ComponentAddPregnancy extends Component {
             <Form.Group>
               <Segment className="modal-segment-expanded">
                 <Header as="h5">Fecha de Concepción:</Header>
-                <ComponentInputDatePicker setDate={this.setDate} />
+                <ComponentInputDatePicker SetDate={this.SetDate} />
               </Segment>
             </Form.Group>
             <Form.TextArea name="observaciones" label="Observaciones:" placeholder="Observaciones..." value={this.state.observaciones} onChange={this.ChangeModalInput} />
@@ -505,7 +530,7 @@ class ComponentAddPregnancy extends Component {
                 />
               </Form.Group>
             </Segment>
-            <Form.Group>{this.choseType()}</Form.Group>
+            <Form.Group>{this.ChoseType()}</Form.Group>
             <Form.Select
               name="paciente"
               label="Paciente:"

@@ -38,8 +38,8 @@ class ComponentAddClinicHistory extends Component {
   constructor(props) {
     super(props);
 
-    this.getLastInsertedClinicHistory = this.getLastInsertedClinicHistory.bind(this);
-    this.addClinicHistory = this.addClinicHistory.bind(this);
+    this.GetLastInsertedClinicHistory = this.GetLastInsertedClinicHistory.bind(this);
+    this.AddClinicHistory = this.AddClinicHistory.bind(this);
     this.ChangeModalInput = this.ChangeModalInput.bind(this);
     this.ChangeModalState = this.ChangeModalState.bind(this);
     this.ClearModalState = this.ClearModalState.bind(this);
@@ -52,47 +52,97 @@ class ComponentAddClinicHistory extends Component {
   componentDidMount() {
     this.ClearModalState();
   }
+  shouldComponentUpdate() {
+    const data = this.props.global.cookies();
+    if (!data) {
+      this.props.Deslogin();
+      return false;
+    }
+    return true;
+  }
   //adicionar nuevo paciente
-  addClinicHistory = async () => {
-    const { areaDeSalud, numerohistoria, vacunaAntiD, numeroDeEmbarazos, numeroDePartos, numeroDeAbortos, paciente, activo } = this.state;
+  AddClinicHistory = async () => {
+    //chequear que las cookies tengan los datos necesarios
+    const data = this.props.global.cookies();
+    if (!data) this.props.Deslogin();
+    else {
+      const { areaDeSalud, numerohistoria, vacunaAntiD, numeroDeEmbarazos, numeroDePartos, numeroDeAbortos, paciente, activo } = this.state;
 
-    const fecha = new Date();
-    const historiaclinica = {
-      fechaDeCreacion: fecha,
-      areaDeSalud: areaDeSalud,
-      numerohistoria: numerohistoria,
-      vacunaAntiD: vacunaAntiD,
-      numeroDeEmbarazos: numeroDeEmbarazos,
-      numeroDePartos: numeroDePartos,
-      numeroDeAbortos: numeroDeAbortos,
-      paciente: paciente,
-      activo: activo,
-    };
-    //la promise debe de devolver un valor RETURN
-    try {
-      const res = await fetch(this.props.global.endpoint + "api/historiaclinica/", {
-        method: "POST",
-        body: JSON.stringify(historiaclinica),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "access-token": this.props.global.token,
-        },
-      });
-      let data = await res.json();
-      //capturar respuesta
-      const { status, message } = data;
-      if (status === 200) {
-        this.ClearModalState();
+      const fecha = new Date();
+      const historiaclinica = {
+        fechaDeCreacion: fecha,
+        areaDeSalud: areaDeSalud,
+        numerohistoria: numerohistoria,
+        vacunaAntiD: vacunaAntiD,
+        numeroDeEmbarazos: numeroDeEmbarazos,
+        numeroDePartos: numeroDePartos,
+        numeroDeAbortos: numeroDeAbortos,
+        paciente: paciente,
+        activo: activo,
+      };
+      //la promise debe de devolver un valor RETURN
+      try {
+        const res = await fetch(this.props.global.endpoint + "api/historiaclinica/", {
+          method: "POST",
+          body: JSON.stringify(historiaclinica),
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "access-token": data.token,
+          },
+        });
+        let serverdata = await res.json();
+        //capturar respuesta
+        const { status, message } = serverdata;
+        if (status === 200) {
+          this.ClearModalState();
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            title: message,
+            showConfirmButton: false,
+            timer: 3000,
+          });
+          return true;
+        } else {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: message,
+            showConfirmButton: false,
+            timer: 5000,
+          });
+          return false;
+        }
+      } catch (err) {
         Swal.fire({
           position: "center",
-          icon: "success",
-          title: message,
+          icon: "error",
+          title: err,
           showConfirmButton: false,
-          timer: 3000,
+          timer: 5000,
         });
-        return true;
-      } else {
+        return false;
+      }
+    }
+  };
+  //obtener el ultimo
+  GetLastInsertedClinicHistory = async () => {
+    const cookiesdata = this.props.global.cookies();
+    if (!cookiesdata) this.props.Deslogin();
+    else {
+      //enviar al endpoint
+      const res = await fetch(this.props.global.endpoint + "api/historiaclinica/-1", {
+        method: "GET",
+        headers: {
+          "access-token": cookiesdata.token,
+        },
+      });
+      let serverdata = await res.json();
+      //capturar respuesta
+      const { status, message, data } = serverdata;
+      if (status === 200) return data;
+      else
         Swal.fire({
           position: "center",
           icon: "error",
@@ -100,40 +150,7 @@ class ComponentAddClinicHistory extends Component {
           showConfirmButton: false,
           timer: 5000,
         });
-        return false;
-      }
-    } catch (err) {
-      Swal.fire({
-        position: "center",
-        icon: "error",
-        title: err,
-        showConfirmButton: false,
-        timer: 5000,
-      });
-      return false;
     }
-  };
-  //obtener el ultimo
-  getLastInsertedClinicHistory = async () => {
-    //enviar al endpoint
-    const res = await fetch(this.props.global.endpoint + "api/historiaclinica/-1", {
-      method: "GET",
-      headers: {
-        "access-token": this.props.global.token,
-      },
-    });
-    let json = await res.json();
-    //capturar respuesta
-    const { status, message, data } = json;
-    if (status === 200) return data;
-    else
-      Swal.fire({
-        position: "center",
-        icon: "error",
-        title: message,
-        showConfirmButton: false,
-        timer: 5000,
-      });
   };
   //validar el formulario
   HandleSubmit = (evt) => {
@@ -156,6 +173,26 @@ class ComponentAddClinicHistory extends Component {
       [name]: value,
     });
   };
+  //al presionar la tecla de ENTER
+  OnPressEnter = (evt) => {
+    const disabled = !this.state.numerohistoria || !this.state.areaDeSalud || !this.state.paciente;
+    if (evt.keyCode === 13 && !evt.shiftKey && !disabled) {
+      evt.preventDefault();
+      this.OnSubmit(evt);
+    }
+  };
+  //al enviar a aplicar el formulario
+  OnSubmit = async (evt) => {
+    //si no hay problemas en el formulario
+    if (this.HandleSubmit(evt) === false) {
+      //si no hay problemas en la insercion
+      if (await this.AddClinicHistory()) {
+        //enviar a recargar los pacientes
+        this.props.GetDataFromServer();
+        this.ClearModalState();
+      }
+    }
+  };
   //cambiar el estado en el MODAL para adicionar
   ChangeModalState = async (evt) => {
     if (
@@ -169,15 +206,7 @@ class ComponentAddClinicHistory extends Component {
     } else if (evt.target.className.includes("modal-button-cancel") || evt.target.className.includes("modal-icon-cancel")) {
       this.setState({ openModal: false });
     } else {
-      //si no hay problemas en el formulario
-      if (this.HandleSubmit(evt) === false) {
-        //si no hay problemas en la insercion
-        if (await this.addClinicHistory()) {
-          //enviar a recargar los pacientes
-          this.props.GetDataFromServer();
-          this.ClearModalState();
-        }
-      }
+      this.OnSubmit(evt);
     }
   };
   //limpiar states
@@ -219,7 +248,7 @@ class ComponentAddClinicHistory extends Component {
     let numero = ano + mes + dia + "-0000";
 
     //busco el ultimo insertado
-    this.getLastInsertedClinicHistory().then((element) => {
+    this.GetLastInsertedClinicHistory().then((element) => {
       //chequeo que me devuelva un arreglo mayor que cero
       if (element.length > 0) {
         //convierto el numero de historia en un string
@@ -297,6 +326,7 @@ class ComponentAddClinicHistory extends Component {
                   value={this.state.areaDeSalud}
                   placeholder="Consultorio, Policlinico, Hospital"
                   onChange={this.ChangeModalInput}
+                  onKeyDown={this.OnPressEnter}
                 />
               </Segment>
               <Segment className="modal-segment-shortright">

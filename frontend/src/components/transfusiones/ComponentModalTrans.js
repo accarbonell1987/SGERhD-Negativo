@@ -20,7 +20,14 @@ class ComponentModalTrans extends Component {
   componentDidMount = () => {
     this.ClearModalState();
   };
-
+  shouldComponentUpdate() {
+    const data = this.props.global.cookies();
+    if (!data) {
+      this.props.Deslogin();
+      return false;
+    }
+    return true;
+  }
   //#region Metodos y Eventos
   ChangeModalState = async (evt, allow) => {
     if (allow) {
@@ -90,8 +97,9 @@ class ComponentModalTrans extends Component {
 
   //#region Render
   render() {
+    const data = this.props.global.cookies();
     //buscar el permiso del rol
-    const permiso = this.props.permisos.find((p) => p.rol === this.props.global.rol);
+    const permiso = this.props.global.permisos.find((p) => p.rol === data.rol);
     //buscar el acceso del menu
     const accesomenu = permiso.accesos.find((p) => p.opcion === "transfusiones");
     const headerlabel = "Listado de Transfusiones De: " + this.props.paciente.nombre + " " + this.props.paciente.apellidos;
@@ -103,8 +111,6 @@ class ComponentModalTrans extends Component {
           <ComponentTrans
             middleButtonAdd={true}
             global={this.props.global}
-            roles={this.props.roles}
-            permisos={this.props.permisos}
             pacientes={this.props.pacientes}
             transfusiones={this.props.transfusiones}
             GetDataFromServer={this.props.GetDataFromServer}

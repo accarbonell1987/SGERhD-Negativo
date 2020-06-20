@@ -26,6 +26,14 @@ class ComponentPatients extends Component {
     this.DeletePatient = this.DeletePatient.bind(this);
   }
 
+  shouldComponentUpdate() {
+    const data = this.props.global.cookies();
+    if (!data) {
+      this.props.Deslogin();
+      return false;
+    }
+    return true;
+  }
   //eliminar el paciente
   DeletePatient = (paciente) => {
     //chequear que las cookies tengan los datos necesarios
@@ -186,7 +194,13 @@ class ComponentPatients extends Component {
                       </Table.Cell>
                       <Table.Cell className="cells-max-witdh-2" collapsing>
                         {accesomenu.permisos.modificar ? (
-                          <ComponentChilds global={this.props.global} paciente={paciente} pacientes={this.props.pacientes} GetDataFromServer={this.props.GetDataFromServer} />
+                          <ComponentChilds
+                            Deslogin={this.props.Deslogin}
+                            global={this.props.global}
+                            paciente={paciente}
+                            pacientes={this.props.pacientes}
+                            GetDataFromServer={this.props.GetDataFromServer}
+                          />
                         ) : (
                           <Button icon labelPosition="right" className="modal-button-other">
                             <Icon name="child" className="modal-icon-other" />
@@ -195,16 +209,17 @@ class ComponentPatients extends Component {
                         )}
                       </Table.Cell>
                       <Table.Cell className="cells-max-witdh-2" collapsing>
-                        {/* <ComponentSeeClinicHistory
+                        <ComponentSeeClinicHistory
+                          Deslogin={this.props.Deslogin}
                           GetDataFromServer={this.props.GetDataFromServer}
                           global={this.props.global}
                           paciente={paciente}
                           pacientes={this.props.pacientes}
                           historiasclinicas={this.props.historiasclinicas}
-                        /> */}
+                        />
                       </Table.Cell>
                       <Table.Cell className="cells-max-witdh-2" collapsing>
-                        {/* <ComponentModalTran
+                        <ComponentModalTran
                           Deslogin={this.props.Deslogin}
                           global={this.props.global}
                           pacientes={this.props.pacientes}
@@ -212,7 +227,7 @@ class ComponentPatients extends Component {
                           transfusiones={paciente.transfusiones}
                           GetDataFromServer={this.props.GetDataFromServer}
                           cambiarIcono={true}
-                        /> */}
+                        />
                       </Table.Cell>
                       <Table.Cell className="cells-max-witdh-2" collapsing>
                         {/* <ComponentModalPregnancy
