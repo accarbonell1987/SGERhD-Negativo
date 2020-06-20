@@ -230,7 +230,7 @@ class ComponentPatients extends Component {
                         />
                       </Table.Cell>
                       <Table.Cell className="cells-max-witdh-2" collapsing>
-                        {/* <ComponentModalPregnancy
+                        <ComponentModalPregnancy
                           Deslogin={this.props.Deslogin}
                           global={this.props.global}
                           pacientes={this.props.pacientes}
@@ -238,7 +238,7 @@ class ComponentPatients extends Component {
                           embarazos={paciente.embarazos}
                           GetDataFromServer={this.props.GetDataFromServer}
                           cambiarIcono={true}
-                        /> */}
+                        />
                       </Table.Cell>
                       <Table.Cell className="cells-max-witdh-2" collapsing>
                         <Button icon labelPosition="right" className="button-childs">

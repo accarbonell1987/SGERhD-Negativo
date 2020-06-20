@@ -101,7 +101,7 @@ class ComponentModalPregnancy extends Component {
   render() {
     const data = this.props.global.cookies();
     //buscar el permiso del rol
-    const permiso = this.props.permisos.find((p) => p.rol === data.rol);
+    const permiso = this.props.global.permisos.find((p) => p.rol === data.rol);
     //buscar el acceso del menu
     const accesomenu = permiso.accesos.find((p) => p.opcion === "embarazos");
     const headerlabel = "Listado de Embarazos De: " + this.props.paciente.nombre + " " + this.props.paciente.apellidos;

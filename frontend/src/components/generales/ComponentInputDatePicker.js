@@ -5,6 +5,7 @@ import DateRangePicker from "react-daterange-picker";
 import "react-daterange-picker/dist/css/react-calendar.css";
 import moment from "moment";
 import { es } from "moment/locale/es";
+import Swal from "sweetalert2";
 //#endregion
 
 //#region CSS
@@ -18,13 +19,13 @@ const definitions = {
   unavailable: { color: "#78818b", label: "No Disponible" },
 };
 const ranges = [
-  {
-    state: "enquire",
-    range: moment.range(moment().add(2, "weeks").subtract(5, "days"), moment().add(2, "weeks").subtract(6, "days")),
-  },
+  // {
+  //   state: "enquire",
+  //   range: moment.range(moment().add(2, "weeks").subtract(5, "days"), moment().add(2, "weeks").subtract(6, "days")),
+  // },
   {
     state: "unavailable",
-    range: moment.range(moment().add(3, "weeks"), moment().add(3, "weeks").subtract(5, "days")),
+    range: moment.range(moment().subtract(0, "days"), moment().add(100, "years")),
   },
 ];
 //#endregion
@@ -43,7 +44,7 @@ class ComponentInputDatePicker extends Component {
   constructor(props) {
     super(props);
 
-    this.handleSelect = this.handleSelect.bind(this);
+    this.HandleSelect = this.HandleSelect.bind(this);
     this.ChangeModalState = this.ChangeModalState.bind(this);
     this.ClearModalState = this.ClearModalState.bind(this);
   }
@@ -52,12 +53,15 @@ class ComponentInputDatePicker extends Component {
     this.ClearModalState();
   }
 
-  handleSelect = (value, states) => {
-    this.setState({
-      fecha: value,
-      estados: states,
-      modoboton: true,
-    });
+  HandleSelect = (value, states) => {
+    const today = moment().subtract(1, "days");
+    if (today.isAfter(value)) {
+      this.setState({
+        fecha: value,
+        estados: states,
+        modoboton: true,
+      });
+    }
   };
   ChangeModalState = async (evt) => {
     if (evt.target.className.includes("modal-icon-fire") || evt.target.className.includes("modal-input-100p")) {
@@ -73,7 +77,7 @@ class ComponentInputDatePicker extends Component {
     //actualizar los states
     this.setState({
       openModal: false,
-      fecha: this.props.fecha,
+      fecha: this.props.fecha || moment().subtract(1, "days"),
       estados: null,
       idioma: idioma,
       fechaMinima: null,
@@ -111,7 +115,7 @@ class ComponentInputDatePicker extends Component {
             showLegend={false}
             locale={this.state.idioma}
             value={moment(this.state.fecha)}
-            onSelect={this.handleSelect}
+            onSelect={this.HandleSelect}
           />
         </Modal.Content>
         <Modal.Actions className="modal-action-centered">
