@@ -14,6 +14,8 @@ import ComponentClinicHistory from "./historiaclinica/ComponentClinicHistory";
 import ComponentTrans from "./transfusiones/ComponentTrans";
 import ComponentFooter from "./ComponentFooter";
 import ComponentPregnancies from "./embarazo/ComponentPregnancies";
+import ComponentTests from "./examen/ComponentTests";
+import ComponentPruebas from "./pruebas/ComponentPruebas";
 //#endregion
 
 //#region Defincion de la clase
@@ -24,6 +26,8 @@ class ComponentContent extends Component {
     historiasclinicas: [],
     transfusiones: [],
     embarazos: [],
+    examenes: [],
+    pruebas: [],
   };
 
   constructor(props) {
@@ -53,6 +57,8 @@ class ComponentContent extends Component {
       this.AllPatients();
       this.AllUsers();
       this.AllPregnancies();
+      this.AllTests();
+      this.AllPruebas();
     }
   };
 
@@ -166,6 +172,49 @@ class ComponentContent extends Component {
         Swal.fire({ position: "center", icon: "error", title: err, showConfirmButton: false, timer: 3000 });
       });
   };
+  //obtener todos los examenes desde la API
+  AllTests = async () => {
+    const data = this.props.global.cookies();
+
+    await fetch(this.props.global.endpoint + "api/examen", {
+      method: "GET",
+      headers: {
+        "access-token": data.token,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === 200) {
+          this.setState({ examenes: data.data });
+        } else {
+          Swal.fire({ position: "center", icon: "error", title: data.message, showConfirmButton: false, timer: 3000 });
+        }
+      })
+      .catch((err) => {
+        Swal.fire({ position: "center", icon: "error", title: err, showConfirmButton: false, timer: 3000 });
+      });
+  };
+  AllPruebas = async () => {
+    const data = this.props.global.cookies();
+
+    await fetch(this.props.global.endpoint + "api/prueba", {
+      method: "GET",
+      headers: {
+        "access-token": data.token,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === 200) {
+          this.setState({ examenes: data.data });
+        } else {
+          Swal.fire({ position: "center", icon: "error", title: data.message, showConfirmButton: false, timer: 3000 });
+        }
+      })
+      .catch((err) => {
+        Swal.fire({ position: "center", icon: "error", title: err, showConfirmButton: false, timer: 3000 });
+      });
+  };
 
   render() {
     const data = this.props.global.cookies();
@@ -230,6 +279,34 @@ class ComponentContent extends Component {
             global={this.props.global}
             pacientes={this.state.pacientes}
             embarazos={this.state.embarazos}
+            GetDataFromServer={this.GetDataFromServer}
+          />
+          <ComponentFooter />
+        </div>
+      );
+    } else if (this.props.opcionmenu === "examenes" && accesomenu.permisos.menu) {
+      return (
+        <div className="Content">
+          <ComponentTests
+            Deslogin={this.props.Deslogin}
+            global={this.props.global}
+            pacientes={this.state.pacientes}
+            embarazos={this.state.embarazos}
+            examenes={this.state.examenes}
+            pruebas={this.state.pruebas}
+            GetDataFromServer={this.GetDataFromServer}
+          />
+          <ComponentFooter />
+        </div>
+      );
+    } else if (this.props.opcionmenu === "pruebas" && accesomenu.permisos.menu) {
+      return (
+        <div className="Content">
+          <ComponentPruebas
+            Deslogin={this.props.Deslogin}
+            global={this.props.global}
+            examenes={this.state.examenes}
+            pruebas={this.state.pruebas}
             GetDataFromServer={this.GetDataFromServer}
           />
           <ComponentFooter />

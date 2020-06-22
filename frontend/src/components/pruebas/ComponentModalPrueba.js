@@ -8,11 +8,11 @@ import "../global/css/Gestionar.css";
 //#endregion
 
 //#region Componentes
-import ComponentPregnancies from "./ComponentPregnancies";
+import ComponentPruebas from "./ComponentPruebas";
 //#endregion
 
 //#region Defincion de la clase
-class ComponentModalPregnancy extends Component {
+class ComponentModalPrueba extends Component {
   state = {
     openModal: false,
   };
@@ -44,8 +44,8 @@ class ComponentModalPregnancy extends Component {
   };
   ChangeIconInAddButton = (allow, change) => {
     const position = this.props.middleButtonAdd ? "middle" : "right";
-    const cantEmbarazos = this.props.embarazos ? this.props.embarazos.length : 0;
-    const permitir = allow && this.props.paciente.sexo === "F";
+    const cantPruebas = this.props.pruebas ? this.props.pruebas.length : 0;
+    const permitir = allow;
     if (change)
       return (
         <Button
@@ -66,7 +66,7 @@ class ComponentModalPregnancy extends Component {
               this.ChangeModalState(evt, permitir);
             }}
           />
-          {cantEmbarazos}
+          {cantPruebas}
         </Button>
       );
     else
@@ -90,7 +90,7 @@ class ComponentModalPregnancy extends Component {
               this.ChangeModalState(evt, permitir);
             }}
           />
-          {cantEmbarazos}
+          {cantPruebas}
         </Button>
       );
   };
@@ -102,22 +102,21 @@ class ComponentModalPregnancy extends Component {
     //buscar el permiso del rol
     const permiso = this.props.global.permisos.find((p) => p.rol === data.rol);
     //buscar el acceso del menu
-    const accesomenu = permiso.accesos.find((p) => p.opcion === "embarazos");
-    const headerlabel = "Listado de Embarazos De: " + this.props.paciente.nombre + " " + this.props.paciente.apellidos;
+    const accesomenu = permiso.accesos.find((p) => p.opcion === "pruebas");
+    const headerlabel = "Listado de Pruebas: ";
     //chequear si es embarazos y tengo permiso
     return (
       <Modal className="modal-windows-pregnancies" open={this.state.openModal} trigger={this.ChangeIconInAddButton(accesomenu.permisos.menu, this.props.cambiarIcono)}>
         <Header icon="heartbeat" content={headerlabel} />
         <Modal.Content>
-          <ComponentPregnancies
+          <ComponentPruebas
             Deslogin={this.props.Deslogin}
             middleButtonAdd={true}
             global={this.props.global}
-            pacientes={this.props.pacientes}
-            embarazos={this.props.embarazos}
+            examenes={this.props.examenes}
             GetDataFromServer={this.props.GetDataFromServer}
             detail={true}
-            paciente={this.props.paciente}
+            examen={this.props.examen}
           />
         </Modal.Content>
         <Modal.Actions>
@@ -134,5 +133,5 @@ class ComponentModalPregnancy extends Component {
 //#endregion
 
 //#region Export
-export default ComponentModalPregnancy;
+export default ComponentModalPrueba;
 //#endregion

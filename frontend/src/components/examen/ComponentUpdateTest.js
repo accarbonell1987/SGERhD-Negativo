@@ -14,7 +14,7 @@ import ComponentInputDatePicker from "../generales/ComponentInputDatePicker";
 //#endregion
 
 //#region Definicion Clase
-class ComponentAddPregnancy extends Component {
+class ComponentUpdateTest extends Component {
   //#region Properties
   state = {
     openModal: false,
@@ -40,7 +40,6 @@ class ComponentAddPregnancy extends Component {
     super(props);
 
     this.SetDate = this.SetDate.bind(this);
-    this.AddPregnancy = this.AddPregnancy.bind(this);
     this.ChangeModalInput = this.ChangeModalInput.bind(this);
     this.ChangeModalState = this.ChangeModalState.bind(this);
     this.ClearModalState = this.ClearModalState.bind(this);
@@ -49,6 +48,16 @@ class ComponentAddPregnancy extends Component {
   //#endregion
 
   //#region Metodos y Eventos
+  SwalAlert = (posicion, icon, mensaje, tiempo) => {
+    Swal.fire({
+      position: posicion,
+      icon: icon,
+      title: mensaje,
+      showConfirmButton: false,
+      timer: tiempo,
+    });
+  };
+
   //componente se monto
   componentDidMount() {
     this.ClearModalState();
@@ -61,22 +70,13 @@ class ComponentAddPregnancy extends Component {
     }
     return true;
   }
-  //adicionar nuevo paciente
-  AddPregnancy = async () => {
+  //modificar usuario
+  UpdatePregnancy = async (id) => {
     //chequear que las cookies tengan los datos necesarios
     const data = this.props.global.cookies();
     if (!data) this.props.Deslogin();
     else {
-      let { fecha, observaciones, examenes, tipo, semanas, dias, findeembarazo, findeaborto, findeparto, paciente, activo } = this.state;
-      //limpiar segun el tip de embarazo
-      if (tipo === "Nuevo") {
-        findeembarazo = null;
-        findeaborto = null;
-        findeparto = null;
-      } else {
-        semanas = 0;
-        dias = 0;
-      }
+      const { fecha, observaciones, examenes, tipo, semanas, dias, findeembarazo, findeparto, findeaborto, paciente, activo } = this.state;
 
       const pregnancy = {
         fecha: fecha,
@@ -86,15 +86,15 @@ class ComponentAddPregnancy extends Component {
         semanas: semanas,
         dias: dias,
         findeembarazo: findeembarazo,
-        findeaborto: findeaborto,
         findeparto: findeparto,
+        findeaborto: findeaborto,
         paciente: paciente,
         activo: activo,
       };
       //la promise debe de devolver un valor RETURN
       try {
-        const res = await fetch(this.props.global.endpoint + "api/embarazo/", {
-          method: "POST",
+        const res = await fetch(this.props.global.endpoint + "api/embarazo/" + id, {
+          method: "PATCH",
           body: JSON.stringify(pregnancy),
           headers: {
             Accept: "application/json",
@@ -103,36 +103,16 @@ class ComponentAddPregnancy extends Component {
           },
         });
         let serverdata = await res.json();
-        //capturar respuesta
         const { status, message } = serverdata;
         if (status === 200) {
-          this.ClearModalState();
-          Swal.fire({
-            position: "center",
-            icon: "success",
-            title: message,
-            showConfirmButton: false,
-            timer: 3000,
-          });
+          this.SwalAlert("center", "success", message, 3000);
           return true;
         } else {
-          Swal.fire({
-            position: "center",
-            icon: "error",
-            title: message,
-            showConfirmButton: false,
-            timer: 5000,
-          });
+          this.SwalAlert("center", "error", message, 5000);
           return false;
         }
       } catch (err) {
-        Swal.fire({
-          position: "center",
-          icon: "error",
-          title: err,
-          showConfirmButton: false,
-          timer: 5000,
-        });
+        this.SwalAlert("center", "error", err, 5000);
         return false;
       }
     }
@@ -183,7 +163,7 @@ class ComponentAddPregnancy extends Component {
     //si no hay problemas en el formulario
     if (this.HandleSubmit(evt) === false) {
       //si no hay problemas en la insercion
-      if (await this.AddPregnancy()) {
+      if (await this.UpdatePregnancy(this.props.pregnancy._id)) {
         //enviar a recargar los pacientes
         this.props.GetDataFromServer();
         this.ClearModalState();
@@ -192,9 +172,23 @@ class ComponentAddPregnancy extends Component {
   };
   //cambiar el estado en el MODAL para adicionar
   ChangeModalState = async (evt) => {
-    if (evt.target.className.includes("modal-button-add") || evt.target.className.includes("modal-icon-add")) {
+    if (evt.target.className.includes("modal-button-action") || evt.target.className.includes("modal-icon")) {
       this.ClearModalState();
-      this.setState({ openModal: true });
+      this.SetDate(this.props.pregnancy.fecha);
+      this.setState({
+        openModal: true,
+        fecha: this.props.pregnancy.fecha,
+        observaciones: this.props.pregnancy.observaciones,
+        examenes: this.props.pregnancy.examenes,
+        tipo: this.props.pregnancy.tipo,
+        semanas: this.props.pregnancy.semanas,
+        dias: this.props.pregnancy.dias,
+        findeembarazo: this.props.pregnancy.findeembarazo,
+        findeaborto: this.props.pregnancy.findeaborto,
+        findeparto: this.props.pregnancy.findeparto,
+        paciente: this.props.pregnancy.paciente._id,
+        activo: this.props.pregnancy.activo,
+      });
     } else if (evt.target.className.includes("modal-button-cancel") || evt.target.className.includes("modal-icon-cancel")) {
       this.setState({ openModal: false });
     } else {
@@ -218,7 +212,7 @@ class ComponentAddPregnancy extends Component {
       }
     });
 
-    const paciente = this.props.paciente != null ? this.props.paciente._id : null;
+    const paciente = this.props.paciente != null ? this.props.paciente : null;
     //actualizar los states
     this.setState({
       openModal: false,
@@ -266,23 +260,7 @@ class ComponentAddPregnancy extends Component {
       dias: dias,
     });
   };
-  ChangeIconInAddButton = (change) => {
-    const position = this.props.middleButtonAdd ? "middle" : "right";
-    if (change)
-      return (
-        <Button icon floated={position} labelPosition="right" className="modal-button-add" onClick={this.ChangeModalState}>
-          <Icon name="add circle" className="modal-icon-add" onClick={this.ChangeModalState} />
-          Adicionar
-        </Button>
-      );
-    else
-      return (
-        <Button icon floated={position} labelPosition="left" primary size="small" onClick={this.ChangeModalState} className="modal-button-add">
-          <Icon name="add circle" className="modal-icon-add" />
-          Adicionar
-        </Button>
-      );
-  };
+  //escoger fin de embarazo
   ChoseEndOfPregnancy = () => {
     if (this.state.findeembarazo === "Parto") {
       return (
@@ -348,6 +326,7 @@ class ComponentAddPregnancy extends Component {
       );
     }
   };
+  //escoger tipo de embarazo
   ChoseType = () => {
     if (this.state.tipo === "Nuevo") {
       return (
@@ -483,15 +462,22 @@ class ComponentAddPregnancy extends Component {
   //#region Render
   render() {
     return (
-      <Modal open={this.state.openModal} trigger={this.ChangeIconInAddButton(this.props.cambiarIcono)}>
-        <Header icon="heartbeat" content="Adicionar Embarazo" />
+      <Modal
+        open={this.state.openModal}
+        trigger={
+          <Button className="modal-button-action" onClick={this.ChangeModalState}>
+            <Icon name="edit" className="modal-icon" onClick={this.ChangeModalState} />
+          </Button>
+        }
+      >
+        <Header icon="heartbeat" content="Modificar Embarazo" />
         <Modal.Content>
           {this.state.errorform ? <Message error inverted header="Error" content="Error en el formulario" /> : null}
           <Form ref="form" onSubmit={this.ChangeModalState}>
             <Form.Group>
               <Segment className="modal-segment-expanded">
                 <Header as="h5">Fecha de Concepción:</Header>
-                <ComponentInputDatePicker SetDate={this.SetDate} restringir={true} />
+                <ComponentInputDatePicker SetDate={this.SetDate} restringir={false} />
               </Segment>
             </Form.Group>
             <Form.TextArea name="observaciones" label="Observaciones:" placeholder="Observaciones..." value={this.state.observaciones} onChange={this.ChangeModalInput} />
@@ -544,6 +530,30 @@ class ComponentAddPregnancy extends Component {
               selection
               clearable
             />
+            <Form.Group>
+              <Segment className="modal-segment-expanded">
+                <Header as="h5">Activo:</Header>
+                <Form.Checkbox
+                  toggle
+                  name="activo"
+                  labelPosition="left"
+                  label={this.state.activo === true ? "Si" : "No"}
+                  value={this.state.activo}
+                  checked={this.state.activo}
+                  onChange={(evt) => {
+                    evt.preventDefault();
+                    //solo permito activar y en caso de que este desactivado
+                    if (!this.state.activo)
+                      this.setState({
+                        activo: !this.state.activo,
+                      });
+                    else {
+                      this.SwalAlert("center", "warning", "Solo se permite desactivar desde el bóton de Desactivar/Eliminar", 5000);
+                    }
+                  }}
+                />
+              </Segment>
+            </Form.Group>
           </Form>
         </Modal.Content>
         <Modal.Actions>
@@ -564,5 +574,5 @@ class ComponentAddPregnancy extends Component {
 //#endregion
 
 //#region Exports
-export default ComponentAddPregnancy;
+export default ComponentUpdateTest;
 //#endregion

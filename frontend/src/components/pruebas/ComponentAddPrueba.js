@@ -14,23 +14,19 @@ import ComponentInputDatePicker from "../generales/ComponentInputDatePicker";
 //#endregion
 
 //#region Definicion Clase
-class ComponentAddPregnancy extends Component {
+class ComponentAddPruebas extends Component {
   //#region Properties
   state = {
     openModal: false,
     fecha: null,
-    observaciones: "",
-    examenes: [],
-    tipo: "Nuevo",
-    semanas: 0,
-    dias: 0,
-    findeembarazo: "Parto", //parto o aborto
-    findeparto: "Natural", //natural o cesarea
-    findeaborto: "Interrumpido", //natural o interrumpido
-    paciente: null,
+    tipo: "Grupos Sanguineo",
+    examen: null,
+    grupoSanguineo: null,
+    identificacionAnticuerpo: null,
+    pesquizajeAnticuerpo: null,
+    pendiente: true,
     activo: true,
-    opcionPacientes: [],
-    errortiempogestacion: false,
+    opcionExamenes: [],
     errorform: false,
   };
   //#endregion
@@ -40,7 +36,7 @@ class ComponentAddPregnancy extends Component {
     super(props);
 
     this.SetDate = this.SetDate.bind(this);
-    this.AddPregnancy = this.AddPregnancy.bind(this);
+    this.AddPrueba = this.AddPrueba.bind(this);
     this.ChangeModalInput = this.ChangeModalInput.bind(this);
     this.ChangeModalState = this.ChangeModalState.bind(this);
     this.ClearModalState = this.ClearModalState.bind(this);
@@ -62,40 +58,27 @@ class ComponentAddPregnancy extends Component {
     return true;
   }
   //adicionar nuevo paciente
-  AddPregnancy = async () => {
+  AddPrueba = async () => {
     //chequear que las cookies tengan los datos necesarios
     const data = this.props.global.cookies();
     if (!data) this.props.Deslogin();
     else {
-      let { fecha, observaciones, examenes, tipo, semanas, dias, findeembarazo, findeaborto, findeparto, paciente, activo } = this.state;
-      //limpiar segun el tip de embarazo
-      if (tipo === "Nuevo") {
-        findeembarazo = null;
-        findeaborto = null;
-        findeparto = null;
-      } else {
-        semanas = 0;
-        dias = 0;
-      }
-
-      const pregnancy = {
+      let { fecha, tipo, examen, grupoSanguineo, identificacionAnticuerpo, pesquizajeAnticuerpo, pendiente, activo } = this.state;
+      const prueba = {
         fecha: fecha,
-        observaciones: observaciones,
-        examenes: examenes,
         tipo: tipo,
-        semanas: semanas,
-        dias: dias,
-        findeembarazo: findeembarazo,
-        findeaborto: findeaborto,
-        findeparto: findeparto,
-        paciente: paciente,
+        examen: examen,
+        grupoSanguineo: grupoSanguineo,
+        identificacionAnticuerpo: identificacionAnticuerpo,
+        pesquizajeAnticuerpo: pesquizajeAnticuerpo,
+        pendiente: pendiente,
         activo: activo,
       };
       //la promise debe de devolver un valor RETURN
       try {
-        const res = await fetch(this.props.global.endpoint + "api/embarazo/", {
+        const res = await fetch(this.props.global.endpoint + "api/prueba/", {
           method: "POST",
-          body: JSON.stringify(pregnancy),
+          body: JSON.stringify(prueba),
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
@@ -140,27 +123,7 @@ class ComponentAddPregnancy extends Component {
   //validar el formulario
   HandleSubmit = (evt) => {
     evt.preventDefault();
-
-    const errortiempogestacion =
-      this.state.tipo === "Nuevo"
-        ? !(this.state.semanas > 0 || this.state.dias > 0)
-          ? {
-              content: "El tiempo de gestación no puede ser cero",
-              pointing: "above",
-            }
-          : false
-        : false;
-
-    let etiempogestacion = Boolean(errortiempogestacion);
-
-    let errform = etiempogestacion;
-
-    this.setState({
-      errortiempogestacion: errortiempogestacion,
-      errorform: errform,
-    });
-
-    return errform;
+    return false;
   };
   //Actualiza los inputs con los valores que vamos escribiendo
   ChangeModalInput = (evt) => {
@@ -183,7 +146,7 @@ class ComponentAddPregnancy extends Component {
     //si no hay problemas en el formulario
     if (this.HandleSubmit(evt) === false) {
       //si no hay problemas en la insercion
-      if (await this.AddPregnancy()) {
+      if (await this.AddPrueba()) {
         //enviar a recargar los pacientes
         this.props.GetDataFromServer();
         this.ClearModalState();
@@ -204,70 +167,43 @@ class ComponentAddPregnancy extends Component {
   //limpiar states
   ClearModalState = () => {
     let opcion = [];
-    this.props.pacientes.forEach((p) => {
-      //solo almaceno los paciente que son hembras
-      if (p.sexo === "F") {
-        let nombreyapellidos = p.nombre + " " + p.apellidos;
-        let cur = {
-          key: p._id,
-          text: nombreyapellidos,
-          value: p._id,
-          icon: "wheelchair",
-        };
-        opcion = [...opcion, cur];
-      }
+    this.props.examenes.forEach((e) => {
+      let fechacadena = moment(new Date(e.fecha)).format("DD-MM-YYYY");
+      let datos = fechacadena + " - " + e.tipo;
+      let cur = {
+        key: e._id,
+        text: datos,
+        value: e._id,
+        icon: "tint",
+      };
+      opcion = [...opcion, cur];
     });
 
-    const paciente = this.props.paciente != null ? this.props.paciente._id : null;
+    const examen = this.props.examen != null ? this.props.examen._id : null;
     //actualizar los states
     this.setState({
       openModal: false,
       fecha: null,
-      observaciones: "",
-      examenes: [],
-      tipo: "Nuevo",
-      semanas: 0,
-      dias: 0,
-      findeembarazo: "Parto", //parto o aborto
-      findeparto: "Natural", //natural o cesarea
-      findeaborto: "Interrumpido", //natural o interrumpido
+      tipo: "Grupos Sanguineo",
+      examen: examen,
+      grupoSanguineo: null,
+      identificacionAnticuerpo: null,
+      pesquizajeAnticuerpo: null,
+      pendiente: true,
       activo: true,
-      paciente: paciente,
-      opcionPacientes: opcion,
-      errortiempogestacion: false,
+      opcionExamenes: opcion,
       errorform: false,
     });
   };
   //capturar fecha
   SetDate = (fecha) => {
-    //calcular el dia de la semana
-    const ahora = moment();
-    const fechaSeleccionada = moment(fecha);
-    const calculardiferenciasemanas = ahora.format("w") - fechaSeleccionada.format("w");
-
-    //diferencias de dias
-    let difdias = ahora.diff(fechaSeleccionada, "days");
-
-    let dias = 0;
-    let stop = false;
-    let diadesemana = 0;
-    while (!stop) {
-      //si los dias menos siete da resto cero
-      diadesemana = difdias - dias;
-      if (diadesemana % 7 === 0) stop = true;
-      else dias++;
-    }
-
-    let semana = calculardiferenciasemanas > 0 ? calculardiferenciasemanas : 0;
-    if (ahora.get("date") < diadesemana) semana--;
     this.setState({
       fecha: fecha,
-      semanas: semana,
-      dias: dias,
     });
   };
   ChangeIconInAddButton = (change) => {
     const position = this.props.middleButtonAdd ? "middle" : "right";
+    console.log(position);
     if (change)
       return (
         <Button icon floated={position} labelPosition="right" className="modal-button-add" onClick={this.ChangeModalState}>
@@ -349,130 +285,33 @@ class ComponentAddPregnancy extends Component {
     }
   };
   ChoseType = () => {
-    if (this.state.tipo === "Nuevo") {
+    if (this.state.tipo === "Grupos Sanguineo") {
       return (
         <Segment.Group className="segmentgroup-correct">
-          <Segment as="h5">Tiempo de Gestación:</Segment>
-          <Segment.Group horizontal>
-            <Segment>
-              <Form.Group>
-                <Form.Input
-                  className="modal-input-100p"
-                  required
-                  name="semanas"
-                  icon="calendar alternate outline"
-                  iconPosition="left"
-                  label="Semanas:"
-                  value={this.state.semanas}
-                  error={this.state.errortiempogestacion}
-                />
-                <Button.Group>
-                  <Button
-                    className="button-group-addsub"
-                    icon="plus"
-                    primary
-                    onClick={(evt) => {
-                      evt.preventDefault();
-                      this.setState({
-                        semanas: this.state.semanas + 1,
-                      });
-                    }}
-                  />
-                  <Button
-                    className="button-group-addsub"
-                    icon="minus"
-                    secondary
-                    disabled={this.state.semanas === 0}
-                    onClick={(evt) => {
-                      evt.preventDefault();
-                      this.setState({
-                        semanas: this.state.semanas - 1,
-                      });
-                    }}
-                  />
-                </Button.Group>
-              </Form.Group>
-            </Segment>
-            <Segment>
-              <Form.Group>
-                <Form.Input
-                  className="modal-input-100p"
-                  required
-                  name="dias"
-                  icon="calendar alternate"
-                  iconPosition="left"
-                  label="Dias:"
-                  value={this.state.dias}
-                  error={this.state.errortiempogestacion}
-                />
-                <Button.Group>
-                  <Button
-                    className="button-group-addsub"
-                    icon="plus"
-                    primary
-                    onClick={(evt) => {
-                      evt.preventDefault();
-                      this.setState({
-                        dias: this.state.dias + 1,
-                      });
-                    }}
-                  />
-                  <Button
-                    className="button-group-addsub"
-                    icon="minus"
-                    secondary
-                    disabled={this.state.dias === 0}
-                    onClick={(evt) => {
-                      evt.preventDefault();
-                      this.setState({
-                        dias: this.state.dias - 1,
-                      });
-                    }}
-                  />
-                </Button.Group>
-              </Form.Group>
-            </Segment>
+          <Segment as="h5">Grupo Sanguineo:</Segment>
+          <Segment.Group>
+            <Segment></Segment>
+            <Segment></Segment>
           </Segment.Group>
         </Segment.Group>
       );
-    } else {
+    } else if (this.state.tipo === "Identificación Anticuerpo") {
       return (
         <Segment.Group className="segmentgroup-correct">
-          <Segment.Group horizontal>
-            <Segment className="modal-segment-expanded-grouping">
-              <Form.Group inline>
-                <Header as="h5" className="header-custom">
-                  Fin de Embarazo:
-                </Header>
-                <Form.Radio
-                  name="radioparto"
-                  labelPosition="right"
-                  label="Parto"
-                  checked={this.state.findeembarazo === "Parto"}
-                  value={this.state.findeembarazo}
-                  onChange={(evt) => {
-                    evt.preventDefault();
-                    this.setState({
-                      findeembarazo: "Parto",
-                    });
-                  }}
-                />
-                <Form.Radio
-                  name="radioaborto"
-                  labelPosition="right"
-                  label="Aborto"
-                  checked={this.state.findeembarazo === "Aborto"}
-                  value={this.state.findeembarazo}
-                  onChange={(evt) => {
-                    evt.preventDefault();
-                    this.setState({
-                      findeembarazo: "Aborto",
-                    });
-                  }}
-                />
-              </Form.Group>
-              <Segment>{this.ChoseEndOfPregnancy()}</Segment>
-            </Segment>
+          <Segment as="h5">Identificación Anticuerpo:</Segment>
+          <Segment.Group>
+            <Segment></Segment>
+            <Segment></Segment>
+          </Segment.Group>
+        </Segment.Group>
+      );
+    } else if (this.state.tipo === "Pesquizaje Anticuerpo") {
+      return (
+        <Segment.Group className="segmentgroup-correct">
+          <Segment as="h5">Pesquizaje Anticuerpo:</Segment>
+          <Segment.Group>
+            <Segment></Segment>
+            <Segment></Segment>
           </Segment.Group>
         </Segment.Group>
       );
@@ -490,39 +329,53 @@ class ComponentAddPregnancy extends Component {
           <Form ref="form" onSubmit={this.ChangeModalState}>
             <Form.Group>
               <Segment className="modal-segment-expanded">
-                <Header as="h5">Fecha de Concepción:</Header>
-                <ComponentInputDatePicker SetDate={this.SetDate} restringir={true} />
+                <Header as="h5">Fecha:</Header>
+                <ComponentInputDatePicker SetDate={this.SetDate} restringir={false} />
               </Segment>
             </Form.Group>
-            <Form.TextArea name="observaciones" label="Observaciones:" placeholder="Observaciones..." value={this.state.observaciones} onChange={this.ChangeModalInput} />
             <Segment className="modal-segment-expanded-grouping">
               <Form.Group inline>
                 <Header as="h5" className="header-custom">
-                  Tipo de Embarazo:
+                  Tipo de Prueba:
                 </Header>
                 <Form.Radio
-                  name="radionuevo"
+                  name="radiogruposanguineo"
                   labelPosition="right"
-                  label="Nuevo"
-                  checked={this.state.tipo === "Nuevo"}
+                  label="Grupos Sanguineo"
+                  checked={this.state.tipo === "Grupos Sanguineo"}
                   value={this.state.tipo}
                   onChange={(evt) => {
                     evt.preventDefault();
                     this.setState({
-                      tipo: "Nuevo",
+                      tipo: "Grupos Sanguineo",
                     });
                   }}
                 />
                 <Form.Radio
-                  name="radioantiguo"
+                  name="radioidentificacionanticuerpo"
                   labelPosition="right"
-                  label="Antiguo"
-                  checked={this.state.tipo === "Antiguo"}
+                  label="Identificación Anticuerpo"
+                  checked={this.state.tipo === "Identificación Anticuerpo"}
                   value={this.state.tipo}
                   onChange={(evt) => {
                     evt.preventDefault();
                     this.setState({
-                      tipo: "Antiguo",
+                      tipo: "Identificación Anticuerpo",
+                      semanas: 0,
+                      dias: 0,
+                    });
+                  }}
+                />
+                <Form.Radio
+                  name="radiopesquizajeanticuerpo"
+                  labelPosition="right"
+                  label="Pesquizaje Anticuerpo"
+                  checked={this.state.tipo === "Pesquizaje Anticuerpo"}
+                  value={this.state.tipo}
+                  onChange={(evt) => {
+                    evt.preventDefault();
+                    this.setState({
+                      tipo: "Pesquizaje Anticuerpo",
                       semanas: 0,
                       dias: 0,
                     });
@@ -532,13 +385,13 @@ class ComponentAddPregnancy extends Component {
             </Segment>
             <Form.Group>{this.ChoseType()}</Form.Group>
             <Form.Select
-              name="paciente"
-              label="Paciente:"
-              placeholder="Seleccionar Paciente"
-              options={this.state.opcionPacientes}
-              value={this.state.paciente}
+              name="examen"
+              label="Examen:"
+              placeholder="Seleccionar Examen"
+              options={this.state.opcionExamenes}
+              value={this.state.examen}
               onChange={(e, { value }) => {
-                this.setState({ paciente: value });
+                this.setState({ examen: value });
               }}
               fluid
               selection
@@ -564,5 +417,5 @@ class ComponentAddPregnancy extends Component {
 //#endregion
 
 //#region Exports
-export default ComponentAddPregnancy;
+export default ComponentAddPruebas;
 //#endregion

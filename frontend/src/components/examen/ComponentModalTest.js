@@ -8,11 +8,11 @@ import "../global/css/Gestionar.css";
 //#endregion
 
 //#region Componentes
-import ComponentPregnancies from "./ComponentPregnancies";
+import ComponentTests from "./ComponentTests";
 //#endregion
 
 //#region Defincion de la clase
-class ComponentModalPregnancy extends Component {
+class ComponentModalTest extends Component {
   state = {
     openModal: false,
   };
@@ -44,8 +44,8 @@ class ComponentModalPregnancy extends Component {
   };
   ChangeIconInAddButton = (allow, change) => {
     const position = this.props.middleButtonAdd ? "middle" : "right";
-    const cantEmbarazos = this.props.embarazos ? this.props.embarazos.length : 0;
-    const permitir = allow && this.props.paciente.sexo === "F";
+    const cantExamenes = this.props.examenes ? this.props.examenes.length : 0;
+    const permitir = allow;
     if (change)
       return (
         <Button
@@ -66,7 +66,7 @@ class ComponentModalPregnancy extends Component {
               this.ChangeModalState(evt, permitir);
             }}
           />
-          {cantEmbarazos}
+          {cantExamenes}
         </Button>
       );
     else
@@ -90,7 +90,7 @@ class ComponentModalPregnancy extends Component {
               this.ChangeModalState(evt, permitir);
             }}
           />
-          {cantEmbarazos}
+          {cantExamenes}
         </Button>
       );
   };
@@ -102,22 +102,35 @@ class ComponentModalPregnancy extends Component {
     //buscar el permiso del rol
     const permiso = this.props.global.permisos.find((p) => p.rol === data.rol);
     //buscar el acceso del menu
-    const accesomenu = permiso.accesos.find((p) => p.opcion === "embarazos");
-    const headerlabel = "Listado de Embarazos De: " + this.props.paciente.nombre + " " + this.props.paciente.apellidos;
+    const accesomenu = permiso.accesos.find((p) => p.opcion === "examenes");
+    const headerlabel = "Listado de Examenes: ";
     //chequear si es embarazos y tengo permiso
+
+    //donde almacenar las pruebas
+    var pruebas = [];
+    //las pruebas de los embarazos
+    this.props.embarazos.forEach((embarazo) => {
+      return embarazo.examenes.forEach((examen) => (pruebas = [...pruebas, examen.pruebas]));
+    });
+    //las pruebas de los examenes
+    this.props.examenes.forEach((examen) => (pruebas = [...pruebas, examen.pruebas]));
+
     return (
       <Modal className="modal-windows-pregnancies" open={this.state.openModal} trigger={this.ChangeIconInAddButton(accesomenu.permisos.menu, this.props.cambiarIcono)}>
-        <Header icon="heartbeat" content={headerlabel} />
+        <Header icon="clipboard list" content={headerlabel} />
         <Modal.Content>
-          <ComponentPregnancies
+          <ComponentTests
             Deslogin={this.props.Deslogin}
             middleButtonAdd={true}
             global={this.props.global}
             pacientes={this.props.pacientes}
             embarazos={this.props.embarazos}
+            examenes={this.props.examenes}
+            pruebas={pruebas}
             GetDataFromServer={this.props.GetDataFromServer}
             detail={true}
             paciente={this.props.paciente}
+            embarazo={this.props.embarazo}
           />
         </Modal.Content>
         <Modal.Actions>
@@ -134,5 +147,5 @@ class ComponentModalPregnancy extends Component {
 //#endregion
 
 //#region Export
-export default ComponentModalPregnancy;
+export default ComponentModalTest;
 //#endregion

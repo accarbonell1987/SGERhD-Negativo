@@ -20,11 +20,12 @@ class ComponentMenu extends Component {
 
   menus = [
     { name: "usuarios", icon: "users", visible: false, label: "Usuarios", enabled: true },
-    { name: "historiaclinica", icon: "clipboard", visible: false, label: "Historia Clínica", enabled: true },
     { name: "pacientes", icon: "wheelchair", visible: false, label: "Pacientes", enabled: true },
-    { name: "examenes", icon: "clipboard list", visible: false, label: "Exámenes", enabled: false },
+    { name: "historiaclinica", icon: "clipboard", visible: false, label: "Historia Clínica", enabled: true },
     { name: "transfusiones", icon: "tint", visible: false, label: "Transfusiones", enabled: true },
     { name: "embarazos", icon: "heartbeat", visible: false, label: "Embarazos", enabled: true },
+    { name: "examenes", icon: "clipboard list", visible: false, label: "Exámenes", enabled: true },
+    { name: "pruebas", icon: "syringe", visible: false, label: "Pruebas", enabled: true },
   ];
 
   constructor(props) {

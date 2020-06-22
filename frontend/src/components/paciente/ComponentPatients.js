@@ -16,6 +16,7 @@ import ComponentChilds from "./ComponentChilds";
 import ComponentSeeClinicHistory from "../historiaclinica/ComponentSeeClinicHistory";
 import ComponentModalTran from "../transfusiones/ComponentModalTrans";
 import ComponentModalPregnancy from "../embarazo/ComponentModalPregnancy";
+import ComponentModalTest from "../examen/ComponentModalTest";
 //#endregion
 
 //#region Defincion de la clase
@@ -241,9 +242,16 @@ class ComponentPatients extends Component {
                         />
                       </Table.Cell>
                       <Table.Cell className="cells-max-witdh-2" collapsing>
-                        <Button icon labelPosition="right" className="button-childs">
-                          <Icon name="heartbeat" className="button-icon-childs" />0
-                        </Button>
+                        <ComponentModalTest
+                          Deslogin={this.props.Deslogin}
+                          global={this.props.global}
+                          pacientes={this.props.pacientes}
+                          embarazos={paciente.embarazos}
+                          examenes={paciente.examenes}
+                          paciente={paciente}
+                          GetDataFromServer={this.props.GetDataFromServer}
+                          cambiarIcono={true}
+                        />
                       </Table.Cell>
                       <Table.Cell className="cells-max-witdh-2" collapsing>
                         <Checkbox toggle name="activo" labelPosition="left" label={paciente.activo ? "Si" : "No"} checked={paciente.activo} disabled />

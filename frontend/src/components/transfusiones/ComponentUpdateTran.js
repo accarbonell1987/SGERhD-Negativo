@@ -201,7 +201,7 @@ class ComponentUpdateTran extends Component {
             <Form.Group>
               <Segment className="modal-segment-expanded">
                 <Header as="h5">Fecha:</Header>
-                <ComponentInputDatePicker SetDate={this.SetDate} fecha={this.state.fecha} />
+                <ComponentInputDatePicker SetDate={this.SetDate} fecha={this.state.fecha} restringir={false} />
               </Segment>
             </Form.Group>
             <Form.Group>

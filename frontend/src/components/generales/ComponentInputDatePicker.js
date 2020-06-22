@@ -5,7 +5,6 @@ import DateRangePicker from "react-daterange-picker";
 import "react-daterange-picker/dist/css/react-calendar.css";
 import moment from "moment";
 import { es } from "moment/locale/es";
-import Swal from "sweetalert2";
 //#endregion
 
 //#region CSS
@@ -85,6 +84,7 @@ class ComponentInputDatePicker extends Component {
   };
 
   render() {
+    const rangos = this.props.restringir ? ranges : null;
     return (
       <Modal
         className="modal-datepicker"
@@ -109,7 +109,7 @@ class ComponentInputDatePicker extends Component {
             numberOfCalendars={1}
             selectionType="single"
             stateDefinitions={definitions}
-            dateStates={ranges}
+            dateStates={rangos}
             singleDateRange={true}
             defaultState="available"
             showLegend={false}

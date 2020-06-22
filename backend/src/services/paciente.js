@@ -4,8 +4,10 @@ var mongoose = require("mongoose");
 //#endregion
 
 //#region Servicios
-const ClinicHistoryService = require("../services/historiaclinica");
-const TransService = require("../services/trans");
+const ClinicHistoryService = require("./historiaclinica");
+const TransService = require("./trans");
+const PregnancyService = require("./embarazo");
+const TestService = require("./examen");
 //#endregion
 
 //#region Funciones Ayudantes
@@ -30,7 +32,6 @@ DesvincularMadre = async (sexo, hijoseliminados) => {
       //eliminar la madre al hijo
       await hijoseliminados.forEach(async (hijo) => {
         var modelhijo = await Paciente.findById(hijo);
-        console.log(modelhijo);
         if (sexo === "F") modelhijo.madre = null;
         await modelhijo.save();
       });
@@ -69,6 +70,7 @@ exports.GetPatients = async (query, page, limit) => {
       .populate("historiaclinica")
       .populate("madre")
       .populate({ path: "transfusiones", populate: { path: "paciente" } })
+      .populate({ path: "examenes", populate: { path: "paciente" } })
       .populate({ path: "embarazos", populate: { path: "paciente" } });
     return patients;
   } catch (err) {
@@ -81,6 +83,7 @@ exports.GetPatient = async (id) => {
       .populate("historiaclinica")
       .populate("madre")
       .populate({ path: "transfusiones", populate: { path: "paciente" } })
+      .populate({ path: "examenes", populate: { path: "paciente" } })
       .populate({ path: "embarazos", populate: { path: "paciente" } });
     return patient;
   } catch (err) {
@@ -177,7 +180,13 @@ exports.DisablePatient = async (id, patient) => {
       if (patient.transfusiones.length > 0) {
         await TransService.DisableTrans(patient.transfusiones);
       }
-      patient = { activo: false };
+      if (patient.embarazos.length > 0) {
+        await PregnancyService.DisablePregnancies(patient.embarazos);
+      }
+      if (patient.examenes.length > 0) {
+        await TestService.DisableTests(patient.embarazos);
+      }
+      patient.activo = false;
       var updated = await Paciente.findByIdAndUpdate(id, patient);
 
       return updated;
@@ -202,6 +211,12 @@ exports.DeletePatient = async (patient) => {
     }
     if (patient.transfusiones.length > 0) {
       await TransService.DeleteTrans(patient.transfusiones);
+    }
+    if (patient.embarazos.length > 0) {
+      await PregnancyService.DeletePregnancies(patient.embarazos);
+    }
+    if (patient.examenes.length > 0) {
+      await TestService.DeleteTests(patient.embarazos);
     }
     var removed = await Paciente.findByIdAndRemove(patient._id);
     return removed;
@@ -241,6 +256,17 @@ exports.InsertPregnancyToPatient = async (pregnancy) => {
     throw Error("InsertPregnancyToPatient -> Insertando Embarazo en Paciente \n" + err);
   }
 };
+//insertar el examen al paciente que pertenece
+exports.InsertTestToPatient = async (test) => {
+  try {
+    const patient = await Paciente.findById(test.paciente);
+    await patient.examenes.push(test);
+    const saved = await patient.save();
+    return saved;
+  } catch (err) {
+    throw Error("InsertTestToPatient -> Insertando Examen en Paciente \n" + err);
+  }
+};
 //eliminar una transfusion perteneciente al paciente
 exports.DeleteTranInPatient = async (tran) => {
   try {
@@ -252,7 +278,6 @@ exports.DeleteTranInPatient = async (tran) => {
       transfusionespaciente.splice(index, 1);
       //hacer un update del paciente
       const patient = { transfusiones: transfusionespaciente };
-      console.log(tran.paciente.transfusiones, tran._id, index, patient);
       var updated = await Paciente.findByIdAndUpdate(tran.paciente._id, patient);
     }
     return updated;
@@ -260,6 +285,25 @@ exports.DeleteTranInPatient = async (tran) => {
     throw Error("DeleteTranInPatient -> Eliminando Transfusion en Paciente \n" + err);
   }
 };
+//eliminar una examen perteneciente al paciente
+exports.DeleteTestInPatient = async (test) => {
+  try {
+    examenespaciente = [...test.paciente.examenes];
+    //buscar el indice del elemento que representa ese examen en el arreglo de examenes del paciente
+    let index = test.paciente.examenes.indexOf(test._id);
+    if (index) {
+      //eliminar del arreglo el elemento
+      examenespaciente.splice(index, 1);
+      //hacer un update del paciente
+      const patient = { examenes: examenespaciente };
+      var updated = await Paciente.findByIdAndUpdate(test.paciente._id, patient);
+    }
+    return updated;
+  } catch (err) {
+    throw Error("DeleteTestInPatient -> Eliminando Examen en Paciente \n" + err);
+  }
+};
+//eliminar el elmbarazo perteneciente al paciente
 exports.DeletePregnancyInPatient = async (pregnancy) => {
   try {
     embarazospaciente = [...pregnancy.paciente.embarazos];
@@ -270,7 +314,6 @@ exports.DeletePregnancyInPatient = async (pregnancy) => {
       embarazospaciente.splice(index, 1);
       //hacer un update del paciente
       const patient = { embarazos: embarazospaciente };
-      console.log(pregnancy.paciente.embarazos, pregnancy._id, index, patient);
       var updated = await Paciente.findByIdAndUpdate(pregnancy.paciente._id, patient);
     }
     return updated;

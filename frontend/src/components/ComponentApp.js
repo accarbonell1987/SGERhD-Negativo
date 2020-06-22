@@ -31,6 +31,7 @@ class ComponentApp extends Component {
         { opcion: "historiaclinica", permisos: { crear: false, leer: false, modificar: false, eliminar: false, menu: false } },
         { opcion: "pacientes", permisos: { crear: false, leer: false, modificar: false, eliminar: false, menu: false } },
         { opcion: "examenes", permisos: { crear: false, leer: false, modificar: false, eliminar: false, menu: false } },
+        { opcion: "pruebas", permisos: { crear: false, leer: false, modificar: false, eliminar: false, menu: false } },
         { opcion: "transfusiones", permisos: { crear: false, leer: false, modificar: false, eliminar: false, menu: false } },
         { opcion: "embarazos", permisos: { crear: false, leer: false, modificar: false, eliminar: false, menu: false } },
       ],
@@ -42,6 +43,7 @@ class ComponentApp extends Component {
         { opcion: "historiaclinica", permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
         { opcion: "pacientes", permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
         { opcion: "examenes", permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
+        { opcion: "pruebas", permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
         { opcion: "transfusiones", permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
         { opcion: "embarazos", permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
       ],
@@ -53,6 +55,7 @@ class ComponentApp extends Component {
         { opcion: "historiaclinica", permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
         { opcion: "pacientes", permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
         { opcion: "examenes", permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
+        { opcion: "pruebas", permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
         { opcion: "transfusiones", permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
         { opcion: "embarazos", permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
       ],
@@ -64,6 +67,7 @@ class ComponentApp extends Component {
         { opcion: "historiaclinica", permisos: { crear: false, leer: true, modificar: false, eliminar: false, menu: true } },
         { opcion: "pacientes", permisos: { crear: false, leer: true, modificar: false, eliminar: false, menu: true } },
         { opcion: "examenes", permisos: { crear: false, leer: true, modificar: true, eliminar: false, menu: true } },
+        { opcion: "pruebas", permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
         { opcion: "transfusiones", permisos: { crear: false, leer: false, modificar: false, eliminar: false, menu: false } },
         { opcion: "embarazos", permisos: { crear: false, leer: false, modificar: false, eliminar: false, menu: false } },
       ],
@@ -75,6 +79,7 @@ class ComponentApp extends Component {
         { opcion: "historiaclinica", permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
         { opcion: "pacientes", permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
         { opcion: "examenes", permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
+        { opcion: "pruebas", permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
         { opcion: "transfusiones", permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
         { opcion: "embarazos", permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
       ],
@@ -118,7 +123,7 @@ class ComponentApp extends Component {
       logintime: new Date(),
       token: token,
     };
-    cookies.set("data", data, { maxAge: 300 });
+    cookies.set("data", data, { maxAge: 1400 });
     //setear el state autenticado en true
     this.setState({ autenticado: true });
   };
