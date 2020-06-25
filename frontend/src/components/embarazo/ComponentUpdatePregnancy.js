@@ -76,7 +76,7 @@ class ComponentUpdatePregnancy extends Component {
 		const data = this.props.global.cookies();
 		if (!data) this.props.Deslogin();
 		else {
-			const { fecha, observaciones, examenes, tipo, semanas, dias, findeembarazo, findeparto, findeaborto, paciente, activo } = this.state;
+			var { fecha, observaciones, examenes, tipo, semanas, dias, findeembarazo, findeparto, findeaborto, paciente, activo } = this.state;
 
 			//limpiar segun el tip de embarazo
 			if (tipo === "Nuevo") {

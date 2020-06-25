@@ -11,7 +11,9 @@ const TestService = require("./examen");
 //#region Embarazo
 exports.GetPregnancies = async (query, page, limit) => {
 	try {
-		var pregnancies = await Embarazo.find(query).populate("paciente").populate("examenes");
+		var pregnancies = await Embarazo.find(query)
+			.populate({ path: "paciente", populate: { path: "historiaclinica" } })
+			.populate("examenes");
 		return pregnancies;
 	} catch (err) {
 		throw Error("GetPregnancies -> Obteniendo Embarazos.");
@@ -19,7 +21,9 @@ exports.GetPregnancies = async (query, page, limit) => {
 };
 exports.GetPregnancy = async (id) => {
 	try {
-		var pregnancy = await Embarazo.findById(id).populate("paciente").populate("examenes");
+		var pregnancy = await Embarazo.findById(id)
+			.populate({ path: "paciente", populate: { path: "historiaclinica" } })
+			.populate("examenes");
 		return pregnancy;
 	} catch (err) {
 		throw Error("GetPregnancy -> Obteniendo Embarazo con id: " + id);
