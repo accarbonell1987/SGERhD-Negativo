@@ -1,33 +1,33 @@
 .gestionar-allcolumn {
-  margin: 0 !important;
-  background: #ffffff;
-  border-radius: 30px 0 0 0 !important;
-  max-width: 98%;
+	margin: 0 !important;
+	background: #ffffff;
+	border-radius: 30px 0 0 0 !important;
+	max-width: 98%;
 }
 
 .gestionar-allgrid {
-  margin: 10px 0 10px 0 !important;
-  border-radius: 0px !important;
+	margin: 10px 0 10px 0 !important;
+	border-radius: 0px !important;
 }
 
 .div-label-attached {
-  background: #8bc43f !important;
-  color: #ffffff !important;
-  margin-bottom: 10px;
-  border-radius: 30px 0 30px 0 !important;
+	background: #8bc43f !important;
+	color: #ffffff !important;
+	margin-bottom: 10px;
+	border-radius: 30px 0 30px 0 !important;
 }
 
 .div-table {
-  margin-top: 3.5rem !important;
-  /* max-height: 670px;
+	margin-top: 3.5rem !important;
+	/* max-height: 670px;
     overflow-y: scroll;
     display: block; 
     position: relative !important;
     border-collapse: collapse !important; */
 }
 .div-table-detail {
-  margin-top: 0 !important;
-  /* max-height: 670px;
+	margin-top: 0 !important;
+	/* max-height: 670px;
     overflow-y: scroll;
     display: block; 
     position: relative !important;
@@ -35,119 +35,119 @@
 }
 
 .div-table-header {
-  position: sticky !important;
-  top: 0 !important;
-  z-index: 10 !important;
+	position: sticky !important;
+	top: 0 !important;
+	z-index: 10 !important;
 }
 
 .div-table-modal {
-  margin-top: 0.5rem !important;
+	margin-top: 0.5rem !important;
 }
 
 .cells-max-witdh-2 {
-  max-width: 2% !important;
+	max-width: 2% !important;
 }
 
 .modal-button-change-password {
-  color: darkmagenta !important;
-  margin-right: 0 !important;
-  padding: 0.78571429em 0.78571429em 0.78571429em !important;
+	color: darkmagenta !important;
+	margin-right: 0 !important;
+	padding: 0.78571429em 0.78571429em 0.78571429em !important;
 }
 
 .modal-button-action {
-  color: darkorange !important;
-  padding: 0.78571429em 0.78571429em 0.78571429em !important;
+	color: darkorange !important;
+	padding: 0.78571429em 0.78571429em 0.78571429em !important;
 }
 
 .modal-icon {
-  max-width: 16px !important;
-  margin: 0 !important;
+	max-width: 16px !important;
+	margin: 0 !important;
 }
 
 .modal-button-other {
-  padding: 0.78571429em 0.78571429em 0.78571429em !important;
+	padding: 0.78571429em 0.78571429em 0.78571429em !important;
 }
 .modal-icon-other {
-  /* max-width: 16px !important; */
-  margin: 0 !important;
+	/* max-width: 16px !important; */
+	margin: 0 !important;
 }
 .modal-windows-pregnancies {
-  min-width: 1400px !important;
-  max-width: 1500px !important;
-  width: 1400px !important;
+	min-width: 1400px !important;
+	max-width: 1500px !important;
+	width: 1400px !important;
 }
 
 .button-remove {
-  color: #db2828 !important;
+	color: #db2828 !important;
 }
 
 .button-group-addsub {
-  margin-top: 22px !important;
-  height: 38px;
+	margin-top: 22px !important;
+	height: 38px;
 }
 
 .modal-segment-expanded {
-  margin: 0 8px 0 8px !important;
-  width: 100% !important;
+	margin: 0 8px 0 8px !important;
+	width: 100% !important;
 }
 .modal-segment-expanded-grouping {
-  margin: 0 8px 0 0px !important;
-  width: 100% !important;
+	margin: 0 8px 0 0px !important;
+	width: 100% !important;
 }
 .modal-segment-expanded-grouping .inline {
-  margin: 0 !important;
+	margin: 0 !important;
 }
 
 .modal-segment-shortright {
-  width: 20% !important;
+	width: 20% !important;
 }
 
 .modal-segment-longleft {
-  width: 80% !important;
+	width: 80% !important;
 }
 
 .modal-segment-group {
-  height: 110px !important;
+	height: 110px !important;
 }
 
 .modal-input-30p {
-  width: 70% !important;
+	width: 70% !important;
 }
 
 .modal-input-100p {
-  width: 100% !important;
+	width: 100% !important;
 }
 
 .modal-datepicker {
-  width: 350px !important;
-  min-width: 350px !important;
+	width: 350px !important;
+	min-width: 350px !important;
 }
 
 .modal-action-centered {
-  text-align: center !important;
+	text-align: center !important;
 }
 
 .button-disable {
-  background-color: #e0b4b4 !important;
+	background-color: #e0b4b4 !important;
 }
 
 .header-custom {
-  margin: 0 10px 0 0px !important;
+	margin: 0 10px 0 0px !important;
 }
 
 .segmentgroup-correct {
-  margin: 0 !important;
-  margin-top: 15px !important;
-  margin-left: 7px !important;
-  margin-right: 7px !important;
-  max-width: 100% !important;
-  width: 100% !important;
+	margin: 0 !important;
+	margin-top: 15px !important;
+	margin-left: 7px !important;
+	margin-right: 7px !important;
+	max-width: 99.3% !important;
+	width: 99.3% !important;
 }
 
 .button-pregnancy-separate .button {
-  margin: 0 !important;
+	margin: 0 !important;
 }
 
 .button-pregnancy-separate .button-pregnancy {
-  margin: 0.25rem 0.25rem 0.25rem 0 !important;
+	margin: 0.25rem 0.25rem 0.25rem 0 !important;
 }
