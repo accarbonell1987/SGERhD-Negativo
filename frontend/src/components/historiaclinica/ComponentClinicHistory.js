@@ -181,7 +181,7 @@ class ComponentClinicHistory extends Component {
 											<Table.Cell>{numeropartos}</Table.Cell>
 											<Table.Cell>{numeroabortos}</Table.Cell>
 											<Table.Cell className="cells-max-witdh-2" collapsing>
-												<ComponentSeePatient Deslogin={this.props.Deslogin} paciente={historia.paciente} global={this.props.global} roles={this.props.roles} />
+												<ComponentSeePatient Deslogin={this.props.Deslogin} paciente={historia.paciente} global={this.props.global} roles={this.props.roles} pacientes={this.props.pacientes} />
 											</Table.Cell>
 											<Table.Cell className="cells-max-witdh-2" collapsing>
 												<Checkbox toggle name="activo" labelPosition="left" label={historia.activo ? "Si" : "No"} checked={historia.activo} disabled />

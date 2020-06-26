@@ -133,6 +133,7 @@ var paciente_schema = new Schema({
 	historiaclinica: { type: Schema.Types.ObjectId, ref: "HistoriaClinica", default: new mongoose.mongo.ObjectID() },
 	madre: { type: Schema.Types.ObjectId, ref: "Paciente", default: new mongoose.mongo.ObjectID() },
 	hijos: [{ type: Schema.Types.ObjectId, ref: "Paciente" }],
+	conyuge: { type: Schema.Types.ObjectId, ref: "Paciente", default: new mongoose.mongo.ObjectID() },
 	transfusiones: [{ type: Schema.Types.ObjectId, ref: "Transfusion" }],
 	embarazos: [{ type: Schema.Types.ObjectId, ref: "Embarazo" }],
 	examenes: [{ type: Schema.Types.ObjectId, ref: "Examen" }],

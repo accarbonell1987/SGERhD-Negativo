@@ -104,7 +104,7 @@ class ComponentPatients extends Component {
 	};
 
 	CheckAndAllowAddButton = (middleButtonAdd, allow) => {
-		if (allow) return <ComponentAddPatient middleButtonAdd={middleButtonAdd} Deslogin={this.props.Deslogin} global={this.props.global} GetDataFromServer={this.props.GetDataFromServer} />;
+		if (allow) return <ComponentAddPatient middleButtonAdd={middleButtonAdd} Deslogin={this.props.Deslogin} global={this.props.global} GetDataFromServer={this.props.GetDataFromServer} pacientes={this.props.pacientes} />;
 		else
 			return (
 				<Button floated="right" icon labelPosition="left" primary size="small" className="modal-button-add" disabled>
@@ -239,7 +239,7 @@ class ComponentPatients extends Component {
 											</Table.Cell>
 											<Table.Cell className="cells-max-witdh-2" collapsing>
 												{accesomenu.permisos.eliminar ? <Button icon="remove circle" className="button-remove" onClick={() => this.DeletePatient(paciente)} /> : <Button icon="remove circle" className="button-remove" disabled />}
-												{accesomenu.permisos.modificar ? <ComponentUpdatePatient Deslogin={this.props.Deslogin} GetDataFromServer={this.props.GetDataFromServer} paciente={paciente} global={this.props.global} /> : <Button icon="edit" disabled />}
+												{accesomenu.permisos.modificar ? <ComponentUpdatePatient Deslogin={this.props.Deslogin} GetDataFromServer={this.props.GetDataFromServer} paciente={paciente} global={this.props.global} pacientes={this.props.pacientes} /> : <Button icon="edit" disabled />}
 											</Table.Cell>
 										</Table.Row>
 									);

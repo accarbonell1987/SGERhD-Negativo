@@ -10,382 +10,347 @@ import "../global/css/Gestionar.css";
 
 //#region Definicion de Clase
 class ComponentUpdatePatient extends Component {
-  //#region Estados y Declaraciones
-  state = {
-    openModal: false,
-    nombre: "",
-    apellidos: "",
-    ci: "",
-    direccion: "",
-    direccionopcional: "",
-    telefono: "",
-    sexo: "",
-    madre: "",
-    hijos: [],
-    historiaclinica: null,
-    transfusiones: [],
-    embarazos: [],
-    examenes: [],
-    activo: true,
-    errornombre: false,
-    errorapellidos: false,
-    errorci: false,
-    errordireccion: false,
-    errortelefono: false,
-    errorform: false,
-  };
+	//#region Estados y Declaraciones
+	state = {
+		openModal: false,
+		nombre: "",
+		apellidos: "",
+		ci: "",
+		direccion: "",
+		direccionopcional: "",
+		telefono: "",
+		sexo: "",
+		madre: "",
+		hijos: [],
+		conyuge: "",
+		historiaclinica: null,
+		transfusiones: [],
+		embarazos: [],
+		examenes: [],
+		activo: true,
+		opcionPacientes: [],
+		errornombre: false,
+		errorapellidos: false,
+		errorci: false,
+		errordireccion: false,
+		errortelefono: false,
+		errorform: false,
+	};
 
-  generos = [
-    { key: "M", text: "Masculino", value: "M", icon: "man" },
-    { key: "F", text: "Femenino", value: "F", icon: "woman" },
-  ];
-  //#endregion
+	generos = [
+		{ key: "M", text: "Masculino", value: "M", icon: "man" },
+		{ key: "F", text: "Femenino", value: "F", icon: "woman" },
+	];
+	//#endregion
 
-  //#region Constructor
-  constructor(props) {
-    super(props);
+	//#region Constructor
+	constructor(props) {
+		super(props);
 
-    this.ClearModalState = this.ClearModalState.bind(this);
-    this.UpdatePatient = this.UpdatePatient.bind(this);
-    this.ChangeModalInput = this.ChangeModalInput.bind(this);
-    this.ChangeModalState = this.ChangeModalState.bind(this);
-    this.HandleSubmit = this.HandleSubmit.bind(this);
-  }
-  //#endregion
+		this.ClearModalState = this.ClearModalState.bind(this);
+		this.UpdatePatient = this.UpdatePatient.bind(this);
+		this.ChangeModalInput = this.ChangeModalInput.bind(this);
+		this.ChangeModalState = this.ChangeModalState.bind(this);
+		this.HandleSubmit = this.HandleSubmit.bind(this);
+	}
+	//#endregion
 
-  //#region Metodos y Eventos
-  shouldComponentUpdate() {
-    const data = this.props.global.cookies();
-    if (!data) {
-      this.props.Deslogin();
-      return false;
-    }
-    return true;
-  }
-  SwalAlert = (posicion, icon, mensaje, tiempo) => {
-    Swal.fire({
-      position: posicion,
-      icon: icon,
-      title: mensaje,
-      showConfirmButton: false,
-      timer: tiempo,
-    });
-  };
-  //modificar paciente
-  UpdatePatient = async (id) => {
-    //chequear que las cookies tengan los datos necesarios
-    const data = this.props.global.cookies();
-    if (!data) this.props.Deslogin();
-    else {
-      const { nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, hijos, historiaclinica, transfusiones, embarazos, examenes, activo } = this.state;
-      const paciente = {
-        nombre: nombre,
-        apellidos: apellidos,
-        ci: ci,
-        direccion: direccion,
-        direccionopcional: direccionopcional,
-        telefono: telefono,
-        sexo: sexo,
-        madre: madre,
-        hijos: hijos,
-        historiaclinica: historiaclinica,
-        transfusiones: transfusiones,
-        embarazos: embarazos,
-        examenes: examenes,
-        activo: activo,
-      };
-      //la promise debe de devolver un valor RETURN
-      try {
-        const res = await fetch(this.props.global.endpoint + "api/paciente/" + id, {
-          method: "PATCH",
-          body: JSON.stringify(paciente),
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "access-token": data.token,
-          },
-        });
-        let serverdata = await res.json();
-        const { status, message } = serverdata;
-        if (status === 200) {
-          this.SwalAlert("center", "success", message, 3000);
-          return true;
-        } else {
-          this.SwalAlert("center", "error", message, 5000);
-          return false;
-        }
-      } catch (err) {
-        this.SwalAlert("center", "error", err, 5000);
-        return false;
-      }
-    }
-  };
-  //validar el formulario
-  HandleSubmit = (evt) => {
-    evt.preventDefault();
+	//#region Metodos y Eventos
+	componentDidMount() {
+		this.ClearModalState();
+	}
+	shouldComponentUpdate() {
+		const data = this.props.global.cookies();
+		if (!data) {
+			this.props.Deslogin();
+			return false;
+		}
+		return true;
+	}
+	SwalAlert = (posicion, icon, mensaje, tiempo) => {
+		Swal.fire({
+			position: posicion,
+			icon: icon,
+			title: mensaje,
+			showConfirmButton: false,
+			timer: tiempo,
+		});
+	};
+	//modificar paciente
+	UpdatePatient = async (id) => {
+		//chequear que las cookies tengan los datos necesarios
+		const data = this.props.global.cookies();
+		if (!data) this.props.Deslogin();
+		else {
+			const { nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, madre, hijos, conyuge, historiaclinica, transfusiones, embarazos, examenes, activo } = this.state;
+			const paciente = {
+				nombre: nombre,
+				apellidos: apellidos,
+				ci: ci,
+				direccion: direccion,
+				direccionopcional: direccionopcional,
+				telefono: telefono,
+				sexo: sexo,
+				madre: madre,
+				hijos: hijos,
+				conyuge: conyuge,
+				historiaclinica: historiaclinica,
+				transfusiones: transfusiones,
+				embarazos: embarazos,
+				examenes: examenes,
+				activo: activo,
+			};
+			//la promise debe de devolver un valor RETURN
+			try {
+				const res = await fetch(this.props.global.endpoint + "api/paciente/" + id, {
+					method: "PATCH",
+					body: JSON.stringify(paciente),
+					headers: {
+						Accept: "application/json",
+						"Content-Type": "application/json",
+						"access-token": data.token,
+					},
+				});
+				let serverdata = await res.json();
+				const { status, message } = serverdata;
+				if (status === 200) {
+					this.SwalAlert("center", "success", message, 3000);
+					return true;
+				} else {
+					this.SwalAlert("center", "error", message, 5000);
+					return false;
+				}
+			} catch (err) {
+				this.SwalAlert("center", "error", err, 5000);
+				return false;
+			}
+		}
+	};
+	//validar el formulario
+	HandleSubmit = (evt) => {
+		evt.preventDefault();
 
-    this.setState({ errform: false });
+		this.setState({ errform: false });
 
-    let soloLetras = /^[a-zA-Z ]+$/;
-    let soloNumeros = /^([0-9])*$/;
+		let soloLetras = /^[a-zA-Z ]+$/;
+		let soloNumeros = /^([0-9])*$/;
 
-    let errornombre = !this.state.nombre.match(soloLetras) ? { content: "El nombre solo debe de contener letras", pointing: "below" } : false;
-    let errorapellidos = !this.state.apellidos.match(soloLetras) ? { content: "Apellidos solo debe de contener letras", pointing: "below" } : false;
-    let errorci =
-      !this.state.ci.toString().match(soloNumeros) || this.state.ci.length !== 11
-        ? {
-            content: "El carnet de identidad solo debe de contener números y ser igual a 11 dígitos",
-            pointing: "below",
-          }
-        : false;
-    let errortelefono = !this.state.telefono.toString().match(soloNumeros)
-      ? {
-          content: "El teléfono solo debe de contener números",
-          pointing: "below",
-        }
-      : false;
+		let errornombre = !this.state.nombre.match(soloLetras) ? { content: "El nombre solo debe de contener letras", pointing: "below" } : false;
+		let errorapellidos = !this.state.apellidos.match(soloLetras) ? { content: "Apellidos solo debe de contener letras", pointing: "below" } : false;
+		let errorci =
+			!this.state.ci.toString().match(soloNumeros) || this.state.ci.length !== 11
+				? {
+						content: "El carnet de identidad solo debe de contener números y ser igual a 11 dígitos",
+						pointing: "below",
+				  }
+				: false;
+		let errortelefono = !this.state.telefono.toString().match(soloNumeros)
+			? {
+					content: "El teléfono solo debe de contener números",
+					pointing: "below",
+			  }
+			: false;
 
-    let enombre = Boolean(errornombre);
-    let eapellidos = Boolean(errorapellidos);
-    let eci = Boolean(errorci);
-    let etelefono = Boolean(errortelefono);
+		let enombre = Boolean(errornombre);
+		let eapellidos = Boolean(errorapellidos);
+		let eci = Boolean(errorci);
+		let etelefono = Boolean(errortelefono);
 
-    let errform = enombre || eapellidos || eci || etelefono;
+		let errform = enombre || eapellidos || eci || etelefono;
 
-    this.setState({
-      errornombre: errornombre,
-      errorapellidos: errorapellidos,
-      errorci: errorci,
-      errortelefono: errortelefono,
-      errform: errform,
-    });
+		this.setState({
+			errornombre: errornombre,
+			errorapellidos: errorapellidos,
+			errorci: errorci,
+			errortelefono: errortelefono,
+			errform: errform,
+		});
 
-    return errform;
-  };
-  //Actualiza los inputs con los valores que vamos escribiendo
-  ChangeModalInput = (evt) => {
-    const { name, value } = evt.target;
+		return errform;
+	};
+	//Actualiza los inputs con los valores que vamos escribiendo
+	ChangeModalInput = (evt) => {
+		const { name, value } = evt.target;
 
-    this.setState({
-      [name]: value,
-    });
-  };
-  OnPressEnter = (evt) => {
-    const disabled = !this.state.nombre || !this.state.apellidos || !this.state.ci || !this.state.direccion || !this.state.telefono || !this.state.sexo;
-    if (evt.keyCode === 13 && !evt.shiftKey && !disabled) {
-      evt.preventDefault();
-      this.OnSubmit(evt);
-    }
-  };
-  //al enviar a aplicar el formulario
-  OnSubmit = async (evt) => {
-    //si no hay problemas en el formulario
-    if (this.HandleSubmit(evt) === false) {
-      //si no hay problemas en la insercion
-      if (await this.UpdatePatient(this.props.paciente._id)) {
-        //enviar a recargar los usuarios
-        this.props.GetDataFromServer();
-        this.ClearModalState();
-      }
-    }
-  };
-  //cambiar el estado en el MODAL para adicionar paciente
-  ChangeModalState = async (evt) => {
-    if (evt.target.className.includes("modal-button-action") || evt.target.className.includes("modal-icon")) {
-      this.setState({
-        openModal: true,
-        nombre: this.props.paciente.nombre,
-        apellidos: this.props.paciente.apellidos,
-        ci: this.props.paciente.ci,
-        direccion: this.props.paciente.direccion,
-        direccionopcional: this.props.paciente.direccionopcional,
-        telefono: this.props.paciente.telefono,
-        sexo: this.props.paciente.sexo,
-        madre: this.props.paciente.madre,
-        historiaclinica: this.props.paciente.historiaclinica,
-        hijos: this.props.paciente.hijos,
-        transfusiones: this.props.paciente.transfusiones,
-        embarazos: this.props.paciente.embarazos,
-        examenes: this.props.paciente.examenes,
-        activo: this.props.paciente.activo,
-      });
-    } else if (evt.target.className.includes("modal-button-cancel") || evt.target.className.includes("modal-icon-cancel")) {
-      this.ClearModalState();
-    } else {
-      await this.OnSubmit(evt);
-    }
-  };
-  //limpiar states
-  ClearModalState = () => {
-    this.setState({
-      openModal: false,
-      nombre: "",
-      apellidos: "",
-      ci: "",
-      direccion: "",
-      direccionopcional: "",
-      telefono: "",
-      sexo: "",
-      madre: "",
-      historiaclinica: null,
-      hijos: [],
-      transfusiones: [],
-      embarazos: [],
-      examenes: [],
-      activo: true,
-      errornombre: false,
-      errorapellidos: false,
-      errorci: false,
-      errordireccion: false,
-      errortelefono: false,
-      errorform: false,
-    });
-  };
-  //#endregion
+		this.setState({
+			[name]: value,
+		});
+	};
+	OnPressEnter = (evt) => {
+		const disabled = !this.state.nombre || !this.state.apellidos || !this.state.ci || !this.state.direccion || !this.state.telefono || !this.state.sexo;
+		if (evt.keyCode === 13 && !evt.shiftKey && !disabled) {
+			evt.preventDefault();
+			this.OnSubmit(evt);
+		}
+	};
+	//al enviar a aplicar el formulario
+	OnSubmit = async (evt) => {
+		//si no hay problemas en el formulario
+		if (this.HandleSubmit(evt) === false) {
+			//si no hay problemas en la insercion
+			if (await this.UpdatePatient(this.props.paciente._id)) {
+				//enviar a recargar los usuarios
+				this.props.GetDataFromServer();
+				this.ClearModalState();
+			}
+		}
+	};
+	//cambiar el estado en el MODAL para adicionar paciente
+	ChangeModalState = async (evt) => {
+		if (evt.target.className.includes("modal-button-action") || evt.target.className.includes("modal-icon")) {
+			this.setState({
+				openModal: true,
+				nombre: this.props.paciente.nombre,
+				apellidos: this.props.paciente.apellidos,
+				ci: this.props.paciente.ci,
+				direccion: this.props.paciente.direccion,
+				direccionopcional: this.props.paciente.direccionopcional,
+				telefono: this.props.paciente.telefono,
+				sexo: this.props.paciente.sexo,
+				madre: this.props.paciente.madre,
+				historiaclinica: this.props.paciente.historiaclinica,
+				hijos: this.props.paciente.hijos,
+				conyuge: this.props.paciente.conyuge,
+				transfusiones: this.props.paciente.transfusiones,
+				embarazos: this.props.paciente.embarazos,
+				examenes: this.props.paciente.examenes,
+				activo: this.props.paciente.activo,
+			});
+		} else if (evt.target.className.includes("modal-button-cancel") || evt.target.className.includes("modal-icon-cancel")) {
+			this.ClearModalState();
+		} else {
+			await this.OnSubmit(evt);
+		}
+	};
+	//limpiar states
+	ClearModalState = () => {
+		let opcion = [];
+		this.props.pacientes.forEach((p) => {
+			let nombreyapellidos = p.nombre + " " + p.apellidos;
+			let cur = {
+				key: p._id,
+				text: nombreyapellidos,
+				value: p._id,
+				icon: "wheelchair",
+			};
+			opcion = [...opcion, cur];
+		});
 
-  //#region Render
-  render() {
-    return (
-      <Modal
-        open={this.state.openModal}
-        trigger={
-          <Button className="modal-button-action" onClick={this.ChangeModalState}>
-            <Icon name="edit" className="modal-icon" onClick={this.ChangeModalState} />
-          </Button>
-        }
-      >
-        <Header icon="wheelchair" content="Modificar Paciente" />
-        <Modal.Content>
-          {this.state.errorform ? <Message error inverted header="Error" content="Error en el formulario" /> : null}
-          <Form ref="form" onSubmit={this.ChangeModalState}>
-            <Form.Input
-              required
-              name="nombre"
-              icon="address card outline"
-              iconPosition="left"
-              label="Nombre:"
-              value={this.state.nombre}
-              placeholder="Facundo"
-              error={this.state.errornombre}
-              onChange={this.ChangeModalInput}
-              onKeyDown={this.OnPressEnter}
-            />
-            <Form.Input
-              required
-              name="apellidos"
-              icon="address card outline"
-              iconPosition="left"
-              label="Apellidos:"
-              value={this.state.apellidos}
-              error={this.state.errorapellidos}
-              placeholder="Correcto Inseguro"
-              onChange={this.ChangeModalInput}
-              onKeyDown={this.OnPressEnter}
-            />
-            <Form.Input
-              required
-              name="ci"
-              icon="vcard"
-              iconPosition="left"
-              label="Carnet de Identidad:"
-              value={this.state.ci}
-              placeholder="90112050112"
-              error={this.state.errorci}
-              onChange={this.ChangeModalInput}
-              onKeyDown={this.OnPressEnter}
-            />
-            <Form.Input
-              required
-              name="direccion"
-              icon="building outline"
-              iconPosition="left"
-              label="Dirección:"
-              value={this.state.direccion}
-              placeholder="Calle 6 No.512..."
-              onChange={this.ChangeModalInput}
-              onKeyDown={this.OnPressEnter}
-            />
-            <Form.Input
-              name="direccionopcional"
-              icon="building outline"
-              iconPosition="left"
-              label="Dirección Opcional:"
-              value={this.state.direccionopcional}
-              placeholder="Calle 6 No.512..."
-              onChange={this.ChangeModalInput}
-              onKeyDown={this.OnPressEnter}
-            />
-            <Form.Input
-              required
-              name="telefono"
-              icon="phone"
-              iconPosition="left"
-              label="Teléfono:"
-              value={this.state.telefono}
-              placeholder="52802640"
-              onChange={this.ChangeModalInput}
-              onKeyDown={this.OnPressEnter}
-              error={this.state.errortelefono}
-            />
-            <Form.Select
-              required
-              name="sexo"
-              label="Género:"
-              placeholder="Seleccionar Género"
-              options={this.generos}
-              value={this.state.sexo}
-              error={this.state.errorsexo}
-              onChange={(e, { value }) => {
-                this.setState({ sexo: value });
-              }}
-              fluid
-              selection
-              clearable
-            />
-            <Form.Group>
-              <Segment className="modal-segment-expanded">
-                <Header as="h5">Activo:</Header>
-                <Form.Checkbox
-                  toggle
-                  name="activo"
-                  labelPosition="left"
-                  label={this.state.activo === true ? "Si" : "No"}
-                  value={this.state.activo}
-                  checked={this.state.activo}
-                  onChange={(evt) => {
-                    evt.preventDefault();
-                    //solo permito activar y en caso de que este desactivado
-                    if (!this.state.activo)
-                      this.setState({
-                        activo: !this.state.activo,
-                      });
-                    else {
-                      this.SwalAlert("center", "warning", "Solo se permite desactivar desde el bóton de Desactivar/Eliminar", 5000);
-                    }
-                  }}
-                />
-              </Segment>
-            </Form.Group>
-          </Form>
-        </Modal.Content>
-        <Modal.Actions>
-          <Button color="red" onClick={this.ChangeModalState} className="modal-button-cancel" type>
-            <Icon name="remove" className="modal-icon-cancel" /> Cancelar
-          </Button>
-          <Button
-            color="green"
-            onClick={this.ChangeModalState}
-            className="modal-button-acept"
-            type="submit"
-            disabled={!this.state.nombre || !this.state.apellidos || !this.state.ci || !this.state.direccion || !this.state.telefono || !this.state.sexo}
-          >
-            <Icon name="checkmark" /> Aceptar
-          </Button>
-        </Modal.Actions>
-      </Modal>
-    );
-  }
-  //#endregion
+		this.setState({
+			openModal: false,
+			nombre: "",
+			apellidos: "",
+			ci: "",
+			direccion: "",
+			direccionopcional: "",
+			telefono: "",
+			sexo: "",
+			madre: "",
+			historiaclinica: null,
+			hijos: [],
+			conyuge: "",
+			transfusiones: [],
+			embarazos: [],
+			examenes: [],
+			activo: true,
+			opcionPacientes: opcion,
+			errornombre: false,
+			errorapellidos: false,
+			errorci: false,
+			errordireccion: false,
+			errortelefono: false,
+			errorform: false,
+		});
+	};
+	//#endregion
+
+	//#region Render
+	render() {
+		return (
+			<Modal
+				open={this.state.openModal}
+				trigger={
+					<Button className="modal-button-action" onClick={this.ChangeModalState}>
+						<Icon name="edit" className="modal-icon" onClick={this.ChangeModalState} />
+					</Button>
+				}
+			>
+				<Header icon="wheelchair" content="Modificar Paciente" />
+				<Modal.Content>
+					{this.state.errorform ? <Message error inverted header="Error" content="Error en el formulario" /> : null}
+					<Form ref="form" onSubmit={this.ChangeModalState}>
+						<Form.Input required name="nombre" icon="address card outline" iconPosition="left" label="Nombre:" value={this.state.nombre} placeholder="Facundo" error={this.state.errornombre} onChange={this.ChangeModalInput} onKeyDown={this.OnPressEnter} />
+						<Form.Input required name="apellidos" icon="address card outline" iconPosition="left" label="Apellidos:" value={this.state.apellidos} error={this.state.errorapellidos} placeholder="Correcto Inseguro" onChange={this.ChangeModalInput} onKeyDown={this.OnPressEnter} />
+						<Form.Input required name="ci" icon="vcard" iconPosition="left" label="Carnet de Identidad:" value={this.state.ci} placeholder="90112050112" error={this.state.errorci} onChange={this.ChangeModalInput} onKeyDown={this.OnPressEnter} />
+						<Form.Input required name="direccion" icon="building outline" iconPosition="left" label="Dirección:" value={this.state.direccion} placeholder="Calle 6 No.512..." onChange={this.ChangeModalInput} onKeyDown={this.OnPressEnter} />
+						<Form.Input name="direccionopcional" icon="building outline" iconPosition="left" label="Dirección Opcional:" value={this.state.direccionopcional} placeholder="Calle 6 No.512..." onChange={this.ChangeModalInput} onKeyDown={this.OnPressEnter} />
+						<Form.Input required name="telefono" icon="phone" iconPosition="left" label="Teléfono:" value={this.state.telefono} placeholder="52802640" onChange={this.ChangeModalInput} onKeyDown={this.OnPressEnter} error={this.state.errortelefono} />
+						<Form.Select
+							required
+							name="sexo"
+							label="Género:"
+							placeholder="Seleccionar Género"
+							options={this.generos}
+							value={this.state.sexo}
+							error={this.state.errorsexo}
+							onChange={(e, { value }) => {
+								this.setState({ sexo: value });
+							}}
+							fluid
+							selection
+							clearable
+						/>
+						<Form.Select
+							name="conyuge"
+							label="Cónyuge:"
+							placeholder="Seleccionar Cónyuge"
+							options={this.state.opcionPacientes}
+							value={this.state.conyuge}
+							onChange={(e, { value }) => {
+								this.setState({ conyuge: value });
+							}}
+							fluid
+							selection
+							clearable
+						/>
+						<Form.Group>
+							<Segment className="modal-segment-expanded">
+								<Header as="h5">Activo:</Header>
+								<Form.Checkbox
+									toggle
+									name="activo"
+									labelPosition="left"
+									label={this.state.activo === true ? "Si" : "No"}
+									value={this.state.activo}
+									checked={this.state.activo}
+									onChange={(evt) => {
+										evt.preventDefault();
+										//solo permito activar y en caso de que este desactivado
+										if (!this.state.activo)
+											this.setState({
+												activo: !this.state.activo,
+											});
+										else {
+											this.SwalAlert("center", "warning", "Solo se permite desactivar desde el bóton de Desactivar/Eliminar", 5000);
+										}
+									}}
+								/>
+							</Segment>
+						</Form.Group>
+					</Form>
+				</Modal.Content>
+				<Modal.Actions>
+					<Button color="red" onClick={this.ChangeModalState} className="modal-button-cancel" type>
+						<Icon name="remove" className="modal-icon-cancel" /> Cancelar
+					</Button>
+					<Button color="green" onClick={this.ChangeModalState} className="modal-button-acept" type="submit" disabled={!this.state.nombre || !this.state.apellidos || !this.state.ci || !this.state.direccion || !this.state.telefono || !this.state.sexo}>
+						<Icon name="checkmark" /> Aceptar
+					</Button>
+				</Modal.Actions>
+			</Modal>
+		);
+	}
+	//#endregion
 }
 //#endregion
 

@@ -222,7 +222,7 @@ class ComponentPregnancies extends Component {
 												<ComponentModalTest Deslogin={this.props.Deslogin} global={this.props.global} pacientes={this.props.pacientes} embarazos={this.props.embarazos} examenes={embarazo.examenes} embarazo={embarazo} GetDataFromServer={this.props.GetDataFromServer} cambiarIcono={true} />
 											</Table.Cell>
 											<Table.Cell className="cells-max-witdh-2" collapsing>
-												<ComponentSeePatient Deslogin={this.props.Deslogin} paciente={embarazo.paciente} global={this.props.global} />
+												<ComponentSeePatient Deslogin={this.props.Deslogin} paciente={embarazo.paciente} global={this.props.global} pacientes={this.props.pacientes} />
 											</Table.Cell>
 											<Table.Cell className="cells-max-witdh-2" collapsing>
 												<Checkbox toggle name="activo" labelPosition="left" label={embarazo.activo ? "Si" : "No"} checked={embarazo.activo} disabled />
