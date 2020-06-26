@@ -16,6 +16,7 @@ class ComponentAddClinicHistory extends Component {
 		areaDeSalud: "",
 		numerohistoria: "",
 		vacunaAntiD: false,
+		administracionVacuna: "Antes del Parto",
 		numeroDeEmbarazos: 0,
 		numeroDePartos: 0,
 		numeroDeAbortos: 0,
@@ -66,14 +67,17 @@ class ComponentAddClinicHistory extends Component {
 		const data = this.props.global.cookies();
 		if (!data) this.props.Deslogin();
 		else {
-			const { areaDeSalud, numerohistoria, vacunaAntiD, numeroDeEmbarazos, numeroDePartos, numeroDeAbortos, paciente, activo } = this.state;
+			let { areaDeSalud, numerohistoria, vacunaAntiD, administracionVacuna, numeroDeEmbarazos, numeroDePartos, numeroDeAbortos, paciente, activo } = this.state;
 
 			const fecha = new Date();
+			if (!vacunaAntiD) administracionVacuna = "";
+
 			const historiaclinica = {
 				fechaDeCreacion: fecha,
 				areaDeSalud: areaDeSalud,
 				numerohistoria: numerohistoria,
 				vacunaAntiD: vacunaAntiD,
+				administracionVacuna: administracionVacuna,
 				numeroDeEmbarazos: numeroDeEmbarazos,
 				numeroDePartos: numeroDePartos,
 				numeroDeAbortos: numeroDeAbortos,
@@ -270,6 +274,7 @@ class ComponentAddClinicHistory extends Component {
 			openModal: false,
 			areaDeSalud: "",
 			vacunaAntiD: false,
+			administracionVacuna: "Antes del Parto",
 			numeroDeEmbarazos: 0,
 			numeroDePartos: 0,
 			numeroDeAbortos: 0,
@@ -298,6 +303,45 @@ class ComponentAddClinicHistory extends Component {
 					Adicionar
 				</Button>
 			);
+	};
+	ChoseWhenVaccum = () => {
+		if (this.state.vacunaAntiD && (this.state.numeroDeAbortos > 0 || this.state.numeroDePartos > 0)) {
+			return (
+				<Segment className="modal-segment-expanded">
+					<Form.Group inline>
+						<Header as="h5" className="header-custom">
+							¿Cuando se Administró la Vacuna?:
+						</Header>
+						<Form.Radio
+							name="radioantes"
+							labelPosition="right"
+							label="Antes del Parto"
+							checked={this.state.administracionVacuna === "Antes del Parto"}
+							value={this.state.administracionVacuna}
+							onChange={(evt) => {
+								evt.preventDefault();
+								this.setState({
+									administracionVacuna: "Antes del Parto",
+								});
+							}}
+						/>
+						<Form.Radio
+							name="radiodespues"
+							labelPosition="right"
+							label="Después del Parto"
+							checked={this.state.administracionVacuna === "Después del Parto"}
+							value={this.state.administracionVacuna}
+							onChange={(evt) => {
+								evt.preventDefault();
+								this.setState({
+									administracionVacuna: "Después del Parto",
+								});
+							}}
+						/>
+					</Form.Group>
+				</Segment>
+			);
+		}
 	};
 	//#endregion
 
@@ -335,6 +379,7 @@ class ComponentAddClinicHistory extends Component {
 								</Form.Group>
 							</Segment>
 						</Segment.Group>
+						<Form.Group>{this.ChoseWhenVaccum()}</Form.Group>
 						<Segment.Group horizontal>
 							<Segment>
 								<Form.Group>

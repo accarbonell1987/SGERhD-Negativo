@@ -43,13 +43,14 @@ exports.GetClinicHistoryLastInserted = async () => {
 };
 exports.InsertClinicHistory = async (body) => {
 	try {
-		const { fechaDeCreacion, areaDeSalud, numerohistoria, vacunaAntiD, numeroDeEmbarazos, numeroDePartos, numeroDeAbortos, paciente, activo } = body;
+		const { fechaDeCreacion, areaDeSalud, numerohistoria, vacunaAntiD, administracionVacuna, numeroDeEmbarazos, numeroDePartos, numeroDeAbortos, paciente, activo } = body;
 
 		const clinichistory = new HistoriaClinica({
 			fechaDeCreacion,
 			areaDeSalud,
 			numerohistoria,
 			vacunaAntiD,
+			administracionVacuna,
 			numeroDeEmbarazos,
 			numeroDePartos,
 			numeroDeAbortos,
@@ -69,13 +70,14 @@ exports.InsertClinicHistory = async (body) => {
 };
 exports.UpdateClinicHistory = async (id, body) => {
 	try {
-		const { fechaDeCreacion, areaDeSalud, numerohistoria, vacunaAntiD, numeroDeEmbarazos, numeroDePartos, numeroDeAbortos, paciente, activo } = body;
+		const { fechaDeCreacion, areaDeSalud, numerohistoria, vacunaAntiD, administracionVacuna, numeroDeEmbarazos, numeroDePartos, numeroDeAbortos, paciente, activo } = body;
 
 		const clinichistory = {
 			fechaDeCreacion,
 			areaDeSalud,
 			numerohistoria,
 			vacunaAntiD,
+			administracionVacuna,
 			numeroDeEmbarazos,
 			numeroDePartos,
 			numeroDeAbortos,

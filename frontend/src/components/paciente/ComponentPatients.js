@@ -186,7 +186,11 @@ class ComponentPatients extends Component {
 											<Table.Cell collapsing>
 												<Icon name="wheelchair" />
 											</Table.Cell>
-											<Table.Cell>{this.CalcAge(paciente)}</Table.Cell>
+											<Table.Cell>
+												<Label size="large" circular>
+													{this.CalcAge(paciente)}
+												</Label>
+											</Table.Cell>
 											<Table.Cell>
 												{paciente.nombre} {paciente.apellidos}
 											</Table.Cell>

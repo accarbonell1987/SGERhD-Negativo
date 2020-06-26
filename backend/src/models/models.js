@@ -108,6 +108,7 @@ var historiaclinica_schema = new Schema({
 	areaDeSalud: { type: String },
 	numerohistoria: { type: String, require: true },
 	vacunaAntiD: { type: Boolean },
+	administracionVacuna: { type: String },
 	numeroDeEmbarazos: { type: Number, min: 0 },
 	numeroDePartos: { type: Number, min: 0 },
 	numeroDeAbortos: { type: Number, min: 0 },

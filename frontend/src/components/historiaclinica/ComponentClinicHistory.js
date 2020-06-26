@@ -156,7 +156,7 @@ class ComponentClinicHistory extends Component {
 								<Table.Row>
 									<Table.HeaderCell />
 									<Table.HeaderCell>Fecha Creación</Table.HeaderCell>
-									<Table.HeaderCell>Número</Table.HeaderCell>
+									<Table.HeaderCell>Número de Historia</Table.HeaderCell>
 									<Table.HeaderCell>Area de Salud</Table.HeaderCell>
 									<Table.HeaderCell>Vacuna AntiD</Table.HeaderCell>
 									<Table.HeaderCell className="cells-max-witdh-2">Embarazos</Table.HeaderCell>
@@ -184,10 +184,21 @@ class ComponentClinicHistory extends Component {
 												<Icon name="clipboard" />
 											</Table.Cell>
 											<Table.Cell>{fechacadena}</Table.Cell>
-											<Table.Cell>{historia.numerohistoria}</Table.Cell>
+											<Table.Cell>
+												<Label size="large" color="green">
+													{historia.numerohistoria}
+												</Label>
+											</Table.Cell>
 											<Table.Cell>{historia.areaDeSalud}</Table.Cell>
 											<Table.Cell>
 												<Checkbox toggle name="vacunaAntiD" labelPosition="left" checked={historia.vacunaAntiD} label={historia.vacunaAntiD ? "Si" : "No"} disabled />
+												{historia.vacunaAntiD ? (
+													<Label size="large" Style="margin-left: 20px">
+														{historia.administracionVacuna}
+													</Label>
+												) : (
+													""
+												)}
 											</Table.Cell>
 											<Table.Cell className="cells-max-witdh-2">
 												<Button icon labelPosition="right" className="button-childs">
@@ -195,8 +206,16 @@ class ComponentClinicHistory extends Component {
 													{numeroembarazos}
 												</Button>
 											</Table.Cell>
-											<Table.Cell>{numeropartos}</Table.Cell>
-											<Table.Cell>{numeroabortos}</Table.Cell>
+											<Table.Cell>
+												<Label size="large" circular>
+													{numeropartos}
+												</Label>
+											</Table.Cell>
+											<Table.Cell>
+												<Label size="large" circular>
+													{numeroabortos}
+												</Label>
+											</Table.Cell>
 											<Table.Cell>{this.GetClasification(numeropartos, numeroabortos, numeroembarazos)}</Table.Cell>
 											<Table.Cell className="cells-max-witdh-2" collapsing>
 												<ComponentSeePatient Deslogin={this.props.Deslogin} paciente={historia.paciente} global={this.props.global} roles={this.props.roles} pacientes={this.props.pacientes} />
