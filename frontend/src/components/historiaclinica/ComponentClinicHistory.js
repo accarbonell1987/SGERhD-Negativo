@@ -115,6 +115,20 @@ class ComponentClinicHistory extends Component {
 				</Button>
 			);
 	};
+	GetClasification = (numeropartos, numeroabortos, numeroembarazos) => {
+		let clasificacion = "";
+		//nulipara, primigesta, nulipara y primigesta, multipara
+		if (numeroabortos === 0 && numeropartos === 0 && numeroembarazos === 1) {
+			clasificacion = "Primigesta";
+		} else if (numeroabortos > 0 && numeropartos === 0 && numeroembarazos > 0) {
+			clasificacion = "Nulipara";
+		} else if (numeropartos > 1) {
+			clasificacion = "Multipara";
+		} else {
+			clasificacion = "Sin clasificacion";
+		}
+		return clasificacion;
+	};
 	//#endregion
 
 	//#region Render
@@ -136,7 +150,7 @@ class ComponentClinicHistory extends Component {
 							<Table.Header className="div-table-header">
 								<Table.Row>
 									<Table.HeaderCell />
-									<Table.HeaderCell colSpan="11">{this.CheckAndAllowAddButton(false, accesomenu.permisos.crear)}</Table.HeaderCell>
+									<Table.HeaderCell colSpan="12">{this.CheckAndAllowAddButton(false, accesomenu.permisos.crear)}</Table.HeaderCell>
 								</Table.Row>
 								<Table.Row>
 									<Table.HeaderCell />
@@ -147,6 +161,7 @@ class ComponentClinicHistory extends Component {
 									<Table.HeaderCell className="cells-max-witdh-2">Embarazos</Table.HeaderCell>
 									<Table.HeaderCell>Partos</Table.HeaderCell>
 									<Table.HeaderCell>Abortos</Table.HeaderCell>
+									<Table.HeaderCell>Clasificación</Table.HeaderCell>
 									<Table.HeaderCell className="cells-max-witdh-2">Paciente</Table.HeaderCell>
 									<Table.HeaderCell>Activo</Table.HeaderCell>
 									<Table.HeaderCell className="cells-max-witdh-2">Acciones</Table.HeaderCell>
@@ -160,6 +175,7 @@ class ComponentClinicHistory extends Component {
 
 									let numeropartos = historia.numeroDePartos + historia.paciente.embarazos.filter((e) => e.findeembarazo === "Parto").length;
 									let numeroabortos = historia.numeroDeAbortos + historia.paciente.embarazos.filter((e) => e.findeembarazo === "Aborto").length;
+									let numeroembarazos = historia.numeroDeEmbarazos + historia.paciente.embarazos.length;
 
 									return (
 										<Table.Row key={historia._id} negative={negative}>
@@ -175,11 +191,12 @@ class ComponentClinicHistory extends Component {
 											<Table.Cell className="cells-max-witdh-2">
 												<Button icon labelPosition="right" className="button-childs">
 													<Icon name="heartbeat" className="button-icon-childs" />
-													{historia.paciente.embarazos.length}
+													{numeroembarazos}
 												</Button>
 											</Table.Cell>
 											<Table.Cell>{numeropartos}</Table.Cell>
 											<Table.Cell>{numeroabortos}</Table.Cell>
+											<Table.Cell>{this.GetClasification(numeropartos, numeroabortos, numeroembarazos)}</Table.Cell>
 											<Table.Cell className="cells-max-witdh-2" collapsing>
 												<ComponentSeePatient Deslogin={this.props.Deslogin} paciente={historia.paciente} global={this.props.global} roles={this.props.roles} pacientes={this.props.pacientes} />
 											</Table.Cell>
