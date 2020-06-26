@@ -217,6 +217,19 @@ class ComponentAddClinicHistory extends Component {
 			if (this.props.historiasclinicas.length > 0) {
 				//busco los pacientes que no tengan historias validas
 				if (!this.props.historiasclinicas.some((h) => h.paciente._id === p._id)) {
+					if (p.sexo !== "M") {
+						let nombreyapellidos = p.nombre + " " + p.apellidos;
+						let cur = {
+							key: p._id,
+							text: nombreyapellidos,
+							value: p._id,
+							icon: "wheelchair",
+						};
+						opcion = [...opcion, cur];
+					}
+				}
+			} else {
+				if (p.sexo !== "M") {
 					let nombreyapellidos = p.nombre + " " + p.apellidos;
 					let cur = {
 						key: p._id,
@@ -226,15 +239,6 @@ class ComponentAddClinicHistory extends Component {
 					};
 					opcion = [...opcion, cur];
 				}
-			} else {
-				let nombreyapellidos = p.nombre + " " + p.apellidos;
-				let cur = {
-					key: p._id,
-					text: nombreyapellidos,
-					value: p._id,
-					icon: "wheelchair",
-				};
-				opcion = [...opcion, cur];
 			}
 		});
 
@@ -288,17 +292,18 @@ class ComponentAddClinicHistory extends Component {
 		});
 	};
 	ChangeIconInAddButton = (change) => {
+		const disabled = this.props.paciente ? this.props.paciente.sexo === "M" : false;
 		const position = this.props.middleButtonAdd ? "middle" : "right";
 		if (change)
 			return (
-				<Button icon floated={position} labelPosition="right" className="modal-button-add" onClick={this.ChangeModalState}>
+				<Button disabled={disabled} icon floated={position} labelPosition="right" className="modal-button-add" onClick={this.ChangeModalState}>
 					<Icon name="add circle" className="modal-icon-add" onClick={this.ChangeModalState} />
 					Adicionar
 				</Button>
 			);
 		else
 			return (
-				<Button floated={position} icon labelPosition="left" primary size="small" onClick={this.ChangeModalState} className="modal-button-add">
+				<Button disabled={disabled} floated={position} icon labelPosition="left" primary size="small" onClick={this.ChangeModalState} className="modal-button-add">
 					<Icon name="add circle" className="modal-icon-add" />
 					Adicionar
 				</Button>
