@@ -11,6 +11,7 @@ import "../global/css/Gestionar.css";
 
 //#region Componentes
 import ComponentPruebas from "../pruebas/ComponentPruebas";
+import ComponentInputDatePicker from "../generales/ComponentInputDatePicker";
 //#endregion
 
 //#region Definicion Clase
@@ -18,11 +19,14 @@ class ComponentAddTest extends Component {
 	//#region Properties
 	state = {
 		openModal: false,
+		fecha: null,
 		observaciones: "",
 		embarazo: null,
 		paciente: null,
 		pruebas: [],
 		tipo: "Embarazo",
+		semanas: 0,
+		dias: 0,
 		activo: true,
 		opcionPacientes: [],
 		opcionEmbarazos: [],
@@ -56,20 +60,64 @@ class ComponentAddTest extends Component {
 		}
 		return true;
 	}
+	SetDate = (fecha) => {
+		if (this.props.embarazo) {
+			//calcular el dia de la semana
+			const ahora = moment(fecha);
+			const fechaSeleccionada = moment(this.props.embarazo.fecha);
+			const calculardiferenciasemanas = ahora.format("w") - fechaSeleccionada.format("w");
+
+			//diferencias de dias
+			let difdias = ahora.diff(fechaSeleccionada, "days");
+
+			let dias = 0;
+			let stop = false;
+			let diadesemana = 0;
+			while (!stop) {
+				//si los dias menos siete da resto cero
+				diadesemana = difdias - dias;
+				if (diadesemana % 7 === 0) stop = true;
+				else dias++;
+			}
+
+			let semana = calculardiferenciasemanas > 0 ? calculardiferenciasemanas : 0;
+			if (ahora.get("date") < diadesemana) semana--;
+			this.setState({
+				fecha: fecha,
+				semanas: semana,
+				dias: dias,
+			});
+		} else {
+			this.setState({
+				fecha: fecha,
+				semanas: 0,
+				dias: 0,
+			});
+		}
+	};
 	//adicionar nuevo paciente
 	AddTest = async () => {
 		//chequear que las cookies tengan los datos necesarios
 		const data = this.props.global.cookies();
 		if (!data) this.props.Deslogin();
 		else {
-			let { observaciones, embarazo, paciente, pruebas, tipo, activo } = this.state;
+			let { fecha, observaciones, embarazo, paciente, pruebas, tipo, semanas, dias, activo } = this.state;
+
+			let tiempoDeGestacion = null;
+			if (this.state.tipo === "Embarazo") {
+				//estructura del ReaccionAdversaDetalle
+				//reaccionAdversaDetalle = {fiebre, vomito, ...}
+				const detalle = { semanas, dias };
+				tiempoDeGestacion = JSON.stringify(detalle);
+			}
 			const test = {
-				fecha: new Date(),
+				fecha: fecha,
 				observaciones: observaciones,
 				embarazo: embarazo,
 				paciente: paciente,
 				pruebas: pruebas,
 				tipo: tipo,
+				tiempoDeGestacion: tiempoDeGestacion,
 				activo: activo,
 			};
 			//la promise debe de devolver un valor RETURN
@@ -155,6 +203,8 @@ class ComponentAddTest extends Component {
 	ChangeModalState = async (evt) => {
 		if (evt.target.className.includes("modal-button-add") || evt.target.className.includes("modal-icon-add")) {
 			this.ClearModalState();
+			//setear las semanas hasta ahora del embarazo
+			this.SetDate();
 			this.setState({ openModal: true });
 		} else if (evt.target.className.includes("modal-button-cancel") || evt.target.className.includes("modal-icon-cancel")) {
 			this.setState({ openModal: false });
@@ -195,15 +245,19 @@ class ComponentAddTest extends Component {
 		const paciente = this.props.paciente != null ? this.props.paciente._id : null;
 		const embarazo = this.props.embarazo != null ? this.props.embarazo._id : null;
 		const tipo = paciente ? "Paciente" : "Embarazo";
+
 		//actualizar los states
 		this.setState({
 			openModal: false,
+			fecha: null,
 			observaciones: "",
 			embarazo: embarazo,
 			paciente: paciente,
 			pruebas: [],
 			tipo: tipo,
 			activo: true,
+			semanas: 0,
+			dias: 0,
 			opcionPacientes: opcionPacientes,
 			opcionEmbarazos: opcionEmbarazos,
 			errorform: false,
@@ -276,6 +330,77 @@ class ComponentAddTest extends Component {
 	DetailsTests = () => {
 		return <ComponentPruebas Deslogin={this.props.Deslogin} global={this.props.global} middleButtonAdd={false} examenes={this.props.examenes} pruebas={this.props.pruebas} detail={true} GetDataFromServer={this.props.GetDataFromServer} />;
 	};
+	PregnancyAge = () => {
+		if (this.state.tipo === "Embarazo") {
+			return (
+				<Segment.Group className="segmentgroup-correct">
+					<Segment as="h5">Tiempo de Gestación:</Segment>
+					<Segment.Group horizontal>
+						<Segment>
+							<Form.Group>
+								<Form.Input className="modal-input-100p" required name="semanas" icon="calendar alternate outline" iconPosition="left" label="Semanas:" value={this.state.semanas} error={this.state.errortiempogestacion} />
+								<Button.Group>
+									<Button
+										className="button-group-addsub"
+										icon="plus"
+										primary
+										onClick={(evt) => {
+											evt.preventDefault();
+											this.setState({
+												semanas: this.state.semanas + 1,
+											});
+										}}
+									/>
+									<Button
+										className="button-group-addsub"
+										icon="minus"
+										secondary
+										disabled={this.state.semanas === 0}
+										onClick={(evt) => {
+											evt.preventDefault();
+											this.setState({
+												semanas: this.state.semanas - 1,
+											});
+										}}
+									/>
+								</Button.Group>
+							</Form.Group>
+						</Segment>
+						<Segment>
+							<Form.Group>
+								<Form.Input className="modal-input-100p" required name="dias" icon="calendar alternate" iconPosition="left" label="Dias:" value={this.state.dias} error={this.state.errortiempogestacion} />
+								<Button.Group>
+									<Button
+										className="button-group-addsub"
+										icon="plus"
+										primary
+										onClick={(evt) => {
+											evt.preventDefault();
+											this.setState({
+												dias: this.state.dias + 1,
+											});
+										}}
+									/>
+									<Button
+										className="button-group-addsub"
+										icon="minus"
+										secondary
+										disabled={this.state.dias === 0}
+										onClick={(evt) => {
+											evt.preventDefault();
+											this.setState({
+												dias: this.state.dias - 1,
+											});
+										}}
+									/>
+								</Button.Group>
+							</Form.Group>
+						</Segment>
+					</Segment.Group>
+				</Segment.Group>
+			);
+		}
+	};
 	//#endregion
 
 	//#region Render
@@ -286,6 +411,12 @@ class ComponentAddTest extends Component {
 				<Modal.Content>
 					{this.state.errorform ? <Message error inverted header="Error" content="Error en el formulario" /> : null}
 					<Form ref="form" onSubmit={this.ChangeModalState}>
+						<Form.Group>
+							<Segment className="modal-segment-expanded">
+								<Header as="h5">Fecha:</Header>
+								<ComponentInputDatePicker SetDate={this.SetDate} restringir={false} />
+							</Segment>
+						</Form.Group>
 						<Form.TextArea name="observaciones" label="Observaciones:" placeholder="Observaciones..." value={this.state.observaciones} onChange={this.ChangeModalInput} />
 						<Segment className="modal-segment-expanded-grouping">
 							<Form.Group inline>
@@ -322,6 +453,7 @@ class ComponentAddTest extends Component {
 								/>
 							</Form.Group>
 						</Segment>
+						<Form.Group>{this.PregnancyAge()}</Form.Group>
 						<Form.Group>{this.ChoseType()}</Form.Group>
 						{/* <Segment.Group>
               <Segment as="h5">Pruebas:</Segment>

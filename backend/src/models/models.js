@@ -54,6 +54,7 @@ var examen_schema = new Schema({
 	paciente: { type: Schema.Types.ObjectId, ref: "Paciente", default: mongoose.mongo.ObjectID() },
 	pruebas: [{ type: Schema.Types.ObjectId, ref: "Prueba" }],
 	tipo: { type: String },
+	tiempoDeGestacion: { type: String }, //objeto JSON {"semanas":2, "dias":4}
 	activo: { type: Boolean },
 	accessToken: { type: String },
 });
@@ -66,7 +67,9 @@ var prueba_schema = new Schema({
 	grupoSanguineo: { type: Schema.Types.ObjectId, ref: "GrupoSanguineo", default: mongoose.mongo.ObjectID() },
 	identificacionAnticuerpo: { type: Schema.Types.ObjectId, ref: "IdentificacionAnticuerpo", default: mongoose.mongo.ObjectID() },
 	pesquizajeAnticuerpo: { type: Schema.Types.ObjectId, ref: "PesquizajeAnticuerpo", default: mongoose.mongo.ObjectID() },
-	pendiente: { type: Boolean },
+	pendiente: { type: Boolean }, //si aun se ha realizado o no
+	numeroMuestra: { type: String }, //es un consecutivo que comienza año+(4 digitos consecutivos) ej: 20200001, 20200002, ...
+	tiempoDeGestacion: { type: String }, //objeto JSON {"semanas":2, "dias":4}
 	activo: { type: Boolean },
 	accessToken: { type: String },
 });

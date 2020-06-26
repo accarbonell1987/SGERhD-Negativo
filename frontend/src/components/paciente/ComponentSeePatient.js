@@ -83,6 +83,28 @@ class ComponentSeePatient extends Component {
 			opcionPacientes: opcion,
 		});
 	};
+	CalcAge = (paciente) => {
+		const nacimiento = paciente.ci.slice(0, 6);
+		const now = new Date();
+
+		const nowaño = now.getFullYear();
+		const nowmes = now.getMonth() + 1;
+
+		const año = nacimiento.slice(0, 2);
+		const mes = nacimiento.slice(2, 4);
+		// const dia = nacimiento.slice(4, 2);
+
+		var confecaño = 0;
+		if (año[0] === "0") {
+			confecaño = 2000 + parseInt(año);
+		} else {
+			confecaño = 1900 + parseInt(año);
+		}
+		var edad = parseInt(nowaño) - parseInt(confecaño);
+		if (nowmes < mes) edad -= 1;
+
+		return edad;
+	};
 
 	render() {
 		const paciente = this.props.paciente;
@@ -99,6 +121,7 @@ class ComponentSeePatient extends Component {
 				<Header icon="wheelchair" content="Detalles Paciente" />
 				<Modal.Content>
 					<Form ref="form">
+						<Form.Input name="edad" icon="clock outline" iconPosition="left" label="Edad:" value={this.CalcAge(paciente)} />
 						<Form.Input name="nombre" icon="address card outline" iconPosition="left" label="Nombre:" value={paciente.nombre} placeholder="Facundo" />
 						<Form.Input name="apellidos" icon="address card outline" iconPosition="left" label="Apellidos:" value={paciente.apellidos} placeholder="Correcto Inseguro" />
 						<Form.Input name="ci" icon="vcard" iconPosition="left" label="Carnet de Identidad:" value={paciente.ci} placeholder="90112050112" />

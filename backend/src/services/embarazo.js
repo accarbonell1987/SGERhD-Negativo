@@ -13,7 +13,7 @@ exports.GetPregnancies = async (query, page, limit) => {
 	try {
 		var pregnancies = await Embarazo.find(query)
 			.populate({ path: "paciente", populate: { path: "historiaclinica" } })
-			.populate("examenes");
+			.populate({ path: "examenes", populate: { path: "pruebas" } });
 		return pregnancies.sort((last, next) => (last.fecha > next.fecha ? -1 : 1)); //orderar de mayor a menor
 	} catch (err) {
 		throw Error("GetPregnancies -> Obteniendo Embarazos.");
@@ -133,9 +133,10 @@ exports.InsertTestToPregnancy = async (test) => {
 };
 exports.DeleteTestInPregnancy = async (test) => {
 	try {
-		examenesembarazo = [...test.embarazo.examenes];
+		const embarazo = await exports.GetPregnancy(test.embarazo);
+		examenesembarazo = [...embarazo.examenes];
 		//buscar el indice del elemento que representa ese examen en el arreglo de examenes del embarazo
-		let index = test.embarazo.examenes.indexOf(test._id);
+		let index = embarazo.examenes.indexOf(test._id);
 		if (index) {
 			//eliminar del arreglo el elemento
 			examenesembarazo.splice(index, 1);

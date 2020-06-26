@@ -36,7 +36,7 @@ exports.GetTest = async (id) => {
 };
 exports.InsertTest = async (body) => {
 	try {
-		var { fecha, observaciones, embarazo, paciente, pruebas, tipo, activo } = body;
+		var { fecha, observaciones, embarazo, paciente, pruebas, tipo, tiempoDeGestacion, activo } = body;
 		const test = new Examen({
 			fecha,
 			observaciones,
@@ -44,6 +44,7 @@ exports.InsertTest = async (body) => {
 			paciente,
 			pruebas,
 			tipo,
+			tiempoDeGestacion,
 			activo,
 		});
 		const saved = await test.save();
@@ -61,8 +62,8 @@ exports.InsertTest = async (body) => {
 };
 exports.UpdateTest = async (id, body) => {
 	try {
-		var { fecha, observaciones, embarazo, paciente, pruebas, tipo, activo } = body;
-		const test = { fecha, observaciones, embarazo, paciente, pruebas, tipo, activo };
+		var { fecha, observaciones, embarazo, paciente, pruebas, tipo, tiempoDeGestacion, activo } = body;
+		const test = { fecha, observaciones, embarazo, paciente, pruebas, tipo, tiempoDeGestacion, activo };
 		const updated = await Examen.findByIdAndUpdate(id, test);
 		return updated;
 	} catch (err) {

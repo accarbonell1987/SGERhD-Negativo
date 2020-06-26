@@ -296,7 +296,7 @@ class ComponentAddClinicHistory extends Component {
 		const position = this.props.middleButtonAdd ? "middle" : "right";
 		if (change)
 			return (
-				<Button disabled={disabled} icon floated={position} labelPosition="right" className="modal-button-add" onClick={this.ChangeModalState}>
+				<Button disabled={disabled} icon floated={position} labelPosition="right" primary className="modal-button-add" onClick={this.ChangeModalState}>
 					<Icon name="add circle" className="modal-icon-add" onClick={this.ChangeModalState} />
 					Adicionar
 				</Button>

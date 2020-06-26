@@ -166,7 +166,7 @@ class ComponentTests extends Component {
 											<Table.Cell>{fechacadena}</Table.Cell>
 											<Table.Cell>{examen.observaciones}</Table.Cell>
 											<Table.Cell>{this.BelongTo(examen.tipo)}</Table.Cell>
-											<Table.Cell>
+											<Table.Cell className="cells-max-witdh-2" collapsing>
 												<ComponentModalPrueba Deslogin={this.props.Deslogin} global={this.props.global} examenes={this.props.examenes} examen={examen} GetDataFromServer={this.props.GetDataFromServer} cambiarIcono={true} />
 											</Table.Cell>
 											<Table.Cell className="cells-max-witdh-2" collapsing>

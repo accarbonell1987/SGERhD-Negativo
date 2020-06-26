@@ -54,7 +54,15 @@ class ComponentInputDatePicker extends Component {
 
 	HandleSelect = (value, states) => {
 		const today = moment().subtract(1, "days");
-		if (today.isAfter(value)) {
+		if (this.props.restringir) {
+			if (today.isAfter(value)) {
+				this.setState({
+					fecha: value,
+					estados: states,
+					modoboton: true,
+				});
+			}
+		} else {
 			this.setState({
 				fecha: value,
 				estados: states,
