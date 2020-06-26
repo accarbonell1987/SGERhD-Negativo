@@ -14,7 +14,7 @@ exports.GetPregnancies = async (query, page, limit) => {
 		var pregnancies = await Embarazo.find(query)
 			.populate({ path: "paciente", populate: { path: "historiaclinica" } })
 			.populate("examenes");
-		return pregnancies;
+		return pregnancies.sort((last, next) => (last.fecha > next.fecha ? -1 : 1)); //orderar de mayor a menor
 	} catch (err) {
 		throw Error("GetPregnancies -> Obteniendo Embarazos.");
 	}

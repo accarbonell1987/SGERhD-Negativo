@@ -93,6 +93,26 @@ class ComponentTrans extends Component {
 				</Button>
 			);
 	};
+	AdvReactionDetails = (tran) => {
+		if (tran.reaccionAdversa) {
+			let detalles = "";
+			// fiebre, vomito, escalofrio, rasch, prurito, dolorcabeza, mareo, ictero, hemorragia
+			const detallesArr = ["Fiebre", "Vómito", "Escalofrío", "Rasch", "Prurito", "Dolor de Cabeza", "Mareo", "Íctero", "Hemorragia"];
+			const reaccionAdversaDetalles = JSON.parse(tran.reaccionAdversaDetalles);
+			detalles += reaccionAdversaDetalles.fiebre ? (detalles.length > 0 ? ", " + detallesArr[0] : detallesArr[0]) : "";
+			detalles += reaccionAdversaDetalles.vomito ? (detalles.length > 0 ? ", " + detallesArr[1] : detallesArr[1]) : "";
+			detalles += reaccionAdversaDetalles.escalofrio ? (detalles.length > 0 ? ", " + detallesArr[2] : detallesArr[2]) : "";
+			detalles += reaccionAdversaDetalles.rasch ? (detalles.length > 0 ? ", " + detallesArr[3] : detallesArr[3]) : "";
+			detalles += reaccionAdversaDetalles.prurito ? (detalles.length > 0 ? ", " + detallesArr[4] : detallesArr[4]) : "";
+			detalles += reaccionAdversaDetalles.dolorcabeza ? (detalles.length > 0 ? ", " + detallesArr[5] : detallesArr[5]) : "";
+			detalles += reaccionAdversaDetalles.mareo ? (detalles.length > 0 ? ", " + detallesArr[6] : detallesArr[6]) : "";
+			detalles += reaccionAdversaDetalles.ictero ? (detalles.length > 0 ? ", " + detallesArr[7] : detallesArr[7]) : "";
+			detalles += reaccionAdversaDetalles.hemorragia ? (detalles.length > 0 ? ", " + detallesArr[8] : detallesArr[8]) : "";
+			return detalles;
+		} else {
+			return "Sin Detalles";
+		}
+	};
 	//#endregion
 
 	//#region Render
@@ -119,12 +139,13 @@ class ComponentTrans extends Component {
 							<Table.Header className="div-table-header">
 								<Table.Row>
 									<Table.HeaderCell />
-									<Table.HeaderCell colSpan="7">{this.CheckAndAllowAddButton(false, accesomenu.permisos.crear)}</Table.HeaderCell>
+									<Table.HeaderCell colSpan="8">{this.CheckAndAllowAddButton(false, accesomenu.permisos.crear)}</Table.HeaderCell>
 								</Table.Row>
 								<Table.Row>
 									<Table.HeaderCell />
 									<Table.HeaderCell>Fecha</Table.HeaderCell>
 									<Table.HeaderCell>Reacción Adversa</Table.HeaderCell>
+									<Table.HeaderCell>Detalles</Table.HeaderCell>
 									<Table.HeaderCell>Observaciones</Table.HeaderCell>
 									<Table.HeaderCell className="cells-max-witdh-2">Paciente</Table.HeaderCell>
 									<Table.HeaderCell className="cells-max-witdh-2">Activo</Table.HeaderCell>
@@ -144,6 +165,7 @@ class ComponentTrans extends Component {
 											<Table.Cell>
 												<Checkbox toggle name="reaccionAdversa" labelPosition="left" checked={tran.reaccionAdversa} label={tran.reaccionAdversa ? "Si" : "No"} disabled />
 											</Table.Cell>
+											<Table.Cell>{this.AdvReactionDetails(tran)}</Table.Cell>
 											<Table.Cell>{tran.observaciones}</Table.Cell>
 											<Table.Cell className="cells-max-witdh-2" collapsing>
 												<ComponentSeePatient paciente={tran.paciente} global={this.props.global} roles={this.props.roles} pacientes={this.props.pacientes} />

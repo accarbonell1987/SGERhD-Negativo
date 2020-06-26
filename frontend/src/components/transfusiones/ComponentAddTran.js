@@ -19,6 +19,15 @@ class ComponentAddTran extends Component {
 		openModal: false,
 		fecha: null,
 		reaccionAdversa: false,
+		fiebre: false,
+		vomito: false,
+		escalofrio: false,
+		rasch: false,
+		prurito: false,
+		dolorcabeza: false,
+		mareo: false,
+		ictero: false,
+		hemorragia: false,
 		observaciones: "",
 		paciente: null,
 		opcionPacientes: [],
@@ -59,10 +68,20 @@ class ComponentAddTran extends Component {
 		const data = this.props.global.cookies();
 		if (!data) this.props.Deslogin();
 		else {
-			const { fecha, reaccionAdversa, observaciones, paciente, activo } = this.state;
+			const { fecha, reaccionAdversa, fiebre, vomito, escalofrio, rasch, prurito, dolorcabeza, mareo, ictero, hemorragia, observaciones, paciente, activo } = this.state;
+
+			let reaccionAdversaDetalles = null;
+			if (reaccionAdversa) {
+				//estructura del ReaccionAdversaDetalle
+				//reaccionAdversaDetalle = {fiebre, vomito, ...}
+				const detalle = { fiebre, vomito, escalofrio, rasch, prurito, dolorcabeza, mareo, ictero, hemorragia };
+				reaccionAdversaDetalles = JSON.stringify(detalle);
+			}
+
 			const tran = {
 				fecha: fecha,
 				reaccionAdversa: reaccionAdversa,
+				reaccionAdversaDetalles: reaccionAdversaDetalles,
 				observaciones: observaciones,
 				paciente: paciente,
 				activo: activo,
@@ -182,6 +201,134 @@ class ComponentAddTran extends Component {
 				</Button>
 			);
 	};
+	ChoseAdvReactionDetails = () => {
+		if (this.state.reaccionAdversa) {
+			return (
+				<Segment.Group className="segmentgroup-correct">
+					<Segment as="h5">Detalles Reacción Adversa:</Segment>
+					<Segment.Group horizontal>
+						<Form.Checkbox
+							className="checkbox-group"
+							name="fiebre"
+							labelPosition="left"
+							label="Fiebre"
+							value={this.state.fiebre}
+							onChange={(evt) => {
+								evt.preventDefault();
+								this.setState({
+									fiebre: !this.state.fiebre,
+								});
+							}}
+						/>
+						<Form.Checkbox
+							className="checkbox-group"
+							name="vomito"
+							labelPosition="left"
+							label="Vómito"
+							value={this.state.vomito}
+							onChange={(evt) => {
+								evt.preventDefault();
+								this.setState({
+									vomito: !this.state.vomito,
+								});
+							}}
+						/>
+						<Form.Checkbox
+							className="checkbox-group"
+							name="escalofrio"
+							labelPosition="left"
+							label="Escalofríos"
+							value={this.state.escalofrio}
+							onChange={(evt) => {
+								evt.preventDefault();
+								this.setState({
+									escalofrio: !this.state.escalofrio,
+								});
+							}}
+						/>
+						<Form.Checkbox
+							className="checkbox-group"
+							name="rasch"
+							labelPosition="left"
+							label="Rasch"
+							value={this.state.rasch}
+							onChange={(evt) => {
+								evt.preventDefault();
+								this.setState({
+									rasch: !this.state.rasch,
+								});
+							}}
+						/>
+						<Form.Checkbox
+							className="checkbox-group"
+							name="prurito"
+							labelPosition="left"
+							label="Prurito"
+							value={this.state.prurito}
+							onChange={(evt) => {
+								evt.preventDefault();
+								this.setState({
+									prurito: !this.state.prurito,
+								});
+							}}
+						/>
+						<Form.Checkbox
+							className="checkbox-group"
+							name="dolorcabeza"
+							labelPosition="left"
+							label="Dolor de Cabeza"
+							value={this.state.dolorcabeza}
+							onChange={(evt) => {
+								evt.preventDefault();
+								this.setState({
+									dolorcabeza: !this.state.dolorcabeza,
+								});
+							}}
+						/>
+						<Form.Checkbox
+							className="checkbox-group"
+							name="mareo"
+							labelPosition="left"
+							label="Mareo"
+							value={this.state.mareo}
+							onChange={(evt) => {
+								evt.preventDefault();
+								this.setState({
+									mareo: !this.state.mareo,
+								});
+							}}
+						/>
+						<Form.Checkbox
+							className="checkbox-group"
+							name="ictero"
+							labelPosition="left"
+							label="Íctero"
+							value={this.state.ictero}
+							onChange={(evt) => {
+								evt.preventDefault();
+								this.setState({
+									ictero: !this.state.ictero,
+								});
+							}}
+						/>
+						<Form.Checkbox
+							className="checkbox-group"
+							name="hemorragia"
+							labelPosition="left"
+							label="Hemorragia"
+							value={this.state.hemorragia}
+							onChange={(evt) => {
+								evt.preventDefault();
+								this.setState({
+									hemorragia: !this.state.hemorragia,
+								});
+							}}
+						/>
+					</Segment.Group>
+				</Segment.Group>
+			);
+		}
+	};
 	//#endregion
 
 	//#region Render
@@ -216,6 +363,7 @@ class ComponentAddTran extends Component {
 								/>
 							</Segment>
 						</Form.Group>
+						<Form.Group>{this.ChoseAdvReactionDetails()}</Form.Group>
 						<Form.TextArea name="observaciones" label="Observaciones:" placeholder="Observaciones..." value={this.state.observaciones} onChange={this.ChangeModalInput} />
 						<Form.Select
 							name="paciente"

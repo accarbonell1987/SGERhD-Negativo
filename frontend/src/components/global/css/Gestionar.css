@@ -151,3 +151,7 @@
 .button-pregnancy-separate .button-pregnancy {
 	margin: 0.25rem 0.25rem 0.25rem 0 !important;
 }
+
+.checkbox-group {
+	margin: 10px !important;
+}

@@ -147,6 +147,7 @@ var transfusion_schema = new Schema({
 	fecha: { type: Date, required: true, default: new Date() },
 	observaciones: { type: String },
 	reaccionAdversa: { type: Boolean },
+	reaccionAdversaDetalles: { type: String },
 	paciente: { type: Schema.Types.ObjectId, ref: "Paciente" },
 	activo: { type: Boolean },
 	accessToken: { type: String },
