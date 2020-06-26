@@ -12,6 +12,7 @@ import "../global/css/Gestionar.css";
 //#region Componentes
 import ComponentAddPregnancy from "./ComponentAddPregnancy";
 import ComponentUpdatePregnancy from "./ComponentUpdatePregnancy";
+import ComponentCompletePregnancy from "./ComponentCompletePregnancy";
 import ComponentSeePatient from "../paciente/ComponentSeePatient";
 import ComponentModalTest from "../examen/ComponentModalTest";
 //#endregion
@@ -230,7 +231,7 @@ class ComponentPregnancies extends Component {
 											<Table.Cell className="cells-max-witdh-2" collapsing>
 												{accesomenu.permisos.eliminar ? <Button icon="remove circle" className="button-remove" onClick={() => this.DeletePregnancy(embarazo)} /> : <Button icon="remove circle" className="button-remove" disabled />}
 												{accesomenu.permisos.modificar ? <ComponentUpdatePregnancy Deslogin={this.props.Deslogin} GetDataFromServer={this.props.GetDataFromServer} global={this.props.global} pacientes={this.props.pacientes} pregnancy={embarazo} /> : <Button icon="edit" disabled />}
-												{accesomenu.permisos.modificar && embarazo.tipo === "Nuevo" ? <Button icon="checkmark" color="green" /> : <Button icon="checkmark" disabled />}
+												{accesomenu.permisos.modificar && embarazo.tipo === "Nuevo" ? <ComponentCompletePregnancy Deslogin={this.props.Deslogin} GetDataFromServer={this.props.GetDataFromServer} global={this.props.global} pacientes={this.props.pacientes} pregnancy={embarazo} /> : <Button icon="checkmark" disabled />}
 											</Table.Cell>
 										</Table.Row>
 									);

@@ -40,6 +40,7 @@ var embarazo_schema = new Schema({
 	findeembarazo: { type: String, default: "Parto" }, //parto o aborto
 	findeaborto: { type: String, default: "Provocado" }, //espontaneo o provocado
 	findeparto: { type: String, default: "Natural" }, //natural o cesarea
+	ninoparido: { type: String, default: "Natural" }, //vivo o muerto
 	paciente: { type: Schema.Types.ObjectId, ref: "Paciente" },
 	activo: { type: Boolean },
 	accessToken: { type: String },

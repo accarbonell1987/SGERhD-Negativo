@@ -27,6 +27,7 @@ class ComponentAddPregnancy extends Component {
 		findeembarazo: "Parto", //parto o aborto
 		findeparto: "Normal", //natural o cesarea
 		findeaborto: "Provocado", //espontaneo o provocado
+		ninoparido: "Recien Nacido Vivo", //Vivo o Muerto
 		paciente: null,
 		activo: true,
 		opcionPacientes: [],
@@ -67,16 +68,21 @@ class ComponentAddPregnancy extends Component {
 		const data = this.props.global.cookies();
 		if (!data) this.props.Deslogin();
 		else {
-			let { fecha, observaciones, examenes, tipo, semanas, dias, findeembarazo, findeaborto, findeparto, paciente, activo } = this.state;
+			let { fecha, observaciones, examenes, tipo, semanas, dias, findeembarazo, findeaborto, findeparto, ninoparido, paciente, activo } = this.state;
 			//limpiar segun el tip de embarazo
 			if (tipo === "Nuevo") {
 				findeembarazo = null;
 				findeaborto = null;
 				findeparto = null;
+				ninoparido = null;
 			} else {
 				semanas = 0;
 				dias = 0;
 				fecha = new Date();
+			}
+
+			if (findeparto == null) {
+				ninoparido = null;
 			}
 
 			const pregnancy = {
@@ -89,6 +95,7 @@ class ComponentAddPregnancy extends Component {
 				findeembarazo: findeembarazo,
 				findeaborto: findeaborto,
 				findeparto: findeparto,
+				ninoparido: ninoparido,
 				paciente: paciente,
 				activo: activo,
 			};
@@ -233,6 +240,7 @@ class ComponentAddPregnancy extends Component {
 			findeembarazo: "Parto", //parto o aborto
 			findeparto: "Normal", //natural o cesarea
 			findeaborto: "Provocado", //espontaneo o provocado
+			ninoparido: "Recien Nacido Vivo", //Vivo o Muerto
 			activo: true,
 			paciente: paciente,
 			opcionPacientes: opcion,
@@ -285,37 +293,74 @@ class ComponentAddPregnancy extends Component {
 				</Button>
 			);
 	};
-	ChoseEndOfPregnancy = () => {
+	ChoseChildState = () => {
 		if (this.state.findeembarazo === "Parto") {
 			return (
 				<Form.Group inline>
 					<Form.Radio
-						name="radiopartonatural"
+						name="radiopartoreciennacidovivo"
 						labelPosition="right"
-						label="Normal"
-						checked={this.state.findeparto === "Normal"}
-						value={this.state.findeparto}
+						label="Recien Nacido Vivo"
+						checked={this.state.ninoparido === "Recien Nacido Vivo"}
+						value={this.state.ninoparido}
 						onChange={(evt) => {
 							evt.preventDefault();
 							this.setState({
-								findeparto: "Normal",
+								ninoparido: "Recien Nacido Vivo",
 							});
 						}}
 					/>
 					<Form.Radio
-						name="radiopartocesarea"
+						name="radiopartoreciennacidomuerto"
 						labelPosition="right"
-						label="Cesarea"
-						checked={this.state.findeparto === "Cesarea"}
-						value={this.state.findeparto}
+						label="Recien Nacido Muerto"
+						checked={this.state.ninoparido === "Recien Nacido Muerto"}
+						value={this.state.ninoparido}
 						onChange={(evt) => {
 							evt.preventDefault();
 							this.setState({
-								findeparto: "Cesarea",
+								ninoparido: "Recien Nacido Muerto",
 							});
 						}}
 					/>
 				</Form.Group>
+			);
+		}
+	};
+	ChoseEndOfPregnancy = () => {
+		if (this.state.findeembarazo === "Parto") {
+			return (
+				<Segment className="modal-segment-expanded-grouping">
+					<Form.Group inline>
+						<Form.Radio
+							name="radiopartonatural"
+							labelPosition="right"
+							label="Normal"
+							checked={this.state.findeparto === "Normal"}
+							value={this.state.findeparto}
+							onChange={(evt) => {
+								evt.preventDefault();
+								this.setState({
+									findeparto: "Normal",
+								});
+							}}
+						/>
+						<Form.Radio
+							name="radiopartocesarea"
+							labelPosition="right"
+							label="Cesarea"
+							checked={this.state.findeparto === "Cesarea"}
+							value={this.state.findeparto}
+							onChange={(evt) => {
+								evt.preventDefault();
+								this.setState({
+									findeparto: "Cesarea",
+								});
+							}}
+						/>
+					</Form.Group>
+					<Segment>{this.ChoseChildState()}</Segment>
+				</Segment>
 			);
 		} else if (this.state.findeembarazo === "Aborto") {
 			return (

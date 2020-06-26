@@ -2,7 +2,6 @@
 import React, { Component } from "react";
 import { Button, Icon, Header, Modal, Form, Message, Segment } from "semantic-ui-react";
 import Swal from "sweetalert2";
-import moment from "moment";
 //#endregion
 
 //#region CSS
@@ -10,27 +9,26 @@ import "../global/css/Gestionar.css";
 //#endregion
 
 //#region Componentes
-import ComponentInputDatePicker from "../generales/ComponentInputDatePicker";
 //#endregion
 
 //#region Definicion Clase
-class ComponentUpdatePregnancy extends Component {
+class ComponentCompletePregnancy extends Component {
 	//#region Properties
 	state = {
 		openModal: false,
 		fecha: null,
 		observaciones: "",
 		examenes: [],
-		tipo: "Nuevo",
+		tipo: "Antiguo",
 		semanas: 0,
 		dias: 0,
-		findeembarazo: "Parto", //parto o aborto
-		findeparto: "Natural", //natural o cesarea
-		findeaborto: "Interrumpido", //natural o interrumpido
+		findeembarazo: null, //parto o aborto
+		findeparto: null, //natural o cesarea
+		findeaborto: null, //espontaneo o provocado
+		ninoparido: null, //Vivo o Muerto
 		paciente: null,
 		activo: true,
 		opcionPacientes: [],
-		errortiempogestacion: false,
 		errorform: false,
 	};
 	//#endregion
@@ -39,7 +37,6 @@ class ComponentUpdatePregnancy extends Component {
 	constructor(props) {
 		super(props);
 
-		this.SetDate = this.SetDate.bind(this);
 		this.ChangeModalInput = this.ChangeModalInput.bind(this);
 		this.ChangeModalState = this.ChangeModalState.bind(this);
 		this.ClearModalState = this.ClearModalState.bind(this);
@@ -76,7 +73,7 @@ class ComponentUpdatePregnancy extends Component {
 		const data = this.props.global.cookies();
 		if (!data) this.props.Deslogin();
 		else {
-			const { fecha, observaciones, examenes, tipo, semanas, dias, findeembarazo, findeparto, findeaborto, paciente, activo } = this.state;
+			var { fecha, observaciones, examenes, tipo, semanas, dias, findeembarazo, findeparto, findeaborto, ninoparido, paciente, activo } = this.state;
 
 			const pregnancy = {
 				fecha: fecha,
@@ -88,9 +85,12 @@ class ComponentUpdatePregnancy extends Component {
 				findeembarazo: findeembarazo,
 				findeparto: findeparto,
 				findeaborto: findeaborto,
+				ninoparido: ninoparido,
 				paciente: paciente,
 				activo: activo,
 			};
+
+			console.log(pregnancy);
 			//la promise debe de devolver un valor RETURN
 			try {
 				const res = await fetch(this.props.global.endpoint + "api/embarazo/" + id, {
@@ -121,22 +121,27 @@ class ComponentUpdatePregnancy extends Component {
 	HandleSubmit = (evt) => {
 		evt.preventDefault();
 
-		const errortiempogestacion =
-			this.state.tipo === "Nuevo"
-				? !(this.state.semanas > 0 || this.state.dias > 0)
-					? {
-							content: "El tiempo de gestación no puede ser cero",
-							pointing: "above",
-					  }
-					: false
-				: false;
+		let errorantiguo = false;
+		if (this.state.tipo === "Antiguo") {
+			if (this.state.findeembarazo === "Aborto") {
+				if (this.state.findeaborto === "Provocado" || this.state.findeaborto === "Espontaneo") errorantiguo = false;
+				else errorantiguo = true;
+			} else if (this.state.findeembarazo === "Parto") {
+				if (this.state.findeparto === "Normal" || this.state.findeparto === "Cesarea") {
+					if (this.state.ninoparido === "Recien Nacido Vivo" || this.state.ninoparido === "Recien Nacido Muerto") {
+						errorantiguo = false;
+					} else errorantiguo = true;
+				} else {
+					errorantiguo = true;
+				}
+			} else {
+				errorantiguo = true;
+			}
+		}
 
-		let etiempogestacion = Boolean(errortiempogestacion);
-
-		let errform = etiempogestacion;
+		let errform = errorantiguo;
 
 		this.setState({
-			errortiempogestacion: errortiempogestacion,
 			errorform: errform,
 		});
 
@@ -174,18 +179,17 @@ class ComponentUpdatePregnancy extends Component {
 	ChangeModalState = async (evt) => {
 		if (evt.target.className.includes("modal-button-action") || evt.target.className.includes("modal-icon")) {
 			this.ClearModalState();
-			this.SetDate(this.props.pregnancy.fecha);
 			this.setState({
 				openModal: true,
 				fecha: this.props.pregnancy.fecha,
 				observaciones: this.props.pregnancy.observaciones,
 				examenes: this.props.pregnancy.examenes,
-				tipo: this.props.pregnancy.tipo,
 				semanas: this.props.pregnancy.semanas,
 				dias: this.props.pregnancy.dias,
 				findeembarazo: this.props.pregnancy.findeembarazo,
 				findeaborto: this.props.pregnancy.findeaborto,
 				findeparto: this.props.pregnancy.findeparto,
+				ninoparido: this.props.pregnancy.ninoparido,
 				paciente: this.props.pregnancy.paciente._id,
 				activo: this.props.pregnancy.activo,
 			});
@@ -219,79 +223,88 @@ class ComponentUpdatePregnancy extends Component {
 			fecha: null,
 			observaciones: "",
 			examenes: [],
-			tipo: "Nuevo",
+			tipo: "Antiguo",
 			semanas: 0,
 			dias: 0,
-			findeembarazo: "Parto", //parto o aborto
-			findeparto: "Natural", //natural o cesarea
-			findeaborto: "Interrumpido", //natural o interrumpido
+			findeembarazo: null, //parto o aborto
+			findeparto: null, //natural o cesarea
+			findeaborto: null, //espontaneo o provocado
+			ninoparido: null, //Vivo o Muerto
 			activo: true,
 			paciente: paciente,
 			opcionPacientes: opcion,
-			errortiempogestacion: false,
 			errorform: false,
 		});
 	};
-	//capturar fecha
-	SetDate = (fecha) => {
-		//calcular el dia de la semana
-		const ahora = moment();
-		const fechaSeleccionada = moment(fecha);
-		const calculardiferenciasemanas = ahora.format("w") - fechaSeleccionada.format("w");
-
-		//diferencias de dias
-		let difdias = ahora.diff(fechaSeleccionada, "days");
-
-		let dias = 0;
-		let stop = false;
-		let diadesemana = 0;
-		while (!stop) {
-			//si los dias menos siete da resto cero
-			diadesemana = difdias - dias;
-			if (diadesemana % 7 === 0) stop = true;
-			else dias++;
+	ChoseChildState = () => {
+		if (this.state.findeembarazo === "Parto") {
+			return (
+				<Form.Group inline>
+					<Form.Radio
+						name="radiopartoreciennacidovivo"
+						labelPosition="right"
+						label="Recien Nacido Vivo"
+						checked={this.state.ninoparido === "Recien Nacido Vivo"}
+						value={this.state.ninoparido}
+						onChange={(evt) => {
+							evt.preventDefault();
+							this.setState({
+								ninoparido: "Recien Nacido Vivo",
+							});
+						}}
+					/>
+					<Form.Radio
+						name="radiopartoreciennacidomuerto"
+						labelPosition="right"
+						label="Recien Nacido Muerto"
+						checked={this.state.ninoparido === "Recien Nacido Muerto"}
+						value={this.state.ninoparido}
+						onChange={(evt) => {
+							evt.preventDefault();
+							this.setState({
+								ninoparido: "Recien Nacido Muerto",
+							});
+						}}
+					/>
+				</Form.Group>
+			);
 		}
-
-		let semana = calculardiferenciasemanas > 0 ? calculardiferenciasemanas : 0;
-		if (ahora.get("date") < diadesemana) semana--;
-		this.setState({
-			fecha: fecha,
-			semanas: semana,
-			dias: dias,
-		});
 	};
 	//escoger fin de embarazo
 	ChoseEndOfPregnancy = () => {
 		if (this.state.findeembarazo === "Parto") {
 			return (
-				<Form.Group inline>
-					<Form.Radio
-						name="radiopartonatural"
-						labelPosition="right"
-						label="Natural"
-						checked={this.state.findeparto === "Natural"}
-						value={this.state.findeparto}
-						onChange={(evt) => {
-							evt.preventDefault();
-							this.setState({
-								findeparto: "Natural",
-							});
-						}}
-					/>
-					<Form.Radio
-						name="radiopartocesarea"
-						labelPosition="right"
-						label="Cesarea"
-						checked={this.state.findeparto === "Cesarea"}
-						value={this.state.findeparto}
-						onChange={(evt) => {
-							evt.preventDefault();
-							this.setState({
-								findeparto: "cesarea",
-							});
-						}}
-					/>
-				</Form.Group>
+				<Segment className="modal-segment-expanded-grouping">
+					<Form.Group inline>
+						<Form.Radio
+							name="radiopartonatural"
+							labelPosition="right"
+							label="Normal"
+							checked={this.state.findeparto === "Normal"}
+							value={this.state.findeparto}
+							onChange={(evt) => {
+								evt.preventDefault();
+								this.setState({
+									findeparto: "Normal",
+								});
+							}}
+						/>
+						<Form.Radio
+							name="radiopartocesarea"
+							labelPosition="right"
+							label="Cesarea"
+							checked={this.state.findeparto === "Cesarea"}
+							value={this.state.findeparto}
+							onChange={(evt) => {
+								evt.preventDefault();
+								this.setState({
+									findeparto: "Cesarea",
+								});
+							}}
+						/>
+					</Form.Group>
+					<Segment>{this.ChoseChildState()}</Segment>
+				</Segment>
 			);
 		} else if (this.state.findeembarazo === "Aborto") {
 			return (
@@ -299,26 +312,26 @@ class ComponentUpdatePregnancy extends Component {
 					<Form.Radio
 						name="radioabortonatural"
 						labelPosition="right"
-						label="Natural"
-						checked={this.state.findeaborto === "Natural"}
+						label="Espontaneo"
+						checked={this.state.findeaborto === "Espontaneo"}
 						value={this.state.findeaborto}
 						onChange={(evt) => {
 							evt.preventDefault();
 							this.setState({
-								findeaborto: "Natural",
+								findeaborto: "Espontaneo",
 							});
 						}}
 					/>
 					<Form.Radio
 						name="radioabortointerrumpido"
 						labelPosition="right"
-						label="Interrumpido"
-						checked={this.state.findeaborto === "Interrumpido"}
+						label="Provocado"
+						checked={this.state.findeaborto === "Provocado"}
 						value={this.state.findeaborto}
 						onChange={(evt) => {
 							evt.preventDefault();
 							this.setState({
-								findeaborto: "Interrumpido",
+								findeaborto: "Provocado",
 							});
 						}}
 					/>
@@ -328,116 +341,46 @@ class ComponentUpdatePregnancy extends Component {
 	};
 	//escoger tipo de embarazo
 	ChoseType = () => {
-		if (this.state.tipo === "Nuevo") {
-			return (
-				<Segment.Group className="segmentgroup-correct">
-					<Segment as="h5">Tiempo de Gestación:</Segment>
-					<Segment.Group horizontal>
-						<Segment>
-							<Form.Group>
-								<Form.Input className="modal-input-100p" required name="semanas" icon="calendar alternate outline" iconPosition="left" label="Semanas:" value={this.state.semanas} error={this.state.errortiempogestacion} />
-								<Button.Group>
-									<Button
-										className="button-group-addsub"
-										icon="plus"
-										primary
-										onClick={(evt) => {
-											evt.preventDefault();
-											this.setState({
-												semanas: this.state.semanas + 1,
-											});
-										}}
-									/>
-									<Button
-										className="button-group-addsub"
-										icon="minus"
-										secondary
-										disabled={this.state.semanas === 0}
-										onClick={(evt) => {
-											evt.preventDefault();
-											this.setState({
-												semanas: this.state.semanas - 1,
-											});
-										}}
-									/>
-								</Button.Group>
-							</Form.Group>
-						</Segment>
-						<Segment>
-							<Form.Group>
-								<Form.Input className="modal-input-100p" required name="dias" icon="calendar alternate" iconPosition="left" label="Dias:" value={this.state.dias} error={this.state.errortiempogestacion} />
-								<Button.Group>
-									<Button
-										className="button-group-addsub"
-										icon="plus"
-										primary
-										onClick={(evt) => {
-											evt.preventDefault();
-											this.setState({
-												dias: this.state.dias + 1,
-											});
-										}}
-									/>
-									<Button
-										className="button-group-addsub"
-										icon="minus"
-										secondary
-										disabled={this.state.dias === 0}
-										onClick={(evt) => {
-											evt.preventDefault();
-											this.setState({
-												dias: this.state.dias - 1,
-											});
-										}}
-									/>
-								</Button.Group>
-							</Form.Group>
-						</Segment>
-					</Segment.Group>
+		return (
+			<Segment.Group className="segmentgroup-correct">
+				<Segment.Group horizontal>
+					<Segment className="modal-segment-expanded-grouping">
+						<Form.Group inline>
+							<Header as="h5" className="header-custom">
+								Fin de Embarazo:
+							</Header>
+							<Form.Radio
+								name="radioparto"
+								labelPosition="right"
+								label="Parto"
+								checked={this.state.findeembarazo === "Parto"}
+								value={this.state.findeembarazo}
+								onChange={(evt) => {
+									evt.preventDefault();
+									this.setState({
+										findeembarazo: "Parto",
+									});
+								}}
+							/>
+							<Form.Radio
+								name="radioaborto"
+								labelPosition="right"
+								label="Aborto"
+								checked={this.state.findeembarazo === "Aborto"}
+								value={this.state.findeembarazo}
+								onChange={(evt) => {
+									evt.preventDefault();
+									this.setState({
+										findeembarazo: "Aborto",
+									});
+								}}
+							/>
+						</Form.Group>
+						<Segment>{this.ChoseEndOfPregnancy()}</Segment>
+					</Segment>
 				</Segment.Group>
-			);
-		} else {
-			return (
-				<Segment.Group className="segmentgroup-correct">
-					<Segment.Group horizontal>
-						<Segment className="modal-segment-expanded-grouping">
-							<Form.Group inline>
-								<Header as="h5" className="header-custom">
-									Fin de Embarazo:
-								</Header>
-								<Form.Radio
-									name="radioparto"
-									labelPosition="right"
-									label="Parto"
-									checked={this.state.findeembarazo === "Parto"}
-									value={this.state.findeembarazo}
-									onChange={(evt) => {
-										evt.preventDefault();
-										this.setState({
-											findeembarazo: "Parto",
-										});
-									}}
-								/>
-								<Form.Radio
-									name="radioaborto"
-									labelPosition="right"
-									label="Aborto"
-									checked={this.state.findeembarazo === "Aborto"}
-									value={this.state.findeembarazo}
-									onChange={(evt) => {
-										evt.preventDefault();
-										this.setState({
-											findeembarazo: "Aborto",
-										});
-									}}
-								/>
-							</Form.Group>
-							<Segment>{this.ChoseEndOfPregnancy()}</Segment>
-						</Segment>
-					</Segment.Group>
-				</Segment.Group>
-			);
-		}
+			</Segment.Group>
+		);
 	};
 	//#endregion
 
@@ -448,94 +391,16 @@ class ComponentUpdatePregnancy extends Component {
 				open={this.state.openModal}
 				trigger={
 					<Button className="modal-button-action" onClick={this.ChangeModalState}>
-						<Icon name="edit" className="modal-icon" onClick={this.ChangeModalState} />
+						<Icon name="checkmark" className="modal-icon" color="green" onClick={this.ChangeModalState} />
 					</Button>
 				}
 			>
-				<Header icon="heartbeat" content="Modificar Embarazo" />
+				<Header icon="heartbeat" content="Fin de Embarazo" />
 				<Modal.Content>
 					{this.state.errorform ? <Message error inverted header="Error" content="Error en el formulario" /> : null}
 					<Form ref="form" onSubmit={this.ChangeModalState}>
-						<Form.Group>
-							<Segment className="modal-segment-expanded">
-								<Header as="h5">Fecha de Concepción:</Header>
-								<ComponentInputDatePicker SetDate={this.SetDate} restringir={true} />
-							</Segment>
-						</Form.Group>
-						<Form.TextArea name="observaciones" label="Observaciones:" placeholder="Observaciones..." value={this.state.observaciones} onChange={this.ChangeModalInput} />
-						<Segment className="modal-segment-expanded-grouping">
-							<Form.Group inline>
-								<Header as="h5" className="header-custom">
-									Tipo de Embarazo:
-								</Header>
-								<Form.Radio
-									name="radionuevo"
-									labelPosition="right"
-									label="Nuevo"
-									checked={this.state.tipo === "Nuevo"}
-									value={this.state.tipo}
-									onChange={(evt) => {
-										evt.preventDefault();
-										this.setState({
-											tipo: "Nuevo",
-										});
-									}}
-								/>
-								<Form.Radio
-									name="radioantiguo"
-									labelPosition="right"
-									label="Antiguo"
-									checked={this.state.tipo === "Antiguo"}
-									value={this.state.tipo}
-									onChange={(evt) => {
-										evt.preventDefault();
-										this.setState({
-											tipo: "Antiguo",
-											semanas: 0,
-											dias: 0,
-										});
-									}}
-								/>
-							</Form.Group>
-						</Segment>
 						<Form.Group>{this.ChoseType()}</Form.Group>
-						<Form.Select
-							name="paciente"
-							label="Paciente:"
-							placeholder="Seleccionar Paciente"
-							options={this.state.opcionPacientes}
-							value={this.state.paciente}
-							onChange={(e, { value }) => {
-								this.setState({ paciente: value });
-							}}
-							fluid
-							selection
-							clearable
-						/>
-						<Form.Group>
-							<Segment className="modal-segment-expanded">
-								<Header as="h5">Activo:</Header>
-								<Form.Checkbox
-									toggle
-									name="activo"
-									labelPosition="left"
-									label={this.state.activo === true ? "Si" : "No"}
-									value={this.state.activo}
-									checked={this.state.activo}
-									onChange={(evt) => {
-										evt.preventDefault();
-										//solo permito activar y en caso de que este desactivado
-										if (!this.state.activo)
-											this.setState({
-												activo: !this.state.activo,
-											});
-										else {
-											this.SwalAlert("center", "warning", "Solo se permite desactivar desde el bóton de Desactivar/Eliminar", 5000);
-										}
-									}}
-								/>
-							</Segment>
-						</Form.Group>
+						<Form.TextArea name="observaciones" label="Observaciones:" placeholder="Observaciones..." value={this.state.observaciones} onChange={this.ChangeModalInput} />
 					</Form>
 				</Modal.Content>
 				<Modal.Actions>
@@ -543,7 +408,7 @@ class ComponentUpdatePregnancy extends Component {
 						<Icon name="remove" className="modal-icon-cancel" />
 						Cancelar
 					</Button>
-					<Button color="green" onClick={this.ChangeModalState} className="modal-button-accept" type="submit" disabled={!this.state.fecha || !this.state.paciente}>
+					<Button color="green" onClick={this.ChangeModalState} className="modal-button-accept" type="submit">
 						<Icon name="checkmark" className="modal-icon-accept" />
 						Aceptar
 					</Button>
@@ -556,5 +421,5 @@ class ComponentUpdatePregnancy extends Component {
 //#endregion
 
 //#region Exports
-export default ComponentUpdatePregnancy;
+export default ComponentCompletePregnancy;
 //#endregion

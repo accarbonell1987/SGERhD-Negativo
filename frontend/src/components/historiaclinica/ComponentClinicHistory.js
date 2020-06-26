@@ -115,6 +115,7 @@ class ComponentClinicHistory extends Component {
 				</Button>
 			);
 	};
+	//obtener la clasificacion de embarazo segun varios criterios
 	GetClasification = (numeropartos, numeroabortos, numeroembarazos) => {
 		let clasificacion = "";
 		//nulipara, primigesta, nulipara y primigesta, multipara

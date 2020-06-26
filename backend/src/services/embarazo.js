@@ -31,7 +31,7 @@ exports.GetPregnancy = async (id) => {
 };
 exports.InsertPregnancy = async (body) => {
 	try {
-		var { fecha, observaciones, examenes, tipo, semanas, dias, findeembarazo, findeaborto, findeparto, paciente, activo } = body;
+		var { fecha, observaciones, examenes, tipo, semanas, dias, findeembarazo, findeaborto, findeparto, ninoparido, paciente, activo } = body;
 		const pregnancy = new Embarazo({
 			fecha,
 			observaciones,
@@ -42,6 +42,7 @@ exports.InsertPregnancy = async (body) => {
 			findeembarazo,
 			findeaborto,
 			findeparto,
+			ninoparido,
 			paciente,
 			activo,
 		});
@@ -62,8 +63,8 @@ exports.InsertPregnancy = async (body) => {
 };
 exports.UpdatePregnancy = async (id, body) => {
 	try {
-		var { fecha, observaciones, examenes, tipo, semanas, dias, findeembarazo, findeaborto, findeparto, paciente, activo } = body;
-		const pregnancy = { fecha, observaciones, examenes, tipo, semanas, dias, findeembarazo, findeaborto, findeparto, paciente, activo };
+		var { fecha, observaciones, examenes, tipo, semanas, dias, findeembarazo, findeaborto, findeparto, ninoparido, paciente, activo } = body;
+		const pregnancy = { fecha, observaciones, examenes, tipo, semanas, dias, findeembarazo, findeaborto, findeparto, ninoparido, paciente, activo };
 		const updated = await Embarazo.findByIdAndUpdate(id, pregnancy);
 		return updated;
 	} catch (err) {
