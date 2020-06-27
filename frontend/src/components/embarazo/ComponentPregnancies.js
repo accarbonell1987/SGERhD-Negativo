@@ -213,10 +213,7 @@ class ComponentPregnancies extends Component {
 												<Icon name="tint" />
 											</Table.Cell>
 											<Table.Cell>{fechacadena}</Table.Cell>
-											<Table.Cell>
-												{/* <Checkbox toggle name="reaccionAdversa" labelPosition="left" checked={tran.reaccionAdversa} label={tran.reaccionAdversa ? "Si" : "No"} disabled /> */}
-												{embarazo.tipo}
-											</Table.Cell>
+											<Table.Cell>{embarazo.tipo}</Table.Cell>
 											<Table.Cell>{embarazo.observaciones}</Table.Cell>
 											<Table.Cell>{this.DetailFromType(embarazo)}</Table.Cell>
 											<Table.Cell className="cells-max-witdh-2" collapsing>

@@ -47,6 +47,7 @@ exports.InsertTest = async (body) => {
 			tiempoDeGestacion,
 			activo,
 		});
+		console.log(test);
 		const saved = await test.save();
 		if (tipo === "Paciente") {
 			//se adiciona el examen en el paciente

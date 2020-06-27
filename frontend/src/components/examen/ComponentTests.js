@@ -1,6 +1,6 @@
 //#region Importaciones
 import React, { Component } from "react";
-import { Button, Grid, Icon, Label, Table, Checkbox } from "semantic-ui-react";
+import { Button, Grid, Icon, Label, Table, Checkbox, Step } from "semantic-ui-react";
 import Swal from "sweetalert2";
 import moment from "moment";
 //#endregion
@@ -12,7 +12,7 @@ import "../global/css/Gestionar.css";
 //#region Componentes
 import ComponentAddTest from "./ComponentAddTest";
 import ComponentModalPrueba from "../pruebas/ComponentModalPrueba";
-// import ComponentUpdatePregnancy from "./ComponentUpdatePregnancy";
+import ComponentUpdateTest from "./ComponentUpdateTest";
 // import ComponentSeePatient from "../paciente/ComponentSeePatient";
 //#endregion
 
@@ -113,8 +113,79 @@ class ComponentTests extends Component {
 				</Button>
 			);
 	};
-	BelongTo = (tipo) => {
-		return <Label>{tipo}</Label>;
+	BelongTo = (examen) => {
+		return (
+			<Step.Group ordered size="mini">
+				<Step completed>
+					<Step.Content>
+						<Step.Title>{examen.tipo}</Step.Title>
+					</Step.Content>
+				</Step>
+				{examen.tipo === "Embarazo" ? (
+					<Step completed>
+						<Step.Content>
+							<Step.Title>{examen.embarazo.tipo}</Step.Title>
+						</Step.Content>
+					</Step>
+				) : (
+					<Step completed>
+						<Step.Content>
+							<Step.Title>{examen.paciente.nombre}</Step.Title>
+						</Step.Content>
+					</Step>
+				)}
+			</Step.Group>
+		);
+	};
+	DetailsOfTests = (examen) => {
+		const embarazo = examen.embarazo;
+		if (embarazo.tipo === "Nuevo") {
+			return (
+				<Label.Group className="button-pregnancy-separate">
+					<Button as="div" labelPosition="right" className="button-pregnancy">
+						<Button icon>
+							<Icon name="calendar alternate outline" />
+							Semanas:
+						</Button>
+						<Label basic pointing="left">
+							{embarazo.semanas}
+						</Label>
+					</Button>
+					<Button as="div" labelPosition="right" className="button-pregnancy">
+						<Button icon>
+							<Icon name="calendar alternate" />
+							Dias:
+						</Button>
+						<Label basic pointing="left">
+							{embarazo.dias}
+						</Label>
+					</Button>
+				</Label.Group>
+			);
+		} else {
+			return (
+				<Label.Group className="button-pregnancy-separate">
+					<Button as="div" labelPosition="right" className="button-pregnancy">
+						<Button icon>
+							<Icon name="heartbeat" />
+							Fin de Embarazo:
+						</Button>
+						<Label basic pointing="left">
+							{embarazo.findeembarazo}
+						</Label>
+					</Button>
+					<Button as="div" labelPosition="right" className="button-pregnancy">
+						<Button icon>
+							<Icon name={embarazo.findeembarazo === "Parto" ? "birthday cake" : "user md"} />
+							{embarazo.findeembarazo === "Parto" ? "Modo de Parto: " : "Modo de Aborto: "}
+						</Button>
+						<Label basic pointing="left">
+							{embarazo.findeembarazo === "Parto" ? embarazo.findeparto : embarazo.findeaborto}
+						</Label>
+					</Button>
+				</Label.Group>
+			);
+		}
 	};
 	//#endregion
 
@@ -142,12 +213,13 @@ class ComponentTests extends Component {
 							<Table.Header className="div-table-header">
 								<Table.Row>
 									<Table.HeaderCell />
-									<Table.HeaderCell colSpan="6">{this.CheckAndAllowAddButton(false, accesomenu.permisos.crear)}</Table.HeaderCell>
+									<Table.HeaderCell colSpan="7">{this.CheckAndAllowAddButton(false, accesomenu.permisos.crear)}</Table.HeaderCell>
 								</Table.Row>
 								<Table.Row>
 									<Table.HeaderCell />
 									<Table.HeaderCell>Fecha</Table.HeaderCell>
 									<Table.HeaderCell>Observaciones</Table.HeaderCell>
+									<Table.HeaderCell>Detalles</Table.HeaderCell>
 									<Table.HeaderCell className="cells-max-witdh-2">Pertenece</Table.HeaderCell>
 									<Table.HeaderCell className="cells-max-witdh-2">Pruebas</Table.HeaderCell>
 									<Table.HeaderCell className="cells-max-witdh-2">Activo</Table.HeaderCell>
@@ -163,9 +235,10 @@ class ComponentTests extends Component {
 											<Table.Cell collapsing>
 												<Icon name="clipboard list" />
 											</Table.Cell>
-											<Table.Cell>{fechacadena}</Table.Cell>
+											<Table.Cell collapsing>{fechacadena}</Table.Cell>
 											<Table.Cell>{examen.observaciones}</Table.Cell>
-											<Table.Cell>{this.BelongTo(examen.tipo)}</Table.Cell>
+											<Table.Cell>{this.DetailsOfTests(examen)}</Table.Cell>
+											<Table.Cell>{this.BelongTo(examen)}</Table.Cell>
 											<Table.Cell className="cells-max-witdh-2" collapsing>
 												<ComponentModalPrueba Deslogin={this.props.Deslogin} global={this.props.global} examenes={this.props.examenes} examen={examen} GetDataFromServer={this.props.GetDataFromServer} cambiarIcono={true} />
 											</Table.Cell>
@@ -174,18 +247,7 @@ class ComponentTests extends Component {
 											</Table.Cell>
 											<Table.Cell className="cells-max-witdh-2" collapsing>
 												{accesomenu.permisos.eliminar ? <Button icon="remove circle" className="button-remove" onClick={() => this.DeleteTest(examen)} /> : <Button icon="remove circle" className="button-remove" disabled />}
-												{accesomenu.permisos.modificar ? (
-													// <ComponentUpdatePregnancy
-													//   Deslogin={this.props.Deslogin}
-													//   GetDataFromServer={this.props.GetDataFromServer}
-													//   global={this.props.global}
-													//   pacientes={this.props.pacientes}
-													//   pregnancy={embarazo}
-													// />
-													""
-												) : (
-													<Button icon="edit" disabled />
-												)}
+												{accesomenu.permisos.modificar ? <ComponentUpdateTest Deslogin={this.props.Deslogin} GetDataFromServer={this.props.GetDataFromServer} global={this.props.global} pacientes={this.props.pacientes} embarazos={this.props.embarazos} examenes={this.props.examenes} pruebas={this.props.pruebas} examen={examen} /> : <Button icon="edit" disabled />}
 											</Table.Cell>
 										</Table.Row>
 									);

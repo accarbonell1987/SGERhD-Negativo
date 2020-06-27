@@ -110,6 +110,7 @@ class ComponentAddTest extends Component {
 				const detalle = { semanas, dias };
 				tiempoDeGestacion = JSON.stringify(detalle);
 			}
+
 			const test = {
 				fecha: fecha,
 				observaciones: observaciones,
