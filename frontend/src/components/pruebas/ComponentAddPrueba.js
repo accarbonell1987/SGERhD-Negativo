@@ -215,7 +215,7 @@ class ComponentAddPruebas extends Component {
 			//calcular el dia de la semana
 			const ahora = moment();
 			const fechaSeleccionada = moment(fechaEmbarazo);
-			const calculardiferenciasemanas = ahora.format("w") - fechaSeleccionada.format("w");
+			const calculardiferenciasemanas = moment(ahora - fechaSeleccionada).format("w");
 
 			//diferencias de dias
 			let difdias = ahora.diff(fechaSeleccionada, "days");

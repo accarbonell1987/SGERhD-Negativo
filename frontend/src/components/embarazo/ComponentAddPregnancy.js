@@ -50,6 +50,15 @@ class ComponentAddPregnancy extends Component {
 	//#endregion
 
 	//#region Metodos y Eventos
+	SwalAlert = (posicion, icon, mensaje, tiempo) => {
+		Swal.fire({
+			position: posicion,
+			icon: icon,
+			title: mensaje,
+			showConfirmButton: false,
+			timer: tiempo,
+		});
+	};
 	//componente se monto
 	componentDidMount() {
 		this.ClearModalState();
@@ -253,8 +262,7 @@ class ComponentAddPregnancy extends Component {
 		//calcular el dia de la semana
 		const ahora = moment();
 		const fechaSeleccionada = moment(fecha);
-		const calculardiferenciasemanas = ahora.format("w") - fechaSeleccionada.format("w");
-
+		const calculardiferenciasemanas = moment(ahora - fechaSeleccionada).format("w");
 		//diferencias de dias
 		let difdias = ahora.diff(fechaSeleccionada, "days");
 
@@ -270,11 +278,16 @@ class ComponentAddPregnancy extends Component {
 
 		let semana = calculardiferenciasemanas > 0 ? calculardiferenciasemanas : 0;
 		if (ahora.get("date") < diadesemana) semana--;
-		this.setState({
-			fecha: fecha,
-			semanas: semana,
-			dias: dias,
-		});
+
+		if (semana <= 42) {
+			this.setState({
+				fecha: fecha,
+				semanas: semana,
+				dias: dias,
+			});
+		} else {
+			this.SwalAlert("center", "error", "La cantidad de semanas no debe de ser mayor de 42, revise la fecha de concepción", 5000);
+		}
 	};
 	ChangeIconInAddButton = (change) => {
 		const position = this.props.middleButtonAdd ? "middle" : "right";
