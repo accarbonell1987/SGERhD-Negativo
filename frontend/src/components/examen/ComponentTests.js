@@ -140,54 +140,58 @@ class ComponentTests extends Component {
 		);
 	};
 	DetailsOfTests = (examen) => {
-		const embarazo = examen.embarazo;
-
-		if (embarazo.tipo === "Nuevo") {
-			return (
-				<Label.Group className="button-pregnancy-separate">
-					<Button as="div" labelPosition="right" className="button-pregnancy">
-						<Button icon>
-							<Icon name="calendar alternate outline" />
-							Semanas:
+		if (examen.tipo === "Embarazo") {
+			const embarazo = examen.embarazo;
+			if (embarazo.tipo === "Nuevo") {
+				return (
+					<Label.Group className="button-pregnancy-separate">
+						Tiempo de Gestación:{" "}
+						<Button as="div" labelPosition="right" className="button-pregnancy">
+							<Button icon>
+								<Icon name="calendar alternate outline" />
+								Semanas:
+							</Button>
+							<Label basic pointing="left">
+								{embarazo.semanas}
+							</Label>
 						</Button>
-						<Label basic pointing="left">
-							{embarazo.semanas}
-						</Label>
-					</Button>
-					<Button as="div" labelPosition="right" className="button-pregnancy">
-						<Button icon>
-							<Icon name="calendar alternate" />
-							Dias:
+						<Button as="div" labelPosition="right" className="button-pregnancy">
+							<Button icon>
+								<Icon name="calendar alternate" />
+								Dias:
+							</Button>
+							<Label basic pointing="left">
+								{embarazo.dias}
+							</Label>
 						</Button>
-						<Label basic pointing="left">
-							{embarazo.dias}
-						</Label>
-					</Button>
-				</Label.Group>
-			);
+					</Label.Group>
+				);
+			} else {
+				return (
+					<Label.Group className="button-pregnancy-separate">
+						<Button as="div" labelPosition="right" className="button-pregnancy">
+							<Button icon>
+								<Icon name="heartbeat" />
+								Fin de Embarazo:
+							</Button>
+							<Label basic pointing="left">
+								{embarazo.findeembarazo}
+							</Label>
+						</Button>
+						<Button as="div" labelPosition="right" className="button-pregnancy">
+							<Button icon>
+								<Icon name={embarazo.findeembarazo === "Parto" ? "birthday cake" : "user md"} />
+								{embarazo.findeembarazo === "Parto" ? "Modo de Parto: " : "Modo de Aborto: "}
+							</Button>
+							<Label basic pointing="left">
+								{embarazo.findeembarazo === "Parto" ? embarazo.findeparto : embarazo.findeaborto}
+							</Label>
+						</Button>
+					</Label.Group>
+				);
+			}
 		} else {
-			return (
-				<Label.Group className="button-pregnancy-separate">
-					<Button as="div" labelPosition="right" className="button-pregnancy">
-						<Button icon>
-							<Icon name="heartbeat" />
-							Fin de Embarazo:
-						</Button>
-						<Label basic pointing="left">
-							{embarazo.findeembarazo}
-						</Label>
-					</Button>
-					<Button as="div" labelPosition="right" className="button-pregnancy">
-						<Button icon>
-							<Icon name={embarazo.findeembarazo === "Parto" ? "birthday cake" : "user md"} />
-							{embarazo.findeembarazo === "Parto" ? "Modo de Parto: " : "Modo de Aborto: "}
-						</Button>
-						<Label basic pointing="left">
-							{embarazo.findeembarazo === "Parto" ? embarazo.findeparto : embarazo.findeaborto}
-						</Label>
-					</Button>
-				</Label.Group>
-			);
+			return "Sin Detalles";
 		}
 	};
 	//#endregion

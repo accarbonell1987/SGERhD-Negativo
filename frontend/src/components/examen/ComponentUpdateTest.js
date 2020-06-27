@@ -71,10 +71,11 @@ class ComponentUpdateTest extends Component {
 		return true;
 	}
 	SetDate = (fecha) => {
-		if (this.props.embarazo) {
+		if (this.props.embarazo || this.state.embarazo) {
+			const embarazo = this.props.embarazo ? this.props.embarazo : this.props.embarazos.find((e) => e._id === this.state.embarazo);
 			//calcular el dia de la semana
 			const ahora = moment(fecha);
-			const fechaSeleccionada = moment(this.props.embarazo.fecha);
+			const fechaSeleccionada = moment(embarazo.fecha);
 			const calculardiferenciasemanas = moment(ahora - fechaSeleccionada).format("w");
 
 			//diferencias de dias

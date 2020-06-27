@@ -36,6 +36,7 @@ class ComponentContent extends Component {
 	}
 
 	componentDidMount = () => {
+		console.log("Se montó");
 		this.GetDataFromServer();
 	};
 	shouldComponentUpdate() {
