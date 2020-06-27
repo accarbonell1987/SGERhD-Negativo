@@ -309,6 +309,7 @@ class ComponentAddPruebas extends Component {
 									className="button-group-addsub"
 									icon="plus"
 									primary
+									disabled={this.state.semanas === 42}
 									onClick={(evt) => {
 										evt.preventDefault();
 										this.setState({
@@ -339,6 +340,7 @@ class ComponentAddPruebas extends Component {
 									className="button-group-addsub"
 									icon="plus"
 									primary
+									disabled={this.state.dias === 7}
 									onClick={(evt) => {
 										evt.preventDefault();
 										this.setState({
