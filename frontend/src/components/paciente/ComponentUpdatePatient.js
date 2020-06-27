@@ -226,14 +226,17 @@ class ComponentUpdatePatient extends Component {
 	ClearModalState = () => {
 		let opcion = [];
 		this.props.pacientes.forEach((p) => {
-			let nombreyapellidos = p.nombre + " " + p.apellidos;
-			let cur = {
-				key: p._id,
-				text: nombreyapellidos,
-				value: p._id,
-				icon: "wheelchair",
-			};
-			opcion = [...opcion, cur];
+			//chequear que el paciente p, sea diferente al paciente que se esta editando
+			if (p._id !== this.props.paciente._id) {
+				let nombreyapellidos = p.nombre + " " + p.apellidos;
+				let cur = {
+					key: p._id,
+					text: nombreyapellidos,
+					value: p._id,
+					icon: "wheelchair",
+				};
+				opcion = [...opcion, cur];
+			}
 		});
 
 		this.setState({

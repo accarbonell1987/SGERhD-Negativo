@@ -218,7 +218,6 @@ class ComponentAddPatient extends Component {
 			errorform: false,
 		});
 	};
-
 	ChangeIconInAddButton = (change) => {
 		const position = this.props.middleButtonAdd ? "middle" : "right";
 		if (change)

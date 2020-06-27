@@ -71,7 +71,9 @@ exports.GetPatients = async (query, page, limit) => {
 			.populate("madre")
 			.populate({ path: "transfusiones", populate: { path: "paciente" } })
 			.populate({ path: "examenes", populate: { path: "paciente" } })
-			.populate({ path: "embarazos", populate: { path: "paciente" } });
+			.populate({ path: "embarazos", populate: { path: "paciente" } })
+			.populate({ path: "embarazos", populate: { path: "examenes", populate: { path: "pruebas" } } })
+			.populate({ path: "embarazos", populate: { path: "examenes", populate: { path: "embarazo" } } });
 		return patients;
 	} catch (err) {
 		throw Error("GetPatients -> Obteniendo Pacientes.");
@@ -84,7 +86,9 @@ exports.GetPatient = async (id) => {
 			.populate("madre")
 			.populate({ path: "transfusiones", populate: { path: "paciente" } })
 			.populate({ path: "examenes", populate: { path: "paciente" } })
-			.populate({ path: "embarazos", populate: { path: "paciente" } });
+			.populate({ path: "embarazos", populate: { path: "paciente" } })
+			.populate({ path: "embarazos", populate: { path: "examenes", populate: { path: "pruebas" } } })
+			.populate({ path: "embarazos", populate: { path: "examenes", populate: { path: "embarazo" } } });
 		return patient;
 	} catch (err) {
 		throw Error("GetPatient -> Obteniendo Paciente con id: " + id);

@@ -45,7 +45,7 @@ class ComponentModalPregnancy extends Component {
 	ChangeIconInAddButton = (allow, change) => {
 		const position = this.props.middleButtonAdd ? "middle" : "right";
 		const cantEmbarazos = this.props.embarazos ? this.props.embarazos.length : 0;
-		const permitir = allow && this.props.paciente.sexo === "F";
+		const permitir = allow && this.props.paciente.sexo === "F" && this.props.paciente.historiaclinica !== null;
 		if (change)
 			return (
 				<Button

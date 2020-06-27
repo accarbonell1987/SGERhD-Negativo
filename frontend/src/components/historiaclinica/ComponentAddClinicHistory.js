@@ -16,7 +16,7 @@ class ComponentAddClinicHistory extends Component {
 		areaDeSalud: "",
 		numerohistoria: "",
 		vacunaAntiD: false,
-		administracionVacuna: "Antes del Parto",
+		administracionVacuna: "Sin Administracion",
 		numeroDeEmbarazos: 0,
 		numeroDePartos: 0,
 		numeroDeAbortos: 0,
@@ -278,7 +278,7 @@ class ComponentAddClinicHistory extends Component {
 			openModal: false,
 			areaDeSalud: "",
 			vacunaAntiD: false,
-			administracionVacuna: "Antes del Parto",
+			administracionVacuna: "Sin Administracion",
 			numeroDeEmbarazos: 0,
 			numeroDePartos: 0,
 			numeroDeAbortos: 0,
@@ -310,13 +310,26 @@ class ComponentAddClinicHistory extends Component {
 			);
 	};
 	ChoseWhenVaccum = () => {
-		if (this.state.vacunaAntiD && (this.state.numeroDeAbortos > 0 || this.state.numeroDePartos > 0)) {
+		if (this.state.vacunaAntiD && (this.state.numeroDePartos > 0 || this.state.numeroDeAbortos)) {
 			return (
 				<Segment className="modal-segment-expanded">
 					<Form.Group inline>
 						<Header as="h5" className="header-custom">
 							¿Cuando se Administró la Vacuna?:
 						</Header>
+						<Form.Radio
+							name="radiootrasrazones"
+							labelPosition="right"
+							label="Otras Razones"
+							checked={this.state.administracionVacuna === "Otras Razones"}
+							value={this.state.administracionVacuna}
+							onChange={(evt) => {
+								evt.preventDefault();
+								this.setState({
+									administracionVacuna: "Otras Razones",
+								});
+							}}
+						/>
 						<Form.Radio
 							name="radioantes"
 							labelPosition="right"
@@ -340,6 +353,29 @@ class ComponentAddClinicHistory extends Component {
 								evt.preventDefault();
 								this.setState({
 									administracionVacuna: "Después del Parto",
+								});
+							}}
+						/>
+					</Form.Group>
+				</Segment>
+			);
+		} else if (this.state.vacunaAntiD) {
+			return (
+				<Segment className="modal-segment-expanded">
+					<Form.Group inline>
+						<Header as="h5" className="header-custom">
+							¿Cuando se Administró la Vacuna?:
+						</Header>
+						<Form.Radio
+							name="radiootrasrazones"
+							labelPosition="right"
+							label="Otras Razones"
+							checked={this.state.administracionVacuna === "Otras Razones"}
+							value={this.state.administracionVacuna}
+							onChange={(evt) => {
+								evt.preventDefault();
+								this.setState({
+									administracionVacuna: "Otras Razones",
 								});
 							}}
 						/>
@@ -375,8 +411,10 @@ class ComponentAddClinicHistory extends Component {
 											value={this.state.vacunaAntiD}
 											onChange={(evt) => {
 												evt.preventDefault();
+												const administracionVacuna = this.state.vacunaAntiD ? "Sin Administración" : "Otras Razones";
 												this.setState({
 													vacunaAntiD: !this.state.vacunaAntiD,
+													administracionVacuna: administracionVacuna,
 												});
 											}}
 										/>

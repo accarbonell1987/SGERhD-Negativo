@@ -114,21 +114,23 @@ class ComponentTests extends Component {
 			);
 	};
 	BelongTo = (examen) => {
+		const icontipo = examen.tipo === "Embarazo" ? "heartbeat" : "wheelchair";
 		return (
-			<Step.Group ordered size="mini">
-				<Step completed>
+			<Step.Group size="mini">
+				<Step>
+					<Icon name={icontipo} />
 					<Step.Content>
 						<Step.Title>{examen.tipo}</Step.Title>
 					</Step.Content>
 				</Step>
 				{examen.tipo === "Embarazo" ? (
-					<Step completed>
+					<Step active>
 						<Step.Content>
 							<Step.Title>{examen.embarazo.tipo}</Step.Title>
 						</Step.Content>
 					</Step>
 				) : (
-					<Step completed>
+					<Step active>
 						<Step.Content>
 							<Step.Title>{examen.paciente.nombre}</Step.Title>
 						</Step.Content>
@@ -139,6 +141,7 @@ class ComponentTests extends Component {
 	};
 	DetailsOfTests = (examen) => {
 		const embarazo = examen.embarazo;
+
 		if (embarazo.tipo === "Nuevo") {
 			return (
 				<Label.Group className="button-pregnancy-separate">
