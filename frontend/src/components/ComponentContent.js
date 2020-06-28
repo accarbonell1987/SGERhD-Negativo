@@ -1,5 +1,6 @@
 //#region Importaciones
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
+import { Loader } from "semantic-ui-react";
 import Swal from "sweetalert2";
 //#endregion
 
@@ -28,6 +29,7 @@ class ComponentContent extends Component {
 		embarazos: [],
 		examenes: [],
 		pruebas: [],
+		loading: true,
 	};
 
 	constructor(props) {
@@ -36,7 +38,6 @@ class ComponentContent extends Component {
 	}
 
 	componentDidMount = () => {
-		console.log("Se montó");
 		this.GetDataFromServer();
 	};
 	shouldComponentUpdate() {
@@ -53,16 +54,34 @@ class ComponentContent extends Component {
 		const data = this.props.global.cookies();
 		if (!data) this.props.Deslogin();
 		else {
-			this.AllTrans();
-			this.AllClinicsHistory();
-			this.AllPatients();
-			this.AllUsers();
-			this.AllPregnancies();
-			this.AllTests();
-			this.AllPruebas();
+			Promise.all([this.AllUsers(), this.AllClinicsHistory(), this.AllPatients(), this.AllTrans(), this.AllPregnancies(), this.AllTests(), this.AllPruebas()]).then((fn) => {
+				this.setState({ loading: false });
+			});
 		}
 	};
+	//obtener todos los usuarios desde la API
+	AllUsers = () => {
+		const data = this.props.global.cookies();
 
+		return fetch(this.props.global.endpoint + "api/usuario", {
+			method: "GET",
+			headers: {
+				"access-token": data.token,
+			},
+		})
+			.then((res) => res.json())
+			.then((serverdata) => {
+				if (serverdata.status === 200) {
+					this.setState({ usuarios: serverdata.data });
+				} else {
+					Swal.fire({ position: "center", icon: "error", title: serverdata.message, showConfirmButton: false, timer: 3000 });
+				}
+				return true;
+			})
+			.catch((err) => {
+				Swal.fire({ position: "center", icon: "error", title: err, showConfirmButton: false, timer: 3000 });
+			});
+	};
 	//obtener todos los historia clinica desde la API
 	AllClinicsHistory = () => {
 		const data = this.props.global.cookies();
@@ -74,12 +93,13 @@ class ComponentContent extends Component {
 			},
 		})
 			.then((res) => res.json())
-			.then((data) => {
-				if (data.status === 200) {
-					this.setState({ historiasclinicas: data.data });
+			.then((serverdata) => {
+				if (serverdata.status === 200) {
+					this.setState({ historiasclinicas: serverdata.data });
 				} else {
-					Swal.fire({ position: "center", icon: "error", title: data.message, showConfirmButton: false, timer: 3000 });
+					Swal.fire({ position: "center", icon: "error", title: serverdata.message, showConfirmButton: false, timer: 3000 });
 				}
+				return true;
 			})
 			.catch((err) => {
 				Swal.fire({ position: "center", icon: "error", title: err, showConfirmButton: false, timer: 3000 });
@@ -96,12 +116,13 @@ class ComponentContent extends Component {
 			},
 		})
 			.then((res) => res.json())
-			.then((data) => {
-				if (data.status === 200) {
-					this.setState({ pacientes: data.data });
+			.then((serverdata) => {
+				if (serverdata.status === 200) {
+					this.setState({ pacientes: serverdata.data });
 				} else {
-					Swal.fire({ position: "center", icon: "error", title: data.message, showConfirmButton: false, timer: 3000 });
+					Swal.fire({ position: "center", icon: "error", title: serverdata.message, showConfirmButton: false, timer: 3000 });
 				}
+				return true;
 			})
 			.catch((err) => {
 				Swal.fire({ position: "center", icon: "error", title: err, showConfirmButton: false, timer: 3000 });
@@ -118,12 +139,13 @@ class ComponentContent extends Component {
 			},
 		})
 			.then((res) => res.json())
-			.then((data) => {
-				if (data.status === 200) {
-					this.setState({ transfusiones: data.data });
+			.then((serverdata) => {
+				if (serverdata.status === 200) {
+					this.setState({ transfusiones: serverdata.data });
 				} else {
-					Swal.fire({ position: "center", icon: "error", title: data.message, showConfirmButton: false, timer: 3000 });
+					Swal.fire({ position: "center", icon: "error", title: serverdata.message, showConfirmButton: false, timer: 3000 });
 				}
+				return true;
 			})
 			.catch((err) => {
 				Swal.fire({ position: "center", icon: "error", title: err, showConfirmButton: false, timer: 3000 });
@@ -140,33 +162,11 @@ class ComponentContent extends Component {
 			},
 		})
 			.then((res) => res.json())
-			.then((data) => {
-				if (data.status === 200) {
-					this.setState({ embarazos: data.data });
+			.then((serverdata) => {
+				if (serverdata.status === 200) {
+					this.setState({ embarazos: serverdata.data });
 				} else {
-					Swal.fire({ position: "center", icon: "error", title: data.message, showConfirmButton: false, timer: 3000 });
-				}
-			})
-			.catch((err) => {
-				Swal.fire({ position: "center", icon: "error", title: err, showConfirmButton: false, timer: 3000 });
-			});
-	};
-	//obtener todos los usuarios desde la API
-	AllUsers = () => {
-		const data = this.props.global.cookies();
-
-		fetch(this.props.global.endpoint + "api/usuario", {
-			method: "GET",
-			headers: {
-				"access-token": data.token,
-			},
-		})
-			.then((res) => res.json())
-			.then((data) => {
-				if (data.status === 200) {
-					this.setState({ usuarios: data.data });
-				} else {
-					Swal.fire({ position: "center", icon: "error", title: data.message, showConfirmButton: false, timer: 3000 });
+					Swal.fire({ position: "center", icon: "error", title: serverdata.message, showConfirmButton: false, timer: 3000 });
 				}
 			})
 			.catch((err) => {
@@ -184,12 +184,13 @@ class ComponentContent extends Component {
 			},
 		})
 			.then((res) => res.json())
-			.then((data) => {
-				if (data.status === 200) {
-					this.setState({ examenes: data.data });
+			.then((serverdata) => {
+				if (serverdata.status === 200) {
+					this.setState({ examenes: serverdata.data });
 				} else {
-					Swal.fire({ position: "center", icon: "error", title: data.message, showConfirmButton: false, timer: 3000 });
+					Swal.fire({ position: "center", icon: "error", title: serverdata.message, showConfirmButton: false, timer: 3000 });
 				}
+				return true;
 			})
 			.catch((err) => {
 				Swal.fire({ position: "center", icon: "error", title: err, showConfirmButton: false, timer: 3000 });
@@ -205,16 +206,24 @@ class ComponentContent extends Component {
 			},
 		})
 			.then((res) => res.json())
-			.then((data) => {
-				if (data.status === 200) {
-					this.setState({ examenes: data.data });
+			.then((serverdata) => {
+				if (serverdata.status === 200) {
+					this.setState({ pruebas: serverdata.data });
 				} else {
-					Swal.fire({ position: "center", icon: "error", title: data.message, showConfirmButton: false, timer: 3000 });
+					Swal.fire({ position: "center", icon: "error", title: serverdata.message, showConfirmButton: false, timer: 3000 });
 				}
+				return true;
 			})
 			.catch((err) => {
 				Swal.fire({ position: "center", icon: "error", title: err, showConfirmButton: false, timer: 3000 });
 			});
+	};
+	GetLoading = () => {
+		return (
+			<Loader active inline="centered" size="massive" Style="margin-top: 20% !important">
+				Cargando...
+			</Loader>
+		);
 	};
 
 	render() {
@@ -224,56 +233,99 @@ class ComponentContent extends Component {
 		//buscar el acceso del menu
 		const accesomenu = permiso.accesos.find((p) => p.opcion === this.props.opcionmenu);
 		//chequear si es usuario y tengo permiso
+
 		if (this.props.opcionmenu === "usuarios" && accesomenu.permisos.menu) {
 			return (
-				<div className="Content">
-					<ComponentUsers Deslogin={this.props.Deslogin} global={this.props.global} usuarios={this.state.usuarios} GetDataFromServer={this.GetDataFromServer} />
-					<ComponentFooter />
-				</div>
+				<Fragment>
+					{this.state.loading ? (
+						this.GetLoading()
+					) : (
+						<div className="Content">
+							<ComponentUsers Deslogin={this.props.Deslogin} global={this.props.global} usuarios={this.state.usuarios} GetDataFromServer={this.GetDataFromServer} />
+							<ComponentFooter />
+						</div>
+					)}
+				</Fragment>
 			);
 			//chequear si es pacientes y tengo permiso
 		} else if (this.props.opcionmenu === "pacientes" && accesomenu.permisos.menu) {
 			return (
-				<div className="Content">
-					<ComponentPatients Deslogin={this.props.Deslogin} global={this.props.global} pacientes={this.state.pacientes} historiasclinicas={this.state.historiasclinicas} GetDataFromServer={this.GetDataFromServer} />
-					<ComponentFooter />
-				</div>
+				<Fragment>
+					{this.state.loading ? (
+						this.GetLoading()
+					) : (
+						<div className="Content">
+							<ComponentPatients Deslogin={this.props.Deslogin} global={this.props.global} pacientes={this.state.pacientes} historiasclinicas={this.state.historiasclinicas} GetDataFromServer={this.GetDataFromServer} />
+							<ComponentFooter />
+						</div>
+					)}
+				</Fragment>
 			);
 			//chequear si es pacientes y tengo permiso
 		} else if (this.props.opcionmenu === "historiaclinica" && accesomenu.permisos.menu) {
 			return (
-				<div className="Content">
-					<ComponentClinicHistory Deslogin={this.props.Deslogin} global={this.props.global} pacientes={this.state.pacientes} historiasclinicas={this.state.historiasclinicas} GetDataFromServer={this.GetDataFromServer} />
-					<ComponentFooter />
-				</div>
+				<Fragment>
+					{this.state.loading ? (
+						this.GetLoading()
+					) : (
+						<div className="Content">
+							<ComponentClinicHistory Deslogin={this.props.Deslogin} global={this.props.global} pacientes={this.state.pacientes} historiasclinicas={this.state.historiasclinicas} GetDataFromServer={this.GetDataFromServer} />
+							<ComponentFooter />
+						</div>
+					)}
+				</Fragment>
 			);
 		} else if (this.props.opcionmenu === "transfusiones" && accesomenu.permisos.menu) {
 			return (
-				<div className="Content">
-					<ComponentTrans Deslogin={this.props.Deslogin} global={this.props.global} pacientes={this.state.pacientes} transfusiones={this.state.transfusiones} GetDataFromServer={this.GetDataFromServer} />
-					<ComponentFooter />
-				</div>
+				<Fragment>
+					{this.state.loading ? (
+						this.GetLoading()
+					) : (
+						<div className="Content">
+							<ComponentTrans Deslogin={this.props.Deslogin} global={this.props.global} pacientes={this.state.pacientes} transfusiones={this.state.transfusiones} GetDataFromServer={this.GetDataFromServer} />
+							<ComponentFooter />
+						</div>
+					)}
+				</Fragment>
 			);
 		} else if (this.props.opcionmenu === "embarazos" && accesomenu.permisos.menu) {
 			return (
-				<div className="Content">
-					<ComponentPregnancies Deslogin={this.props.Deslogin} global={this.props.global} pacientes={this.state.pacientes} embarazos={this.state.embarazos} GetDataFromServer={this.GetDataFromServer} />
-					<ComponentFooter />
-				</div>
+				<Fragment>
+					{this.state.loading ? (
+						this.GetLoading()
+					) : (
+						<div className="Content">
+							<ComponentPregnancies Deslogin={this.props.Deslogin} global={this.props.global} pacientes={this.state.pacientes} embarazos={this.state.embarazos} GetDataFromServer={this.GetDataFromServer} />
+							<ComponentFooter />
+						</div>
+					)}
+				</Fragment>
 			);
 		} else if (this.props.opcionmenu === "examenes" && accesomenu.permisos.menu) {
 			return (
-				<div className="Content">
-					<ComponentTests Deslogin={this.props.Deslogin} global={this.props.global} pacientes={this.state.pacientes} embarazos={this.state.embarazos} examenes={this.state.examenes} pruebas={this.state.pruebas} GetDataFromServer={this.GetDataFromServer} />
-					<ComponentFooter />
-				</div>
+				<Fragment>
+					{this.state.loading ? (
+						this.GetLoading()
+					) : (
+						<div className="Content">
+							<ComponentTests Deslogin={this.props.Deslogin} global={this.props.global} pacientes={this.state.pacientes} embarazos={this.state.embarazos} examenes={this.state.examenes} pruebas={this.state.pruebas} GetDataFromServer={this.GetDataFromServer} />
+							<ComponentFooter />
+						</div>
+					)}
+				</Fragment>
 			);
 		} else if (this.props.opcionmenu === "pruebas" && accesomenu.permisos.menu) {
 			return (
-				<div className="Content">
-					<ComponentPruebas Deslogin={this.props.Deslogin} global={this.props.global} examenes={this.state.examenes} pruebas={this.state.pruebas} GetDataFromServer={this.GetDataFromServer} />
-					<ComponentFooter />
-				</div>
+				<Fragment>
+					{this.state.loading ? (
+						this.GetLoading()
+					) : (
+						<div className="Content">
+							<ComponentPruebas Deslogin={this.props.Deslogin} global={this.props.global} examenes={this.state.examenes} pruebas={this.state.pruebas} GetDataFromServer={this.GetDataFromServer} />
+							<ComponentFooter />
+						</div>
+					)}
+				</Fragment>
 			);
 		} else {
 			return (
