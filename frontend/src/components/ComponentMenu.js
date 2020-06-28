@@ -9,57 +9,57 @@ import "./global/css/Menu.css";
 
 //#region Defincion de la clase
 class ComponentMenu extends Component {
-  state = {
-    visibleusuario: false,
-    visiblehistoriaclinica: false,
-    visiblepaciente: false,
-    visibleexamen: false,
-    visibletransfusiones: false,
-    visibleembarazo: false,
-  };
+	state = {
+		visibleusuario: false,
+		visiblehistoriaclinica: false,
+		visiblepaciente: false,
+		visibleexamen: false,
+		visibletransfusiones: false,
+		visibleembarazo: false,
+	};
 
-  menus = [
-    { name: "usuarios", icon: "users", visible: false, label: "Usuarios", enabled: true },
-    { name: "pacientes", icon: "wheelchair", visible: false, label: "Pacientes", enabled: true },
-    { name: "historiaclinica", icon: "clipboard", visible: false, label: "Historia Clínica", enabled: true },
-    { name: "transfusiones", icon: "tint", visible: false, label: "Transfusiones", enabled: true },
-    { name: "embarazos", icon: "heartbeat", visible: false, label: "Embarazos", enabled: true },
-    { name: "examenes", icon: "clipboard list", visible: false, label: "Exámenes", enabled: true },
-    { name: "pruebas", icon: "syringe", visible: false, label: "Pruebas", enabled: true },
-  ];
+	menus = [
+		{ name: "usuarios", icon: "users", visible: false, label: "Usuarios", enabled: true },
+		{ name: "pacientes", icon: "wheelchair", visible: false, label: "Pacientes", enabled: true },
+		{ name: "historiaclinica", icon: "clipboard", visible: false, label: "Historia Clínica", enabled: true },
+		{ name: "transfusiones", icon: "tint", visible: false, label: "Transfusiones", enabled: true },
+		{ name: "embarazos", icon: "heartbeat", visible: false, label: "Embarazos", enabled: true },
+		{ name: "examenes", icon: "clipboard list", visible: false, label: "Exámenes", enabled: true },
+		{ name: "analisis", icon: "syringe", visible: false, label: "Analisis", enabled: true },
+	];
 
-  constructor(props) {
-    super(props);
+	constructor(props) {
+		super(props);
 
-    this.HandleItemClick = this.HandleItemClick.bind(this);
-  }
+		this.HandleItemClick = this.HandleItemClick.bind(this);
+	}
 
-  HandleItemClick = (e, { name }) => {
-    this.props.ChangeMenuOption(name);
-  };
+	HandleItemClick = (e, { name }) => {
+		this.props.ChangeMenuOption(name);
+	};
 
-  render() {
-    const data = this.props.global.cookies();
+	render() {
+		const data = this.props.global.cookies();
 
-    return (
-      <Menu inverted className="menu-div" size="small" icon="labeled">
-        {this.menus.map((menu) => {
-          //buscar el permiso del rol
-          const permiso = this.props.global.permisos.find((p) => p.rol === data.rol);
-          //buscar el acceso del menu
-          const accesomenu = permiso.accesos.find((p) => p.opcion === menu.name);
-          //chequear su (menu) es true
-          if (accesomenu.permisos.menu && menu.enabled) {
-            return (
-              <Menu.Item key={menu.name} name={menu.name} active={this.props.opcionmenu === menu.name} onClick={this.HandleItemClick}>
-                <Icon name={menu.icon} /> {menu.label}
-              </Menu.Item>
-            );
-          } else return "";
-        })}
-      </Menu>
-    );
-  }
+		return (
+			<Menu inverted className="menu-div" size="small" icon="labeled">
+				{this.menus.map((menu) => {
+					//buscar el permiso del rol
+					const permiso = this.props.global.permisos.find((p) => p.rol === data.rol);
+					//buscar el acceso del menu
+					const accesomenu = permiso.accesos.find((p) => p.opcion === menu.name);
+					//chequear su (menu) es true
+					if (accesomenu.permisos.menu && menu.enabled) {
+						return (
+							<Menu.Item key={menu.name} name={menu.name} active={this.props.opcionmenu === menu.name} onClick={this.HandleItemClick}>
+								<Icon name={menu.icon} /> {menu.label}
+							</Menu.Item>
+						);
+					} else return "";
+				})}
+			</Menu>
+		);
+	}
 }
 //#endregion
 

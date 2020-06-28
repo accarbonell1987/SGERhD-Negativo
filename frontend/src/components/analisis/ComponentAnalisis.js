@@ -10,14 +10,14 @@ import "../global/css/Gestionar.css";
 //#endregion
 
 //#region Componentes
-import ComponentAddPrueba from "./ComponentAddPrueba";
+import ComponentAddAnalisis from "./ComponentAddAnalisis";
 // import ComponentUpdatePregnancy from "./ComponentUpdatePregnancy";
 // import ComponentSeePatient from "../paciente/ComponentSeePatient";
 // import ComponentModalPrueba from "./ComponentModalPrueba";
 //#endregion
 
 //#region Defincion de la clase
-class ComponentPruebas extends Component {
+class ComponentAnalisis extends Component {
 	//#region Constructor
 	constructor(props) {
 		super(props);
@@ -35,16 +35,16 @@ class ComponentPruebas extends Component {
 		}
 		return true;
 	}
-	DeletePrueba = (prueba) => {
+	DeleteAnalisis = (analisis) => {
 		//chequear que las cookies tengan los datos necesarios
 		const data = this.props.global.cookies();
 		if (!data) this.props.Deslogin();
 		else {
 			//Esta seguro?
 			let { text, accion } = "";
-			if (prueba.activo) accion = "Desactivar";
+			if (analisis.activo) accion = "Desactivar";
 			else accion = "Eliminar";
-			text = "Desea " + accion + " la prueba";
+			text = "Desea " + accion + " el analisis";
 
 			Swal.fire({
 				title: "¿Esta seguro?",
@@ -59,9 +59,9 @@ class ComponentPruebas extends Component {
 				//si escogio Si
 				if (result.value) {
 					//enviar al endpoint
-					fetch(this.props.global.endpoint + "api/prueba/" + prueba._id, {
+					fetch(this.props.global.endpoint + "api/analisis/" + analisis._id, {
 						method: "PUT",
-						body: JSON.stringify(prueba),
+						body: JSON.stringify(analisis),
 						headers: {
 							Accept: "application/json",
 							"Content-Type": "application/json",
@@ -104,7 +104,7 @@ class ComponentPruebas extends Component {
 		}
 	};
 	CheckAndAllowAddButton = (middleButtonAdd, allow) => {
-		if (allow) return <ComponentAddPrueba Deslogin={this.props.Deslogin} middleButtonAdd={middleButtonAdd} global={this.props.global} examenes={this.props.examenes} examen={this.props.examen} GetDataFromServer={this.props.GetDataFromServer} />;
+		if (allow) return <ComponentAddAnalisis Deslogin={this.props.Deslogin} middleButtonAdd={middleButtonAdd} global={this.props.global} examenes={this.props.examenes} examen={this.props.examen} GetDataFromServer={this.props.GetDataFromServer} />;
 		else
 			return (
 				<Button floated="right" icon labelPosition="left" primary size="small" className="modal-button-add" disabled>
@@ -152,11 +152,11 @@ class ComponentPruebas extends Component {
 								</Table.Row>
 							</Table.Header>
 							<Table.Body>
-								{this.props.pruebas.map((prueba) => {
-									let negative = !prueba.activo;
-									let fechacadena = moment(new Date(prueba.fecha)).format("DD-MM-YYYY");
+								{this.props.pruebas.map((analisis) => {
+									let negative = !analisis.activo;
+									let fechacadena = moment(new Date(analisis.fecha)).format("DD-MM-YYYY");
 									return (
-										<Table.Row key={prueba._id} negative={negative}>
+										<Table.Row key={analisis._id} negative={negative}>
 											<Table.Cell collapsing>
 												<Icon name="syringe" />
 											</Table.Cell>
@@ -165,15 +165,15 @@ class ComponentPruebas extends Component {
 												EXAMEN
 												{/* <ComponentSeePatient Deslogin={this.props.Deslogin} paciente={embarazo.paciente} global={this.props.global} /> */}
 											</Table.Cell>
-											<Table.Cell>{prueba.tipo}</Table.Cell>
+											<Table.Cell>{analisis.tipo}</Table.Cell>
 											<Table.Cell className="cells-max-witdh-2" collapsing>
-												<Checkbox toggle name="pendiente" labelPosition="left" label={prueba.pendiente ? "Si" : "No"} checked={prueba.pendiente} disabled />
+												<Checkbox toggle name="pendiente" labelPosition="left" label={analisis.pendiente ? "Si" : "No"} checked={analisis.pendiente} disabled />
 											</Table.Cell>
 											<Table.Cell className="cells-max-witdh-2" collapsing>
-												<Checkbox toggle name="activo" labelPosition="left" label={prueba.activo ? "Si" : "No"} checked={prueba.activo} disabled />
+												<Checkbox toggle name="activo" labelPosition="left" label={analisis.activo ? "Si" : "No"} checked={analisis.activo} disabled />
 											</Table.Cell>
 											<Table.Cell className="cells-max-witdh-2" collapsing>
-												{accesomenu.permisos.eliminar ? <Button icon="remove circle" className="button-remove" onClick={() => this.DeletePrueba(prueba)} /> : <Button icon="remove circle" className="button-remove" disabled />}
+												{accesomenu.permisos.eliminar ? <Button icon="remove circle" className="button-remove" onClick={() => this.DeletePrueba(analisis)} /> : <Button icon="remove circle" className="button-remove" disabled />}
 												{accesomenu.permisos.modificar ? (
 													// <ComponentUpdatePregnancy
 													//   Deslogin={this.props.Deslogin}
@@ -204,5 +204,5 @@ class ComponentPruebas extends Component {
 //#endregion
 
 //#region Export
-export default ComponentPruebas;
+export default ComponentAnalisis;
 //#endregion

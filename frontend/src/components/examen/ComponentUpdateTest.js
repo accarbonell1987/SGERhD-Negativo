@@ -10,7 +10,7 @@ import "../global/css/Gestionar.css";
 //#endregion
 
 //#region Componentes
-import ComponentPruebas from "../pruebas/ComponentPruebas";
+import ComponentAnalisis from "../analisis/ComponentAnalisis";
 import ComponentInputDatePicker from "../generales/ComponentInputDatePicker";
 //#endregion
 
@@ -317,7 +317,7 @@ class ComponentUpdateTest extends Component {
 		}
 	};
 	DetailsTests = () => {
-		return <ComponentPruebas Deslogin={this.props.Deslogin} global={this.props.global} middleButtonAdd={false} examenes={this.props.examenes} pruebas={this.props.pruebas} detail={true} GetDataFromServer={this.props.GetDataFromServer} />;
+		return <ComponentAnalisis Deslogin={this.props.Deslogin} global={this.props.global} middleButtonAdd={false} examenes={this.props.examenes} pruebas={this.props.pruebas} detail={true} GetDataFromServer={this.props.GetDataFromServer} />;
 	};
 	PregnancyAge = () => {
 		if (this.state.tipo === "Embarazo") {

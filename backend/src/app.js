@@ -35,11 +35,11 @@ app.use("/api", require("./routes/routerhistoriaclinica"));
 app.use("/api", require("./routes/routerembarazo"));
 app.use("/api", require("./routes/routertransfusion"));
 app.use("/api", require("./routes/routerexamen"));
-app.use("/api", require("./routes/routerprueba"));
+app.use("/api", require("./routes/routeranalisis"));
 //Static files
 console.log(__dirname);
 
 //starting server
 app.listen(app.get("port"), () => {
-  console.log("Servidor Iniciado: http://localhost:" + app.get("port"));
+	console.log("Servidor Iniciado: http://localhost:" + app.get("port"));
 });

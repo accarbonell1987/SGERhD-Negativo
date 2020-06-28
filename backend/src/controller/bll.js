@@ -6,7 +6,7 @@ const LogServices = require("../services/logs");
 const TranServices = require("../services/trans");
 const PregnancyServices = require("../services/embarazo");
 const TestServices = require("../services/examen");
-const PruebaServices = require("../services/prueba");
+const AnalisisServices = require("../services/analisis");
 //#endregion
 
 //#region Usuarios
@@ -456,59 +456,59 @@ exports.UpdateTest = async (req, res, next) => {
 };
 //#endregion
 
-//#region Prueba
-exports.GetPruebas = async (req, res, next) => {
+//#region Analisis
+exports.GetAnalisis = async (req, res, next) => {
 	var page = req.params.page ? req.params.page : 1;
 	var limit = req.params.limit ? req.params.limit : -1;
 
 	try {
-		var pruebas = await PruebaServices.GetPruebas({}, page, limit);
-		return res.status(200).json({ status: 200, message: "Obtenidos", data: pruebas });
+		var analisis = await AnalisisServices.GetAnalisis({}, page, limit);
+		return res.status(200).json({ status: 200, message: "Obtenidos", data: analisis });
 	} catch (err) {
 		return res.status(400).json({ status: 400, message: err.toString() });
 	}
 };
-exports.GetPrueba = async (req, res, next) => {
+exports.GetOneAnalisis = async (req, res, next) => {
 	try {
 		const id = req.params.id;
-		var prueba = await PruebaServices.GetPrueba(req.params.id);
-		return res.status(200).json({ status: 200, message: "Obtenido", data: prueba });
+		var analisis = await AnalisisServices.GetOneAnalisis(req.params.id);
+		return res.status(200).json({ status: 200, message: "Obtenido", data: analisis });
 	} catch (err) {
 		return res.status(400).json({ status: 400, message: err.toString() });
 	}
 };
-exports.InsertPrueba = async (req, res, next) => {
+exports.InsertAnalisis = async (req, res, next) => {
 	try {
-		var prueba = await PruebaServices.InsertPrueba(req.body);
-		return res.status(200).json({ status: 200, message: "Insertado Correctamente", data: prueba });
+		var analisis = await AnalisisServices.InsertAnalisis(req.body);
+		return res.status(200).json({ status: 200, message: "Insertado Correctamente", data: analisis });
 	} catch (err) {
 		return res.status(400).json({ status: 400, message: err.toString() });
 	}
 };
-exports.DeletePrueba = async (req, res, next) => {
+exports.DeleteAnalisis = async (req, res, next) => {
 	try {
 		return res.status(400).json({ status: 400, message: "Operacion en Servidor No Permitida" });
 	} catch (err) {
 		return res.status(400).json({ status: 400, message: err.toString() });
 	}
 };
-exports.DisablePrueba = async (req, res, next) => {
+exports.DisableAnalisis = async (req, res, next) => {
 	try {
-		let reqprueba = req.body;
+		let reqanalisis = req.body;
 
 		let message = "Eliminado Correctamente";
-		if (reqprueba.activo) message = "Desactivado Correctamente";
+		if (reqanalisis.activo) message = "Desactivado Correctamente";
 
-		var prueba = await PruebaServices.DisablePrueba(req.params.id, reqprueba);
-		return res.status(200).json({ status: 200, message: message, data: prueba });
+		var analisis = await AnalisisServices.DisableOneAnalisis(req.params.id, reqanalisis);
+		return res.status(200).json({ status: 200, message: message, data: analisis });
 	} catch (err) {
 		return res.status(400).json({ status: 400, message: err.toString() });
 	}
 };
-exports.UpdatePrueba = async (req, res, next) => {
+exports.UpdateAnalisis = async (req, res, next) => {
 	try {
-		var prueba = await PruebaServices.UpdatePrueba(req.params.id, req.body);
-		return res.status(200).json({ status: 200, message: "Modificado Correctamente", data: prueba });
+		var analisis = await AnalisisServices.UpdateAnalisis(req.params.id, req.body);
+		return res.status(200).json({ status: 200, message: "Modificado Correctamente", data: analisis });
 	} catch (err) {
 		return res.status(400).json({ status: 400, message: err.toString() });
 	}

@@ -16,7 +16,7 @@ import ComponentTrans from "./transfusiones/ComponentTrans";
 import ComponentFooter from "./ComponentFooter";
 import ComponentPregnancies from "./embarazo/ComponentPregnancies";
 import ComponentTests from "./examen/ComponentTests";
-import ComponentPruebas from "./pruebas/ComponentPruebas";
+import ComponentAnalisis from "./analisis/ComponentAnalisis";
 //#endregion
 
 //#region Defincion de la clase
@@ -28,7 +28,7 @@ class ComponentContent extends Component {
 		transfusiones: [],
 		embarazos: [],
 		examenes: [],
-		pruebas: [],
+		analisis: [],
 		loading: true,
 	};
 
@@ -55,7 +55,7 @@ class ComponentContent extends Component {
 		if (!data) this.props.Deslogin();
 		else {
 			//Arreglo de promesas esperando que terminen todas...
-			Promise.all([this.AllUsers(), this.AllClinicsHistory(), this.AllPatients(), this.AllTrans(), this.AllPregnancies(), this.AllTests(), this.AllPruebas()]).then((fn) => {
+			Promise.all([this.AllUsers(), this.AllClinicsHistory(), this.AllPatients(), this.AllTrans(), this.AllPregnancies(), this.AllTests(), this.AllAnalisis()]).then((fn) => {
 				this.setState({ loading: false });
 			});
 		}
@@ -197,10 +197,10 @@ class ComponentContent extends Component {
 				Swal.fire({ position: "center", icon: "error", title: err, showConfirmButton: false, timer: 3000 });
 			});
 	};
-	AllPruebas = () => {
+	AllAnalisis = () => {
 		const data = this.props.global.cookies();
 
-		fetch(this.props.global.endpoint + "api/prueba", {
+		fetch(this.props.global.endpoint + "api/analisis", {
 			method: "GET",
 			headers: {
 				"access-token": data.token,
@@ -209,7 +209,7 @@ class ComponentContent extends Component {
 			.then((res) => res.json())
 			.then((serverdata) => {
 				if (serverdata.status === 200) {
-					this.setState({ pruebas: serverdata.data });
+					this.setState({ analisis: serverdata.data });
 				} else {
 					Swal.fire({ position: "center", icon: "error", title: serverdata.message, showConfirmButton: false, timer: 3000 });
 				}
@@ -309,20 +309,20 @@ class ComponentContent extends Component {
 						this.GetLoading()
 					) : (
 						<div className="Content">
-							<ComponentTests Deslogin={this.props.Deslogin} global={this.props.global} pacientes={this.state.pacientes} embarazos={this.state.embarazos} examenes={this.state.examenes} pruebas={this.state.pruebas} GetDataFromServer={this.GetDataFromServer} />
+							<ComponentTests Deslogin={this.props.Deslogin} global={this.props.global} pacientes={this.state.pacientes} embarazos={this.state.embarazos} examenes={this.state.examenes} analisis={this.state.analisis} GetDataFromServer={this.GetDataFromServer} />
 							<ComponentFooter />
 						</div>
 					)}
 				</Fragment>
 			);
-		} else if (this.props.opcionmenu === "pruebas" && accesomenu.permisos.menu) {
+		} else if (this.props.opcionmenu === "analisis" && accesomenu.permisos.menu) {
 			return (
 				<Fragment>
 					{this.state.loading ? (
 						this.GetLoading()
 					) : (
 						<div className="Content">
-							<ComponentPruebas Deslogin={this.props.Deslogin} global={this.props.global} examenes={this.state.examenes} pruebas={this.state.pruebas} GetDataFromServer={this.GetDataFromServer} />
+							<ComponentAnalisis Deslogin={this.props.Deslogin} global={this.props.global} examenes={this.state.examenes} analisis={this.state.analisis} GetDataFromServer={this.GetDataFromServer} />
 							<ComponentFooter />
 						</div>
 					)}

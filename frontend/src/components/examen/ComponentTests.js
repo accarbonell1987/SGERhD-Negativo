@@ -11,7 +11,7 @@ import "../global/css/Gestionar.css";
 
 //#region Componentes
 import ComponentAddTest from "./ComponentAddTest";
-import ComponentModalPrueba from "../pruebas/ComponentModalPrueba";
+import ComponentModalAnalisis from "../analisis/ComponentModalAnalisis";
 import ComponentUpdateTest from "./ComponentUpdateTest";
 // import ComponentSeePatient from "../paciente/ComponentSeePatient";
 //#endregion
@@ -248,7 +248,7 @@ class ComponentTests extends Component {
 											<Table.Cell>{this.DetailsOfTests(examen)}</Table.Cell>
 											<Table.Cell>{this.BelongTo(examen)}</Table.Cell>
 											<Table.Cell className="cells-max-witdh-2" collapsing>
-												<ComponentModalPrueba Deslogin={this.props.Deslogin} global={this.props.global} examenes={this.props.examenes} examen={examen} GetDataFromServer={this.props.GetDataFromServer} cambiarIcono={true} />
+												<ComponentModalAnalisis Deslogin={this.props.Deslogin} global={this.props.global} examenes={this.props.examenes} examen={examen} GetDataFromServer={this.props.GetDataFromServer} cambiarIcono={true} />
 											</Table.Cell>
 											<Table.Cell className="cells-max-witdh-2" collapsing>
 												<Checkbox toggle name="activo" labelPosition="left" label={examen.activo ? "Si" : "No"} checked={examen.activo} disabled />

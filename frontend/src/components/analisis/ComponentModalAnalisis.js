@@ -8,11 +8,11 @@ import "../global/css/Gestionar.css";
 //#endregion
 
 //#region Componentes
-import ComponentPruebas from "./ComponentPruebas";
+import ComponentAnalisis from "./ComponentAnalisis";
 //#endregion
 
 //#region Defincion de la clase
-class ComponentModalPrueba extends Component {
+class ComponentModalAnalisis extends Component {
 	state = {
 		openModal: false,
 	};
@@ -44,7 +44,7 @@ class ComponentModalPrueba extends Component {
 	};
 	ChangeIconInAddButton = (allow, change) => {
 		const position = this.props.middleButtonAdd ? "middle" : "right";
-		const cantPruebas = this.props.pruebas ? this.props.pruebas.length : 0;
+		const cantAnalisis = this.props.analisis ? this.props.analisis.length : 0;
 		const permitir = allow;
 		if (change)
 			return (
@@ -66,7 +66,7 @@ class ComponentModalPrueba extends Component {
 							this.ChangeModalState(evt, permitir);
 						}}
 					/>
-					{cantPruebas}
+					{cantAnalisis}
 				</Button>
 			);
 		else
@@ -90,7 +90,7 @@ class ComponentModalPrueba extends Component {
 							this.ChangeModalState(evt, permitir);
 						}}
 					/>
-					{cantPruebas}
+					{cantAnalisis}
 				</Button>
 			);
 	};
@@ -102,14 +102,14 @@ class ComponentModalPrueba extends Component {
 		//buscar el permiso del rol
 		const permiso = this.props.global.permisos.find((p) => p.rol === data.rol);
 		//buscar el acceso del menu
-		const accesomenu = permiso.accesos.find((p) => p.opcion === "pruebas");
-		const headerlabel = "Listado de Pruebas: ";
+		const accesomenu = permiso.accesos.find((p) => p.opcion === "analisis");
+		const headerlabel = "Listado de analisis: ";
 		//chequear si es embarazos y tengo permiso
 		return (
 			<Modal className="modal-windows-pregnancies" open={this.state.openModal} trigger={this.ChangeIconInAddButton(accesomenu.permisos.menu, this.props.cambiarIcono)}>
 				<Header icon="syringe" content={headerlabel} />
 				<Modal.Content>
-					<ComponentPruebas Deslogin={this.props.Deslogin} middleButtonAdd={true} global={this.props.global} examenes={this.props.examenes} GetDataFromServer={this.props.GetDataFromServer} detail={true} examen={this.props.examen} pruebas={this.props.examen.pruebas} />
+					<ComponentAnalisis Deslogin={this.props.Deslogin} middleButtonAdd={true} global={this.props.global} examenes={this.props.examenes} GetDataFromServer={this.props.GetDataFromServer} detail={true} examen={this.props.examen} analisis={this.props.examen.analisis} />
 				</Modal.Content>
 				<Modal.Actions>
 					<Button color="red" onClick={this.ChangeModalState} className="modal-button-cancel" type>
@@ -125,5 +125,5 @@ class ComponentModalPrueba extends Component {
 //#endregion
 
 //#region Export
-export default ComponentModalPrueba;
+export default ComponentModalAnalisis;
 //#endregion

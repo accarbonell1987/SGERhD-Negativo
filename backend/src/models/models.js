@@ -52,15 +52,15 @@ var examen_schema = new Schema({
 	observaciones: { type: String },
 	embarazo: { type: Schema.Types.ObjectId, ref: "Embarazo", default: mongoose.mongo.ObjectID() },
 	paciente: { type: Schema.Types.ObjectId, ref: "Paciente", default: mongoose.mongo.ObjectID() },
-	pruebas: [{ type: Schema.Types.ObjectId, ref: "Prueba" }],
+	analisis: [{ type: Schema.Types.ObjectId, ref: "Analisis" }],
 	tipo: { type: String },
 	tiempoDeGestacion: { type: String }, //objeto JSON {"semanas":2, "dias":4}
 	activo: { type: Boolean },
 	accessToken: { type: String },
 });
 
-//PRUEBA
-var prueba_schema = new Schema({
+//Analisis
+var analisis_schema = new Schema({
 	fecha: { type: Date, required: true, default: new Date() },
 	tipo: { type: String },
 	examen: { type: Schema.Types.ObjectId, ref: "Examen", default: mongoose.mongo.ObjectID() },
@@ -79,7 +79,7 @@ var gruposanguineo_schema = new Schema({
 	dDebil: { type: String },
 	gSanguineo: { type: String },
 	factor: { type: String },
-	prueba: { type: Schema.Types.ObjectId, ref: "Prueba" },
+	analisis: { type: Schema.Types.ObjectId, ref: "Analisis" },
 	accessToken: { type: String },
 });
 
@@ -91,7 +91,7 @@ var identificacionanticuerpo_schema = new Schema({
 	tituloDelAnticuerpoParaCoombsIndirecto: { type: String },
 	tituloDelAnticuerpoParaSalina4g: { type: String },
 	tituloDelAnticuerpoParaSalina37g: { type: String },
-	prueba: { type: Schema.Types.ObjectId, ref: "Prueba" },
+	analisis: { type: Schema.Types.ObjectId, ref: "Analisis" },
 	accessToken: { type: String },
 });
 
@@ -101,7 +101,7 @@ var pesquizajeanticuerpo_schema = new Schema({
 	pCoomsIndirecto: { type: String },
 	pSalina4g: { type: String },
 	pSalina37g: { type: String },
-	prueba: { type: Schema.Types.ObjectId, ref: "Prueba" },
+	analisis: { type: Schema.Types.ObjectId, ref: "Analisis" },
 	accessToken: { type: String },
 });
 
@@ -181,7 +181,7 @@ var Transfusion = mongoose.model("Transfusion", transfusion_schema);
 var Paciente = mongoose.model("Paciente", paciente_schema);
 var HistoriaClinica = mongoose.model("HistoriaClinica", historiaclinica_schema);
 var Examen = mongoose.model("Examen", examen_schema);
-var Prueba = mongoose.model("Prueba", prueba_schema);
+var Analisis = mongoose.model("Analisis", analisis_schema);
 var Embarazo = mongoose.model("Embarazo", embarazo_schema);
 var LogAcceso = mongoose.model("LogAcceso", logacceso_schema);
 
@@ -190,7 +190,7 @@ module.exports = {
 	Embarazo: Embarazo,
 	LogAcceso: LogAcceso,
 	Examen: Examen,
-	Prueba: Prueba,
+	Analisis: Analisis,
 	HistoriaClinica: HistoriaClinica,
 	Paciente: Paciente,
 	Transfusion: Transfusion,

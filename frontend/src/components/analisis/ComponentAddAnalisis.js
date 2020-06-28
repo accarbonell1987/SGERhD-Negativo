@@ -14,7 +14,7 @@ import ComponentInputDatePicker from "../generales/ComponentInputDatePicker";
 //#endregion
 
 //#region Definicion Clase
-class ComponentAddPruebas extends Component {
+class ComponentAddAnalisis extends Component {
 	//#region Properties
 	state = {
 		openModal: false,
@@ -75,7 +75,7 @@ class ComponentAddPruebas extends Component {
 			const detalle = { semanas, dias };
 			tiempoDeGestacion = JSON.stringify(detalle);
 
-			const prueba = {
+			const analisis = {
 				fecha: fecha,
 				tipo: tipo,
 				examen: examen,
@@ -89,9 +89,9 @@ class ComponentAddPruebas extends Component {
 			};
 			//la promise debe de devolver un valor RETURN
 			try {
-				const res = await fetch(this.props.global.endpoint + "api/prueba/", {
+				const res = await fetch(this.props.global.endpoint + "api/analisis/", {
 					method: "POST",
-					body: JSON.stringify(prueba),
+					body: JSON.stringify(analisis),
 					headers: {
 						Accept: "application/json",
 						"Content-Type": "application/json",
@@ -373,7 +373,7 @@ class ComponentAddPruebas extends Component {
 	render() {
 		return (
 			<Modal open={this.state.openModal} trigger={this.ChangeIconInAddButton(this.props.cambiarIcono)}>
-				<Header icon="syringe" content="Adicionar Prueba" />
+				<Header icon="syringe" content="Adicionar analisis" />
 				<Modal.Content>
 					{this.state.errorform ? <Message error inverted header="Error" content="Error en el formulario" /> : null}
 					<Form ref="form" onSubmit={this.ChangeModalState}>
@@ -387,7 +387,7 @@ class ComponentAddPruebas extends Component {
 						<Segment className="modal-segment-expanded-grouping">
 							<Form.Group inline>
 								<Header as="h5" className="header-custom">
-									Tipo de Prueba:
+									Tipo de analisis:
 								</Header>
 								<Form.Radio
 									name="radiogruposanguineo"
@@ -468,5 +468,5 @@ class ComponentAddPruebas extends Component {
 //#endregion
 
 //#region Exports
-export default ComponentAddPruebas;
+export default ComponentAddAnalisis;
 //#endregion
