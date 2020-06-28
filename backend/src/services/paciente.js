@@ -174,7 +174,7 @@ exports.DisablePatient = async (id, patient) => {
 				await PregnancyService.DisablePregnancies(patient.embarazos);
 			}
 			if (patient.examenes.length > 0) {
-				await TestService.DisableTests(patient.embarazos);
+				await TestService.DisableTests(patient.examenes);
 			}
 			patient.activo = false;
 			var updated = await Paciente.findByIdAndUpdate(id, patient);
@@ -206,7 +206,7 @@ exports.DeletePatient = async (patient) => {
 			await PregnancyService.DeletePregnancies(patient.embarazos);
 		}
 		if (patient.examenes.length > 0) {
-			await TestService.DeleteTests(patient.embarazos);
+			await TestService.DeleteTests(patient.examenes);
 		}
 		var removed = await Paciente.findByIdAndRemove(patient._id);
 		return removed;
