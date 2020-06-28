@@ -143,6 +143,7 @@ class ComponentTests extends Component {
 		if (examen.tipo === "Embarazo") {
 			const embarazo = examen.embarazo;
 			if (embarazo.tipo === "Nuevo") {
+				const { semanas, dias } = JSON.parse(examen.tiempoDeGestacion);
 				return (
 					<Label.Group className="button-pregnancy-separate">
 						Tiempo de Gestación:{" "}
@@ -152,7 +153,7 @@ class ComponentTests extends Component {
 								Semanas:
 							</Button>
 							<Label basic pointing="left">
-								{embarazo.semanas}
+								{semanas}
 							</Label>
 						</Button>
 						<Button as="div" labelPosition="right" className="button-pregnancy">
@@ -161,7 +162,7 @@ class ComponentTests extends Component {
 								Dias:
 							</Button>
 							<Label basic pointing="left">
-								{embarazo.dias}
+								{dias}
 							</Label>
 						</Button>
 					</Label.Group>

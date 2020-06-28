@@ -185,7 +185,7 @@ class ComponentUpdateTest extends Component {
 		//si no hay problemas en el formulario
 		if (this.HandleSubmit(evt) === false) {
 			//si no hay problemas en la insercion
-			if (await this.UpdatePregnancy(this.props.embarazo._id)) {
+			if (await this.UpdatePregnancy(this.props.examen._id)) {
 				//enviar a recargar los pacientes
 				this.props.GetDataFromServer();
 				this.ClearModalState();
@@ -194,9 +194,11 @@ class ComponentUpdateTest extends Component {
 	};
 	//cambiar el estado en el MODAL para adicionar
 	ChangeModalState = async (evt) => {
-		if (evt.target.className.includes("modal-button-action") || evt.target.className.includes("modal-icon")) {
+		if (evt.target.className.includes("modal-button-cancel") || evt.target.className.includes("modal-icon-cancel")) {
+			this.setState({ openModal: false });
+		} else if (evt.target.className.includes("modal-button-action") || evt.target.className.includes("modal-icon")) {
 			this.ClearModalState();
-			this.SetDate(this.props.examen.fecha);
+			// this.SetDate(this.props.examen.fecha);
 			//buscar las semanas y dias
 			let { semanas, dias } = 0;
 			if (this.props.examen.tiempoDeGestacion) {
@@ -204,21 +206,16 @@ class ComponentUpdateTest extends Component {
 				semanas = tiempoDeGestacion.semanas;
 				dias = tiempoDeGestacion.dias;
 			}
-
 			this.setState({
 				openModal: true,
 				fecha: this.props.examen.fecha,
 				observaciones: this.props.examen.observaciones,
-				embarazo: this.props.examen.embarazo,
-				paciente: this.props.examen.paciente,
 				pruebas: this.props.examen.pruebas,
 				tipo: this.props.examen.tipo,
 				semanas: semanas,
 				dias: dias,
 				activo: this.props.examen.activo,
 			});
-		} else if (evt.target.className.includes("modal-button-cancel") || evt.target.className.includes("modal-icon-cancel")) {
-			this.setState({ openModal: false });
 		} else {
 			this.OnSubmit(evt);
 		}
@@ -229,7 +226,6 @@ class ComponentUpdateTest extends Component {
 		let opcionEmbarazos = [];
 
 		this.props.pacientes.forEach((p) => {
-			//solo almaceno los paciente que son hembras
 			let nombreyapellidos = p.nombre + " " + p.apellidos;
 			let cur = {
 				key: p._id,
@@ -253,19 +249,18 @@ class ComponentUpdateTest extends Component {
 				opcionEmbarazos = [...opcionEmbarazos, cur];
 			});
 
-		const paciente = this.props.paciente != null ? this.props.paciente._id : null;
-		const embarazo = this.props.embarazo != null ? this.props.embarazo._id : null;
-		const tipo = paciente ? "Paciente" : "Embarazo";
+		const pacienteid = this.props.examen.paciente != null ? this.props.examen.paciente._id : null;
+		const embarazoid = this.props.examen.embarazo != null ? this.props.examen.embarazo._id : null;
 
 		//actualizar los states
 		this.setState({
 			openModal: false,
 			fecha: null,
 			observaciones: "",
-			embarazo: embarazo,
-			paciente: paciente,
+			embarazo: embarazoid,
+			paciente: pacienteid,
 			pruebas: [],
-			tipo: tipo,
+			tipo: "",
 			activo: true,
 			semanas: 0,
 			dias: 0,
@@ -417,7 +412,7 @@ class ComponentUpdateTest extends Component {
 						<Form.Group>
 							<Segment className="modal-segment-expanded">
 								<Header as="h5">Fecha:</Header>
-								<ComponentInputDatePicker SetDate={this.SetDate} restringir={false} />
+								<ComponentInputDatePicker fecha={this.state.fecha} SetDate={this.SetDate} restringir={false} />
 							</Segment>
 						</Form.Group>
 						<Form.TextArea name="observaciones" label="Observaciones:" placeholder="Observaciones..." value={this.state.observaciones} onChange={this.ChangeModalInput} />
@@ -465,7 +460,7 @@ class ComponentUpdateTest extends Component {
 						<Icon name="remove" className="modal-icon-cancel" />
 						Cancelar
 					</Button>
-					<Button color="green" onClick={this.ChangeModalState} className="modal-button-accept" type="submit" disabled={!this.state.fecha || !this.state.paciente}>
+					<Button color="green" onClick={this.ChangeModalState} className="modal-button-accept" type="submit" disabled={this.state.tipo === "Paciente" ? !this.state.paciente : !this.state.embarazo}>
 						<Icon name="checkmark" className="modal-icon-accept" />
 						Aceptar
 					</Button>

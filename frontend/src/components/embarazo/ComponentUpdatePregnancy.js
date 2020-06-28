@@ -407,7 +407,7 @@ class ComponentUpdatePregnancy extends Component {
 				<div className="modal-segment-expanded-grouping">
 					<Segment className="segmentgroup-correct">
 						<Header as="h5">Fecha de Concepción:</Header>
-						<ComponentInputDatePicker SetDate={this.SetDate} restringir={true} />
+						<ComponentInputDatePicker fecha={this.state.fecha} SetDate={this.SetDate} restringir={true} />
 					</Segment>
 
 					<Segment.Group className="segmentgroup-correct">

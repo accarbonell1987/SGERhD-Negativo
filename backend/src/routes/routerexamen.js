@@ -14,20 +14,20 @@ const jwtkey = process.env.JWT_KEY;
 
 //#region Middlewares
 router.use((req, res, next) => {
-  const token = req.headers["access-token"];
+	const token = req.headers["access-token"];
 
-  if (token) {
-    jwt.verify(token, jwtkey, (err, decoded) => {
-      if (err) {
-        return res.status(400).json({ status: 400, message: "Invalid Token" });
-      } else {
-        req.decoded = decoded;
-        next();
-      }
-    });
-  } else {
-    res.status(400).json({ status: 400, message: "Not Token" });
-  }
+	if (token) {
+		jwt.verify(token, jwtkey, (err, decoded) => {
+			if (err) {
+				return res.status(400).json({ status: 400, message: "Invalid Token" });
+			} else {
+				req.decoded = decoded;
+				next();
+			}
+		});
+	} else {
+		res.status(400).json({ status: 400, message: "Not Token" });
+	}
 });
 //#endregion
 

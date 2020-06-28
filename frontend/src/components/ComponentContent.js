@@ -54,6 +54,7 @@ class ComponentContent extends Component {
 		const data = this.props.global.cookies();
 		if (!data) this.props.Deslogin();
 		else {
+			//Arreglo de promesas esperando que terminen todas...
 			Promise.all([this.AllUsers(), this.AllClinicsHistory(), this.AllPatients(), this.AllTrans(), this.AllPregnancies(), this.AllTests(), this.AllPruebas()]).then((fn) => {
 				this.setState({ loading: false });
 			});

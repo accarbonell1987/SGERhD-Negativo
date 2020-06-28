@@ -118,6 +118,7 @@ class ComponentPregnancies extends Component {
 		if (embarazo.tipo === "Nuevo") {
 			return (
 				<Label.Group className="button-pregnancy-separate">
+					Tiempo de Gestación:{" "}
 					<Button as="div" labelPosition="right" className="button-pregnancy">
 						<Button icon>
 							<Icon name="calendar alternate outline" />
