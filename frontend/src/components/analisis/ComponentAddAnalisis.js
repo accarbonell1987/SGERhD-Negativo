@@ -29,6 +29,7 @@ class ComponentAddAnalisis extends Component {
 		semanas: 0,
 		dias: 0,
 		activo: true,
+		tipoanalisis: null,
 		opcionExamenes: [],
 		errorform: false,
 	};
@@ -39,7 +40,7 @@ class ComponentAddAnalisis extends Component {
 		super(props);
 
 		this.SetDate = this.SetDate.bind(this);
-		this.AddPrueba = this.AddPrueba.bind(this);
+		this.AddAnalisis = this.AddAnalisis.bind(this);
 		this.ChangeModalInput = this.ChangeModalInput.bind(this);
 		this.ChangeModalState = this.ChangeModalState.bind(this);
 		this.ClearModalState = this.ClearModalState.bind(this);
@@ -62,7 +63,7 @@ class ComponentAddAnalisis extends Component {
 		return true;
 	}
 	//adicionar nuevo paciente
-	AddPrueba = async () => {
+	AddAnalisis = async () => {
 		//chequear que las cookies tengan los datos necesarios
 		const data = this.props.global.cookies();
 		if (!data) this.props.Deslogin();
@@ -159,7 +160,7 @@ class ComponentAddAnalisis extends Component {
 		//si no hay problemas en el formulario
 		if (this.HandleSubmit(evt) === false) {
 			//si no hay problemas en la insercion
-			if (await this.AddPrueba()) {
+			if (await this.AddAnalisis()) {
 				//enviar a recargar los pacientes
 				this.props.GetDataFromServer();
 				this.ClearModalState();
@@ -182,7 +183,7 @@ class ComponentAddAnalisis extends Component {
 		let opcion = [];
 		this.props.examenes.forEach((e) => {
 			let fechacadena = moment(new Date(e.fecha)).format("DD-MM-YYYY");
-			let datos = fechacadena + " - " + e.tipo;
+			let datos = "Examen - Fecha: " + fechacadena + ", Tipo: " + e.tipo;
 			let cur = {
 				key: e._id,
 				text: datos,
@@ -193,6 +194,8 @@ class ComponentAddAnalisis extends Component {
 		});
 
 		const examen = this.props.examen != null ? this.props.examen._id : null;
+		this.ChoseExamen(examen);
+
 		//actualizar los states
 		this.setState({
 			openModal: false,
@@ -210,11 +213,12 @@ class ComponentAddAnalisis extends Component {
 	};
 	//capturar fecha
 	SetDate = (fecha) => {
-		if (this.props.examen) {
-			const fechaEmbarazo = this.props.examen.embarazo.fecha;
+		const examen = this.state.examen ? this.props.examenes.find((e) => e._id === this.state.examen) : null;
+		if (examen && examen.tipo === "Embarazo") {
+			const embarazo = examen.embarazo;
 			//calcular el dia de la semana
-			const ahora = moment();
-			const fechaSeleccionada = moment(fechaEmbarazo);
+			const ahora = moment(fecha);
+			const fechaSeleccionada = moment(embarazo.fecha);
 			const calculardiferenciasemanas = moment(ahora - fechaSeleccionada).format("w");
 
 			//diferencias de dias
@@ -247,7 +251,6 @@ class ComponentAddAnalisis extends Component {
 	};
 	ChangeIconInAddButton = (change) => {
 		const position = this.props.middleButtonAdd ? "middle" : "right";
-		console.log(position);
 		if (change)
 			return (
 				<Button icon floated={position} labelPosition="right" className="modal-button-add" onClick={this.ChangeModalState}>
@@ -264,108 +267,138 @@ class ComponentAddAnalisis extends Component {
 			);
 	};
 	ChoseType = () => {
-		if (this.state.tipo === "Grupos Sanguineo") {
+		let { colorGSanguineo, colorPAnticuerpo, colorIAnticuerpo } = "gray";
+
+		if (this.state.tipo === "Grupos Sanguineo") colorGSanguineo = "green";
+		else if (this.state.tipo === "Identificación Anticuerpo") colorPAnticuerpo = "green";
+		else if (this.state.tipo === "Pesquizaje Anticuerpo") colorIAnticuerpo = "green";
+
+		return (
+			<Button.Group className="segmentgroup-correct">
+				<Button
+					size="large"
+					color={colorGSanguineo}
+					className="button-changeToGSanguineo"
+					onClick={(evt) => {
+						evt.preventDefault();
+						this.setState({
+							tipo: "Grupos Sanguineo",
+						});
+					}}
+				>
+					Grupo Sanguineo
+				</Button>
+				<Button
+					size="large"
+					color={colorPAnticuerpo}
+					className="button-changeToPAnticuerpo"
+					onClick={(evt) => {
+						evt.preventDefault();
+						this.setState({
+							tipo: "Identificación Anticuerpo",
+						});
+					}}
+				>
+					Identificación Anticuerpo
+				</Button>
+				<Button
+					size="large"
+					color={colorIAnticuerpo}
+					className="button-changeToIAnticuerpo"
+					onClick={(evt) => {
+						evt.preventDefault();
+						this.setState({
+							tipo: "Pesquizaje Anticuerpo",
+						});
+					}}
+				>
+					Pesquizaje Anticuerpo
+				</Button>
+			</Button.Group>
+		);
+	};
+	PregnancyAge = () => {
+		if (this.state.tipoanalisis === "Embarazo" && this.state.examen) {
 			return (
-				<Segment.Group className="segmentgroup-correct">
-					<Segment as="h5">Grupo Sanguineo:</Segment>
-					<Segment.Group>
-						<Segment></Segment>
-						<Segment></Segment>
-					</Segment.Group>
-				</Segment.Group>
-			);
-		} else if (this.state.tipo === "Identificación Anticuerpo") {
-			return (
-				<Segment.Group className="segmentgroup-correct">
-					<Segment as="h5">Identificación Anticuerpo:</Segment>
-					<Segment.Group>
-						<Segment></Segment>
-						<Segment></Segment>
-					</Segment.Group>
-				</Segment.Group>
-			);
-		} else if (this.state.tipo === "Pesquizaje Anticuerpo") {
-			return (
-				<Segment.Group className="segmentgroup-correct">
-					<Segment as="h5">Pesquizaje Anticuerpo:</Segment>
-					<Segment.Group>
-						<Segment></Segment>
-						<Segment></Segment>
+				<Segment.Group>
+					<Segment as="h5">Tiempo de Gestación:</Segment>
+					<Segment.Group horizontal>
+						<Segment>
+							<Form.Group>
+								<Form.Input className="modal-input-100p" required name="semanas" icon="calendar alternate outline" iconPosition="left" label="Semanas:" value={this.state.semanas} error={this.state.errortiempogestacion} />
+								<Button.Group>
+									<Button
+										className="button-group-addsub"
+										icon="plus"
+										primary
+										disabled={this.state.semanas === 42}
+										onClick={(evt) => {
+											evt.preventDefault();
+											this.setState({
+												semanas: this.state.semanas + 1,
+											});
+										}}
+									/>
+									<Button
+										className="button-group-addsub"
+										icon="minus"
+										secondary
+										disabled={this.state.semanas === 0}
+										onClick={(evt) => {
+											evt.preventDefault();
+											this.setState({
+												semanas: this.state.semanas - 1,
+											});
+										}}
+									/>
+								</Button.Group>
+							</Form.Group>
+						</Segment>
+						<Segment>
+							<Form.Group>
+								<Form.Input className="modal-input-100p" required name="dias" icon="calendar alternate" iconPosition="left" label="Dias:" value={this.state.dias} error={this.state.errortiempogestacion} />
+								<Button.Group>
+									<Button
+										className="button-group-addsub"
+										icon="plus"
+										primary
+										disabled={this.state.dias === 7}
+										onClick={(evt) => {
+											evt.preventDefault();
+											this.setState({
+												dias: this.state.dias + 1,
+											});
+										}}
+									/>
+									<Button
+										className="button-group-addsub"
+										icon="minus"
+										secondary
+										disabled={this.state.dias === 0}
+										onClick={(evt) => {
+											evt.preventDefault();
+											this.setState({
+												dias: this.state.dias - 1,
+											});
+										}}
+									/>
+								</Button.Group>
+							</Form.Group>
+						</Segment>
 					</Segment.Group>
 				</Segment.Group>
 			);
 		}
 	};
-	PregnancyAge = () => {
-		return (
-			<Segment.Group className="segmentgroup-correct">
-				<Segment as="h5">Tiempo de Gestación:</Segment>
-				<Segment.Group horizontal>
-					<Segment>
-						<Form.Group>
-							<Form.Input className="modal-input-100p" required name="semanas" icon="calendar alternate outline" iconPosition="left" label="Semanas:" value={this.state.semanas} error={this.state.errortiempogestacion} />
-							<Button.Group>
-								<Button
-									className="button-group-addsub"
-									icon="plus"
-									primary
-									disabled={this.state.semanas === 42}
-									onClick={(evt) => {
-										evt.preventDefault();
-										this.setState({
-											semanas: this.state.semanas + 1,
-										});
-									}}
-								/>
-								<Button
-									className="button-group-addsub"
-									icon="minus"
-									secondary
-									disabled={this.state.semanas === 0}
-									onClick={(evt) => {
-										evt.preventDefault();
-										this.setState({
-											semanas: this.state.semanas - 1,
-										});
-									}}
-								/>
-							</Button.Group>
-						</Form.Group>
-					</Segment>
-					<Segment>
-						<Form.Group>
-							<Form.Input className="modal-input-100p" required name="dias" icon="calendar alternate" iconPosition="left" label="Dias:" value={this.state.dias} error={this.state.errortiempogestacion} />
-							<Button.Group>
-								<Button
-									className="button-group-addsub"
-									icon="plus"
-									primary
-									disabled={this.state.dias === 7}
-									onClick={(evt) => {
-										evt.preventDefault();
-										this.setState({
-											dias: this.state.dias + 1,
-										});
-									}}
-								/>
-								<Button
-									className="button-group-addsub"
-									icon="minus"
-									secondary
-									disabled={this.state.dias === 0}
-									onClick={(evt) => {
-										evt.preventDefault();
-										this.setState({
-											dias: this.state.dias - 1,
-										});
-									}}
-								/>
-							</Button.Group>
-						</Form.Group>
-					</Segment>
-				</Segment.Group>
-			</Segment.Group>
-		);
+	ChoseExamen = (value) => {
+		if (value) {
+			const examen = this.props.examenes.find((e) => e._id === value);
+			if (examen.tipo === "Embarazo") {
+				this.setState({ examen: value, tipoanalisis: "Embarazo" });
+			} else {
+				this.setState({ examen: value, tipoanalisis: "Paciente" });
+			}
+		}
 	};
 	//#endregion
 
@@ -373,81 +406,42 @@ class ComponentAddAnalisis extends Component {
 	render() {
 		return (
 			<Modal open={this.state.openModal} trigger={this.ChangeIconInAddButton(this.props.cambiarIcono)}>
-				<Header icon="syringe" content="Adicionar analisis" />
+				<Header icon="syringe" content="Adicionar Análisis" />
 				<Modal.Content>
 					{this.state.errorform ? <Message error inverted header="Error" content="Error en el formulario" /> : null}
 					<Form ref="form" onSubmit={this.ChangeModalState}>
-						<Form.Group>
-							<Segment className="modal-segment-expanded">
-								<Header as="h5">Fecha de Planificación:</Header>
-								<ComponentInputDatePicker SetDate={this.SetDate} restringir={false} />
-							</Segment>
-						</Form.Group>
-						<Form.Group>{this.PregnancyAge()}</Form.Group>
 						<Segment className="modal-segment-expanded-grouping">
-							<Form.Group inline>
-								<Header as="h5" className="header-custom">
-									Tipo de analisis:
-								</Header>
-								<Form.Radio
-									name="radiogruposanguineo"
-									labelPosition="right"
-									label="Grupos Sanguineo"
-									checked={this.state.tipo === "Grupos Sanguineo"}
-									value={this.state.tipo}
-									onChange={(evt) => {
-										evt.preventDefault();
-										this.setState({
-											tipo: "Grupos Sanguineo",
-										});
-									}}
-								/>
-								<Form.Radio
-									name="radioidentificacionanticuerpo"
-									labelPosition="right"
-									label="Identificación Anticuerpo"
-									checked={this.state.tipo === "Identificación Anticuerpo"}
-									value={this.state.tipo}
-									onChange={(evt) => {
-										evt.preventDefault();
-										this.setState({
-											tipo: "Identificación Anticuerpo",
-											semanas: 0,
-											dias: 0,
-										});
-									}}
-								/>
-								<Form.Radio
-									name="radiopesquizajeanticuerpo"
-									labelPosition="right"
-									label="Pesquizaje Anticuerpo"
-									checked={this.state.tipo === "Pesquizaje Anticuerpo"}
-									value={this.state.tipo}
-									onChange={(evt) => {
-										evt.preventDefault();
-										this.setState({
-											tipo: "Pesquizaje Anticuerpo",
-											semanas: 0,
-											dias: 0,
-										});
-									}}
-								/>
-							</Form.Group>
+							<Header as="h5" className="header-custom">
+								Tipo de analisis:
+							</Header>
+							<Form.Group>{this.ChoseType()}</Form.Group>
 						</Segment>
-						<Form.Group>{this.ChoseType()}</Form.Group>
-						<Form.Select
-							name="examen"
-							label="Examen:"
-							placeholder="Seleccionar Examen"
-							options={this.state.opcionExamenes}
-							value={this.state.examen}
-							onChange={(e, { value }) => {
-								this.setState({ examen: value });
-							}}
-							fluid
-							selection
-							clearable
-						/>
+						<Segment className="modal-segment-expanded-margin10">
+							<Form.Select
+								name="examen"
+								label="Examen:"
+								placeholder="Seleccionar Examen"
+								options={this.state.opcionExamenes}
+								value={this.state.examen}
+								onChange={(e, { value }) => {
+									this.ChoseExamen(value);
+								}}
+								fluid
+								selection
+								clearable
+							/>
+						</Segment>
+						{this.state.examen != null || this.state.examen === "" ? (
+							<Form.Group>
+								<Segment className="modal-segment-expanded">
+									<Header as="h5">Fecha de Planificación:</Header>
+									<ComponentInputDatePicker SetDate={this.SetDate} restringir={false} />
+								</Segment>
+							</Form.Group>
+						) : (
+							""
+						)}
+						{this.PregnancyAge()}
 					</Form>
 				</Modal.Content>
 				<Modal.Actions>
@@ -455,7 +449,7 @@ class ComponentAddAnalisis extends Component {
 						<Icon name="remove" className="modal-icon-cancel" />
 						Cancelar
 					</Button>
-					<Button color="green" onClick={this.ChangeModalState} className="modal-button-accept" type="submit" disabled={!this.state.fecha || !this.state.paciente}>
+					<Button color="green" onClick={this.ChangeModalState} className="modal-button-accept" type="submit" disabled={!this.state.fecha || !this.state.tipoanalisis || !this.state.examen}>
 						<Icon name="checkmark" className="modal-icon-accept" />
 						Aceptar
 					</Button>

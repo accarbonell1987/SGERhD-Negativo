@@ -11,9 +11,6 @@ import "../global/css/Gestionar.css";
 
 //#region Componentes
 import ComponentAddAnalisis from "./ComponentAddAnalisis";
-// import ComponentUpdatePregnancy from "./ComponentUpdatePregnancy";
-// import ComponentSeePatient from "../paciente/ComponentSeePatient";
-// import ComponentModalPrueba from "./ComponentModalPrueba";
 //#endregion
 
 //#region Defincion de la clase
@@ -22,7 +19,7 @@ class ComponentAnalisis extends Component {
 	constructor(props) {
 		super(props);
 
-		this.DeletePrueba = this.DeletePrueba.bind(this);
+		this.DeleteAnalisis = this.DeleteAnalisis.bind(this);
 	}
 	//#endregion
 
@@ -121,20 +118,20 @@ class ComponentAnalisis extends Component {
 		//buscar el permiso del rol
 		const permiso = this.props.global.permisos.find((p) => p.rol === data.rol);
 		//buscar el acceso del menu
-		const accesomenu = permiso.accesos.find((p) => p.opcion === "pruebas");
+		const accesomenu = permiso.accesos.find((p) => p.opcion === "analisis");
 		const classNameTable = this.props.detail ? "div-table-detail" : "div-table";
-		//chequear si es pruebas y tengo permiso
+		//chequear si es analisis y tengo permiso
 		return (
 			<Grid textAlign="center" verticalAlign="top" className="gestionar-allgrid">
 				<Grid.Column className="gestionar-allcolumn">
 					{!this.props.detail ? (
 						<Label attached="top left" className="div-label-attached" size="large">
-							<Icon name="syringe" size="large" inverted /> Gestión de Pruebas
+							<Icon name="syringe" size="large" inverted /> Gestión de Analisis
 						</Label>
 					) : (
 						""
 					)}
-					{this.props.pruebas.length > 0 ? (
+					{this.props.analisis.length > 0 ? (
 						<Table compact celled definition attached="top" className={classNameTable}>
 							<Table.Header className="div-table-header">
 								<Table.Row>
@@ -152,11 +149,11 @@ class ComponentAnalisis extends Component {
 								</Table.Row>
 							</Table.Header>
 							<Table.Body>
-								{this.props.pruebas.map((analisis) => {
-									let negative = !analisis.activo;
-									let fechacadena = moment(new Date(analisis.fecha)).format("DD-MM-YYYY");
+								{this.props.analisis.map((one) => {
+									let negative = !one.activo;
+									let fechacadena = moment(new Date(one.fecha)).format("DD-MM-YYYY");
 									return (
-										<Table.Row key={analisis._id} negative={negative}>
+										<Table.Row key={one._id} negative={negative}>
 											<Table.Cell collapsing>
 												<Icon name="syringe" />
 											</Table.Cell>
@@ -165,15 +162,15 @@ class ComponentAnalisis extends Component {
 												EXAMEN
 												{/* <ComponentSeePatient Deslogin={this.props.Deslogin} paciente={embarazo.paciente} global={this.props.global} /> */}
 											</Table.Cell>
-											<Table.Cell>{analisis.tipo}</Table.Cell>
+											<Table.Cell>{one.tipo}</Table.Cell>
 											<Table.Cell className="cells-max-witdh-2" collapsing>
-												<Checkbox toggle name="pendiente" labelPosition="left" label={analisis.pendiente ? "Si" : "No"} checked={analisis.pendiente} disabled />
+												<Checkbox toggle name="pendiente" labelPosition="left" label={one.pendiente ? "Si" : "No"} checked={one.pendiente} disabled />
 											</Table.Cell>
 											<Table.Cell className="cells-max-witdh-2" collapsing>
-												<Checkbox toggle name="activo" labelPosition="left" label={analisis.activo ? "Si" : "No"} checked={analisis.activo} disabled />
+												<Checkbox toggle name="activo" labelPosition="left" label={one.activo ? "Si" : "No"} checked={one.activo} disabled />
 											</Table.Cell>
 											<Table.Cell className="cells-max-witdh-2" collapsing>
-												{accesomenu.permisos.eliminar ? <Button icon="remove circle" className="button-remove" onClick={() => this.DeletePrueba(analisis)} /> : <Button icon="remove circle" className="button-remove" disabled />}
+												{accesomenu.permisos.eliminar ? <Button icon="remove circle" className="button-remove" onClick={() => this.DeleteAnalisis(one)} /> : <Button icon="remove circle" className="button-remove" disabled />}
 												{accesomenu.permisos.modificar ? (
 													// <ComponentUpdatePregnancy
 													//   Deslogin={this.props.Deslogin}

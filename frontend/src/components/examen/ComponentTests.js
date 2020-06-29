@@ -104,7 +104,7 @@ class ComponentTests extends Component {
 		}
 	};
 	CheckAndAllowAddButton = (middleButtonAdd, allow) => {
-		if (allow) return <ComponentAddTest Deslogin={this.props.Deslogin} middleButtonAdd={middleButtonAdd} global={this.props.global} pacientes={this.props.pacientes} embarazos={this.props.embarazos} examenes={this.props.examenes} pruebas={this.props.pruebas} paciente={this.props.paciente} embarazo={this.props.embarazo} GetDataFromServer={this.props.GetDataFromServer} />;
+		if (allow) return <ComponentAddTest Deslogin={this.props.Deslogin} middleButtonAdd={middleButtonAdd} global={this.props.global} pacientes={this.props.pacientes} embarazos={this.props.embarazos} examenes={this.props.examenes} analisis={this.props.analisis} paciente={this.props.paciente} embarazo={this.props.embarazo} GetDataFromServer={this.props.GetDataFromServer} />;
 		else
 			return (
 				<Button floated="right" icon labelPosition="left" primary size="small" className="modal-button-add" disabled>
@@ -229,7 +229,7 @@ class ComponentTests extends Component {
 									<Table.HeaderCell>Observaciones</Table.HeaderCell>
 									<Table.HeaderCell>Detalles</Table.HeaderCell>
 									<Table.HeaderCell className="cells-max-witdh-2">Pertenece</Table.HeaderCell>
-									<Table.HeaderCell className="cells-max-witdh-2">Pruebas</Table.HeaderCell>
+									<Table.HeaderCell className="cells-max-witdh-2">Análisis</Table.HeaderCell>
 									<Table.HeaderCell className="cells-max-witdh-2">Activo</Table.HeaderCell>
 									<Table.HeaderCell className="cells-max-witdh-2">Acciones</Table.HeaderCell>
 								</Table.Row>
@@ -255,7 +255,7 @@ class ComponentTests extends Component {
 											</Table.Cell>
 											<Table.Cell className="cells-max-witdh-2" collapsing>
 												{accesomenu.permisos.eliminar ? <Button icon="remove circle" className="button-remove" onClick={() => this.DeleteTest(examen)} /> : <Button icon="remove circle" className="button-remove" disabled />}
-												{accesomenu.permisos.modificar ? <ComponentUpdateTest Deslogin={this.props.Deslogin} GetDataFromServer={this.props.GetDataFromServer} global={this.props.global} pacientes={this.props.pacientes} embarazos={this.props.embarazos} examenes={this.props.examenes} pruebas={this.props.pruebas} examen={examen} /> : <Button icon="edit" disabled />}
+												{accesomenu.permisos.modificar ? <ComponentUpdateTest Deslogin={this.props.Deslogin} GetDataFromServer={this.props.GetDataFromServer} global={this.props.global} pacientes={this.props.pacientes} embarazos={this.props.embarazos} examenes={this.props.examenes} analisis={this.props.analisis} examen={examen} /> : <Button icon="edit" disabled />}
 											</Table.Cell>
 										</Table.Row>
 									);

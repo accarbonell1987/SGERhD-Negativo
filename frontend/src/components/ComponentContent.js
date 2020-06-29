@@ -48,7 +48,6 @@ class ComponentContent extends Component {
 		}
 		return true;
 	}
-
 	GetDataFromServer = () => {
 		//chequear que las cookies tengan los datos necesarios
 		const data = this.props.global.cookies();

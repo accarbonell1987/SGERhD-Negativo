@@ -90,7 +90,6 @@ class ComponentCompletePregnancy extends Component {
 				activo: activo,
 			};
 
-			console.log(pregnancy);
 			//la promise debe de devolver un valor RETURN
 			try {
 				const res = await fetch(this.props.global.endpoint + "api/embarazo/" + id, {

@@ -106,20 +106,20 @@ class ComponentModalTest extends Component {
 		const headerlabel = "Listado de Examenes: ";
 		//chequear si es embarazos y tengo permiso
 
-		//donde almacenar las pruebas
-		var pruebas = [];
-		//las pruebas de los embarazos
+		//donde almacenar las analisis
+		var analisis = [];
+		//las analisis de los embarazos
 		this.props.embarazos.forEach((embarazo) => {
-			return embarazo.examenes.forEach((examen) => (pruebas = [...pruebas, examen.pruebas]));
+			return embarazo.examenes.forEach((examen) => (analisis = [...analisis, examen.analisis]));
 		});
-		//las pruebas de los examenes
-		this.props.examenes.forEach((examen) => (pruebas = [...pruebas, examen.pruebas]));
+		//las analisis de los examenes
+		this.props.examenes.forEach((examen) => (analisis = [...analisis, examen.analisis]));
 
 		return (
 			<Modal className="modal-windows-pregnancies" open={this.state.openModal} trigger={this.ChangeIconInAddButton(accesomenu.permisos.menu, this.props.cambiarIcono)}>
 				<Header icon="clipboard list" content={headerlabel} />
 				<Modal.Content>
-					<ComponentTests Deslogin={this.props.Deslogin} middleButtonAdd={true} global={this.props.global} pacientes={this.props.pacientes} embarazos={this.props.embarazos} examenes={this.props.examenes} pruebas={pruebas} GetDataFromServer={this.props.GetDataFromServer} detail={true} paciente={this.props.paciente} embarazo={this.props.embarazo} />
+					<ComponentTests Deslogin={this.props.Deslogin} middleButtonAdd={true} global={this.props.global} pacientes={this.props.pacientes} embarazos={this.props.embarazos} examenes={this.props.examenes} analisis={analisis} GetDataFromServer={this.props.GetDataFromServer} detail={true} paciente={this.props.paciente} embarazo={this.props.embarazo} />
 				</Modal.Content>
 				<Modal.Actions>
 					<Button color="red" onClick={this.ChangeModalState} className="modal-button-cancel" type>

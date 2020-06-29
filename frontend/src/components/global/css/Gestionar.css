@@ -94,8 +94,16 @@
 	margin: 0 8px 0 0px !important;
 	width: 100% !important;
 }
+.modal-segment-expanded-margin10 {
+	margin-top: 10px !important;
+	width: 100% !important;
+}
 .modal-segment-expanded-grouping .inline {
 	margin: 0 !important;
+}
+.modal-segment-streching-grouping .inline {
+	max-width: 20% !important;
+	width: 20% !important;
 }
 
 .modal-segment-shortright {
@@ -153,5 +161,9 @@
 }
 
 .checkbox-group {
+	margin: 10px !important;
+}
+
+.div-select {
 	margin: 10px !important;
 }

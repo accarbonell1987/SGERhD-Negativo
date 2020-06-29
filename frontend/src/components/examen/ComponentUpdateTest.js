@@ -23,7 +23,7 @@ class ComponentUpdateTest extends Component {
 		observaciones: "",
 		embarazo: null,
 		paciente: null,
-		pruebas: [],
+		analisis: [],
 		tipo: "Embarazo",
 		semanas: 0,
 		dias: 0,
@@ -112,7 +112,7 @@ class ComponentUpdateTest extends Component {
 		const data = this.props.global.cookies();
 		if (!data) this.props.Deslogin();
 		else {
-			let { fecha, observaciones, embarazo, paciente, pruebas, tipo, semanas, dias, activo } = this.state;
+			let { fecha, observaciones, embarazo, paciente, analisis, tipo, semanas, dias, activo } = this.state;
 
 			let tiempoDeGestacion = null;
 			if (this.state.tipo === "Embarazo") {
@@ -127,7 +127,7 @@ class ComponentUpdateTest extends Component {
 				observaciones: observaciones,
 				embarazo: embarazo,
 				paciente: paciente,
-				pruebas: pruebas,
+				analisis: analisis,
 				tipo: tipo,
 				tiempoDeGestacion: tiempoDeGestacion,
 				activo: activo,
@@ -210,7 +210,7 @@ class ComponentUpdateTest extends Component {
 				openModal: true,
 				fecha: this.props.examen.fecha,
 				observaciones: this.props.examen.observaciones,
-				pruebas: this.props.examen.pruebas,
+				analisis: this.props.examen.analisis,
 				tipo: this.props.examen.tipo,
 				semanas: semanas,
 				dias: dias,
@@ -259,7 +259,7 @@ class ComponentUpdateTest extends Component {
 			observaciones: "",
 			embarazo: embarazoid,
 			paciente: pacienteid,
-			pruebas: [],
+			analisis: [],
 			tipo: "",
 			activo: true,
 			semanas: 0,
@@ -317,7 +317,7 @@ class ComponentUpdateTest extends Component {
 		}
 	};
 	DetailsTests = () => {
-		return <ComponentAnalisis Deslogin={this.props.Deslogin} global={this.props.global} middleButtonAdd={false} examenes={this.props.examenes} pruebas={this.props.pruebas} detail={true} GetDataFromServer={this.props.GetDataFromServer} />;
+		return <ComponentAnalisis Deslogin={this.props.Deslogin} global={this.props.global} middleButtonAdd={false} examenes={this.props.examenes} analisis={this.props.analisis} detail={true} GetDataFromServer={this.props.GetDataFromServer} />;
 	};
 	PregnancyAge = () => {
 		if (this.state.tipo === "Embarazo") {
