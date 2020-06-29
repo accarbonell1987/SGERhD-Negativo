@@ -110,6 +110,63 @@ class ComponentAnalisis extends Component {
 				</Button>
 			);
 	};
+	DetailsOfTests = (analisis) => {
+		const examen = analisis.examen;
+		if (examen.tipo === "Embarazo") {
+			const embarazo = examen.embarazo;
+			if (embarazo.tipo === "Nuevo") {
+				const { semanas, dias } = JSON.parse(examen.tiempoDeGestacion);
+				return (
+					<Label.Group className="button-pregnancy-separate">
+						Tiempo de Gestación:{" "}
+						<Button as="div" labelPosition="right" className="button-pregnancy">
+							<Button icon>
+								<Icon name="calendar alternate outline" />
+								Semanas:
+							</Button>
+							<Label basic pointing="left">
+								{semanas}
+							</Label>
+						</Button>
+						<Button as="div" labelPosition="right" className="button-pregnancy">
+							<Button icon>
+								<Icon name="calendar alternate" />
+								Dias:
+							</Button>
+							<Label basic pointing="left">
+								{dias}
+							</Label>
+						</Button>
+					</Label.Group>
+				);
+			} else {
+				return (
+					<Label.Group className="button-pregnancy-separate">
+						<Button as="div" labelPosition="right" className="button-pregnancy">
+							<Button icon>
+								<Icon name="heartbeat" />
+								Fin de Embarazo:
+							</Button>
+							<Label basic pointing="left">
+								{embarazo.findeembarazo}
+							</Label>
+						</Button>
+						<Button as="div" labelPosition="right" className="button-pregnancy">
+							<Button icon>
+								<Icon name={embarazo.findeembarazo === "Parto" ? "birthday cake" : "user md"} />
+								{embarazo.findeembarazo === "Parto" ? "Modo de Parto: " : "Modo de Aborto: "}
+							</Button>
+							<Label basic pointing="left">
+								{embarazo.findeembarazo === "Parto" ? embarazo.findeparto : embarazo.findeaborto}
+							</Label>
+						</Button>
+					</Label.Group>
+				);
+			}
+		} else {
+			return "Sin Detalles";
+		}
+	};
 	//#endregion
 
 	//#region Render
@@ -158,10 +215,7 @@ class ComponentAnalisis extends Component {
 												<Icon name="syringe" />
 											</Table.Cell>
 											<Table.Cell>{fechacadena}</Table.Cell>
-											<Table.Cell>
-												EXAMEN
-												{/* <ComponentSeePatient Deslogin={this.props.Deslogin} paciente={embarazo.paciente} global={this.props.global} /> */}
-											</Table.Cell>
+											<Table.Cell>{this.DetailsOfTests(one)}</Table.Cell>
 											<Table.Cell>{one.tipo}</Table.Cell>
 											<Table.Cell className="cells-max-witdh-2" collapsing>
 												<Checkbox toggle name="pendiente" labelPosition="left" label={one.pendiente ? "Si" : "No"} checked={one.pendiente} disabled />

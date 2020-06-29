@@ -72,7 +72,7 @@ exports.GetPatients = async (query, page, limit) => {
 			.populate({ path: "transfusiones", populate: { path: "paciente" } })
 			.populate({ path: "examenes", populate: { path: "paciente" } })
 			.populate({ path: "embarazos", populate: { path: "paciente" } })
-			.populate({ path: "embarazos", populate: { path: "examenes", populate: { path: "pruebas" } } })
+			.populate({ path: "embarazos", populate: { path: "examenes", populate: { path: "analisis" } } })
 			.populate({ path: "embarazos", populate: { path: "examenes", populate: { path: "embarazo" } } });
 		return patients;
 	} catch (err) {
@@ -87,7 +87,7 @@ exports.GetPatient = async (id) => {
 			.populate({ path: "transfusiones", populate: { path: "paciente" } })
 			.populate({ path: "examenes", populate: { path: "paciente" } })
 			.populate({ path: "embarazos", populate: { path: "paciente" } })
-			.populate({ path: "embarazos", populate: { path: "examenes", populate: { path: "pruebas" } } })
+			.populate({ path: "embarazos", populate: { path: "examenes", populate: { path: "analisis" } } })
 			.populate({ path: "embarazos", populate: { path: "examenes", populate: { path: "embarazo" } } });
 		return patient;
 	} catch (err) {

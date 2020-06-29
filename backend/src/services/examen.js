@@ -17,7 +17,7 @@ exports.GetTests = async (query, page, limit) => {
 		var tests = await Examen.find(query)
 			.populate({ path: "paciente", populate: { path: "examenes" } })
 			.populate({ path: "embarazo", populate: { path: "examenes" } })
-			.populate("pruebas");
+			.populate("analisis");
 		return tests;
 	} catch (err) {
 		throw Error("GetTests -> Obteniendo Examenes.");
@@ -28,7 +28,7 @@ exports.GetTest = async (id) => {
 		var test = await Examen.findById(id)
 			.populate({ path: "paciente", populate: { path: "examenes" } })
 			.populate({ path: "embarazo", populate: { path: "examenes" } })
-			.populate("pruebas");
+			.populate("analisis");
 		return test;
 	} catch (err) {
 		throw Error("GetTest -> Obteniendo Examen con id: " + id);
@@ -36,13 +36,13 @@ exports.GetTest = async (id) => {
 };
 exports.InsertTest = async (body) => {
 	try {
-		var { fecha, observaciones, embarazo, paciente, pruebas, tipo, tiempoDeGestacion, activo } = body;
+		var { fecha, observaciones, embarazo, paciente, analisis, tipo, tiempoDeGestacion, activo } = body;
 		const test = new Examen({
 			fecha,
 			observaciones,
 			embarazo,
 			paciente,
-			pruebas,
+			analisis,
 			tipo,
 			tiempoDeGestacion,
 			activo,
@@ -63,8 +63,8 @@ exports.InsertTest = async (body) => {
 };
 exports.UpdateTest = async (id, body) => {
 	try {
-		var { fecha, observaciones, embarazo, paciente, pruebas, tipo, tiempoDeGestacion, activo } = body;
-		const test = { fecha, observaciones, embarazo, paciente, pruebas, tipo, tiempoDeGestacion, activo };
+		var { fecha, observaciones, embarazo, paciente, analisis, tipo, tiempoDeGestacion, activo } = body;
+		const test = { fecha, observaciones, embarazo, paciente, analisis, tipo, tiempoDeGestacion, activo };
 		const updated = await Examen.findByIdAndUpdate(id, test);
 		return updated;
 	} catch (err) {
@@ -80,7 +80,7 @@ exports.DeleteTest = async (test) => {
 			//eliminar el examen del embarazo
 			await PregnancyServices.DeleteTestInPregnancy(test);
 		}
-		//eliminar tambien todas las pruebas
+		//eliminar tambien todas las analisis
 		test.analisis.forEach(async (one) => {
 			if (one.tipo === "Grupo Sanguineo") {
 				//eliminar Grupo Sanguineo con id
@@ -92,7 +92,7 @@ exports.DeleteTest = async (test) => {
 				//eliminar Pesquizaje Anticuerpo con id
 				// await GrupoSanguineo.findByIdAndRemove(one._id);
 			}
-			//eliminar prueba con id
+			//eliminar analisis con id
 			await Analisis.findByIdAndRemove(one._id);
 		});
 		//eliminar examen con id
@@ -115,10 +115,10 @@ exports.DisableTest = async (id, test) => {
 	try {
 		if (test.activo) {
 			test.activo = false;
-			//desactivar todas las pruebas del examen
+			//desactivar todas las analisis del examen
 			await test.analisis.forEach(async (one) => {
 				one.activo = false;
-				//modifico el activo de la prueba
+				//modifico el activo de la analisis
 				await Analisis.findByIdAndUpdate(one._id, one);
 			});
 			//modificar el examen
@@ -133,9 +133,9 @@ exports.DisableTest = async (id, test) => {
 };
 exports.DisableTests = async (tests) => {
 	try {
-		//desactivar todas las pruebas
+		//desactivar todas las analisis
 		await tests.forEach(async (test) => {
-			//desactivar todas las pruebas
+			//desactivar todas las analisis
 			await exports.DisableTest(test._id, test);
 		});
 	} catch (err) {
@@ -146,13 +146,11 @@ exports.DisableTests = async (tests) => {
 exports.InsertAnalisisToTest = async (analisis) => {
 	try {
 		const examen = await Examen.findById(analisis.examen);
-		if (analisis.estado === "Nueva") {
-			await examen.pruebas.push(analisis);
-			const saved = await examen.save();
-			return saved;
-		}
+		await examen.analisis.push(analisis);
+		const saved = await examen.save();
+		return saved;
 	} catch (err) {
-		throw Error("InsertAnalisisToTest -> Insertando Prueba en Examen \n" + err);
+		throw Error("InsertAnalisisToTest -> Insertando Analisis en Examen \n" + err);
 	}
 };
 //eliminar una analisis perteneciente al examen
@@ -161,13 +159,13 @@ exports.DeleteAnalisisInTest = async (analisis) => {
 		const examen = await this.GetTest(analisis.examen);
 
 		clonanalisis = [...examen.analisis];
-		//buscar el indice del elemento que representa esa analisis en el arreglo de pruebas del examen
-		let index = clonpruebas.indexOf(analisis._id);
+		//buscar el indice del elemento que representa esa analisis en el arreglo de analisis del examen
+		let index = clonanalisis.indexOf(analisis._id);
 		if (index) {
 			//eliminar del arreglo el elemento
-			clonpruebas.splice(index, 1);
+			clonanalisis.splice(index, 1);
 			//hacer un update del examen
-			const examen = { analisis: clonpruebas };
+			const examen = { analisis: clonanalisis };
 			var updated = await Examen.findByIdAndUpdate(examen._id, updated);
 		}
 		return updated;

@@ -83,7 +83,6 @@ class ComponentAddPatient extends Component {
 				conyuge: conyuge === "" ? null : conyuge,
 				activo: activo,
 			};
-			console.log(paciente);
 			//la promise debe de devolver un valor RETURN
 			try {
 				const res = await fetch(this.props.global.endpoint + "api/paciente/", {

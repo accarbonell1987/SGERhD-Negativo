@@ -44,7 +44,7 @@ class ComponentModalAnalisis extends Component {
 	};
 	ChangeIconInAddButton = (allow, change) => {
 		const position = this.props.middleButtonAdd ? "middle" : "right";
-		const cantAnalisis = this.props.analisis ? this.props.analisis.length : 0;
+		const cantAnalisis = this.props.examen.analisis ? this.props.examen.analisis.length : 0;
 		const permitir = allow;
 		if (change)
 			return (
@@ -103,7 +103,7 @@ class ComponentModalAnalisis extends Component {
 		const permiso = this.props.global.permisos.find((p) => p.rol === data.rol);
 		//buscar el acceso del menu
 		const accesomenu = permiso.accesos.find((p) => p.opcion === "analisis");
-		const headerlabel = "Listado de analisis: ";
+		const headerlabel = "Listado de Analisis: ";
 		//chequear si es embarazos y tengo permiso
 		return (
 			<Modal className="modal-windows-pregnancies" open={this.state.openModal} trigger={this.ChangeIconInAddButton(accesomenu.permisos.menu, this.props.cambiarIcono)}>

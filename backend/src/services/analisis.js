@@ -47,14 +47,14 @@ exports.InsertAnalisis = async (body) => {
 			var gruposanguineo = GrupoSanguineoServices.InsertGrupoSanguineo(body, analisis);
 			//actualizar la analisis asignandole el grupo sanguineo
 			saved = { grupoSanguineo: gruposanguineo };
-			await analisis.findByIdAndUpdate(id, saved);
+			await Analisis.findByIdAndUpdate(id, saved);
 		} else if (tipo === "Identificación Anticuerpo") {
 			//TODO insertar identificacion
 		} else if (tipo === "Pesquizaje Anticuerpo") {
 			//TODO insertar pesquizaje
 		}
 		//se adiciona la analisis en el Examen
-		await TestServices.InsertPruebaToTest(saved);
+		await TestServices.InsertAnalisisToTest(saved);
 		return saved;
 	} catch (err) {
 		throw Error("InsertAnalisis -> Insertando Analisis \n" + err);
@@ -87,10 +87,10 @@ exports.DeleteOneAnalisis = async (analisis) => {
 			//TODO eliminar pesquizaje
 		}
 		//eliminar analisis con id
-		const removed = await analisis.findByIdAndRemove(analisis._id);
+		const removed = await Analisis.findByIdAndRemove(analisis._id);
 
 		//se adiciona la analisis en el Examen
-		await TestServices.DeletePruebaInTest(saved);
+		await TestServices.DeleteAnalisisInTest(removed);
 
 		return removed;
 	} catch (err) {
@@ -110,21 +110,21 @@ exports.DisableOneAnalisis = async (id, analisis) => {
 	try {
 		if (analisis.activo) {
 			analisis.activo = false;
-			//desactivar todas las pruebas del examen
-			const updated = await analisis.findByIdAndUpdate(analisis._id, analisis);
+			//desactivar todas las analisis del examen
+			const updated = await Analisis.findByIdAndUpdate(analisis._id, analisis);
 			return updated;
 		} else {
-			return await exports.DeletePrueba(analisis);
+			return await exports.DeleteOneAnalisis(analisis);
 		}
 	} catch (err) {
-		throw Error("DisableTest -> Desactivando analisis \n" + err);
+		throw Error("DisableOneAnalisis -> Desactivando Analisis \n" + err);
 	}
 };
 exports.DisableAnalisis = async (analisis) => {
 	try {
-		//desactivar todas las pruebas
+		//desactivar todas las analisis
 		await analisis.forEach(async (one) => {
-			//desactivar todas las pruebas
+			//desactivar todas las analisis
 			await exports.DisableOneAnalisis(one._id, one);
 		});
 	} catch (err) {

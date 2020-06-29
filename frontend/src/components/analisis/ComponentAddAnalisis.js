@@ -449,7 +449,7 @@ class ComponentAddAnalisis extends Component {
 						<Icon name="remove" className="modal-icon-cancel" />
 						Cancelar
 					</Button>
-					<Button color="green" onClick={this.ChangeModalState} className="modal-button-accept" type="submit" disabled={!this.state.fecha || !this.state.tipoanalisis || !this.state.examen}>
+					<Button color="green" onClick={this.ChangeModalState} className="modal-button-accept" type="submit" disabled={!this.state.fecha || !this.state.examen}>
 						<Icon name="checkmark" className="modal-icon-accept" />
 						Aceptar
 					</Button>
