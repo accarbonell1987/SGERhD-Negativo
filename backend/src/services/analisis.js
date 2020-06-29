@@ -12,7 +12,9 @@ const GrupoSanguineoServices = require("./analisis/gruposanguineo");
 //#region Examen
 exports.GetAnalisis = async (query, page, limit) => {
 	try {
-		var analisis = await Analisis.find(query).populate({ path: "examen", populate: { path: "paciente" } });
+		var analisis = await Analisis.find(query)
+			.populate({ path: "examen", populate: { path: "paciente" } })
+			.populate({ path: "examen", populate: { path: "embarazo" } });
 		return analisis;
 	} catch (err) {
 		throw Error("GetAnalisis -> Obteniendo Analisis.");
@@ -20,7 +22,9 @@ exports.GetAnalisis = async (query, page, limit) => {
 };
 exports.GetOneAnalisis = async (id) => {
 	try {
-		var analisis = await Analisis.findById(id).populate({ path: "examen", populate: { path: "paciente" } });
+		var analisis = await Analisis.findById(id)
+			.populate({ path: "examen", populate: { path: "paciente" } })
+			.populate({ path: "examen", populate: { path: "embarazo" } });
 		return analisis;
 	} catch (err) {
 		throw Error("GetOneAnalisis -> Obteniendo Analisis con id: " + id);
@@ -44,10 +48,10 @@ exports.InsertAnalisis = async (body) => {
 		var saved = await analisis.save();
 		//almacenar la analisis de tipo grupo sanguineo
 		if (tipo === "Grupo Sanguineo") {
-			var gruposanguineo = GrupoSanguineoServices.InsertGrupoSanguineo(body, analisis);
+			var gruposanguineo = await GrupoSanguineoServices.InsertGrupoSanguineo(body, analisis);
 			//actualizar la analisis asignandole el grupo sanguineo
-			saved = { grupoSanguineo: gruposanguineo };
-			await Analisis.findByIdAndUpdate(id, saved);
+			saved.grupoSanguineo = gruposanguineo;
+			await Analisis.findByIdAndUpdate(saved._id, saved);
 		} else if (tipo === "Identificación Anticuerpo") {
 			//TODO insertar identificacion
 		} else if (tipo === "Pesquizaje Anticuerpo") {

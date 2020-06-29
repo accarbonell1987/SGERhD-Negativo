@@ -145,7 +145,8 @@ exports.DisableTests = async (tests) => {
 //insertar la analisis en el examen que pertenece
 exports.InsertAnalisisToTest = async (analisis) => {
 	try {
-		const examen = await Examen.findById(analisis.examen);
+		console.log(analisis);
+		let examen = await Examen.findById(analisis.examen);
 		await examen.analisis.push(analisis);
 		const saved = await examen.save();
 		return saved;

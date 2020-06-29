@@ -11,6 +11,7 @@ import "../global/css/Gestionar.css";
 
 //#region Componentes
 import ComponentAddAnalisis from "./ComponentAddAnalisis";
+import ComponentUpdateAnalisis from "./ComponentUpdateAnalisis";
 //#endregion
 
 //#region Defincion de la clase
@@ -115,9 +116,14 @@ class ComponentAnalisis extends Component {
 		if (examen.tipo === "Embarazo") {
 			const embarazo = examen.embarazo;
 			if (embarazo.tipo === "Nuevo") {
-				const { semanas, dias } = JSON.parse(examen.tiempoDeGestacion);
+				const { semanas, dias } = JSON.parse(analisis.tiempoDeGestacion);
+				let fechacadena = moment(new Date(examen.fecha)).format("DD-MM-YYYY");
 				return (
 					<Label.Group className="button-pregnancy-separate">
+						Fecha:{" "}
+						<Label size="large" color="green">
+							{fechacadena}
+						</Label>
 						Tiempo de Gestación:{" "}
 						<Button as="div" labelPosition="right" className="button-pregnancy">
 							<Button icon>
@@ -209,6 +215,7 @@ class ComponentAnalisis extends Component {
 								{this.props.analisis.map((one) => {
 									let negative = !one.activo;
 									let fechacadena = moment(new Date(one.fecha)).format("DD-MM-YYYY");
+									const colorTipo = one.tipo === "Grupo Sanguineo" ? "teal" : one.tipo === "Pesquizaje Anticuerpo" ? "blue" : "violet";
 									return (
 										<Table.Row key={one._id} negative={negative}>
 											<Table.Cell collapsing>
@@ -216,7 +223,11 @@ class ComponentAnalisis extends Component {
 											</Table.Cell>
 											<Table.Cell>{fechacadena}</Table.Cell>
 											<Table.Cell>{this.DetailsOfTests(one)}</Table.Cell>
-											<Table.Cell>{one.tipo}</Table.Cell>
+											<Table.Cell>
+												<Label size="large" color={colorTipo}>
+													{one.tipo}
+												</Label>
+											</Table.Cell>
 											<Table.Cell className="cells-max-witdh-2" collapsing>
 												<Checkbox toggle name="pendiente" labelPosition="left" label={one.pendiente ? "Si" : "No"} checked={one.pendiente} disabled />
 											</Table.Cell>
@@ -225,18 +236,7 @@ class ComponentAnalisis extends Component {
 											</Table.Cell>
 											<Table.Cell className="cells-max-witdh-2" collapsing>
 												{accesomenu.permisos.eliminar ? <Button icon="remove circle" className="button-remove" onClick={() => this.DeleteAnalisis(one)} /> : <Button icon="remove circle" className="button-remove" disabled />}
-												{accesomenu.permisos.modificar ? (
-													// <ComponentUpdatePregnancy
-													//   Deslogin={this.props.Deslogin}
-													//   GetDataFromServer={this.props.GetDataFromServer}
-													//   global={this.props.global}
-													//   pacientes={this.props.pacientes}
-													//   pregnancy={embarazo}
-													// />
-													""
-												) : (
-													<Button icon="edit" disabled />
-												)}
+												{accesomenu.permisos.modificar ? <ComponentUpdateAnalisis Deslogin={this.props.Deslogin} GetDataFromServer={this.props.GetDataFromServer} global={this.props.global} one={one} examenes={this.props.examenes} /> : <Button icon="edit" disabled />}
 											</Table.Cell>
 										</Table.Row>
 									);

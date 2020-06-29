@@ -208,13 +208,18 @@ class ComponentPregnancies extends Component {
 								{this.props.embarazos.map((embarazo) => {
 									let negative = !embarazo.activo;
 									let fechacadena = moment(new Date(embarazo.fecha)).format("DD-MM-YYYY");
+									const colorTipo = embarazo.tipo === "Nuevo" ? "teal" : "violet";
 									return (
 										<Table.Row key={embarazo._id} negative={negative}>
 											<Table.Cell collapsing>
 												<Icon name="tint" />
 											</Table.Cell>
 											<Table.Cell>{fechacadena}</Table.Cell>
-											<Table.Cell>{embarazo.tipo}</Table.Cell>
+											<Table.Cell>
+												<Label size="large" color={colorTipo}>
+													{embarazo.tipo}
+												</Label>
+											</Table.Cell>
 											<Table.Cell>{embarazo.observaciones}</Table.Cell>
 											<Table.Cell>{this.DetailFromType(embarazo)}</Table.Cell>
 											<Table.Cell className="cells-max-witdh-2" collapsing>

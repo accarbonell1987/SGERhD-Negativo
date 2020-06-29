@@ -31,7 +31,6 @@ exports.InsertGrupoSanguineo = async (body, analisis) => {
 			dDebil,
 			gSanguineo,
 			factor,
-			analisis: analisis,
 		});
 		//salvando el grupo sanguineo
 		const saved = await gruposanguineo.save();

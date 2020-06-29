@@ -86,6 +86,8 @@ class ComponentApp extends Component {
 		},
 	];
 
+	colors = ["red", "orange", "yellow", "olive", "green", "teal", "blue", "violet", "purple", "pink", "brown", "grey", "black"];
+
 	roles = [
 		{ key: "usuario", text: "Usuario", value: "usuario", image: { avatar: true, src: require("./global/images/jenny.jpg") } },
 		{ key: "recepcionista", text: "Recepcionista", value: "recepcionista", image: { avatar: true, src: require("./global/images/molly.png") } },
