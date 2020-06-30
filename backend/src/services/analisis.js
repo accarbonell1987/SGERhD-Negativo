@@ -67,14 +67,16 @@ exports.InsertAnalisis = async (body) => {
 exports.UpdateAnalisis = async (id, body) => {
 	try {
 		var { fecha, tipo, examen, grupoSanguineo, identificacionAnticuerpo, pesquizajeAnticuerpo, pendiente, numeroMuestra, tiempoDeGestacion, activo } = body;
+
 		const analisis = { fecha, tipo, examen, grupoSanguineo, identificacionAnticuerpo, pesquizajeAnticuerpo, pendiente, numeroMuestra, tiempoDeGestacion, activo };
+
 		if (tipo === "Grupo Sanguineo") var gruposanguineo = GrupoSanguineoServices.UpdateGrupoSanguineo(grupoSanguineo._id, grupoSanguineo);
 		else if (tipo === "Identificación Anticuerpo") {
 			//TODO modificar identificacion
 		} else if (tipo === "Pesquizaje Anticuerpo") {
 			//TODO modificar pesquizaje
 		}
-		const updated = await analisis.findByIdAndUpdate(id, analisis);
+		const updated = await Analisis.findByIdAndUpdate(id, analisis);
 		return updated;
 	} catch (err) {
 		throw Error("UpdateAnalisis -> Modificando Analisis \n" + err);
