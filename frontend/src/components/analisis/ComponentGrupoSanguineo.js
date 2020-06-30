@@ -1,6 +1,7 @@
 //#region Importaciones
 import React, { Component } from "react";
 import { Header, Form, Segment, Modal, Message, Icon, Button } from "semantic-ui-react";
+import Swal from "sweetalert2";
 //#endregion
 
 //#region CSS
@@ -14,10 +15,9 @@ import "../global/css/Gestionar.css";
 class ComponentGrupoSanguineo extends Component {
 	//#region Properties
 	state = {
-		dDebil: "",
 		gSanguineo: "",
 		factor: "",
-		analisis: null,
+		dDebil: "",
 		opcionGrupoSanguineo: null,
 		errorform: false,
 	};
@@ -33,6 +33,15 @@ class ComponentGrupoSanguineo extends Component {
 
 	//#region Metodos y Eventos
 	//componente se monto
+	SwalAlert = (posicion, icon, mensaje, tiempo) => {
+		Swal.fire({
+			position: posicion,
+			icon: icon,
+			title: mensaje,
+			showConfirmButton: false,
+			timer: tiempo,
+		});
+	};
 	componentDidMount() {
 		this.ClearModalState();
 	}
@@ -51,11 +60,11 @@ class ComponentGrupoSanguineo extends Component {
 	};
 	//cambiar el estado en el MODAL para adicionar
 	ChangeModalState = async (evt) => {
-		if (evt.target.className.includes("modal-button-add") || evt.target.className.includes("modal-icon-add")) {
+		if (evt.target.className.includes("modal-button-cancel") || evt.target.className.includes("modal-icon-cancel")) {
+			this.setState({ openModal: false });
+		} else if (evt.target.className.includes("modal-button-action") || evt.target.className.includes("modal-icon")) {
 			this.ClearModalState();
 			this.setState({ openModal: true });
-		} else if (evt.target.className.includes("modal-button-cancel") || evt.target.className.includes("modal-icon-cancel")) {
-			this.setState({ openModal: false });
 		} else {
 			this.OnSubmit(evt);
 		}
@@ -93,6 +102,18 @@ class ComponentGrupoSanguineo extends Component {
 			this.props.OnSubmit(evt);
 		}
 	};
+	//al enviar a aplicar el formulario
+	OnSubmit = async (evt) => {
+		//si no hay problemas en el formulario
+		if (this.HandleSubmit(evt) === false) {
+			//si no hay problemas en la insercion
+			if (await this.SetResults()) {
+				//enviar a recargar los pacientes
+				this.props.GetDataFromServer();
+				this.ClearModalState();
+			}
+		}
+	};
 	//limpiar states
 	ClearModalState = () => {
 		let opcionGrupoSanguineo = [];
@@ -100,29 +121,85 @@ class ComponentGrupoSanguineo extends Component {
 			opcionGrupoSanguineo = [...opcionGrupoSanguineo, cur];
 		});
 
-		const gruposanguineo = this.props.analisis != null ? this.props.analisis.gruposanguineo : null;
-		const analisis = this.props.analisis != null ? this.props.analisis._id : null;
-
+		const detail = this.props.analisis.grupoSanguineo;
 		//actualizar los states
 		this.setState({
-			dDebil: "",
-			gSanguineo: gruposanguineo,
-			factor: "",
-			analisis: analisis,
+			openModal: false,
+			gSanguineo: detail.gSanguineo,
+			factor: detail.factor,
+			dDebil: detail.dDebil,
 			opcionGrupoSanguineo: opcionGrupoSanguineo,
 			errorform: false,
 		});
+	};
+	SetResults = async () => {
+		//chequear que las cookies tengan los datos necesarios
+		const data = this.props.global.cookies();
+		if (!data) this.props.Deslogin();
+		else {
+			let analisis = this.props.analisis;
+			analisis.pendiente = false;
+
+			let detail = this.props.analisis.grupoSanguineo;
+			detail.gSanguineo = this.state.gSanguineo;
+			detail.factor = this.state.factor;
+			detail.dDebil = this.state.dDebil;
+
+			//la promise debe de devolver un valor RETURN
+			try {
+				const resgrupo = await fetch(this.props.global.endpoint + "api/gruposanguineo/" + detail._id, {
+					method: "PATCH",
+					body: JSON.stringify(detail),
+					headers: {
+						Accept: "application/json",
+						"Content-Type": "application/json",
+						"access-token": data.token,
+					},
+				});
+				const resanalisis = await fetch(this.props.global.endpoint + "api/analisis/" + analisis._id, {
+					method: "PATCH",
+					body: JSON.stringify(analisis),
+					headers: {
+						Accept: "application/json",
+						"Content-Type": "application/json",
+						"access-token": data.token,
+					},
+				});
+
+				let serverdatagrupo = await resgrupo.json();
+				let serverdataanalisis = await resanalisis.json();
+
+				if (serverdatagrupo.status === 200 && serverdataanalisis.status === 200) {
+					this.SwalAlert("center", "success", serverdatagrupo.message + " - " + serverdataanalisis.message, 3000);
+					return true;
+				} else {
+					this.SwalAlert("center", "error", serverdatagrupo.message + " - " + serverdataanalisis.message, 5000);
+					return false;
+				}
+			} catch (err) {
+				this.SwalAlert("center", "error", err, 5000);
+				return false;
+			}
+		}
 	};
 	//#endregion
 
 	//#region Render
 	render() {
 		return (
-			<Modal open={this.state.openModal} trigger={this.ChangeIconButton(this.props.cambiarIcono)}>
+			<Modal
+				open={this.state.openModal}
+				trigger={
+					<Button className="modal-button-action" onClick={this.ChangeModalState}>
+						<Icon name="checkmark" className="modal-icon" color="green" onClick={this.ChangeModalState} />
+					</Button>
+				}
+			>
 				<Header icon="syringe" content="Resultados de Análisis" />
 				<Modal.Content>
 					{this.state.errorform ? <Message error inverted header="Error" content="Error en el formulario" /> : null}
 					<Form ref="form" onSubmit={this.ChangeModalState}>
+						<Form.Input disabled name="numero" icon="address card outline" iconPosition="left" label="Numero de Muestra:" value={this.props.analisis.numeroMuestra} />
 						<Segment.Group>
 							<div className="div-select">
 								<Form.Select
@@ -213,7 +290,7 @@ class ComponentGrupoSanguineo extends Component {
 						<Icon name="remove" className="modal-icon-cancel" />
 						Cancelar
 					</Button>
-					<Button color="green" onClick={this.ChangeModalState} className="modal-button-accept" type="submit" disabled={!this.state.fecha || !this.state.paciente}>
+					<Button color="green" onClick={this.ChangeModalState} className="modal-button-accept" type="submit" disabled={!this.state.factor || !this.state.dDebil || !this.state.gSanguineo}>
 						<Icon name="checkmark" className="modal-icon-accept" />
 						Aceptar
 					</Button>

@@ -23,14 +23,13 @@ exports.GetGrupoSanguineo = async (id) => {
 		throw Error("GetGrupoSanguineo -> Obteniendo Grupo Sanguineo con id: " + id);
 	}
 };
-exports.InsertGrupoSanguineo = async (body, analisis) => {
+exports.InsertGrupoSanguineo = async () => {
 	try {
-		var { dDebil, gSanguineo, factor } = body;
 		//creando grupo sanguineo
 		const gruposanguineo = new GrupoSanguineo({
-			dDebil,
-			gSanguineo,
-			factor,
+			dDebil: null,
+			gSanguineo: null,
+			factor: null,
 		});
 		//salvando el grupo sanguineo
 		const saved = await gruposanguineo.save();

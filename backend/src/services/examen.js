@@ -47,7 +47,6 @@ exports.InsertTest = async (body) => {
 			tiempoDeGestacion,
 			activo,
 		});
-		console.log(test);
 		const saved = await test.save();
 		if (tipo === "Paciente") {
 			//se adiciona el examen en el paciente
@@ -145,7 +144,6 @@ exports.DisableTests = async (tests) => {
 //insertar la analisis en el examen que pertenece
 exports.InsertAnalisisToTest = async (analisis) => {
 	try {
-		console.log(analisis);
 		let examen = await Examen.findById(analisis.examen);
 		await examen.analisis.push(analisis);
 		const saved = await examen.save();

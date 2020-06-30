@@ -7,6 +7,7 @@ const TranServices = require("../services/trans");
 const PregnancyServices = require("../services/embarazo");
 const TestServices = require("../services/examen");
 const AnalisisServices = require("../services/analisis");
+const GrupoSanguineoServices = require("../services/analisis/gruposanguineo");
 //#endregion
 
 //#region Usuarios
@@ -513,6 +514,17 @@ exports.UpdateAnalisis = async (req, res, next) => {
 	try {
 		var analisis = await AnalisisServices.UpdateAnalisis(req.params.id, req.body);
 		return res.status(200).json({ status: 200, message: "Modificado Correctamente", data: analisis });
+	} catch (err) {
+		return res.status(400).json({ status: 400, message: err.toString() });
+	}
+};
+//#endregion
+
+//#region Grupo Sanguineo
+exports.UpdateGrupoSanguineo = async (req, res, next) => {
+	try {
+		var grupo = await GrupoSanguineoServices.UpdateGrupoSanguineo(req.params.id, req.body);
+		return res.status(200).json({ status: 200, message: "Modificado Correctamente", data: grupo });
 	} catch (err) {
 		return res.status(400).json({ status: 400, message: err.toString() });
 	}

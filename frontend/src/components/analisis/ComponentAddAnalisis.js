@@ -229,7 +229,6 @@ class ComponentAddAnalisis extends Component {
 
 		//busco el ultimo insertado
 		this.GetLastInserted().then((element) => {
-			console.log(element);
 			//chequeo que me devuelva un arreglo mayor que cero
 			if (element.length > 0) {
 				//convierto el numero en un string
@@ -247,8 +246,8 @@ class ComponentAddAnalisis extends Component {
 					numero = ano + "-" + addone;
 				}
 				//lo pongo en el state
-				this.setState({ numeroMuestra: numero });
 			}
+			this.setState({ numeroMuestra: numero });
 			//lo pongo en el state
 		});
 		//actualizar los states

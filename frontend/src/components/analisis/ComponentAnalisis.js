@@ -12,6 +12,7 @@ import "../global/css/Gestionar.css";
 //#region Componentes
 import ComponentAddAnalisis from "./ComponentAddAnalisis";
 import ComponentUpdateAnalisis from "./ComponentUpdateAnalisis";
+import ComponentGrupoSanguineo from "./ComponentGrupoSanguineo";
 //#endregion
 
 //#region Defincion de la clase
@@ -243,6 +244,7 @@ class ComponentAnalisis extends Component {
 											<Table.Cell className="cells-max-witdh-2" collapsing>
 												{accesomenu.permisos.eliminar ? <Button icon="remove circle" className="button-remove" onClick={() => this.DeleteAnalisis(one)} /> : <Button icon="remove circle" className="button-remove" disabled />}
 												{accesomenu.permisos.modificar ? <ComponentUpdateAnalisis Deslogin={this.props.Deslogin} GetDataFromServer={this.props.GetDataFromServer} global={this.props.global} one={one} examenes={this.props.examenes} /> : <Button icon="edit" disabled />}
+												{accesomenu.permisos.modificar && one.pendiente && one.tipo === "Grupo Sanguineo" ? <ComponentGrupoSanguineo Deslogin={this.props.Deslogin} GetDataFromServer={this.props.GetDataFromServer} global={this.props.global} analisis={one} /> : <Button icon="checkmark" disabled />}
 											</Table.Cell>
 										</Table.Row>
 									);

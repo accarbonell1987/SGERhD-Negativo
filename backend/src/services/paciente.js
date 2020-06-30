@@ -97,7 +97,6 @@ exports.GetPatient = async (id) => {
 exports.InsertPatient = async (body) => {
 	try {
 		var { fechaDeCreacion, nombre, apellidos, ci, direccion, direccionopcional, telefono, sexo, historiaclinica, madre, hijos, conyuge, transfusiones, embarazos, examenes, activo } = body;
-		console.log(body);
 		const patient = new Paciente({
 			fechaDeCreacion,
 			nombre,

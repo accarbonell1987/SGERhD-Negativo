@@ -27,7 +27,6 @@ exports.GetTran = async (id) => {
 exports.InsertTran = async (body) => {
 	try {
 		var { fecha, observaciones, reaccionAdversa, reaccionAdversaDetalles, paciente, activo } = body;
-		console.log(body);
 		const tran = new Transfusion({
 			fecha,
 			observaciones,
