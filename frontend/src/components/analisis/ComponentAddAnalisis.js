@@ -134,6 +134,31 @@ class ComponentAddAnalisis extends Component {
 			}
 		}
 	};
+	GetLastInserted = async () => {
+		const cookiesdata = this.props.global.cookies();
+		if (!cookiesdata) this.props.Deslogin();
+		else {
+			//enviar al endpoint
+			const res = await fetch(this.props.global.endpoint + "api/analisis/-1", {
+				method: "GET",
+				headers: {
+					"access-token": cookiesdata.token,
+				},
+			});
+			let serverdata = await res.json();
+			//capturar respuesta
+			const { status, message, data } = serverdata;
+			if (status === 200) return data;
+			else
+				Swal.fire({
+					position: "center",
+					icon: "error",
+					title: message,
+					showConfirmButton: false,
+					timer: 5000,
+				});
+		}
+	};
 	//validar el formulario
 	HandleSubmit = (evt) => {
 		evt.preventDefault();
@@ -196,6 +221,36 @@ class ComponentAddAnalisis extends Component {
 		const examen = this.props.examen != null ? this.props.examen._id : null;
 		this.ChoseExamen(examen);
 
+		//obtener la fecha
+		var fecha = new Date();
+		const ano = fecha.getFullYear().toString();
+		//extraer las partes para el formato de la historia clinica (año mes dia numeroconsecutivo) ej: 205280020
+		let numero = ano + "-0001";
+
+		//busco el ultimo insertado
+		this.GetLastInserted().then((element) => {
+			console.log(element);
+			//chequeo que me devuelva un arreglo mayor que cero
+			if (element.length > 0) {
+				//convierto el numero en un string
+				var numeroMuestra = element[0].numeroMuestra.toString();
+
+				//pico el string por el guión -
+				var elementosnumero = numeroMuestra.split("-");
+				//si la primera parte del numero es igual a la suma de ano entonces
+				if (elementosnumero[0] === ano) {
+					//adiciono uno a la segunda parte del numero
+					var addone = (parseInt(elementosnumero[1]) + 1).toString();
+					//adicionar los ceros que necesito a la izquierda
+					while (addone.length < 4) addone = "0" + addone;
+					//lo almaceno en numero
+					numero = ano + "-" + addone;
+				}
+				//lo pongo en el state
+				this.setState({ numeroMuestra: numero });
+			}
+			//lo pongo en el state
+		});
 		//actualizar los states
 		this.setState({
 			openModal: false,
@@ -410,6 +465,7 @@ class ComponentAddAnalisis extends Component {
 				<Modal.Content>
 					{this.state.errorform ? <Message error inverted header="Error" content="Error en el formulario" /> : null}
 					<Form ref="form" onSubmit={this.ChangeModalState}>
+						<Form.Input disabled name="numero" icon="address card outline" iconPosition="left" label="Numero de Muestra:" value={this.state.numeroMuestra} />
 						<Segment className="modal-segment-expanded-grouping">
 							<Header as="h5" className="header-custom">
 								Tipo de analisis:

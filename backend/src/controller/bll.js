@@ -471,7 +471,11 @@ exports.GetAnalisis = async (req, res, next) => {
 exports.GetOneAnalisis = async (req, res, next) => {
 	try {
 		const id = req.params.id;
-		var analisis = await AnalisisServices.GetOneAnalisis(req.params.id);
+		var analisis = {};
+
+		if (id == -1) analisis = await AnalisisServices.GetLastInserted();
+		else analisis = await AnalisisServices.GetOneAnalisis(req.params.id);
+
 		return res.status(200).json({ status: 200, message: "Obtenido", data: analisis });
 	} catch (err) {
 		return res.status(400).json({ status: 400, message: err.toString() });

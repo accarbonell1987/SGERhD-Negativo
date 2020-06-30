@@ -30,6 +30,15 @@ exports.GetOneAnalisis = async (id) => {
 		throw Error("GetOneAnalisis -> Obteniendo Analisis con id: " + id);
 	}
 };
+exports.GetLastInserted = async () => {
+	try {
+		var analisis = await Analisis.find().sort({ _id: -1 }).limit(1);
+		return analisis;
+		// return null;
+	} catch (err) {
+		throw Error("GetLastInserted -> Obteniendo Ultimo");
+	}
+};
 exports.InsertAnalisis = async (body) => {
 	try {
 		var { fecha, tipo, examen, grupoSanguineo, identificacionAnticuerpo, pesquizajeAnticuerpo, pendiente, numeroMuestra, tiempoDeGestacion, activo } = body;

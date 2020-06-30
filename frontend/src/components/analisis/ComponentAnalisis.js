@@ -199,11 +199,12 @@ class ComponentAnalisis extends Component {
 							<Table.Header className="div-table-header">
 								<Table.Row>
 									<Table.HeaderCell />
-									<Table.HeaderCell colSpan="6">{this.CheckAndAllowAddButton(false, accesomenu.permisos.crear)}</Table.HeaderCell>
+									<Table.HeaderCell colSpan="7">{this.CheckAndAllowAddButton(false, accesomenu.permisos.crear)}</Table.HeaderCell>
 								</Table.Row>
 								<Table.Row>
 									<Table.HeaderCell />
 									<Table.HeaderCell>Fecha Planificada</Table.HeaderCell>
+									<Table.HeaderCell>Número de Muestra</Table.HeaderCell>
 									<Table.HeaderCell>Examen</Table.HeaderCell>
 									<Table.HeaderCell>Detalles</Table.HeaderCell>
 									<Table.HeaderCell className="cells-max-witdh-2">Pendiente</Table.HeaderCell>
@@ -222,6 +223,11 @@ class ComponentAnalisis extends Component {
 												<Icon name="syringe" />
 											</Table.Cell>
 											<Table.Cell>{fechacadena}</Table.Cell>
+											<Table.Cell>
+												<Label size="large" color="green">
+													{one.numeroMuestra}
+												</Label>
+											</Table.Cell>
 											<Table.Cell>{this.DetailsOfTests(one)}</Table.Cell>
 											<Table.Cell>
 												<Label size="large" color={colorTipo}>

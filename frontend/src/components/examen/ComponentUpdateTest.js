@@ -272,7 +272,7 @@ class ComponentUpdateTest extends Component {
 	ChoseType = () => {
 		if (this.state.tipo === "Paciente") {
 			return (
-				<Segment.Group className="segmentgroup-correct">
+				<Segment.Group className="modal-segment-expanded-margin10">
 					<Segment as="h5">Paciente:</Segment>
 					<Segment.Group horizontal>
 						<Segment>
@@ -294,7 +294,7 @@ class ComponentUpdateTest extends Component {
 			);
 		} else {
 			return (
-				<Segment.Group className="segmentgroup-correct">
+				<Segment.Group className="modal-segment-expanded-margin10">
 					<Segment as="h5">Embarazo:</Segment>
 					<Segment.Group horizontal>
 						<Segment>
@@ -320,9 +320,9 @@ class ComponentUpdateTest extends Component {
 		return <ComponentAnalisis Deslogin={this.props.Deslogin} global={this.props.global} middleButtonAdd={false} examenes={this.props.examenes} analisis={this.props.analisis} detail={true} GetDataFromServer={this.props.GetDataFromServer} />;
 	};
 	PregnancyAge = () => {
-		if (this.state.tipo === "Embarazo") {
+		if (this.state.tipo === "Embarazo" && this.state.embarazo) {
 			return (
-				<Segment.Group className="segmentgroup-correct">
+				<Segment.Group>
 					<Segment as="h5">Tiempo de Gestación:</Segment>
 					<Segment.Group horizontal>
 						<Segment>
@@ -409,13 +409,6 @@ class ComponentUpdateTest extends Component {
 				<Modal.Content>
 					{this.state.errorform ? <Message error inverted header="Error" content="Error en el formulario" /> : null}
 					<Form ref="form" onSubmit={this.ChangeModalState}>
-						<Form.Group>
-							<Segment className="modal-segment-expanded">
-								<Header as="h5">Fecha:</Header>
-								<ComponentInputDatePicker fecha={this.state.fecha} SetDate={this.SetDate} restringir={false} />
-							</Segment>
-						</Form.Group>
-						<Form.TextArea name="observaciones" label="Observaciones:" placeholder="Observaciones..." value={this.state.observaciones} onChange={this.ChangeModalInput} />
 						<Segment className="modal-segment-expanded-grouping">
 							<Form.Group inline>
 								<Header as="h5" className="header-custom">
@@ -451,8 +444,21 @@ class ComponentUpdateTest extends Component {
 								/>
 							</Form.Group>
 						</Segment>
-						<Form.Group>{this.PregnancyAge()}</Form.Group>
-						<Form.Group>{this.ChoseType()}</Form.Group>
+						<Segment className="modal-segment-expanded-margin10">
+							<Form.TextArea name="observaciones" label="Observaciones:" placeholder="Observaciones..." value={this.state.observaciones} onChange={this.ChangeModalInput} />
+						</Segment>
+						{this.ChoseType()}
+						{this.state.embarazo != null || this.state.embarazo === "" || this.state.paciente != null || this.state.paciente === "" ? (
+							<Form.Group>
+								<Segment className="modal-segment-expanded">
+									<Header as="h5">Fecha:</Header>
+									<ComponentInputDatePicker fecha={this.state.fecha} SetDate={this.SetDate} restringir={false} />
+								</Segment>
+							</Form.Group>
+						) : (
+							""
+						)}
+						{this.PregnancyAge()}
 					</Form>
 				</Modal.Content>
 				<Modal.Actions>

@@ -407,6 +407,7 @@ class ComponentUpdateAnalisis extends Component {
 				<Modal.Content>
 					{this.state.errorform ? <Message error inverted header="Error" content="Error en el formulario" /> : null}
 					<Form ref="form" onSubmit={this.ChangeModalState}>
+						<Form.Input disabled name="numero" icon="address card outline" iconPosition="left" label="Numero de Muestra:" value={this.state.numeroMuestra} />
 						<Segment className="modal-segment-expanded-grouping">
 							<Header as="h5" className="header-custom">
 								Tipo de analisis:
