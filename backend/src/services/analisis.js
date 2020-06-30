@@ -7,6 +7,8 @@ var mongoose = require("mongoose");
 //#region Servicios
 const TestServices = require("./examen");
 const GrupoSanguineoServices = require("./analisis/gruposanguineo");
+const PesquizajeAnticuerpoServices = require("./analisis/pesquizajeanticuerpo");
+const IdentificacionAnticuerpoServices = require("./analisis/identificacionanticuerpo");
 //#endregion
 
 //#region Examen
@@ -59,14 +61,20 @@ exports.InsertAnalisis = async (body) => {
 		var saved = await analisis.save();
 		//almacenar la analisis de tipo grupo sanguineo
 		if (tipo === "Grupo Sanguineo") {
-			var gruposanguineo = await GrupoSanguineoServices.InsertGrupoSanguineo();
+			var gruposanguineo = await GrupoSanguineoServices.InsertGrupoSanguineo(saved);
 			//actualizar la analisis asignandole el grupo sanguineo
 			saved.grupoSanguineo = gruposanguineo;
 			await Analisis.findByIdAndUpdate(saved._id, saved);
 		} else if (tipo === "Identificación Anticuerpo") {
-			//TODO insertar identificacion
+			var indetificacionAnticuerpo = await IdentificacionAnticuerpoServices.InsertIdentificacionAnticuerpo(saved);
+			//actualizar la analisis asignandole el grupo sanguineo
+			saved.indetificacionAnticuerpo = indetificacionAnticuerpo;
+			await Analisis.findByIdAndUpdate(saved._id, saved);
 		} else if (tipo === "Pesquizaje Anticuerpo") {
-			//TODO insertar pesquizaje
+			var pesquizajeAnticuerpo = await PesquizajeAnticuerpoServices.InsertPesquizajeAnticuerpo(saved);
+			//actualizar la analisis asignandole el grupo sanguineo
+			saved.pesquizajeAnticuerpo = pesquizajeAnticuerpo;
+			await Analisis.findByIdAndUpdate(saved._id, saved);
 		}
 		//se adiciona la analisis en el Examen
 		await TestServices.InsertAnalisisToTest(saved);
@@ -97,11 +105,11 @@ exports.DeleteOneAnalisis = async (analisis) => {
 	try {
 		if (analisis.tipo === "Grupo Sanguineo") {
 			//eliminar Grupo Sanguineo con id
-			await GrupoSanguineoServices.DeleteGrupoSanguineo(analisis);
+			await GrupoSanguineoServices.DeleteGrupoSanguineo(analisis.grupoSanguineo);
 		} else if (analisis.tipo === "Identificación Anticuerpo") {
-			//TODO eliminar identificacion
+			await IdentificacionAnticuerpoServices.DeleteIdentificacionAnticuerpo(analisis.identificacionAnticuerpo);
 		} else if (analisis.tipo === "Pesquizaje Anticuerpo") {
-			//TODO eliminar pesquizaje
+			await PesquizajeAnticuerpoServices.DeletePesquizajeAnticuerpo(analisis.pesquizajeAnticuerpo);
 		}
 		//eliminar analisis con id
 		const removed = await Analisis.findByIdAndRemove(analisis._id);

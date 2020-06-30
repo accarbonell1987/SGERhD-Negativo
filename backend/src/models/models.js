@@ -85,22 +85,25 @@ var gruposanguineo_schema = new Schema({
 
 //IDENTIFICACIONANTICUERPO
 var identificacionanticuerpo_schema = new Schema({
-	pTipoIdentificacionEnCoombsIndirecto: { type: String },
-	pTipoDeAnticuerpoEnsalina4g: { type: String },
-	pTipoDeAnticuerpoEnSalina37g: { type: String },
-	tituloDelAnticuerpoParaCoombsIndirecto: { type: String },
-	tituloDelAnticuerpoParaSalina4g: { type: String },
-	tituloDelAnticuerpoParaSalina37g: { type: String },
+	celula1: { type: String },
+	celula2: { type: String },
+	celula3: { type: String },
+	pCoombsIndirecto: { type: Object }, //{ resultadoPesquizaje: string, sistemas: [{ nombresistema, [nombreAnticuerpo1, ...]},...], sinespecificidad: bool, concentracion: (alta o baja) }
+	pSalina4g: { type: Object }, //{ resultadoPesquizaje: string, sistemas: [{ nombresistema, [nombreAnticuerpo1, ...]},...], sinespecificidad: bool, concentracion: (alta o baja) }
+	pSalina37g: { type: Object }, //{ resultadoPesquizaje: string, sistemas: [{ nombresistema, [nombreAnticuerpo1, ...]},...], sinespecificidad: bool, concentracion: (alta o baja) }
+	titulo: { type: String },
 	analisis: { type: Schema.Types.ObjectId, ref: "Analisis" },
 	accessToken: { type: String },
 });
 
 //PESQUIZAJEANTICUERPO
 var pesquizajeanticuerpo_schema = new Schema({
-	tipoCelula: { type: String },
-	pCoomsIndirecto: { type: String },
-	pSalina4g: { type: String },
-	pSalina37g: { type: String },
+	celula1: { type: String },
+	celula2: { type: String },
+	celula3: { type: String },
+	pCoomsIndirecto: { type: Object }, //{resultadocelula1, resultadocelula2, resultadocelula3, resultadofinal}
+	pSalina4g: { type: Object }, //{resultadocelula1, resultadocelula2, resultadocelula3, resultadofinal}
+	pSalina37g: { type: Object }, //{resultadocelula1, resultadocelula2, resultadocelula3, resultadofinal}
 	analisis: { type: Schema.Types.ObjectId, ref: "Analisis" },
 	accessToken: { type: String },
 });

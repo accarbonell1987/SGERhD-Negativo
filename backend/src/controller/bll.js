@@ -8,6 +8,8 @@ const PregnancyServices = require("../services/embarazo");
 const TestServices = require("../services/examen");
 const AnalisisServices = require("../services/analisis");
 const GrupoSanguineoServices = require("../services/analisis/gruposanguineo");
+const PesquizajeAnticuerpoServices = require("../services/analisis/pesquizajeanticuerpo");
+const IdentificacionAnticuerpoServices = require("../services/analisis/identificacionanticuerpo");
 //#endregion
 
 //#region Usuarios
@@ -524,6 +526,28 @@ exports.UpdateAnalisis = async (req, res, next) => {
 exports.UpdateGrupoSanguineo = async (req, res, next) => {
 	try {
 		var grupo = await GrupoSanguineoServices.UpdateGrupoSanguineo(req.params.id, req.body);
+		return res.status(200).json({ status: 200, message: "Modificado Correctamente", data: grupo });
+	} catch (err) {
+		return res.status(400).json({ status: 400, message: err.toString() });
+	}
+};
+//#endregion
+
+//#region Pesquizaje Anticuerpo
+exports.UpdatePesquizajeAnticuerpo = async (req, res, next) => {
+	try {
+		var grupo = await PesquizajeAnticuerpoServices.UpdatePesquizajeAnticuerpo(req.params.id, req.body);
+		return res.status(200).json({ status: 200, message: "Modificado Correctamente", data: grupo });
+	} catch (err) {
+		return res.status(400).json({ status: 400, message: err.toString() });
+	}
+};
+//#endregion
+
+//#region Identificacion Anticuerpo
+exports.UpdateIdentificacionAnticuerpo = async (req, res, next) => {
+	try {
+		var grupo = await IdentificacionAnticuerpoServices.UpdateIdentificacionAnticuerpo(req.params.id, req.body);
 		return res.status(200).json({ status: 200, message: "Modificado Correctamente", data: grupo });
 	} catch (err) {
 		return res.status(400).json({ status: 400, message: err.toString() });

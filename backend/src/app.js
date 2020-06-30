@@ -36,7 +36,9 @@ app.use("/api", require("./routes/routerembarazo"));
 app.use("/api", require("./routes/routertransfusion"));
 app.use("/api", require("./routes/routerexamen"));
 app.use("/api", require("./routes/routeranalisis"));
-app.use("/api", require("./routes/routergruposanguineo"));
+app.use("/api", require("./routes/analisis/routergruposanguineo"));
+app.use("/api", require("./routes/analisis/routerpesquizajeanticuerpo"));
+app.use("/api", require("./routes/analisis/routeridentificacionanticuerpo"));
 //Static files
 console.log(__dirname);
 

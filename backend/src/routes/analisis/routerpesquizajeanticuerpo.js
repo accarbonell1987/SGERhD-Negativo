@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 //#endregion
 
 //#region Controladora
-var bll = require("../controller/bll");
+var bll = require("../../controller/bll");
 //#endregion
 
 //#region Constantes
@@ -33,7 +33,7 @@ router.use((req, res, next) => {
 
 //#region Rutas
 //PATCH - Un transfusion por id /transfusion/id - {json}
-router.patch("/gruposanguineo/:id", bll.UpdateGrupoSanguineo);
+router.patch("/pesquizajeanticuerpo/:id", bll.UpdatePesquizajeAnticuerpo);
 //#endregion
 
 //#region Exports
