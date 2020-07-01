@@ -34,7 +34,7 @@ exports.InsertIdentificacionAnticuerpo = async (analisis) => {
 			pSalina4g: null,
 			pSalina37g: null,
 			titulo: null,
-			analisis: analisis,
+			analisis: analisis._id,
 		});
 		//salvando
 		const saved = await identificacionsAnticuerpo.save();

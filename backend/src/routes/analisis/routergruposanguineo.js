@@ -32,6 +32,8 @@ router.use((req, res, next) => {
 //#endregion
 
 //#region Rutas
+//GET - Todos
+router.get("/gruposanguineo", bll.GetTodosGrupoSanguineo);
 //PATCH - Un transfusion por id /transfusion/id - {json}
 router.patch("/gruposanguineo/:id", bll.UpdateGrupoSanguineo);
 //#endregion

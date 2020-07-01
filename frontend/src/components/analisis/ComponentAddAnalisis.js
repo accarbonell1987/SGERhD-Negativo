@@ -68,7 +68,7 @@ class ComponentAddAnalisis extends Component {
 		const data = this.props.global.cookies();
 		if (!data) this.props.Deslogin();
 		else {
-			let { fecha, tipo, examen, grupoSanguineo, identificacionAnticuerpo, pesquizajeAnticuerpo, pendiente, numeroMuestra, semanas, dias, activo } = this.state;
+			let { fecha, tipo, examen, pendiente, numeroMuestra, semanas, dias, activo } = this.state;
 
 			let tiempoDeGestacion = null;
 			//estructura del ReaccionAdversaDetalle
@@ -80,9 +80,6 @@ class ComponentAddAnalisis extends Component {
 				fecha: fecha,
 				tipo: tipo,
 				examen: examen,
-				grupoSanguineo: grupoSanguineo,
-				identificacionAnticuerpo: identificacionAnticuerpo,
-				pesquizajeAnticuerpo: pesquizajeAnticuerpo,
 				pendiente: pendiente,
 				numeroMuestra: numeroMuestra,
 				tiempoDeGestacion: tiempoDeGestacion,
@@ -205,65 +202,69 @@ class ComponentAddAnalisis extends Component {
 	};
 	//limpiar states
 	ClearModalState = () => {
-		let opcion = [];
-		this.props.examenes.forEach((e) => {
-			let fechacadena = moment(new Date(e.fecha)).format("DD-MM-YYYY");
-			let datos = "Examen - Fecha: " + fechacadena + ", Tipo: " + e.tipo;
-			let cur = {
-				key: e._id,
-				text: datos,
-				value: e._id,
-				icon: "clipboard list",
-			};
-			opcion = [...opcion, cur];
-		});
+		const data = this.props.global.cookies();
+		if (!data) this.props.Deslogin();
+		else {
+			let opcion = [];
+			this.props.examenes.forEach((e) => {
+				let fechacadena = moment(new Date(e.fecha)).format("DD-MM-YYYY");
+				let datos = "Examen - Fecha: " + fechacadena + ", Tipo: " + e.tipo;
+				let cur = {
+					key: e._id,
+					text: datos,
+					value: e._id,
+					icon: "clipboard list",
+				};
+				opcion = [...opcion, cur];
+			});
 
-		const examen = this.props.examen != null ? this.props.examen._id : null;
-		this.ChoseExamen(examen);
+			const examen = this.props.examen != null ? this.props.examen._id : null;
+			this.ChoseExamen(examen);
 
-		//obtener la fecha
-		var fecha = new Date();
-		const ano = fecha.getFullYear().toString();
-		//extraer las partes para el formato de la historia clinica (año mes dia numeroconsecutivo) ej: 205280020
-		let numero = ano + "-0001";
+			//obtener la fecha
+			var fecha = new Date();
+			const ano = fecha.getFullYear().toString();
+			//extraer las partes para el formato de la historia clinica (año mes dia numeroconsecutivo) ej: 205280020
+			let numero = ano + "-0001";
 
-		//busco el ultimo insertado
-		this.GetLastInserted().then((element) => {
-			//chequeo que me devuelva un arreglo mayor que cero
-			if (element.length > 0) {
-				//convierto el numero en un string
-				var numeroMuestra = element[0].numeroMuestra.toString();
+			//busco el ultimo insertado
+			this.GetLastInserted().then((element) => {
+				//chequeo que me devuelva un arreglo mayor que cero
+				if (element.length > 0) {
+					//convierto el numero en un string
+					var numeroMuestra = element[0].numeroMuestra.toString();
 
-				//pico el string por el guión -
-				var elementosnumero = numeroMuestra.split("-");
-				//si la primera parte del numero es igual a la suma de ano entonces
-				if (elementosnumero[0] === ano) {
-					//adiciono uno a la segunda parte del numero
-					var addone = (parseInt(elementosnumero[1]) + 1).toString();
-					//adicionar los ceros que necesito a la izquierda
-					while (addone.length < 4) addone = "0" + addone;
-					//lo almaceno en numero
-					numero = ano + "-" + addone;
+					//pico el string por el guión -
+					var elementosnumero = numeroMuestra.split("-");
+					//si la primera parte del numero es igual a la suma de ano entonces
+					if (elementosnumero[0] === ano) {
+						//adiciono uno a la segunda parte del numero
+						var addone = (parseInt(elementosnumero[1]) + 1).toString();
+						//adicionar los ceros que necesito a la izquierda
+						while (addone.length < 4) addone = "0" + addone;
+						//lo almaceno en numero
+						numero = ano + "-" + addone;
+					}
+					//lo pongo en el state
 				}
+				this.setState({ numeroMuestra: numero });
 				//lo pongo en el state
-			}
-			this.setState({ numeroMuestra: numero });
-			//lo pongo en el state
-		});
-		//actualizar los states
-		this.setState({
-			openModal: false,
-			fecha: null,
-			tipo: "Grupo Sanguineo",
-			examen: examen,
-			grupoSanguineo: null,
-			identificacionAnticuerpo: null,
-			pesquizajeAnticuerpo: null,
-			pendiente: true,
-			activo: true,
-			opcionExamenes: opcion,
-			errorform: false,
-		});
+			});
+			//actualizar los states
+			this.setState({
+				openModal: false,
+				fecha: null,
+				tipo: "Grupo Sanguineo",
+				examen: examen,
+				grupoSanguineo: null,
+				identificacionAnticuerpo: null,
+				pesquizajeAnticuerpo: null,
+				pendiente: true,
+				activo: true,
+				opcionExamenes: opcion,
+				errorform: false,
+			});
+		}
 	};
 	//capturar fecha
 	SetDate = (fecha) => {

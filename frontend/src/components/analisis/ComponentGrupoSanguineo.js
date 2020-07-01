@@ -116,21 +116,25 @@ class ComponentGrupoSanguineo extends Component {
 	};
 	//limpiar states
 	ClearModalState = () => {
-		let opcionGrupoSanguineo = [];
-		this.gruposanguineo.forEach((cur) => {
-			opcionGrupoSanguineo = [...opcionGrupoSanguineo, cur];
-		});
+		const data = this.props.global.cookies();
+		if (!data) this.props.Deslogin();
+		else {
+			let opcionGrupoSanguineo = [];
+			this.gruposanguineo.forEach((cur) => {
+				opcionGrupoSanguineo = [...opcionGrupoSanguineo, cur];
+			});
 
-		const detail = this.props.analisis.grupoSanguineo;
-		//actualizar los states
-		this.setState({
-			openModal: false,
-			gSanguineo: detail.gSanguineo,
-			factor: detail.factor,
-			dDebil: detail.dDebil,
-			opcionGrupoSanguineo: opcionGrupoSanguineo,
-			errorform: false,
-		});
+			const detail = this.props.analisis.grupoSanguineo;
+			//actualizar los states
+			this.setState({
+				openModal: false,
+				gSanguineo: detail.gSanguineo,
+				factor: detail.factor,
+				dDebil: detail.dDebil,
+				opcionGrupoSanguineo: opcionGrupoSanguineo,
+				errorform: false,
+			});
+		}
 	};
 	SetResults = async () => {
 		//chequear que las cookies tengan los datos necesarios
@@ -170,7 +174,7 @@ class ComponentGrupoSanguineo extends Component {
 				let serverdataanalisis = await resanalisis.json();
 
 				if (serverdatagrupo.status === 200 && serverdataanalisis.status === 200) {
-					this.SwalAlert("center", "success", serverdatagrupo.message + " - " + serverdataanalisis.message, 3000);
+					this.SwalAlert("center", "success", serverdatagrupo.message, 3000);
 					return true;
 				} else {
 					this.SwalAlert("center", "error", serverdatagrupo.message + " - " + serverdataanalisis.message, 5000);
@@ -195,7 +199,7 @@ class ComponentGrupoSanguineo extends Component {
 					</Button>
 				}
 			>
-				<Header icon="syringe" content="Resultados de Análisis" />
+				<Header icon="syringe" content="Resultados de Prueba de Coombs" />
 				<Modal.Content>
 					{this.state.errorform ? <Message error inverted header="Error" content="Error en el formulario" /> : null}
 					<Form ref="form" onSubmit={this.ChangeModalState}>

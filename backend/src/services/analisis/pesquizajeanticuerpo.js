@@ -33,7 +33,7 @@ exports.InsertPesquizajeAnticuerpo = async (analisis) => {
 			pCoomsIndirecto: null, //{resultadocelula1, resultadocelula2, resultadocelula3, resultadofinal}
 			pSalina4g: null, //{resultadocelula1, resultadocelula2, resultadocelula3, resultadofinal}
 			pSalina37g: null, //{resultadocelula1, resultadocelula2, resultadocelula3, resultadofinal}
-			analisis: analisis,
+			analisis: analisis._id,
 		});
 		//salvando
 		const saved = await pesquizajesAnticuerpo.save();

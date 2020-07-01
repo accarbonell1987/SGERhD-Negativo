@@ -440,6 +440,30 @@ class ComponentUpdateAnalisis extends Component {
 							""
 						)}
 						{this.PregnancyAge()}
+						<Form.Group>
+							<Segment className="modal-segment-expanded">
+								<Header as="h5">Activo:</Header>
+								<Form.Checkbox
+									toggle
+									name="activo"
+									labelPosition="left"
+									label={this.state.activo === true ? "Si" : "No"}
+									value={this.state.activo}
+									checked={this.state.activo}
+									onChange={(evt) => {
+										evt.preventDefault();
+										//solo permito activar y en caso de que este desactivado
+										if (!this.state.activo)
+											this.setState({
+												activo: !this.state.activo,
+											});
+										else {
+											this.SwalAlert("center", "warning", "Solo se permite desactivar desde el bóton de Desactivar/Eliminar", 5000);
+										}
+									}}
+								/>
+							</Segment>
+						</Form.Group>
 					</Form>
 				</Modal.Content>
 				<Modal.Actions>

@@ -17,7 +17,8 @@ exports.GetAnalisis = async (query, page, limit) => {
 		var analisis = await Analisis.find(query)
 			.populate({ path: "examen", populate: { path: "paciente" } })
 			.populate({ path: "examen", populate: { path: "embarazo" } })
-			.populate("grupoSanguineo");
+			.populate("grupoSanguineo")
+			.populate("pesquizajeAnticuerpo");
 		return analisis;
 	} catch (err) {
 		throw Error("GetAnalisis -> Obteniendo Analisis.");
@@ -28,7 +29,8 @@ exports.GetOneAnalisis = async (id) => {
 		var analisis = await Analisis.findById(id)
 			.populate({ path: "examen", populate: { path: "paciente" } })
 			.populate({ path: "examen", populate: { path: "embarazo" } })
-			.populate("grupoSanguineo");
+			.populate("grupoSanguineo")
+			.populate("pesquizajeAnticuerpo");
 		return analisis;
 	} catch (err) {
 		throw Error("GetOneAnalisis -> Obteniendo Analisis con id: " + id);

@@ -7,7 +7,7 @@ var mongoose = require("mongoose");
 //#endregion
 
 //#region GrupoSanguineo
-exports.GetGrupoSanguineos = async (query, page, limit) => {
+exports.GetTodosGrupoSanguineos = async (query, page, limit) => {
 	try {
 		var GrupoSanguineos = await GrupoSanguineo.find(query).populate({ path: "analisis", populate: { path: "examen" } });
 		return GrupoSanguineos;
@@ -25,12 +25,13 @@ exports.GetGrupoSanguineo = async (id) => {
 };
 exports.InsertGrupoSanguineo = async (analisis) => {
 	try {
+		console.log("InsertGrupoSanguineo ->", analisis);
 		//creando grupo sanguineo
 		const gruposanguineo = new GrupoSanguineo({
 			dDebil: null,
 			gSanguineo: null,
 			factor: null,
-			analisis: analisis,
+			analisis: analisis._id,
 		});
 		//salvando el grupo sanguineo
 		const saved = await gruposanguineo.save();

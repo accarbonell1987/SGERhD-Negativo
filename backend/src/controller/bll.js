@@ -523,6 +523,17 @@ exports.UpdateAnalisis = async (req, res, next) => {
 //#endregion
 
 //#region Grupo Sanguineo
+exports.GetTodosGrupoSanguineo = async (req, res, next) => {
+	var page = req.params.page ? req.params.page : 1;
+	var limit = req.params.limit ? req.params.limit : -1;
+
+	try {
+		var analisis = await GrupoSanguineoServices.GetTodosGrupoSanguineos({}, page, limit);
+		return res.status(200).json({ status: 200, message: "Obtenidos", data: analisis });
+	} catch (err) {
+		return res.status(400).json({ status: 400, message: err.toString() });
+	}
+};
 exports.UpdateGrupoSanguineo = async (req, res, next) => {
 	try {
 		var grupo = await GrupoSanguineoServices.UpdateGrupoSanguineo(req.params.id, req.body);
