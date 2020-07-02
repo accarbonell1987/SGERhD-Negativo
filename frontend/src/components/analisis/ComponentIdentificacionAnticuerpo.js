@@ -1,6 +1,6 @@
 //#region Importaciones
 import React, { Component } from "react";
-import { Header, Form, Segment, Modal, Message, Icon, Button, Table, Label, Dropdown } from "semantic-ui-react";
+import { Header, Form, Segment, Modal, Message, Icon, Button, Table, Label } from "semantic-ui-react";
 import Swal from "sweetalert2";
 import moment from "moment";
 //#endregion
@@ -13,146 +13,24 @@ import "../global/css/Gestionar.css";
 //#endregion
 
 //#region Definicion Clase
-class ComponentSistemasAnticuerpo extends Component {
-	state = {
-		open: false,
-		sistema: null,
-		sinespecificidad: false,
-		concentracion: "Baja", //Alta o Baja
-	};
-
-	sistemasCoombs = [
-		{ nombre: "Rh", anticuerpos: ["Anti-D", "Anti-C", "Anti-c", "Anti-E", "Anti-e"] },
-		{ nombre: "Kell", anticuerpos: ["Anti-K", "Anti-k"] },
-		{ nombre: "Duffy", anticuerpos: ["Anti-fyᵃ", "Anti-fyᵇ"] },
-		{ nombre: "Kidd", anticuerpos: ["Anti-JKᵃ", "Anti-JKᵇ"] },
-		{ nombre: "MNS", anticuerpos: ["Anti-S", "Anti-s"] },
-	];
-	sistemasSalinas = [
-		{ nombre: "P", anticuerpos: ["Anti-P1"] },
-		{ nombre: "MNS", anticuerpos: ["Anti-M", "Anti-N"] },
-		{ nombre: "Lewis", anticuerpos: ["Anti-Leᵃ", "Anti-Leᵇ"] },
-		{ nombre: "Lutheran", anticuerpos: ["Anti-Luᵃ", "Anti-Luᵇ"] },
-	];
-
-	componentDidMount = () => {};
-
-	ChangeModalState = async (evt) => {
-		if (evt.target.className.includes("modal-button-cancel") || evt.target.className.includes("modal-icon-cancel")) {
-			this.setState({ open: false });
-		} else if (evt.target.className.includes("modal-button-action") || evt.target.className.includes("modal-icon")) {
-			this.setState({ open: true });
-		} else {
-			//enviar...
-		}
-	};
-
-	render() {
-		return (
-			<Modal
-				trigger={
-					<Button className="modal-button-action" onClick={this.ChangeModalState}>
-						<Icon name="checkmark" className="modal-icon" color="green" onClick={this.ChangeModalState} />
-					</Button>
-				}
-			>
-				<Modal.Header>Escoger Sistemas</Modal.Header>
-				<Modal.Content>
-					<Segment>
-						<Header as="h5">Sistemas:</Header>
-						<Dropdown
-							className="modal-input-30p"
-							name="sistema"
-							text={this.state.sistema === null ? "Seleccionar Sistema" : this.state.sistema}
-							item
-							selection
-							options={this.state.opcionSistemas}
-							onChange={(e, { value }) => {
-								this.setState({ sistema: value });
-							}}
-						/>
-					</Segment>
-				</Modal.Content>
-				<Modal.Actions>
-					<Button color="red" onClick={this.ChangeModalState} className="modal-button-cancel" type>
-						<Icon name="remove" className="modal-icon-cancel" />
-						Cancelar
-					</Button>
-					<Button color="green" onClick={this.ChangeModalState} className="modal-button-accept" type="submit" disabled={true}>
-						<Icon name="checkmark" className="modal-icon-accept" />
-						Aceptar
-					</Button>
-				</Modal.Actions>
-			</Modal>
-		);
-	}
-}
-
 class ComponentIdentificacionAnticuerpo extends Component {
 	//#region Properties
 	state = {
-		// celula1: { type: String },
-		// celula2: { type: String },
-		// celula3: { type: String },
-		// pCoombsIndirecto: { type: Object }, //{ resultadoPesquizaje: string, sistemas: [{ nombresistema, [nombreAnticuerpo1, ...]},...], sinespecificidad: bool, concentracion: (alta o baja) }
-		// pSalina4g: { type: Object }, //{ resultadoPesquizaje: string, sistemas: [{ nombresistema, [nombreAnticuerpo1, ...]},...], sinespecificidad: bool, concentracion: (alta o baja) }
-		// pSalina37g: { type: Object }, //{ resultadoPesquizaje: string, sistemas: [{ nombresistema, [nombreAnticuerpo1, ...]},...], sinespecificidad: bool, concentracion: (alta o baja) }
-		// titulo: { type: String },
-		// analisis: { type: Schema.Types.ObjectId, ref: "Analisis" },
-
-		factor: null,
 		key: null,
 		pesquizajeAnticuerpo: null,
 		opcionPesquizajeAnticuerpo: null,
 		errorform: false,
 
-		celula1: null,
-		celula2: null,
-		celula3: null,
-		cresultadocelula1: null,
-		cresultadocelula2: null,
-		cresultadocelula3: null,
-		cresultadofinal: false,
-		ps4resultadocelula1: null,
-		ps4resultadocelula2: null,
-		ps4resultadocelula3: null,
-		ps4resultadofinal: false,
-		ps37resultadocelula1: null,
-		ps37resultadocelula2: null,
-		ps37resultadocelula3: null,
-		ps37resultadofinal: false,
+		coombsanticuerpo: null,
+		coombssinespecificidad: null,
+		coombsmezclaanticuerpo: null,
+		salina4anticuerpo: null,
+		salina4sinespecificidad: null,
+		salina4mezclaanticuerpo: null,
+		salina37anticuerpo: null,
+		salina37sinespecificidad: null,
+		salina37mezclaanticuerpo: null,
 	};
-
-	opcionTipoCelulasPositivas = [
-		{ key: "7", text: "7", value: "7", icon: "" },
-		{ key: "12", text: "12", value: "12", icon: "" },
-		{ key: "45", text: "45", value: "45", icon: "" },
-		{ key: "34", text: "34", value: "34", icon: "" },
-		{ key: "57", text: "57", value: "57", icon: "" },
-		{ key: "5", text: "5", value: "5", icon: "" },
-		{ key: "15", text: "15", value: "15", icon: "" },
-		{ key: "37", text: "37", value: "37", icon: "" },
-		{ key: "Mercedes", text: "Mercedes", value: "Mercedes", icon: "" },
-		{ key: "Iliana", text: "Iliana", value: "Iliana", icon: "" },
-		{ key: "Niurka", text: "Niurka", value: "Niurka", icon: "" },
-		{ key: "Viviana", text: "Viviana", value: "Viviana", icon: "" },
-		{ key: "Yailin", text: "Yailin", value: "Yailin", icon: "" },
-		{ key: "Roeldis", text: "Roeldis", value: "Roeldis", icon: "" },
-		{ key: "Nidia", text: "Nidia", value: "Nidia", icon: "" },
-		{ key: "Nestor", text: "Nestor", value: "Nestor", icon: "" },
-		{ key: "Gabriel", text: "Gabriel", value: "Gabriel", icon: "" },
-		{ key: "JuanCarlos", text: "JuanCarlos", value: "JuanCarlos", icon: "" },
-		{ key: "Oscar", text: "Oscar", value: "Oscar", icon: "" },
-		{ key: "Vladimir", text: "Vladimir", value: "Vladimir", icon: "" },
-		{ key: "Gloria", text: "Gloria", value: "Gloria", icon: "" },
-	];
-	opcionTipoCelulasNegativas = [
-		{ key: "101", text: "101", value: "101", icon: "" },
-		{ key: "102", text: "102", value: "102", icon: "" },
-		{ key: "103", text: "103", value: "103", icon: "" },
-		{ key: "109", text: "109", value: "109", icon: "" },
-		{ key: "Onelbis", text: "Onelbis", value: "Onelbis", icon: "" },
-	];
 	//#endregion
 
 	//#region Metodos y Eventos
@@ -243,8 +121,15 @@ class ComponentIdentificacionAnticuerpo extends Component {
 		const data = this.props.global.cookies();
 		if (!data) this.props.Deslogin();
 		else {
+			const detail = this.props.analisis.identificacionAnticuerpo;
+
+			const coombs = detail.pCoombsIndirecto ? JSON.parse(detail.pCoombsIndirecto) : null;
+			const salina4g = detail.pSalina4g ? JSON.parse(detail.pSalina4g) : null;
+			const salina37g = detail.pSalina37g ? JSON.parse(detail.pSalina37g) : null;
+
 			let opcion = [];
-			this.props.pesquizajeAnticuerpo.forEach((e) => {
+			let pesquizajeAnticuerpo = null;
+			this.props.pesquizajesAnticuerpo.forEach((e) => {
 				let fechacadena = moment(new Date(e.fecha)).format("DD-MM-YYYY");
 				let datos = "Prueba - Fecha: " + fechacadena + ", Número de Muestra: " + e.numeroMuestra;
 				let cur = {
@@ -253,40 +138,27 @@ class ComponentIdentificacionAnticuerpo extends Component {
 					value: e._id,
 					icon: "syringe",
 				};
+				// pesquizajeAnticuerpo = e.numeroMuestra === detail.referenciaPesquizaje;
 				opcion = [...opcion, cur];
 			});
-
-			const detail = this.props.analisis.identificacionAnticuerpo;
-
-			//{resultadocelula1, resultadocelula2, resultadocelula3, resultadofinal}
-			const coombs = JSON.parse(detail.pCoomsIndirecto);
-			const salina4g = JSON.parse(detail.pSalina4g);
-			const salina37g = JSON.parse(detail.pSalina37g);
+			if (detail.referenciaPesquizaje != null) pesquizajeAnticuerpo = this.props.pesquizajesAnticuerpo.find((p) => p.numeroMuestra === detail.referenciaPesquizaje);
 
 			//actualizar los states
 			this.setState({
 				openModal: false,
-				factor: null,
 				key: null,
-				pesquizajeAnticuerpo: null,
+				pesquizajeAnticuerpo: pesquizajeAnticuerpo,
 				opcionPesquizajeAnticuerpo: opcion,
 				errorform: false,
-
-				celula1: detail.celula1,
-				celula2: detail.celula2,
-				celula3: detail.celula3,
-				cresultadocelula1: coombs != null ? coombs.resultadocelula1 : null,
-				cresultadocelula2: coombs != null ? coombs.resultadocelula2 : null,
-				cresultadocelula3: coombs != null ? coombs.resultadocelula3 : null,
-				cresultadofinal: coombs != null ? coombs.resultadofinal : false,
-				ps4resultadocelula1: salina4g != null ? salina4g.resultadocelula1 : null,
-				ps4resultadocelula2: salina4g != null ? salina4g.resultadocelula2 : null,
-				ps4resultadocelula3: salina4g != null ? salina4g.resultadocelula3 : null,
-				ps4resultadofinal: salina4g != null ? salina4g.resultadofinal : false,
-				ps37resultadocelula1: salina37g != null ? salina37g.resultadocelula1 : null,
-				ps37resultadocelula2: salina37g != null ? salina37g.resultadocelula2 : null,
-				ps37resultadocelula3: salina37g != null ? salina37g.resultadocelula3 : null,
-				ps37resultadofinal: salina37g != null ? salina37g.resultadofinal : false,
+				coombsanticuerpo: coombs != null ? coombs.anticuerpos : "",
+				coombssinespecificidad: coombs != null ? coombs.sinespecificidad : false,
+				coombsmezclaanticuerpo: coombs != null ? coombs.mezclaanticuerpo : false,
+				salina4anticuerpo: salina4g != null ? salina4g.anticuerpos : "",
+				salina4sinespecificidad: salina4g != null ? salina4g.sinespecificidad : false,
+				salina4mezclaanticuerpo: salina4g != null ? salina4g.mezclaanticuerpo : false,
+				salina37anticuerpo: salina37g != null ? salina37g.anticuerpos : "",
+				salina37sinespecificidad: salina37g != null ? salina37g.sinespecificidad : false,
+				salina37mezclaanticuerpo: salina37g != null ? salina37g.mezclaanticuerpo : false,
 			});
 		}
 	};
@@ -298,32 +170,16 @@ class ComponentIdentificacionAnticuerpo extends Component {
 			let analisis = this.props.analisis;
 			analisis.pendiente = false;
 
-			const pCoomsIndirecto = JSON.stringify({
-				resultadocelula1: this.state.cresultadocelula1,
-				resultadocelula2: this.state.cresultadocelula2,
-				resultadocelula3: this.state.cresultadocelula3,
-				resultadofinal: this.state.cresultadofinal,
-			});
-			const pSalina4g = JSON.stringify({
-				resultadocelula1: this.state.ps4resultadocelula1,
-				resultadocelula2: this.state.ps4resultadocelula2,
-				resultadocelula3: this.state.ps4resultadocelula3,
-				resultadofinal: this.state.ps4resultadofinal,
-			});
-			const pSalina37g = JSON.stringify({
-				resultadocelula1: this.state.ps37resultadocelula1,
-				resultadocelula2: this.state.ps37resultadocelula2,
-				resultadocelula3: this.state.ps37resultadocelula3,
-				resultadofinal: this.state.ps37resultadofinal,
-			});
+			const pCoombsIndirecto = JSON.stringify({ anticuerpos: this.state.coombsanticuerpo, sinespecificidad: this.state.coombssinespecificidad, mezclaanticuerpo: this.state.coombsmezclaanticuerpo });
+			const pSalina4g = JSON.stringify({ anticuerpos: this.state.salina4anticuerpo, sinespecificidad: this.state.salina4sinespecificidad, mezclaanticuerpo: this.state.salina4mezclaanticuerpo });
+			const pSalina37g = JSON.stringify({ anticuerpos: this.state.salina37anticuerpo, sinespecificidad: this.state.salina37sinespecificidad, mezclaanticuerpo: this.state.salina37mezclaanticuerpo });
 
 			let detail = this.props.analisis.identificacionAnticuerpo;
-			detail.celula1 = this.state.celula1;
-			detail.celula2 = this.state.celula2;
-			detail.celula3 = this.state.celula3;
-			detail.pCoomsIndirecto = pCoomsIndirecto;
+			detail.pCoombsIndirecto = pCoombsIndirecto;
 			detail.pSalina4g = pSalina4g;
 			detail.pSalina37g = pSalina37g;
+			detail.referenciaPesquizaje = this.state.pesquizajeAnticuerpo.numeroMuestra;
+			console.log(detail);
 
 			//la promise debe de devolver un valor RETURN
 			try {
@@ -362,26 +218,21 @@ class ComponentIdentificacionAnticuerpo extends Component {
 			}
 		}
 	};
-	Validar = () => {
-		return (
-			this.state.celula1 != null &&
-			this.state.celula2 != null &&
-			this.state.celula3 != null &&
-			this.state.cresultadocelula1 != null &&
-			this.state.cresultadocelula2 != null &&
-			this.state.cresultadocelula3 != null &&
-			this.state.ps4resultadocelula1 != null &&
-			this.state.ps4resultadocelula2 != null &&
-			this.state.ps4resultadocelula3 != null &&
-			this.state.ps37resultadocelula1 != null &&
-			this.state.ps37resultadocelula2 != null &&
-			this.state.ps37resultadocelula3 != null
-		);
-	};
 	//#endregion
 
 	//#region Render
 	render() {
+		let { resultadoCoombs, resultadoSalina4, resultadoSalina37 } = false;
+		if (this.state.pesquizajeAnticuerpo != null) {
+			const pesquizaje = this.state.pesquizajeAnticuerpo;
+			const coombs = pesquizaje.pCoombsIndirecto ? JSON.parse(pesquizaje.pCoombsIndirecto) : null;
+			const salina4g = pesquizaje.pSalina4g ? JSON.parse(pesquizaje.pSalina4g) : null;
+			const salina37g = pesquizaje.pSalina37g ? JSON.parse(pesquizaje.pSalina37g) : null;
+
+			resultadoCoombs = coombs != null ? coombs.resultadofinal : false;
+			resultadoSalina4 = salina4g != null ? salina4g.resultadofinal : false;
+			resultadoSalina37 = salina37g != null ? salina37g.resultadofinal : false;
+		}
 		return (
 			<Modal
 				// className="modal-windows-pregnancies"
@@ -404,276 +255,193 @@ class ComponentIdentificacionAnticuerpo extends Component {
 							options={this.state.opcionPesquizajeAnticuerpo}
 							value={this.state.key}
 							onChange={(e, { value }) => {
-								const pesquizaje = this.props.pesquizajeAnticuerpo.find((e) => e._id === value);
-								this.setState({ key: value, pesquizajeAnticuerpo: pesquizaje });
+								const analisis = this.props.pesquizajesAnticuerpo.find((e) => e._id === value);
+								this.setState({ key: value, pesquizajeAnticuerpo: analisis.pesquizajeAnticuerpo });
 							}}
 							fluid
 							selection
 						/>
 						{this.state.key != null ? (
-							<Segment.Group>
-								<Segment.Group horizontal>
-									<Segment>
-										<Header as="h5">Celula No.1</Header>
-										<Dropdown
-											className="modal-input-30p"
-											name="celula1"
-											text={this.state.celula1 === null ? "Seleccionar Célula" : this.state.celula1}
-											item
-											selection
-											options={this.state.grupoCompleto.grupoSanguineo.factor === "Positivo (+)" ? this.opcionTipoCelulasPositivas : this.opcionTipoCelulasNegativas}
-											onChange={(e, { value }) => {
-												this.setState({ celula1: value });
-											}}
-										/>
-									</Segment>
-									<Segment>
-										<Header as="h5">Celula No.2</Header>
-										<Dropdown
-											className="modal-input-30p"
-											name="celula2"
-											text={this.state.celula2 === null ? "Seleccionar Célula" : this.state.celula2}
-											item
-											selection
-											options={this.state.grupoCompleto.grupoSanguineo.factor === "Positivo (+)" ? this.opcionTipoCelulasPositivas : this.opcionTipoCelulasNegativas}
-											onChange={(e, { value }) => {
-												this.setState({ celula2: value });
-											}}
-										/>
-									</Segment>
-									<Segment>
-										<Header as="h5">Celula No.3</Header>
-										<Dropdown
-											className="modal-input-30p"
-											name="celula3"
-											text={this.state.celula3 === null ? "Seleccionar Célula" : this.state.celula3}
-											item
-											selection
-											options={this.state.grupoCompleto.grupoSanguineo.factor === "Positivo (+)" ? this.opcionTipoCelulasPositivas : this.opcionTipoCelulasNegativas}
-											onChange={(e, { value }) => {
-												this.setState({ celula3: value });
-											}}
-										/>
-									</Segment>
-								</Segment.Group>
-								<Segment>
-									<Label size="large">Pruebas: </Label>
-									<Table compact celled definition attached="top">
-										<Table.Header className="div-table-header">
-											<Table.Row>
-												<Table.HeaderCell />
-												<Table.HeaderCell>Tipo de Célula</Table.HeaderCell>
-												<Table.HeaderCell>
-													<Label size="large" color="teal">
-														Coombs
+							<Segment>
+								<Label size="large">Pruebas: </Label>
+								<Table compact celled definition attached="top">
+									<Table.Header className="div-table-header">
+										<Table.Row>
+											<Table.HeaderCell />
+											<Table.HeaderCell>
+												<Label size="large" color="teal">
+													Coombs
+												</Label>
+												{resultadoCoombs ? (
+													<Label size="large" color="red">
+														{"(+)"}
 													</Label>
-												</Table.HeaderCell>
-												<Table.HeaderCell>
-													<Label size="large" color="blue">
-														Salina 4 Grados
+												) : (
+													<Label color="black">{"(-)"}</Label>
+												)}
+											</Table.HeaderCell>
+											<Table.HeaderCell>
+												<Label size="large" color="blue">
+													Salina 4 Grados
+												</Label>
+												{resultadoSalina4 ? (
+													<Label size="large" color="red">
+														{" (+)"}
 													</Label>
-												</Table.HeaderCell>
-												<Table.HeaderCell>
-													<Label size="large" color="violet">
-														Salina 37 Grados
+												) : (
+													<Label color="black">{" (-)"}</Label>
+												)}
+											</Table.HeaderCell>
+											<Table.HeaderCell>
+												<Label size="large" color="violet">
+													Salina 37 Grados
+												</Label>
+												{resultadoSalina37 ? (
+													<Label size="large" color="red">
+														{" (+)"}
 													</Label>
-												</Table.HeaderCell>
-											</Table.Row>
-										</Table.Header>
-										<Table.Body>
-											<Table.Row>
-												<Table.Cell collapsing>
-													<Icon name="syringe" />
-												</Table.Cell>
-												<Table.Cell>{this.state.celula1 != null ? this.state.celula1 + ":" : "Indefinido"}</Table.Cell>
-												<Table.Cell>
-													<Dropdown
-														name="cresultadocelula1"
-														text={this.state.cresultadocelula1 === null ? "Seleccionar Resultado" : this.state.cresultadocelula1}
-														item
-														selection
-														options={this.opcionResultados}
-														onChange={(e, { value }) => {
-															this.setState({ cresultadocelula1: value });
-														}}
-														disabled={this.state.celula1 === null}
-													/>
-												</Table.Cell>
-												<Table.Cell>
-													<Dropdown
-														name="ps4resultadocelula1"
-														text={this.state.ps4resultadocelula1 === null ? "Seleccionar Resultado" : this.state.ps4resultadocelula1}
-														item
-														selection
-														options={this.opcionResultados}
-														onChange={(e, { value }) => {
-															this.setState({ ps4resultadocelula1: value });
-														}}
-														disabled={this.state.celula1 === null}
-													/>
-												</Table.Cell>
-												<Table.Cell>
-													<Dropdown
-														name="ps37resultadocelula1"
-														text={this.state.ps37resultadocelula1 === null ? "Seleccionar Resultado" : this.state.ps37resultadocelula1}
-														item
-														selection
-														options={this.opcionResultados}
-														onChange={(e, { value }) => {
-															this.setState({ ps37resultadocelula1: value });
-														}}
-														disabled={this.state.celula1 === null}
-													/>
-												</Table.Cell>
-											</Table.Row>
-											<Table.Row>
-												<Table.Cell collapsing>
-													<Icon name="syringe" />
-												</Table.Cell>
-												<Table.Cell>{this.state.celula2 != null ? this.state.celula2 + ":" : "Indefinido"}</Table.Cell>
-												<Table.Cell>
-													<Dropdown
-														name="cresultadocelula2"
-														text={this.state.cresultadocelula2 === null ? "Seleccionar Resultado" : this.state.cresultadocelula2}
-														item
-														selection
-														options={this.opcionResultados}
-														onChange={(e, { value }) => {
-															this.setState({ cresultadocelula2: value });
-														}}
-														disabled={this.state.celula2 === null}
-													/>
-												</Table.Cell>
-												<Table.Cell>
-													<Dropdown
-														name="ps4resultadocelula2"
-														text={this.state.ps4resultadocelula2 === null ? "Seleccionar Resultado" : this.state.ps4resultadocelula2}
-														item
-														selection
-														options={this.opcionResultados}
-														onChange={(e, { value }) => {
-															this.setState({ ps4resultadocelula2: value });
-														}}
-														disabled={this.state.celula2 === null}
-													/>
-												</Table.Cell>
-												<Table.Cell>
-													<Dropdown
-														name="ps37resultadocelula2"
-														text={this.state.ps37resultadocelula2 === null ? "Seleccionar Resultado" : this.state.ps37resultadocelula2}
-														item
-														selection
-														options={this.opcionResultados}
-														onChange={(e, { value }) => {
-															this.setState({ ps37resultadocelula2: value });
-														}}
-														disabled={this.state.celula2 === null}
-													/>
-												</Table.Cell>
-											</Table.Row>
-											<Table.Row>
-												<Table.Cell collapsing>
-													<Icon name="syringe" />
-												</Table.Cell>
-												<Table.Cell>{this.state.celula3 != null ? this.state.celula3 + ":" : "Indefinido"}</Table.Cell>
-												<Table.Cell>
-													<Dropdown
-														name="cresultadocelula3"
-														text={this.state.cresultadocelula3 === null ? "Seleccionar Resultado" : this.state.cresultadocelula3}
-														item
-														selection
-														options={this.opcionResultados}
-														onChange={(e, { value }) => {
-															this.setState({ cresultadocelula3: value });
-														}}
-														disabled={this.state.celula3 === null}
-													/>
-												</Table.Cell>
-												<Table.Cell>
-													<Dropdown
-														name="ps4resultadocelula3"
-														text={this.state.ps4resultadocelula3 === null ? "Seleccionar Resultado" : this.state.ps4resultadocelula3}
-														item
-														selection
-														options={this.opcionResultados}
-														onChange={(e, { value }) => {
-															this.setState({ ps4resultadocelula3: value });
-														}}
-														disabled={this.state.celula3 === null}
-													/>
-												</Table.Cell>
-												<Table.Cell>
-													<Dropdown
-														name="ps37resultadocelula3"
-														text={this.state.ps37resultadocelula3 === null ? "Seleccionar Resultado" : this.state.ps37resultadocelula3}
-														item
-														selection
-														options={this.opcionResultados}
-														onChange={(e, { value }) => {
-															this.setState({ ps37resultadocelula3: value });
-														}}
-														disabled={this.state.celula3 === null}
-													/>
-												</Table.Cell>
-											</Table.Row>
-											<Table.Row>
-												<Table.Cell collapsing>
-													<Icon name="syringe" />
-												</Table.Cell>
-												<Table.Cell>Resultado:</Table.Cell>
-												<Table.Cell>
-													<Form.Checkbox
-														toggle
-														name="cresultadofinal"
-														labelPosition="left"
-														label={this.state.cresultadofinal === true ? "Positivo (+)" : "Negativo (-)"}
-														value={this.state.cresultadofinal}
-														checked={this.state.cresultadofinal}
-														onChange={(evt) => {
-															evt.preventDefault();
-															this.setState({
-																cresultadofinal: !this.state.cresultadofinal,
-															});
-														}}
-													/>
-												</Table.Cell>
-												<Table.Cell>
-													<Form.Checkbox
-														toggle
-														name="ps4resultadofinal"
-														labelPosition="left"
-														label={this.state.ps4resultadofinal === true ? "Positivo (+)" : "Negativo (-)"}
-														value={this.state.ps4resultadofinal}
-														checked={this.state.ps4resultadofinal}
-														onChange={(evt) => {
-															evt.preventDefault();
-															this.setState({
-																ps4resultadofinal: !this.state.ps4resultadofinal,
-															});
-														}}
-													/>
-												</Table.Cell>
-												<Table.Cell>
-													<Form.Checkbox
-														toggle
-														name="ps37resultadofinal"
-														labelPosition="left"
-														label={this.state.ps37resultadofinal === true ? "Positivo (+)" : "Negativo (-)"}
-														value={this.state.ps37resultadofinal}
-														checked={this.state.ps37resultadofinal}
-														onChange={(evt) => {
-															evt.preventDefault();
-															this.setState({
-																ps37resultadofinal: !this.state.ps37resultadofinal,
-															});
-														}}
-													/>
-												</Table.Cell>
-											</Table.Row>
-										</Table.Body>
-									</Table>
-								</Segment>
-							</Segment.Group>
+												) : (
+													<Label color="black">{" (-)"}</Label>
+												)}
+											</Table.HeaderCell>
+										</Table.Row>
+									</Table.Header>
+									<Table.Body>
+										<Table.Row>
+											<Table.Cell collapsing>
+												<Icon name="syringe" />
+											</Table.Cell>
+											<Table.Cell>
+												<Form.Input name="coombsanticuerpo" icon="eye dropper" iconPosition="left" label="Anticuerpos:" value={this.state.coombsanticuerpo} placeholder="Escribir..." onChange={this.ChangeModalInput} onKeyDown={this.OnPressEnter} disabled={!resultadoCoombs} />
+											</Table.Cell>
+											<Table.Cell>
+												<Form.Input name="salina4anticuerpo" icon="eye dropper" iconPosition="left" label="Anticuerpos:" value={this.state.salina4anticuerpo} placeholder="Escribir..." onChange={this.ChangeModalInput} onKeyDown={this.OnPressEnter} disabled={!resultadoSalina4} />
+											</Table.Cell>
+											<Table.Cell>
+												<Form.Input name="salina37anticuerpo" icon="eye dropper" iconPosition="left" label="Anticuerpos:" value={this.state.salina37anticuerpo} placeholder="Escribir..." onChange={this.ChangeModalInput} onKeyDown={this.OnPressEnter} disabled={!resultadoSalina37} />
+											</Table.Cell>
+										</Table.Row>
+										<Table.Row>
+											<Table.Cell collapsing>
+												<Icon name="syringe" />
+											</Table.Cell>
+											<Table.Cell>
+												Sin Especificidad:{" "}
+												<Form.Checkbox
+													disabled={!resultadoCoombs}
+													toggle
+													name="coombssinespecificidad"
+													labelPosition="left"
+													label={this.state.coombssinespecificidad === true ? "Si" : "No"}
+													value={this.state.coombssinespecificidad}
+													checked={this.state.coombssinespecificidad}
+													onChange={(evt) => {
+														evt.preventDefault();
+														this.setState({
+															coombssinespecificidad: !this.state.coombssinespecificidad,
+														});
+													}}
+												/>
+											</Table.Cell>
+											<Table.Cell>
+												Sin Especificidad:{" "}
+												<Form.Checkbox
+													disabled={!resultadoSalina4}
+													toggle
+													name="salina4sinespecificidad"
+													labelPosition="left"
+													label={this.state.salina4sinespecificidad === true ? "Si" : "No"}
+													value={this.state.salina4sinespecificidad}
+													checked={this.state.salina4sinespecificidad}
+													onChange={(evt) => {
+														evt.preventDefault();
+														this.setState({
+															salina4sinespecificidad: !this.state.salina4sinespecificidad,
+														});
+													}}
+												/>
+											</Table.Cell>
+											<Table.Cell>
+												Sin Especificidad:{" "}
+												<Form.Checkbox
+													disabled={!resultadoSalina37}
+													toggle
+													name="salina37sinespecificidad"
+													labelPosition="left"
+													label={this.state.salina37sinespecificidad === true ? "Si" : "No"}
+													value={this.state.salina37sinespecificidad}
+													checked={this.state.salina37sinespecificidad}
+													onChange={(evt) => {
+														evt.preventDefault();
+														this.setState({
+															salina37sinespecificidad: !this.state.salina37sinespecificidad,
+														});
+													}}
+												/>
+											</Table.Cell>
+										</Table.Row>
+										<Table.Row>
+											<Table.Cell collapsing>
+												<Icon name="syringe" />
+											</Table.Cell>
+											<Table.Cell>
+												Mezcla Anticuerpo:{" "}
+												<Form.Checkbox
+													disabled={!resultadoCoombs}
+													toggle
+													name="coombsmezclaanticuerpo"
+													labelPosition="left"
+													label={this.state.coombsmezclaanticuerpo === true ? "Si" : "No"}
+													value={this.state.coombsmezclaanticuerpo}
+													checked={this.state.coombsmezclaanticuerpo}
+													onChange={(evt) => {
+														evt.preventDefault();
+														this.setState({
+															coombsmezclaanticuerpo: !this.state.coombsmezclaanticuerpo,
+														});
+													}}
+												/>
+											</Table.Cell>
+											<Table.Cell>
+												Mezcla Anticuerpo:{" "}
+												<Form.Checkbox
+													disabled={!resultadoSalina4}
+													toggle
+													name="salina4mezclaanticuerpo"
+													labelPosition="left"
+													label={this.state.salina4mezclaanticuerpo === true ? "Si" : "No"}
+													value={this.state.salina4mezclaanticuerpo}
+													checked={this.state.salina4mezclaanticuerpo}
+													onChange={(evt) => {
+														evt.preventDefault();
+														this.setState({
+															salina4mezclaanticuerpo: !this.state.salina4mezclaanticuerpo,
+														});
+													}}
+												/>
+											</Table.Cell>
+											<Table.Cell>
+												Mezcla Anticuerpo:{" "}
+												<Form.Checkbox
+													disabled={!resultadoSalina37}
+													toggle
+													name="salina37mezclaanticuerpo"
+													labelPosition="left"
+													label={this.state.salina37mezclaanticuerpo === true ? "Si" : "No"}
+													value={this.state.salina37mezclaanticuerpo}
+													checked={this.state.salina37mezclaanticuerpo}
+													onChange={(evt) => {
+														evt.preventDefault();
+														this.setState({
+															salina37mezclaanticuerpo: !this.state.salina37mezclaanticuerpo,
+														});
+													}}
+												/>
+											</Table.Cell>
+										</Table.Row>
+									</Table.Body>
+								</Table>
+							</Segment>
 						) : (
 							""
 						)}
@@ -684,7 +452,7 @@ class ComponentIdentificacionAnticuerpo extends Component {
 						<Icon name="remove" className="modal-icon-cancel" />
 						Cancelar
 					</Button>
-					<Button color="green" onClick={this.ChangeModalState} className="modal-button-accept" type="submit" disabled={!this.state.key || !this.Validar()}>
+					<Button color="green" onClick={this.ChangeModalState} className="modal-button-accept" type="submit" disabled={!this.state.key}>
 						<Icon name="checkmark" className="modal-icon-accept" />
 						Aceptar
 					</Button>

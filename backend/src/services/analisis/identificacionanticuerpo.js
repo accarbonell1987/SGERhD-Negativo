@@ -27,13 +27,10 @@ exports.InsertIdentificacionAnticuerpo = async (analisis) => {
 	try {
 		//creando
 		const identificacionsAnticuerpo = new IdentificacionAnticuerpo({
-			celula1: null,
-			celula2: null,
-			celula3: null,
 			pCoombsIndirecto: null,
 			pSalina4g: null,
 			pSalina37g: null,
-			titulo: null,
+			referenciaPesquizaje: null,
 			analisis: analisis._id,
 		});
 		//salvando
@@ -45,8 +42,8 @@ exports.InsertIdentificacionAnticuerpo = async (analisis) => {
 };
 exports.UpdateIdentificacionAnticuerpo = async (id, body) => {
 	try {
-		var { celula1, celula2, celula3, pCoomsIndirecto, pSalina4g, pSalina37g, titulo } = body;
-		const identificacionsAnticuerpo = { celula1, celula2, celula3, pCoomsIndirecto, pSalina4g, pSalina37g, titulo };
+		var { pCoombsIndirecto, pSalina4g, pSalina37g, referenciaPesquizaje } = body;
+		const identificacionsAnticuerpo = { pCoombsIndirecto, pSalina4g, pSalina37g, referenciaPesquizaje };
 		const updated = await IdentificacionAnticuerpo.findByIdAndUpdate(id, identificacionsAnticuerpo);
 		return updated;
 	} catch (err) {
@@ -58,7 +55,7 @@ exports.DeleteIdentificacionAnticuerpo = async (identificacionsAnticuerpo) => {
 		const removed = await IdentificacionAnticuerpo.findByIdAndRemove(identificacionsAnticuerpo._id);
 		return removed;
 	} catch (err) {
-		throw Error("DeleteGrupoSanguineo -> Eliminando Identificacion de Anticuerpo \n" + err);
+		throw Error("DeleteIdentificacionAnticuerpo -> Eliminando Identificacion de Anticuerpo \n" + err);
 	}
 };
 //#endregion

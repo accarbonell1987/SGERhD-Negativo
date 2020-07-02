@@ -39,6 +39,7 @@ app.use("/api", require("./routes/routeranalisis"));
 app.use("/api", require("./routes/analisis/routergruposanguineo"));
 app.use("/api", require("./routes/analisis/routerpesquizajeanticuerpo"));
 app.use("/api", require("./routes/analisis/routeridentificacionanticuerpo"));
+app.use("/api", require("./routes/analisis/routertituloanticuerpo"));
 //Static files
 console.log(__dirname);
 

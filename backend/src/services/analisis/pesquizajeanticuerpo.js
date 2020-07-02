@@ -30,7 +30,7 @@ exports.InsertPesquizajeAnticuerpo = async (analisis) => {
 			celula1: null,
 			celula2: null,
 			celula3: null,
-			pCoomsIndirecto: null, //{resultadocelula1, resultadocelula2, resultadocelula3, resultadofinal}
+			pCoombsIndirecto: null, //{resultadocelula1, resultadocelula2, resultadocelula3, resultadofinal}
 			pSalina4g: null, //{resultadocelula1, resultadocelula2, resultadocelula3, resultadofinal}
 			pSalina37g: null, //{resultadocelula1, resultadocelula2, resultadocelula3, resultadofinal}
 			analisis: analisis._id,
@@ -44,8 +44,8 @@ exports.InsertPesquizajeAnticuerpo = async (analisis) => {
 };
 exports.UpdatePesquizajeAnticuerpo = async (id, body) => {
 	try {
-		var { celula1, celula2, celula3, pCoomsIndirecto, pSalina4g, pSalina37g } = body;
-		const pesquizajesAnticuerpo = { celula1, celula2, celula3, pCoomsIndirecto, pSalina4g, pSalina37g };
+		var { celula1, celula2, celula3, pCoombsIndirecto, pSalina4g, pSalina37g } = body;
+		const pesquizajesAnticuerpo = { celula1, celula2, celula3, pCoombsIndirecto, pSalina4g, pSalina37g };
 		const updated = await PesquizajeAnticuerpo.findByIdAndUpdate(id, pesquizajesAnticuerpo);
 		return updated;
 	} catch (err) {

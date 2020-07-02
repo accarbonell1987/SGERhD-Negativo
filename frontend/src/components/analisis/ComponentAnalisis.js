@@ -14,6 +14,7 @@ import ComponentAddAnalisis from "./ComponentAddAnalisis";
 import ComponentUpdateAnalisis from "./ComponentUpdateAnalisis";
 import ComponentGrupoSanguineo from "./ComponentGrupoSanguineo";
 import ComponentPesquizajeAnticuerpo from "./ComponentPesquizajeAnticuerpo";
+import ComponentIdentificacionAnticuerpo from "./ComponentIdentificacionAnticuerpo";
 //#endregion
 
 //#region Defincion de la clase
@@ -186,8 +187,7 @@ class ComponentAnalisis extends Component {
 		const accesomenu = permiso.accesos.find((p) => p.opcion === "analisis");
 		const classNameTable = this.props.detail ? "div-table-detail" : "div-table";
 
-		const gruposSanguineo = this.props.analisis.filter((e) => e.tipo === "Grupo Sanguineo");
-		const pesquizajeAnticuerpo = this.props.analisis.filter((e) => e.tipo === "Pesquizaje Anticuerpo");
+		const pesquizajesAnticuerpo = this.props.analisis.filter((e) => e.tipo === "Pesquizaje Anticuerpo");
 		//chequear si es analisis y tengo permiso
 		return (
 			<Grid textAlign="center" verticalAlign="top" className="gestionar-allgrid">
@@ -249,7 +249,8 @@ class ComponentAnalisis extends Component {
 												{accesomenu.permisos.eliminar ? <Button icon="remove circle" className="button-remove" onClick={() => this.DeleteAnalisis(one)} /> : <Button icon="remove circle" className="button-remove" disabled />}
 												{accesomenu.permisos.modificar ? <ComponentUpdateAnalisis Deslogin={this.props.Deslogin} GetDataFromServer={this.props.GetDataFromServer} global={this.props.global} one={one} examenes={this.props.examenes} /> : <Button icon="edit" disabled />}
 												{accesomenu.permisos.modificar && one.tipo === "Grupo Sanguineo" ? <ComponentGrupoSanguineo Deslogin={this.props.Deslogin} GetDataFromServer={this.props.GetDataFromServer} global={this.props.global} analisis={one} /> : ""}
-												{accesomenu.permisos.modificar && one.tipo === "Pesquizaje Anticuerpo" ? <ComponentPesquizajeAnticuerpo Deslogin={this.props.Deslogin} GetDataFromServer={this.props.GetDataFromServer} global={this.props.global} analisis={one} gruposSanguineo={gruposSanguineo} /> : ""}
+												{accesomenu.permisos.modificar && one.tipo === "Pesquizaje Anticuerpo" ? <ComponentPesquizajeAnticuerpo Deslogin={this.props.Deslogin} GetDataFromServer={this.props.GetDataFromServer} global={this.props.global} analisis={one} /> : ""}
+												{accesomenu.permisos.modificar && one.tipo === "Identificación Anticuerpo" ? <ComponentIdentificacionAnticuerpo Deslogin={this.props.Deslogin} GetDataFromServer={this.props.GetDataFromServer} global={this.props.global} analisis={one} pesquizajesAnticuerpo={pesquizajesAnticuerpo} /> : ""}
 											</Table.Cell>
 										</Table.Row>
 									);

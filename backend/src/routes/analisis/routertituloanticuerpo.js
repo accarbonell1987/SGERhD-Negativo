@@ -33,7 +33,7 @@ router.use((req, res, next) => {
 
 //#region Rutas
 //PATCH - Un transfusion por id /transfusion/id - {json}
-router.patch("/gruposanguineo/:id", bll.UpdateGrupoSanguineo);
+router.patch("/tituloanticuerpo/:id", bll.UpdateTituloAnticuerpo);
 //#endregion
 
 //#region Exports

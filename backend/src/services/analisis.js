@@ -9,6 +9,7 @@ const TestServices = require("./examen");
 const GrupoSanguineoServices = require("./analisis/gruposanguineo");
 const PesquizajeAnticuerpoServices = require("./analisis/pesquizajeanticuerpo");
 const IdentificacionAnticuerpoServices = require("./analisis/identificacionanticuerpo");
+const TituloAnticuerpoServices = require("./analisis/tituloanticuerpo");
 //#endregion
 
 //#region Examen
@@ -19,7 +20,8 @@ exports.GetAnalisis = async (query, page, limit) => {
 			.populate({ path: "examen", populate: { path: "embarazo" } })
 			.populate("grupoSanguineo")
 			.populate("pesquizajeAnticuerpo")
-			.populate("identificacionAnticuerpo");
+			.populate("identificacionAnticuerpo")
+			.populate("tituloAnticuerpo");
 		return analisis;
 	} catch (err) {
 		throw Error("GetAnalisis -> Obteniendo Analisis.");
@@ -32,7 +34,8 @@ exports.GetOneAnalisis = async (id) => {
 			.populate({ path: "examen", populate: { path: "embarazo" } })
 			.populate("grupoSanguineo")
 			.populate("pesquizajeAnticuerpo")
-			.populate("identificacionAnticuerpo");
+			.populate("identificacionAnticuerpo")
+			.populate("tituloAnticuerpo");
 		return analisis;
 	} catch (err) {
 		throw Error("GetOneAnalisis -> Obteniendo Analisis con id: " + id);
@@ -49,7 +52,7 @@ exports.GetLastInserted = async () => {
 };
 exports.InsertAnalisis = async (body) => {
 	try {
-		var { fecha, tipo, examen, grupoSanguineo, identificacionAnticuerpo, pesquizajeAnticuerpo, pendiente, numeroMuestra, tiempoDeGestacion, activo } = body;
+		var { fecha, tipo, examen, grupoSanguineo, identificacionAnticuerpo, pesquizajeAnticuerpo, tituloAnticuerpo, pendiente, numeroMuestra, tiempoDeGestacion, activo } = body;
 		const analisis = new Analisis({
 			fecha,
 			tipo,
@@ -57,6 +60,7 @@ exports.InsertAnalisis = async (body) => {
 			grupoSanguineo,
 			identificacionAnticuerpo,
 			pesquizajeAnticuerpo,
+			tituloAnticuerpo,
 			pendiente,
 			numeroMuestra,
 			tiempoDeGestacion,
@@ -72,12 +76,17 @@ exports.InsertAnalisis = async (body) => {
 		} else if (tipo === "Identificación Anticuerpo") {
 			var indetificacionAnticuerpo = await IdentificacionAnticuerpoServices.InsertIdentificacionAnticuerpo(saved);
 			//actualizar la analisis asignandole el grupo sanguineo
-			saved.indetificacionAnticuerpo = indetificacionAnticuerpo;
+			saved.identificacionAnticuerpo = indetificacionAnticuerpo;
 			await Analisis.findByIdAndUpdate(saved._id, saved);
 		} else if (tipo === "Pesquizaje Anticuerpo") {
 			var pesquizajeAnticuerpo = await PesquizajeAnticuerpoServices.InsertPesquizajeAnticuerpo(saved);
 			//actualizar la analisis asignandole el grupo sanguineo
 			saved.pesquizajeAnticuerpo = pesquizajeAnticuerpo;
+			await Analisis.findByIdAndUpdate(saved._id, saved);
+		} else if (tipo === "Titulo Anticuerpo") {
+			var tituloAnticuerpo = await TituloAnticuerpoServices.InsertTituloAnticuerpo(saved);
+			//actualizar la analisis asignandole el grupo sanguineo
+			saved.tituloAnticuerpo = tituloAnticuerpo;
 			await Analisis.findByIdAndUpdate(saved._id, saved);
 		}
 		//se adiciona la analisis en el Examen
@@ -89,16 +98,16 @@ exports.InsertAnalisis = async (body) => {
 };
 exports.UpdateAnalisis = async (id, body) => {
 	try {
-		var { fecha, tipo, examen, grupoSanguineo, identificacionAnticuerpo, pesquizajeAnticuerpo, pendiente, numeroMuestra, tiempoDeGestacion, activo } = body;
+		var { fecha, tipo, examen, grupoSanguineo, identificacionAnticuerpo, pesquizajeAnticuerpo, tituloAnticuerpo, pendiente, numeroMuestra, tiempoDeGestacion, activo } = body;
 
-		const analisis = { fecha, tipo, examen, grupoSanguineo, identificacionAnticuerpo, pesquizajeAnticuerpo, pendiente, numeroMuestra, tiempoDeGestacion, activo };
+		const analisis = { fecha, tipo, examen, grupoSanguineo, identificacionAnticuerpo, pesquizajeAnticuerpo, tituloAnticuerpo, pendiente, numeroMuestra, tiempoDeGestacion, activo };
 
-		if (tipo === "Grupo Sanguineo") var gruposanguineo = GrupoSanguineoServices.UpdateGrupoSanguineo(grupoSanguineo._id, grupoSanguineo);
-		else if (tipo === "Identificación Anticuerpo") {
-			//TODO modificar identificacion
-		} else if (tipo === "Pesquizaje Anticuerpo") {
-			//TODO modificar pesquizaje
-		}
+		// if (tipo === "Grupo Sanguineo") var gruposanguineo = GrupoSanguineoServices.UpdateGrupoSanguineo(grupoSanguineo._id, grupoSanguineo);
+		// else if (tipo === "Identificación Anticuerpo") {
+		// 	//TODO modificar identificacion
+		// } else if (tipo === "Pesquizaje Anticuerpo") {
+		// 	//TODO modificar pesquizaje
+		// }
 		const updated = await Analisis.findByIdAndUpdate(id, analisis);
 		return updated;
 	} catch (err) {
@@ -107,6 +116,9 @@ exports.UpdateAnalisis = async (id, body) => {
 };
 exports.DeleteOneAnalisis = async (analisis) => {
 	try {
+		//se eliminar el analisis en el Examen
+		await TestServices.DeleteAnalisisInTest(analisis);
+
 		if (analisis.tipo === "Grupo Sanguineo") {
 			//eliminar Grupo Sanguineo con id
 			await GrupoSanguineoServices.DeleteGrupoSanguineo(analisis.grupoSanguineo);
@@ -114,13 +126,11 @@ exports.DeleteOneAnalisis = async (analisis) => {
 			await IdentificacionAnticuerpoServices.DeleteIdentificacionAnticuerpo(analisis.identificacionAnticuerpo);
 		} else if (analisis.tipo === "Pesquizaje Anticuerpo") {
 			await PesquizajeAnticuerpoServices.DeletePesquizajeAnticuerpo(analisis.pesquizajeAnticuerpo);
+		} else if (analisis.tipo === "Titulo Anticuerpo") {
+			await TituloAnticuerpoServices.DeleteTituloAnticuerpo(analisis.tituloAnticuerpo);
 		}
 		//eliminar analisis con id
 		const removed = await Analisis.findByIdAndRemove(analisis._id);
-
-		//se adiciona la analisis en el Examen
-		await TestServices.DeleteAnalisisInTest(removed);
-
 		return removed;
 	} catch (err) {
 		throw Error("DeleteAnalisis -> Eliminando analisis \n" + err);

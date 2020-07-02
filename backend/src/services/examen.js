@@ -155,17 +155,15 @@ exports.InsertAnalisisToTest = async (analisis) => {
 //eliminar una analisis perteneciente al examen
 exports.DeleteAnalisisInTest = async (analisis) => {
 	try {
-		const examen = await this.GetTest(analisis.examen);
-
-		clonanalisis = [...examen.analisis];
-		//buscar el indice del elemento que representa esa analisis en el arreglo de analisis del examen
+		clonanalisis = [...analisis.examen.analisis];
+		//buscar el indice del elemento que representa ese examen en el arreglo de examenes del paciente
 		let index = clonanalisis.indexOf(analisis._id);
-		if (index) {
+		if (index >= 0) {
 			//eliminar del arreglo el elemento
 			clonanalisis.splice(index, 1);
-			//hacer un update del examen
+			//hacer un update del paciente
 			const examen = { analisis: clonanalisis };
-			var updated = await Examen.findByIdAndUpdate(examen._id, updated);
+			var updated = await Examen.findByIdAndUpdate(analisis.examen._id, examen);
 		}
 		return updated;
 	} catch (err) {

@@ -10,6 +10,7 @@ const AnalisisServices = require("../services/analisis");
 const GrupoSanguineoServices = require("../services/analisis/gruposanguineo");
 const PesquizajeAnticuerpoServices = require("../services/analisis/pesquizajeanticuerpo");
 const IdentificacionAnticuerpoServices = require("../services/analisis/identificacionanticuerpo");
+const TituloAnticuerpoServices = require("../services/analisis/tituloanticuerpo");
 //#endregion
 
 //#region Usuarios
@@ -414,7 +415,6 @@ exports.GetTests = async (req, res, next) => {
 };
 exports.GetTest = async (req, res, next) => {
 	try {
-		const id = req.params.id;
 		var test = await TestServices.GetTest(req.params.id);
 		return res.status(200).json({ status: 200, message: "Obtenido", data: test });
 	} catch (err) {
@@ -559,6 +559,17 @@ exports.UpdatePesquizajeAnticuerpo = async (req, res, next) => {
 exports.UpdateIdentificacionAnticuerpo = async (req, res, next) => {
 	try {
 		var grupo = await IdentificacionAnticuerpoServices.UpdateIdentificacionAnticuerpo(req.params.id, req.body);
+		return res.status(200).json({ status: 200, message: "Modificado Correctamente", data: grupo });
+	} catch (err) {
+		return res.status(400).json({ status: 400, message: err.toString() });
+	}
+};
+//#endregion
+
+//#region Titulo Anticuerpo
+exports.UpdateTituloAnticuerpo = async (req, res, next) => {
+	try {
+		var grupo = await TituloAnticuerpoServices.UpdateTituloAnticuerpo(req.params.id, req.body);
 		return res.status(200).json({ status: 200, message: "Modificado Correctamente", data: grupo });
 	} catch (err) {
 		return res.status(400).json({ status: 400, message: err.toString() });

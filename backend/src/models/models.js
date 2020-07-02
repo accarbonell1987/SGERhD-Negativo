@@ -67,6 +67,7 @@ var analisis_schema = new Schema({
 	grupoSanguineo: { type: Schema.Types.ObjectId, ref: "GrupoSanguineo", default: mongoose.mongo.ObjectID() },
 	identificacionAnticuerpo: { type: Schema.Types.ObjectId, ref: "IdentificacionAnticuerpo", default: mongoose.mongo.ObjectID() },
 	pesquizajeAnticuerpo: { type: Schema.Types.ObjectId, ref: "PesquizajeAnticuerpo", default: mongoose.mongo.ObjectID() },
+	tituloAnticuerpo: { type: Schema.Types.ObjectId, ref: "TituloAnticuerpo", default: mongoose.mongo.ObjectID() },
 	pendiente: { type: Boolean }, //si aun se ha realizado o no
 	numeroMuestra: { type: String }, //es un consecutivo que comienza año+(4 digitos consecutivos) ej: 20200001, 20200002, ...
 	tiempoDeGestacion: { type: String }, //objeto JSON {"semanas":2, "dias":4}
@@ -85,13 +86,20 @@ var gruposanguineo_schema = new Schema({
 
 //IDENTIFICACIONANTICUERPO
 var identificacionanticuerpo_schema = new Schema({
-	celula1: { type: String },
-	celula2: { type: String },
-	celula3: { type: String },
-	pCoombsIndirecto: { type: Object }, //{ resultadoPesquizaje: string, sistemas: [{ nombresistema, [nombreAnticuerpo1, ...]},...], sinespecificidad: bool, concentracion: (alta o baja) }
-	pSalina4g: { type: Object }, //{ resultadoPesquizaje: string, sistemas: [{ nombresistema, [nombreAnticuerpo1, ...]},...], sinespecificidad: bool, concentracion: (alta o baja) }
-	pSalina37g: { type: Object }, //{ resultadoPesquizaje: string, sistemas: [{ nombresistema, [nombreAnticuerpo1, ...]},...], sinespecificidad: bool, concentracion: (alta o baja) }
-	titulo: { type: String },
+	pCoombsIndirecto: { type: Object }, //{ anticuerpos: String, sinespecificidad: boolean, mezclaanticuerpo: boolean }
+	pSalina4g: { type: Object }, //{ anticuerpos:String, sinespecificidad: boolean, mezclaanticuerpo: boolean }
+	pSalina37g: { type: Object }, //{ anticuerpos:String, sinespecificidad: boolean, mezclaanticuerpo: boolean }
+	referenciaPesquizaje: { type: String }, //numeroDeMuestra
+	analisis: { type: Schema.Types.ObjectId, ref: "Analisis" },
+	accessToken: { type: String },
+});
+
+//TITULOANTICUERPO
+var tituloanticuerpo_schema = new Schema({
+	celula: { type: String },
+	diluciones: { type: Number },
+	bajaconcentracion: { type: Boolean },
+	referenciaIdentificacion: { type: String }, //numeroDeMuestra
 	analisis: { type: Schema.Types.ObjectId, ref: "Analisis" },
 	accessToken: { type: String },
 });
@@ -101,7 +109,7 @@ var pesquizajeanticuerpo_schema = new Schema({
 	celula1: { type: String },
 	celula2: { type: String },
 	celula3: { type: String },
-	pCoomsIndirecto: { type: Object }, //{resultadocelula1, resultadocelula2, resultadocelula3, resultadofinal}
+	pCoombsIndirecto: { type: Object }, //{resultadocelula1, resultadocelula2, resultadocelula3, resultadofinal}
 	pSalina4g: { type: Object }, //{resultadocelula1, resultadocelula2, resultadocelula3, resultadofinal}
 	pSalina37g: { type: Object }, //{resultadocelula1, resultadocelula2, resultadocelula3, resultadofinal}
 	analisis: { type: Schema.Types.ObjectId, ref: "Analisis" },
@@ -176,6 +184,7 @@ var usuario_schema = new Schema({
 });
 
 //exportacion del modelo
+var TituloAnticuerpo = mongoose.model("TituloAnticuerpo", tituloanticuerpo_schema);
 var PesquizajeAnticuerpo = mongoose.model("PesquizajeAnticuerpo", pesquizajeanticuerpo_schema);
 var IdentificacionAnticuerpo = mongoose.model("IdentificacionAnticuerpo", identificacionanticuerpo_schema);
 var GrupoSanguineo = mongoose.model("GrupoSanguineo", gruposanguineo_schema);
@@ -201,4 +210,5 @@ module.exports = {
 	PesquizajeAnticuerpo: PesquizajeAnticuerpo,
 	IdentificacionAnticuerpo: IdentificacionAnticuerpo,
 	GrupoSanguineo: GrupoSanguineo,
+	TituloAnticuerpo: TituloAnticuerpo,
 };

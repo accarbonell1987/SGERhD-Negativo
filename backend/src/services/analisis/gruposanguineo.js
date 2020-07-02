@@ -25,7 +25,6 @@ exports.GetGrupoSanguineo = async (id) => {
 };
 exports.InsertGrupoSanguineo = async (analisis) => {
 	try {
-		console.log("InsertGrupoSanguineo ->", analisis);
 		//creando grupo sanguineo
 		const gruposanguineo = new GrupoSanguineo({
 			dDebil: null,
