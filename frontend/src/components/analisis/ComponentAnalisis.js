@@ -187,6 +187,7 @@ class ComponentAnalisis extends Component {
 		const classNameTable = this.props.detail ? "div-table-detail" : "div-table";
 
 		const gruposSanguineo = this.props.analisis.filter((e) => e.tipo === "Grupo Sanguineo");
+		const pesquizajeAnticuerpo = this.props.analisis.filter((e) => e.tipo === "Pesquizaje Anticuerpo");
 		//chequear si es analisis y tengo permiso
 		return (
 			<Grid textAlign="center" verticalAlign="top" className="gestionar-allgrid">

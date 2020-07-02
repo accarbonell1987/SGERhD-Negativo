@@ -13,12 +13,99 @@ import "../global/css/Gestionar.css";
 //#endregion
 
 //#region Definicion Clase
+class ComponentSistemasAnticuerpo extends Component {
+	state = {
+		open: false,
+		sistema: null,
+		sinespecificidad: false,
+		concentracion: "Baja", //Alta o Baja
+	};
+
+	sistemasCoombs = [
+		{ nombre: "Rh", anticuerpos: ["Anti-D", "Anti-C", "Anti-c", "Anti-E", "Anti-e"] },
+		{ nombre: "Kell", anticuerpos: ["Anti-K", "Anti-k"] },
+		{ nombre: "Duffy", anticuerpos: ["Anti-fyᵃ", "Anti-fyᵇ"] },
+		{ nombre: "Kidd", anticuerpos: ["Anti-JKᵃ", "Anti-JKᵇ"] },
+		{ nombre: "MNS", anticuerpos: ["Anti-S", "Anti-s"] },
+	];
+	sistemasSalinas = [
+		{ nombre: "P", anticuerpos: ["Anti-P1"] },
+		{ nombre: "MNS", anticuerpos: ["Anti-M", "Anti-N"] },
+		{ nombre: "Lewis", anticuerpos: ["Anti-Leᵃ", "Anti-Leᵇ"] },
+		{ nombre: "Lutheran", anticuerpos: ["Anti-Luᵃ", "Anti-Luᵇ"] },
+	];
+
+	componentDidMount = () => {};
+
+	ChangeModalState = async (evt) => {
+		if (evt.target.className.includes("modal-button-cancel") || evt.target.className.includes("modal-icon-cancel")) {
+			this.setState({ open: false });
+		} else if (evt.target.className.includes("modal-button-action") || evt.target.className.includes("modal-icon")) {
+			this.setState({ open: true });
+		} else {
+			//enviar...
+		}
+	};
+
+	render() {
+		return (
+			<Modal
+				trigger={
+					<Button className="modal-button-action" onClick={this.ChangeModalState}>
+						<Icon name="checkmark" className="modal-icon" color="green" onClick={this.ChangeModalState} />
+					</Button>
+				}
+			>
+				<Modal.Header>Escoger Sistemas</Modal.Header>
+				<Modal.Content>
+					<Segment>
+						<Header as="h5">Sistemas:</Header>
+						<Dropdown
+							className="modal-input-30p"
+							name="sistema"
+							text={this.state.sistema === null ? "Seleccionar Sistema" : this.state.sistema}
+							item
+							selection
+							options={this.state.opcionSistemas}
+							onChange={(e, { value }) => {
+								this.setState({ sistema: value });
+							}}
+						/>
+					</Segment>
+				</Modal.Content>
+				<Modal.Actions>
+					<Button color="red" onClick={this.ChangeModalState} className="modal-button-cancel" type>
+						<Icon name="remove" className="modal-icon-cancel" />
+						Cancelar
+					</Button>
+					<Button color="green" onClick={this.ChangeModalState} className="modal-button-accept" type="submit" disabled={true}>
+						<Icon name="checkmark" className="modal-icon-accept" />
+						Aceptar
+					</Button>
+				</Modal.Actions>
+			</Modal>
+		);
+	}
+}
+
 class ComponentIdentificacionAnticuerpo extends Component {
 	//#region Properties
 	state = {
+		// celula1: { type: String },
+		// celula2: { type: String },
+		// celula3: { type: String },
+		// pCoombsIndirecto: { type: Object }, //{ resultadoPesquizaje: string, sistemas: [{ nombresistema, [nombreAnticuerpo1, ...]},...], sinespecificidad: bool, concentracion: (alta o baja) }
+		// pSalina4g: { type: Object }, //{ resultadoPesquizaje: string, sistemas: [{ nombresistema, [nombreAnticuerpo1, ...]},...], sinespecificidad: bool, concentracion: (alta o baja) }
+		// pSalina37g: { type: Object }, //{ resultadoPesquizaje: string, sistemas: [{ nombresistema, [nombreAnticuerpo1, ...]},...], sinespecificidad: bool, concentracion: (alta o baja) }
+		// titulo: { type: String },
+		// analisis: { type: Schema.Types.ObjectId, ref: "Analisis" },
+
 		factor: null,
-		grupokey: null,
-		grupoCompleto: null,
+		key: null,
+		pesquizajeAnticuerpo: null,
+		opcionPesquizajeAnticuerpo: null,
+		errorform: false,
+
 		celula1: null,
 		celula2: null,
 		celula3: null,
@@ -34,8 +121,6 @@ class ComponentIdentificacionAnticuerpo extends Component {
 		ps37resultadocelula2: null,
 		ps37resultadocelula3: null,
 		ps37resultadofinal: false,
-		opcionGruposSanguineo: null,
-		errorform: false,
 	};
 
 	opcionTipoCelulasPositivas = [
@@ -67,14 +152,6 @@ class ComponentIdentificacionAnticuerpo extends Component {
 		{ key: "103", text: "103", value: "103", icon: "" },
 		{ key: "109", text: "109", value: "109", icon: "" },
 		{ key: "Onelbis", text: "Onelbis", value: "Onelbis", icon: "" },
-	];
-	opcionResultados = [
-		{ key: "+", text: "+", value: "+", icon: "" },
-		{ key: "++", text: "++", value: "++", icon: "" },
-		{ key: "+++", text: "+++", value: "+++", icon: "" },
-		{ key: "++++", text: "++++", value: "++++", icon: "" },
-		{ key: "-", text: "-", value: "-", icon: "" },
-		{ key: "+-", text: "+-", value: "+-", icon: "" },
 	];
 	//#endregion
 
@@ -167,7 +244,7 @@ class ComponentIdentificacionAnticuerpo extends Component {
 		if (!data) this.props.Deslogin();
 		else {
 			let opcion = [];
-			this.props.gruposSanguineo.forEach((e) => {
+			this.props.pesquizajeAnticuerpo.forEach((e) => {
 				let fechacadena = moment(new Date(e.fecha)).format("DD-MM-YYYY");
 				let datos = "Prueba - Fecha: " + fechacadena + ", Número de Muestra: " + e.numeroMuestra;
 				let cur = {
@@ -186,14 +263,15 @@ class ComponentIdentificacionAnticuerpo extends Component {
 			const salina4g = JSON.parse(detail.pSalina4g);
 			const salina37g = JSON.parse(detail.pSalina37g);
 
-			console.log(detail, coombs);
-
 			//actualizar los states
 			this.setState({
 				openModal: false,
 				factor: null,
-				grupokey: null,
-				grupoCompleto: null,
+				key: null,
+				pesquizajeAnticuerpo: null,
+				opcionPesquizajeAnticuerpo: opcion,
+				errorform: false,
+
 				celula1: detail.celula1,
 				celula2: detail.celula2,
 				celula3: detail.celula3,
@@ -209,8 +287,6 @@ class ComponentIdentificacionAnticuerpo extends Component {
 				ps37resultadocelula2: salina37g != null ? salina37g.resultadocelula2 : null,
 				ps37resultadocelula3: salina37g != null ? salina37g.resultadocelula3 : null,
 				ps37resultadofinal: salina37g != null ? salina37g.resultadofinal : false,
-				opcionGruposSanguineo: opcion,
-				errorform: false,
 			});
 		}
 	};
@@ -322,19 +398,19 @@ class ComponentIdentificacionAnticuerpo extends Component {
 					<Form ref="form" onSubmit={this.ChangeModalState}>
 						<Form.Input disabled name="numero" icon="address card outline" iconPosition="left" label="Numero de Muestra:" value={this.props.analisis.numeroMuestra} />
 						<Form.Select
-							name="pGrupoSanguineo"
-							label="Prueba Grupo Sanguineo:"
+							name="pPesquizajeAnticuerpo"
+							label="Prueba Pesquizaje Anticuerpo:"
 							placeholder="Seleccionar Prueba"
-							options={this.state.opcionGruposSanguineo}
-							value={this.state.grupokey}
+							options={this.state.opcionPesquizajeAnticuerpo}
+							value={this.state.key}
 							onChange={(e, { value }) => {
-								const grupoCompleto = this.props.gruposSanguineo.find((e) => e._id === value);
-								this.setState({ grupokey: value, grupoCompleto: grupoCompleto });
+								const pesquizaje = this.props.pesquizajeAnticuerpo.find((e) => e._id === value);
+								this.setState({ key: value, pesquizajeAnticuerpo: pesquizaje });
 							}}
 							fluid
 							selection
 						/>
-						{this.state.grupokey != null ? (
+						{this.state.key != null ? (
 							<Segment.Group>
 								<Segment.Group horizontal>
 									<Segment>
@@ -608,7 +684,7 @@ class ComponentIdentificacionAnticuerpo extends Component {
 						<Icon name="remove" className="modal-icon-cancel" />
 						Cancelar
 					</Button>
-					<Button color="green" onClick={this.ChangeModalState} className="modal-button-accept" type="submit" disabled={!this.state.grupokey || !this.Validar()}>
+					<Button color="green" onClick={this.ChangeModalState} className="modal-button-accept" type="submit" disabled={!this.state.key || !this.Validar()}>
 						<Icon name="checkmark" className="modal-icon-accept" />
 						Aceptar
 					</Button>
