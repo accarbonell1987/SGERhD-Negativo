@@ -117,6 +117,8 @@ class ComponentTituloAnticuerpo extends Component {
 		const data = this.props.global.cookies();
 		if (!data) this.props.Deslogin();
 		else {
+			const detail = this.props.analisis.tituloAnticuerpo;
+
 			let opcion = [];
 			this.props.identificacionesAnticuerpo.forEach((e) => {
 				let fechacadena = moment(new Date(e.fecha)).format("DD-MM-YYYY");
@@ -134,26 +136,26 @@ class ComponentTituloAnticuerpo extends Component {
 			let number = 2;
 			let increment = 1;
 
-			while (number < 1024) {
+			while (number <= 1024) {
 				let cur = {
 					key: number,
 					text: number,
 					value: number,
 				};
 				opcionPotenciasDos = [...opcionPotenciasDos, cur];
-				number = Math.pow(2, increment++);
+				number = Math.pow(2, ++increment);
 			}
-			console.log(opcionPotenciasDos);
+
+			const identificacion = this.props.identificacionesAnticuerpo.filter((p) => p.numeroMuestra === detail.referenciaIdentificacion);
 			//actualizar los states
 			this.setState({
 				openModal: false,
-				celula: null,
-				diluciones: null,
-				bajaconcentracion: null,
-				referenciaIdentificacion: null,
+				celula: detail.celula != null ? detail.celula : null,
+				diluciones: detail.diluciones != null ? detail.diluciones : null,
+				bajaconcentracion: detail.bajaconcentracion != null ? detail.bajaconcentracion : null,
 
-				key: null,
-				identificacionAnticuerpo: null,
+				key: identificacion[0]._id,
+				identificacionAnticuerpo: identificacion[0],
 				opcionIdentificacionAnticuerpo: opcion,
 				opcionPotenciasDos: opcionPotenciasDos,
 				errorform: false,
@@ -167,12 +169,14 @@ class ComponentTituloAnticuerpo extends Component {
 		else {
 			const analisis = this.props.analisis;
 			const detail = this.props.analisis.tituloAnticuerpo;
-			const { celula, diluciones, bajaconcentracion, referenciaIdentificacion } = this.state;
+			const { celula, diluciones, bajaconcentracion } = this.state;
+
+			const indentificacion = this.props.identificacionesAnticuerpo.filter((p) => p._id === this.state.key);
 
 			detail.celula = celula;
 			detail.diluciones = diluciones;
 			detail.bajaconcentracion = bajaconcentracion;
-			detail.referenciaIdentificacion = referenciaIdentificacion;
+			detail.referenciaIdentificacion = indentificacion[0].numeroMuestra;
 
 			//la promise debe de devolver un valor RETURN
 			try {
@@ -247,34 +251,38 @@ class ComponentTituloAnticuerpo extends Component {
 								<Segment>
 									<Form.Input name="celula" icon="eye dropper" iconPosition="left" label="Celula:" value={this.state.celula} placeholder="Escribir..." onChange={this.ChangeModalInput} onKeyDown={this.OnPressEnter} />
 								</Segment>
-								<Segment>
-									<Dropdown
-										name="diluciones"
-										text={this.state.diluciones === null ? "Seleccionar..." : this.state.diluciones}
-										item
-										selection
-										options={this.opcionPotenciasDos}
-										onChange={(e, { value }) => {
-											this.setState({ diluciones: value });
-										}}
-									/>
-								</Segment>
-								<Segment>
-									<Form.Checkbox
-										toggle
-										name="bajaconcentracion"
-										labelPosition="left"
-										label={this.state.bajaconcentracion === true ? "Si" : "No"}
-										value={this.state.bajaconcentracion}
-										checked={this.state.bajaconcentracion}
-										onChange={(evt) => {
-											evt.preventDefault();
-											this.setState({
-												bajaconcentracion: !this.state.bajaconcentracion,
-											});
-										}}
-									/>
-								</Segment>
+								<Segment.Group horizontal>
+									<Segment>
+										<Header as="h5">Diluciones:</Header>
+										<Dropdown
+											name="diluciones"
+											text={this.state.diluciones === null ? "Seleccionar..." : this.state.diluciones}
+											item
+											selection
+											options={this.state.opcionPotenciasDos}
+											onChange={(e, { value }) => {
+												this.setState({ diluciones: value });
+											}}
+										/>
+									</Segment>
+									<Segment>
+										<Header as="h5">Baja Concetración:</Header>
+										<Form.Checkbox
+											toggle
+											name="bajaconcentracion"
+											labelPosition="left"
+											label={this.state.bajaconcentracion === true ? "Si" : "No"}
+											value={this.state.bajaconcentracion}
+											checked={this.state.bajaconcentracion}
+											onChange={(evt) => {
+												evt.preventDefault();
+												this.setState({
+													bajaconcentracion: !this.state.bajaconcentracion,
+												});
+											}}
+										/>
+									</Segment>
+								</Segment.Group>
 							</Segment.Group>
 						) : (
 							""
@@ -286,7 +294,7 @@ class ComponentTituloAnticuerpo extends Component {
 						<Icon name="remove" className="modal-icon-cancel" />
 						Cancelar
 					</Button>
-					<Button color="green" onClick={this.ChangeModalState} className="modal-button-accept" type="submit" disabled={!this.state.key}>
+					<Button color="green" onClick={this.ChangeModalState} className="modal-button-accept" type="submit" disabled={!this.state.key || !this.state.celula || !this.state.diluciones}>
 						<Icon name="checkmark" className="modal-icon-accept" />
 						Aceptar
 					</Button>

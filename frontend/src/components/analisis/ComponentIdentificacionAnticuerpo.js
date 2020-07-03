@@ -179,7 +179,6 @@ class ComponentIdentificacionAnticuerpo extends Component {
 			detail.pSalina4g = pSalina4g;
 			detail.pSalina37g = pSalina37g;
 			detail.referenciaPesquizaje = this.state.pesquizajeAnticuerpo.numeroMuestra;
-			console.log(detail);
 
 			//la promise debe de devolver un valor RETURN
 			try {
