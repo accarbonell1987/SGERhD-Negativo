@@ -566,7 +566,7 @@ exports.UpdateIdentificacionAnticuerpo = async (req, res, next) => {
 };
 //#endregion
 
-//#region Titulo Anticuerpo
+//#region Título Anticuerpo
 exports.UpdateTituloAnticuerpo = async (req, res, next) => {
 	try {
 		var grupo = await TituloAnticuerpoServices.UpdateTituloAnticuerpo(req.params.id, req.body);

@@ -221,7 +221,7 @@ class ComponentAnalisis extends Component {
 								{this.props.analisis.map((one) => {
 									let negative = !one.activo;
 									let fechacadena = moment(new Date(one.fecha)).format("DD-MM-YYYY");
-									const colorTipo = one.tipo === "Grupo Sanguineo" ? "teal" : one.tipo === "Pesquizaje Anticuerpo" ? "blue" : "violet";
+									const colorTipo = one.tipo === "Grupo Sanguineo" ? "teal" : one.tipo === "Pesquizaje Anticuerpo" ? "blue" : one.tipo === "Identificación Anticuerpo" ? "violet" : "purple";
 									return (
 										<Table.Row key={one._id} negative={negative}>
 											<Table.Cell collapsing>

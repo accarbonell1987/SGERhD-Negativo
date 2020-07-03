@@ -20,7 +20,7 @@ exports.GetTituloAnticuerpo = async (id) => {
 		var tituloAnticuerpo = await TituloAnticuerpo.findById(id).populate({ path: "analisis", populate: { path: "examen" } });
 		return tituloAnticuerpo;
 	} catch (err) {
-		throw Error("GetTituloAnticuerpo -> Obteniendo Titulo Anticuerpo con id: " + id);
+		throw Error("GetTituloAnticuerpo -> Obteniendo Título Anticuerpo con id: " + id);
 	}
 };
 exports.InsertTituloAnticuerpo = async (analisis) => {
@@ -34,10 +34,10 @@ exports.InsertTituloAnticuerpo = async (analisis) => {
 			analisis: analisis._id,
 		});
 		//salvando el grupo sanguineo
-		const saved = await TituloAnticuerpo.save();
+		const saved = await tituloAnticuerpo.save();
 		return saved;
 	} catch (err) {
-		throw Error("InsertTituloAnticuerpo -> Insertando Titulo Anticuerpo \n" + err);
+		throw Error("InsertTituloAnticuerpo -> Insertando Título Anticuerpo \n" + err);
 	}
 };
 exports.UpdateTituloAnticuerpo = async (id, body) => {
@@ -47,7 +47,7 @@ exports.UpdateTituloAnticuerpo = async (id, body) => {
 		const updated = await TituloAnticuerpo.findByIdAndUpdate(id, tituloAnticuerpo);
 		return updated;
 	} catch (err) {
-		throw Error("UpdateTituloAnticuerpo -> Modificando Titulo Anticuerpo\n" + err);
+		throw Error("UpdateTituloAnticuerpo -> Modificando Título Anticuerpo\n" + err);
 	}
 };
 exports.DeleteTituloAnticuerpo = async (tituloAnticuerpo) => {
@@ -55,7 +55,7 @@ exports.DeleteTituloAnticuerpo = async (tituloAnticuerpo) => {
 		const removed = await TituloAnticuerpo.findByIdAndRemove(tituloAnticuerpo._id);
 		return removed;
 	} catch (err) {
-		throw Error("DeleteTituloAnticuerpo -> Eliminando Titulo Anticuerpo\n" + err);
+		throw Error("DeleteTituloAnticuerpo -> Eliminando Título Anticuerpo\n" + err);
 	}
 };
 //#endregion

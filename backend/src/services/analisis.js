@@ -83,7 +83,7 @@ exports.InsertAnalisis = async (body) => {
 			//actualizar la analisis asignandole el grupo sanguineo
 			saved.pesquizajeAnticuerpo = pesquizajeAnticuerpo;
 			await Analisis.findByIdAndUpdate(saved._id, saved);
-		} else if (tipo === "Titulo Anticuerpo") {
+		} else if (tipo === "Título Anticuerpo") {
 			var tituloAnticuerpo = await TituloAnticuerpoServices.InsertTituloAnticuerpo(saved);
 			//actualizar la analisis asignandole el grupo sanguineo
 			saved.tituloAnticuerpo = tituloAnticuerpo;
@@ -126,7 +126,7 @@ exports.DeleteOneAnalisis = async (analisis) => {
 			await IdentificacionAnticuerpoServices.DeleteIdentificacionAnticuerpo(analisis.identificacionAnticuerpo);
 		} else if (analisis.tipo === "Pesquizaje Anticuerpo") {
 			await PesquizajeAnticuerpoServices.DeletePesquizajeAnticuerpo(analisis.pesquizajeAnticuerpo);
-		} else if (analisis.tipo === "Titulo Anticuerpo") {
+		} else if (analisis.tipo === "Título Anticuerpo") {
 			await TituloAnticuerpoServices.DeleteTituloAnticuerpo(analisis.tituloAnticuerpo);
 		}
 		//eliminar analisis con id

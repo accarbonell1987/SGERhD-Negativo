@@ -24,6 +24,7 @@ class ComponentUpdateAnalisis extends Component {
 		grupoSanguineo: null,
 		identificacionAnticuerpo: null,
 		pesquizajeAnticuerpo: null,
+		tituloAnticuerpo: null,
 		pendiente: true,
 		numeroMuestra: "",
 		semanas: 0,
@@ -76,7 +77,7 @@ class ComponentUpdateAnalisis extends Component {
 		const data = this.props.global.cookies();
 		if (!data) this.props.Deslogin();
 		else {
-			let { fecha, tipo, examen, grupoSanguineo, identificacionAnticuerpo, pesquizajeAnticuerpo, pendiente, numeroMuestra, semanas, dias, activo } = this.state;
+			let { fecha, tipo, examen, grupoSanguineo, identificacionAnticuerpo, pesquizajeAnticuerpo, tituloAnticuerpo, pendiente, numeroMuestra, semanas, dias, activo } = this.state;
 
 			let tiempoDeGestacion = null;
 			//estructura del ReaccionAdversaDetalle
@@ -91,6 +92,7 @@ class ComponentUpdateAnalisis extends Component {
 				grupoSanguineo: grupoSanguineo,
 				identificacionAnticuerpo: identificacionAnticuerpo,
 				pesquizajeAnticuerpo: pesquizajeAnticuerpo,
+				tituloAnticuerpo: tituloAnticuerpo,
 				pendiente: pendiente,
 				numeroMuestra: numeroMuestra,
 				tiempoDeGestacion: tiempoDeGestacion,
@@ -212,6 +214,7 @@ class ComponentUpdateAnalisis extends Component {
 			grupoSanguineo: null,
 			identificacionAnticuerpo: null,
 			pesquizajeAnticuerpo: null,
+			tituloAnticuerpo: null,
 			pendiente: true,
 			activo: true,
 			opcionExamenes: opcion,
@@ -262,6 +265,7 @@ class ComponentUpdateAnalisis extends Component {
 		if (this.state.tipo === "Grupo Sanguineo") colorGSanguineo = "teal";
 		else if (this.state.tipo === "Pesquizaje Anticuerpo") colorIAnticuerpo = "blue";
 		else if (this.state.tipo === "Identificación Anticuerpo") colorPAnticuerpo = "violet";
+		else if (this.state.tipo === "Título Anticuerpo") colorPAnticuerpo = "purple";
 
 		return (
 			<Button.Group className="segmentgroup-correct">
@@ -303,6 +307,19 @@ class ComponentUpdateAnalisis extends Component {
 					}}
 				>
 					Identificación Anticuerpo
+				</Button>
+				<Button
+					size="large"
+					color={colorPAnticuerpo}
+					className="button-changeToPAnticuerpo"
+					onClick={(evt) => {
+						evt.preventDefault();
+						this.setState({
+							tipo: "Título Anticuerpo",
+						});
+					}}
+				>
+					Título Anticuerpo
 				</Button>
 			</Button.Group>
 		);

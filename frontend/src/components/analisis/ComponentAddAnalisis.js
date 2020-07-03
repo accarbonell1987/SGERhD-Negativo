@@ -24,6 +24,7 @@ class ComponentAddAnalisis extends Component {
 		grupoSanguineo: null,
 		identificacionAnticuerpo: null,
 		pesquizajeAnticuerpo: null,
+		tituloAnticuerpo: null,
 		pendiente: true,
 		numeroMuestra: "",
 		semanas: 0,
@@ -259,6 +260,7 @@ class ComponentAddAnalisis extends Component {
 				grupoSanguineo: null,
 				identificacionAnticuerpo: null,
 				pesquizajeAnticuerpo: null,
+				tituloAnticuerpo: null,
 				pendiente: true,
 				activo: true,
 				opcionExamenes: opcion,
@@ -322,11 +324,12 @@ class ComponentAddAnalisis extends Component {
 			);
 	};
 	ChoseType = () => {
-		let { colorGSanguineo, colorPAnticuerpo, colorIAnticuerpo } = "gray";
+		let { colorGSanguineo, colorPAnticuerpo, colorIAnticuerpo, colorTAnticuerpo } = "gray";
 
 		if (this.state.tipo === "Grupo Sanguineo") colorGSanguineo = "teal";
 		else if (this.state.tipo === "Pesquizaje Anticuerpo") colorIAnticuerpo = "blue";
 		else if (this.state.tipo === "Identificación Anticuerpo") colorPAnticuerpo = "violet";
+		else if (this.state.tipo === "Título Anticuerpo") colorTAnticuerpo = "purple";
 
 		return (
 			<Button.Group className="segmentgroup-correct">
@@ -368,6 +371,19 @@ class ComponentAddAnalisis extends Component {
 					}}
 				>
 					Identificación Anticuerpo
+				</Button>
+				<Button
+					size="large"
+					color={colorTAnticuerpo}
+					className="button-changeToPAnticuerpo"
+					onClick={(evt) => {
+						evt.preventDefault();
+						this.setState({
+							tipo: "Título Anticuerpo",
+						});
+					}}
+				>
+					Título Anticuerpo
 				</Button>
 			</Button.Group>
 		);
