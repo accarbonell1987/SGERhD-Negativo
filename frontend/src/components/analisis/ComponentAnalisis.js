@@ -15,6 +15,7 @@ import ComponentUpdateAnalisis from "./ComponentUpdateAnalisis";
 import ComponentGrupoSanguineo from "./ComponentGrupoSanguineo";
 import ComponentPesquizajeAnticuerpo from "./ComponentPesquizajeAnticuerpo";
 import ComponentIdentificacionAnticuerpo from "./ComponentIdentificacionAnticuerpo";
+import ComponentTituloAnticuerpo from "./ComponentTituloAnticuerpo";
 //#endregion
 
 //#region Defincion de la clase
@@ -188,6 +189,7 @@ class ComponentAnalisis extends Component {
 		const classNameTable = this.props.detail ? "div-table-detail" : "div-table";
 
 		const pesquizajesAnticuerpo = this.props.analisis.filter((e) => e.tipo === "Pesquizaje Anticuerpo");
+		const identificacionesAnticuerpo = this.props.analisis.filter((e) => e.tipo === "Identificación Anticuerpo");
 		//chequear si es analisis y tengo permiso
 		return (
 			<Grid textAlign="center" verticalAlign="top" className="gestionar-allgrid">
@@ -251,6 +253,7 @@ class ComponentAnalisis extends Component {
 												{accesomenu.permisos.modificar && one.tipo === "Grupo Sanguineo" ? <ComponentGrupoSanguineo Deslogin={this.props.Deslogin} GetDataFromServer={this.props.GetDataFromServer} global={this.props.global} analisis={one} /> : ""}
 												{accesomenu.permisos.modificar && one.tipo === "Pesquizaje Anticuerpo" ? <ComponentPesquizajeAnticuerpo Deslogin={this.props.Deslogin} GetDataFromServer={this.props.GetDataFromServer} global={this.props.global} analisis={one} /> : ""}
 												{accesomenu.permisos.modificar && one.tipo === "Identificación Anticuerpo" ? <ComponentIdentificacionAnticuerpo Deslogin={this.props.Deslogin} GetDataFromServer={this.props.GetDataFromServer} global={this.props.global} analisis={one} pesquizajesAnticuerpo={pesquizajesAnticuerpo} /> : ""}
+												{accesomenu.permisos.modificar && one.tipo === "Título Anticuerpo" ? <ComponentTituloAnticuerpo Deslogin={this.props.Deslogin} GetDataFromServer={this.props.GetDataFromServer} global={this.props.global} analisis={one} identificacionesAnticuerpo={identificacionesAnticuerpo} /> : ""}
 											</Table.Cell>
 										</Table.Row>
 									);
