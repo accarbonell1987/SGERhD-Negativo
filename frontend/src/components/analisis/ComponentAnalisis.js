@@ -1,6 +1,6 @@
 //#region Importaciones
 import React, { Component } from "react";
-import { Button, Grid, Icon, Label, Table, Checkbox } from "semantic-ui-react";
+import { Button, Grid, Icon, Label, Table, Checkbox, Input, Form } from "semantic-ui-react";
 import Swal from "sweetalert2";
 import moment from "moment";
 //#endregion
@@ -25,7 +25,11 @@ class ComponentAnalisis extends Component {
 		super(props);
 
 		this.DeleteAnalisis = this.DeleteAnalisis.bind(this);
+		this.Search = this.Search.bind(this);
+		this.OnPressEnter = this.OnPressEnter.bind(this);
 	}
+
+	state = { analisis: null, criteriobusqueda: "" };
 	//#endregion
 
 	//#region Metodos y Eventos
@@ -177,6 +181,28 @@ class ComponentAnalisis extends Component {
 			return "Sin Detalles";
 		}
 	};
+	Search = (evt) => {
+		const { value } = evt.target;
+		let analisis = [];
+		let criteriobusqueda = value;
+
+		if (criteriobusqueda !== "") {
+			analisis = this.props.analisis.filter((p) => p.numeroMuestra.includes(value) || p.tipo.includes(value) || p.fecha.includes(value));
+			this.setState({
+				analisis: analisis,
+				criteriobusqueda: criteriobusqueda,
+			});
+		}
+		this.setState({
+			criteriobusqueda: criteriobusqueda,
+		});
+	};
+	OnPressEnter = (evt) => {
+		if (evt.keyCode === 13 && !evt.shiftKey) {
+			evt.preventDefault();
+			this.Search(evt);
+		}
+	};
 	//#endregion
 
 	//#region Render
@@ -190,6 +216,9 @@ class ComponentAnalisis extends Component {
 
 		const pesquizajesAnticuerpo = this.props.analisis.filter((e) => e.tipo === "Pesquizaje Anticuerpo");
 		const identificacionesAnticuerpo = this.props.analisis.filter((e) => e.tipo === "Identificación Anticuerpo");
+		//para el buscar
+		let analisis = this.props.analisis;
+		if (this.state.criteriobusqueda !== "") analisis = this.state.analisis;
 		//chequear si es analisis y tengo permiso
 		return (
 			<Grid textAlign="center" verticalAlign="top" className="gestionar-allgrid">
@@ -201,7 +230,8 @@ class ComponentAnalisis extends Component {
 					) : (
 						""
 					)}
-					{this.props.analisis.length > 0 ? (
+					<Input name="buscar" value={this.state.criteriobusqueda} icon={<Icon name="search" inverted circular link onClick={this.Search} />} placeholder="Buscar..." onChange={this.Search} onKeyDown={this.OnPressEnter} />
+					{analisis.length > 0 ? (
 						<Table compact celled definition attached="top" className={classNameTable}>
 							<Table.Header className="div-table-header">
 								<Table.Row>
@@ -220,7 +250,7 @@ class ComponentAnalisis extends Component {
 								</Table.Row>
 							</Table.Header>
 							<Table.Body>
-								{this.props.analisis.map((one) => {
+								{analisis.map((one) => {
 									let negative = !one.activo;
 									let fechacadena = moment(new Date(one.fecha)).format("DD-MM-YYYY");
 									const colorTipo = one.tipo === "Grupo Sanguineo" ? "teal" : one.tipo === "Pesquizaje Anticuerpo" ? "blue" : one.tipo === "Identificación Anticuerpo" ? "violet" : "purple";
