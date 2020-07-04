@@ -1,6 +1,6 @@
 //#region Importaciones
 import React, { Component } from "react";
-import { Button, Grid, Icon, Label, Table, Checkbox } from "semantic-ui-react";
+import { Button, Grid, Icon, Label, Table, Checkbox, Input } from "semantic-ui-react";
 import Swal from "sweetalert2";
 import moment from "moment";
 //#endregion
@@ -22,7 +22,11 @@ class ComponentClinicHistory extends Component {
 		super(props);
 
 		this.DeleteClinicHistory = this.DeleteClinicHistory.bind(this);
+		this.Search = this.Search.bind(this);
+		this.OnPressEnter = this.OnPressEnter.bind(this);
 	}
+
+	state = { historiasclinicas: null, criteriobusqueda: "" };
 	//#endregion
 
 	//#region Metodos y Eventos
@@ -130,6 +134,28 @@ class ComponentClinicHistory extends Component {
 		}
 		return clasificacion;
 	};
+	Search = (evt) => {
+		const { value } = evt.target;
+		let historiasclinicas = [];
+		let criteriobusqueda = value;
+
+		if (criteriobusqueda !== "") {
+			historiasclinicas = this.props.historiasclinicas.filter((p) => p.fechaDeCreacion.includes(value) || p.paciente.nombre.includes(value) || p.paciente.apellidos.includes(value) || p.areaDeSalud.includes(value) || p.numerohistoria.includes(value));
+			this.setState({
+				historiasclinicas: historiasclinicas,
+				criteriobusqueda: criteriobusqueda,
+			});
+		}
+		this.setState({
+			criteriobusqueda: criteriobusqueda,
+		});
+	};
+	OnPressEnter = (evt) => {
+		if (evt.keyCode === 13 && !evt.shiftKey) {
+			evt.preventDefault();
+			this.Search(evt);
+		}
+	};
 	//#endregion
 
 	//#region Render
@@ -139,6 +165,8 @@ class ComponentClinicHistory extends Component {
 		const permiso = this.props.global.permisos.find((p) => p.rol === data.rol);
 		//buscar el acceso del menu
 		const accesomenu = permiso.accesos.find((p) => p.opcion === "historiaclinica");
+		let historiasclinicas = this.props.historiasclinicas;
+		if (this.state.criteriobusqueda !== "") historiasclinicas = this.state.historiasclinicas;
 		//chequear si es historiasclinica y tengo permiso
 		return (
 			<Grid textAlign="center" verticalAlign="top" className="gestionar-allgrid">
@@ -146,7 +174,8 @@ class ComponentClinicHistory extends Component {
 					<Label attached="top left" className="div-label-attached" size="large">
 						<Icon name="clipboard" size="large" inverted /> Gestión de Historias Clínicas
 					</Label>
-					{this.props.historiasclinicas.length > 0 ? (
+					{this.props.historiasclinicas.length > 0 ? <Input name="buscar" value={this.state.criteriobusqueda} icon={<Icon name="search" inverted circular link onClick={this.Search} />} placeholder="Buscar..." onChange={this.Search} onKeyDown={this.OnPressEnter} /> : ""}
+					{historiasclinicas.length > 0 ? (
 						<Table compact celled definition attached="top" className="div-table">
 							<Table.Header className="div-table-header">
 								<Table.Row>
@@ -170,7 +199,7 @@ class ComponentClinicHistory extends Component {
 							</Table.Header>
 
 							<Table.Body>
-								{this.props.historiasclinicas.map((historia) => {
+								{historiasclinicas.map((historia) => {
 									let negative = !historia.activo;
 									let fechacadena = moment(new Date(historia.fechaDeCreacion)).format("DD-MM-YYYY");
 

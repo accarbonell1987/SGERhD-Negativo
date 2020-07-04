@@ -17,7 +17,10 @@ exports.GetTests = async (query, page, limit) => {
 		var tests = await Examen.find(query)
 			.populate({ path: "paciente", populate: { path: "examenes" } })
 			.populate({ path: "embarazo", populate: { path: "examenes" } })
-			.populate("analisis");
+			.populate({ path: "analisis", populate: "grupoSanguineo" })
+			.populate({ path: "analisis", populate: "pesquizajeAnticuerpo" })
+			.populate({ path: "analisis", populate: "identificacionAnticuerpo" })
+			.populate({ path: "analisis", populate: "tituloAnticuerpo" });
 		return tests;
 	} catch (err) {
 		throw Error("GetTests -> Obteniendo Examenes.");
@@ -28,7 +31,10 @@ exports.GetTest = async (id) => {
 		var test = await Examen.findById(id)
 			.populate({ path: "paciente", populate: { path: "examenes" } })
 			.populate({ path: "embarazo", populate: { path: "examenes" } })
-			.populate("analisis");
+			.populate({ path: "analisis", populate: "grupoSanguineo" })
+			.populate({ path: "analisis", populate: "pesquizajeAnticuerpo" })
+			.populate({ path: "analisis", populate: "identificacionAnticuerpo" })
+			.populate({ path: "analisis", populate: "tituloAnticuerpo" });
 		return test;
 	} catch (err) {
 		throw Error("GetTest -> Obteniendo Examen con id: " + id);

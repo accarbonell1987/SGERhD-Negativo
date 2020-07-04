@@ -1,6 +1,6 @@
 //#region Importaciones
 import React, { Component } from "react";
-import { Button, Grid, Icon, Label, Table, Checkbox, Input, Form } from "semantic-ui-react";
+import { Button, Grid, Icon, Label, Table, Checkbox, Input } from "semantic-ui-react";
 import Swal from "sweetalert2";
 import moment from "moment";
 //#endregion
@@ -230,7 +230,7 @@ class ComponentAnalisis extends Component {
 					) : (
 						""
 					)}
-					<Input name="buscar" value={this.state.criteriobusqueda} icon={<Icon name="search" inverted circular link onClick={this.Search} />} placeholder="Buscar..." onChange={this.Search} onKeyDown={this.OnPressEnter} />
+					{this.props.analisis.length > 0 ? <Input name="buscar" value={this.state.criteriobusqueda} icon={<Icon name="search" inverted circular link onClick={this.Search} />} placeholder="Buscar..." onChange={this.Search} onKeyDown={this.OnPressEnter} /> : ""}
 					{analisis.length > 0 ? (
 						<Table compact celled definition attached="top" className={classNameTable}>
 							<Table.Header className="div-table-header">

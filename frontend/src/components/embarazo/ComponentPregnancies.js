@@ -1,6 +1,6 @@
 //#region Importaciones
 import React, { Component } from "react";
-import { Button, Grid, Icon, Label, Table, Checkbox } from "semantic-ui-react";
+import { Button, Grid, Icon, Label, Table, Checkbox, Input } from "semantic-ui-react";
 import Swal from "sweetalert2";
 import moment from "moment";
 //#endregion
@@ -24,7 +24,11 @@ class ComponentPregnancies extends Component {
 		super(props);
 
 		this.DeletePregnancy = this.DeletePregnancy.bind(this);
+		this.Search = this.Search.bind(this);
+		this.OnPressEnter = this.OnPressEnter.bind(this);
 	}
+
+	state = { embarazos: null, criteriobusqueda: "" };
 	//#endregion
 
 	//#region Metodos y Eventos
@@ -164,6 +168,28 @@ class ComponentPregnancies extends Component {
 			);
 		}
 	};
+	Search = (evt) => {
+		const { value } = evt.target;
+		let embarazos = [];
+		let criteriobusqueda = value;
+
+		if (criteriobusqueda !== "") {
+			embarazos = this.props.embarazos.filter((p) => p.fecha.includes(value) || p.paciente.nombre.includes(value) || p.paciente.apellidos.includes(value) || p.observaciones.includes(value) || p.tipo.includes(value));
+			this.setState({
+				embarazos: embarazos,
+				criteriobusqueda: criteriobusqueda,
+			});
+		}
+		this.setState({
+			criteriobusqueda: criteriobusqueda,
+		});
+	};
+	OnPressEnter = (evt) => {
+		if (evt.keyCode === 13 && !evt.shiftKey) {
+			evt.preventDefault();
+			this.Search(evt);
+		}
+	};
 	//#endregion
 
 	//#region Render
@@ -174,6 +200,8 @@ class ComponentPregnancies extends Component {
 		//buscar el acceso del menu
 		const accesomenu = permiso.accesos.find((p) => p.opcion === "embarazos");
 		const classNameTable = this.props.detail ? "div-table-detail" : "div-table";
+		let embarazos = this.props.embarazos;
+		if (this.state.criteriobusqueda !== "") embarazos = this.state.embarazos;
 		//chequear si es embarazos y tengo permiso
 		return (
 			<Grid textAlign="center" verticalAlign="top" className="gestionar-allgrid">
@@ -185,7 +213,8 @@ class ComponentPregnancies extends Component {
 					) : (
 						""
 					)}
-					{this.props.embarazos.length > 0 ? (
+					{this.props.embarazos.length > 0 ? <Input name="buscar" value={this.state.criteriobusqueda} icon={<Icon name="search" inverted circular link onClick={this.Search} />} placeholder="Buscar..." onChange={this.Search} onKeyDown={this.OnPressEnter} /> : ""}
+					{embarazos.length > 0 ? (
 						<Table compact celled definition attached="top" className={classNameTable}>
 							<Table.Header className="div-table-header">
 								<Table.Row>
@@ -205,7 +234,7 @@ class ComponentPregnancies extends Component {
 								</Table.Row>
 							</Table.Header>
 							<Table.Body>
-								{this.props.embarazos.map((embarazo) => {
+								{embarazos.map((embarazo) => {
 									let negative = !embarazo.activo;
 									let fechacadena = moment(new Date(embarazo.fecha)).format("DD-MM-YYYY");
 									const colorTipo = embarazo.tipo === "Nuevo" ? "teal" : "violet";

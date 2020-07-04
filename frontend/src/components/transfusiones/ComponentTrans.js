@@ -1,6 +1,6 @@
 //#region Importaciones
 import React, { Component } from "react";
-import { Button, Grid, Icon, Label, Table, Checkbox } from "semantic-ui-react";
+import { Button, Grid, Icon, Label, Table, Checkbox, Input } from "semantic-ui-react";
 import Swal from "sweetalert2";
 import moment from "moment";
 //#endregion
@@ -22,7 +22,11 @@ class ComponentTrans extends Component {
 		super(props);
 
 		this.DeleteTran = this.DeleteTran.bind(this);
+		this.Search = this.Search.bind(this);
+		this.OnPressEnter = this.OnPressEnter.bind(this);
 	}
+
+	state = { transfusiones: null, criteriobusqueda: "" };
 	//#endregion
 
 	//#region Metodos y Eventos
@@ -113,6 +117,28 @@ class ComponentTrans extends Component {
 			return "Sin Detalles";
 		}
 	};
+	Search = (evt) => {
+		const { value } = evt.target;
+		let transfusiones = [];
+		let criteriobusqueda = value;
+
+		if (criteriobusqueda !== "") {
+			transfusiones = this.props.transfusiones.filter((p) => p.fecha.includes(value) || p.paciente.nombre.includes(value) || p.paciente.apellidos.includes(value) || p.observaciones.includes(value));
+			this.setState({
+				transfusiones: transfusiones,
+				criteriobusqueda: criteriobusqueda,
+			});
+		}
+		this.setState({
+			criteriobusqueda: criteriobusqueda,
+		});
+	};
+	OnPressEnter = (evt) => {
+		if (evt.keyCode === 13 && !evt.shiftKey) {
+			evt.preventDefault();
+			this.Search(evt);
+		}
+	};
 	//#endregion
 
 	//#region Render
@@ -124,6 +150,9 @@ class ComponentTrans extends Component {
 		const accesomenu = permiso.accesos.find((p) => p.opcion === "transfusiones");
 		const classNameTable = this.props.detail ? "div-table-detail" : "div-table";
 		//chequear si es transfusiones y tengo permiso
+		//para el buscar
+		let transfusiones = this.props.transfusiones;
+		if (this.state.criteriobusqueda !== "") transfusiones = this.state.transfusiones;
 		return (
 			<Grid textAlign="center" verticalAlign="top" className="gestionar-allgrid">
 				<Grid.Column className="gestionar-allcolumn">
@@ -134,7 +163,8 @@ class ComponentTrans extends Component {
 					) : (
 						""
 					)}
-					{this.props.transfusiones.length > 0 ? (
+					{this.props.transfusiones.length > 0 ? <Input name="buscar" value={this.state.criteriobusqueda} icon={<Icon name="search" inverted circular link onClick={this.Search} />} placeholder="Buscar..." onChange={this.Search} onKeyDown={this.OnPressEnter} /> : ""}
+					{transfusiones.length > 0 ? (
 						<Table compact celled definition attached="top" className={classNameTable}>
 							<Table.Header className="div-table-header">
 								<Table.Row>
@@ -153,7 +183,7 @@ class ComponentTrans extends Component {
 								</Table.Row>
 							</Table.Header>
 							<Table.Body>
-								{this.props.transfusiones.map((tran) => {
+								{transfusiones.map((tran) => {
 									let negative = !tran.activo;
 									let fechacadena = moment(new Date(tran.fecha)).format("DD-MM-YYYY");
 									return (

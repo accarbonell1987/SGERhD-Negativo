@@ -74,6 +74,7 @@ exports.GetPatients = async (query, page, limit) => {
 			.populate({ path: "examenes", populate: { path: "analisis", populate: { path: "grupoSanguineo" } } })
 			.populate({ path: "examenes", populate: { path: "analisis", populate: { path: "pesquizajeAnticuerpo" } } })
 			.populate({ path: "examenes", populate: { path: "analisis", populate: { path: "identificacionAnticuerpo" } } })
+			.populate({ path: "examenes", populate: { path: "analisis", populate: { path: "tituloAnticuerpo" } } })
 			.populate({ path: "embarazos", populate: { path: "paciente" } })
 			.populate({ path: "embarazos", populate: { path: "examenes", populate: { path: "analisis" } } })
 			.populate({ path: "embarazos", populate: { path: "examenes", populate: { path: "embarazo" } } });
@@ -92,6 +93,7 @@ exports.GetPatient = async (id) => {
 			.populate({ path: "examenes", populate: { path: "analisis", populate: { path: "grupoSanguineo" } } })
 			.populate({ path: "examenes", populate: { path: "analisis", populate: { path: "pesquizajeAnticuerpo" } } })
 			.populate({ path: "examenes", populate: { path: "analisis", populate: { path: "identificacionAnticuerpo" } } })
+			.populate({ path: "examenes", populate: { path: "analisis", populate: { path: "tituloAnticuerpo" } } })
 			.populate({ path: "embarazos", populate: { path: "paciente" } })
 			.populate({ path: "embarazos", populate: { path: "examenes", populate: { path: "analisis" } } })
 			.populate({ path: "embarazos", populate: { path: "examenes", populate: { path: "embarazo" } } });

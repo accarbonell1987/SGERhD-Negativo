@@ -1,6 +1,6 @@
 //#region Importaciones
 import React, { Component } from "react";
-import { Button, Grid, Icon, Label, Table, Checkbox, Step } from "semantic-ui-react";
+import { Button, Grid, Icon, Label, Table, Checkbox, Step, Input } from "semantic-ui-react";
 import Swal from "sweetalert2";
 import moment from "moment";
 //#endregion
@@ -23,7 +23,11 @@ class ComponentTests extends Component {
 		super(props);
 
 		this.DeleteTest = this.DeleteTest.bind(this);
+		this.Search = this.Search.bind(this);
+		this.OnPressEnter = this.OnPressEnter.bind(this);
 	}
+
+	state = { examenes: null, criteriobusqueda: "" };
 	//#endregion
 
 	//#region Metodos y Eventos
@@ -195,6 +199,28 @@ class ComponentTests extends Component {
 			return "Sin Detalles";
 		}
 	};
+	Search = (evt) => {
+		const { value } = evt.target;
+		let examenes = [];
+		let criteriobusqueda = value;
+
+		if (criteriobusqueda !== "") {
+			examenes = this.props.examenes.filter((p) => p.fecha.includes(value) || p.observaciones.includes(value) || (p.tipo === "Paciente" ? p.paciente.nombre.includes(value) || p.paciente.apellidos.includes(value) : false));
+			this.setState({
+				examenes: examenes,
+				criteriobusqueda: criteriobusqueda,
+			});
+		}
+		this.setState({
+			criteriobusqueda: criteriobusqueda,
+		});
+	};
+	OnPressEnter = (evt) => {
+		if (evt.keyCode === 13 && !evt.shiftKey) {
+			evt.preventDefault();
+			this.Search(evt);
+		}
+	};
 	//#endregion
 
 	//#region Render
@@ -206,6 +232,8 @@ class ComponentTests extends Component {
 		const accesomenu = permiso.accesos.find((p) => p.opcion === "examenes");
 		const classNameTable = this.props.detail ? "div-table-detail" : "div-table";
 		//chequear si es examen y tengo permiso
+		let examenes = this.props.examenes;
+		if (this.state.criteriobusqueda !== "") examenes = this.state.examenes;
 		return (
 			<Grid textAlign="center" verticalAlign="top" className="gestionar-allgrid">
 				<Grid.Column className="gestionar-allcolumn">
@@ -216,7 +244,8 @@ class ComponentTests extends Component {
 					) : (
 						""
 					)}
-					{this.props.examenes.length > 0 ? (
+					{this.props.examenes.length > 0 ? <Input name="buscar" value={this.state.criteriobusqueda} icon={<Icon name="search" inverted circular link onClick={this.Search} />} placeholder="Buscar..." onChange={this.Search} onKeyDown={this.OnPressEnter} /> : ""}
+					{examenes.length > 0 ? (
 						<Table compact celled definition attached="top" className={classNameTable}>
 							<Table.Header className="div-table-header">
 								<Table.Row>
@@ -235,7 +264,7 @@ class ComponentTests extends Component {
 								</Table.Row>
 							</Table.Header>
 							<Table.Body>
-								{this.props.examenes.map((examen) => {
+								{examenes.map((examen) => {
 									let negative = !examen.activo;
 									let fechacadena = moment(new Date(examen.fecha)).format("DD-MM-YYYY");
 									return (

@@ -13,7 +13,11 @@ exports.GetPregnancies = async (query, page, limit) => {
 	try {
 		var pregnancies = await Embarazo.find(query)
 			.populate({ path: "paciente", populate: { path: "historiaclinica" } })
-			.populate({ path: "examenes", populate: { path: "analisis" } })
+			.populate({ path: "examenes", populate: { path: "paciente" } })
+			.populate({ path: "examenes", populate: { path: "analisis", populate: { path: "grupoSanguineo" } } })
+			.populate({ path: "examenes", populate: { path: "analisis", populate: { path: "pesquizajeAnticuerpo" } } })
+			.populate({ path: "examenes", populate: { path: "analisis", populate: { path: "identificacionAnticuerpo" } } })
+			.populate({ path: "examenes", populate: { path: "analisis", populate: { path: "tituloAnticuerpo" } } })
 			.populate({ path: "examenes", populate: { path: "embarazo" } });
 		return pregnancies.sort((last, next) => (last.fecha > next.fecha ? -1 : 1)); //orderar de mayor a menor
 	} catch (err) {
@@ -24,7 +28,10 @@ exports.GetPregnancy = async (id) => {
 	try {
 		var pregnancy = await Embarazo.findById(id)
 			.populate({ path: "paciente", populate: { path: "historiaclinica" } })
-			.populate({ path: "examenes", populate: { path: "analisis" } })
+			.populate({ path: "examenes", populate: { path: "analisis", populate: { path: "grupoSanguineo" } } })
+			.populate({ path: "examenes", populate: { path: "analisis", populate: { path: "pesquizajeAnticuerpo" } } })
+			.populate({ path: "examenes", populate: { path: "analisis", populate: { path: "identificacionAnticuerpo" } } })
+			.populate({ path: "examenes", populate: { path: "analisis", populate: { path: "tituloAnticuerpo" } } })
 			.populate({ path: "examenes", populate: { path: "embarazo" } });
 		return pregnancy;
 	} catch (err) {

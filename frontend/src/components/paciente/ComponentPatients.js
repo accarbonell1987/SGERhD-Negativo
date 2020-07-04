@@ -1,6 +1,6 @@
 //#region Importaciones
 import React, { Component } from "react";
-import { Button, Grid, Icon, Label, Table, Checkbox } from "semantic-ui-react";
+import { Button, Grid, Icon, Label, Table, Checkbox, Input } from "semantic-ui-react";
 import Swal from "sweetalert2";
 //#endregion
 
@@ -24,7 +24,11 @@ class ComponentPatients extends Component {
 		super(props);
 
 		this.DeletePatient = this.DeletePatient.bind(this);
+		this.Search = this.Search.bind(this);
+		this.OnPressEnter = this.OnPressEnter.bind(this);
 	}
+
+	state = { pacientes: null, criteriobusqueda: "" };
 
 	shouldComponentUpdate() {
 		const data = this.props.global.cookies();
@@ -102,7 +106,6 @@ class ComponentPatients extends Component {
 			});
 		}
 	};
-
 	CheckAndAllowAddButton = (middleButtonAdd, allow) => {
 		if (allow) return <ComponentAddPatient middleButtonAdd={middleButtonAdd} Deslogin={this.props.Deslogin} global={this.props.global} GetDataFromServer={this.props.GetDataFromServer} pacientes={this.props.pacientes} />;
 		else
@@ -113,7 +116,6 @@ class ComponentPatients extends Component {
 				</Button>
 			);
 	};
-
 	CalcAge = (paciente) => {
 		const nacimiento = paciente.ci.slice(0, 6);
 		const now = new Date();
@@ -136,6 +138,28 @@ class ComponentPatients extends Component {
 
 		return edad;
 	};
+	Search = (evt) => {
+		const { value } = evt.target;
+		let pacientes = [];
+		let criteriobusqueda = value;
+
+		if (criteriobusqueda !== "") {
+			pacientes = this.props.pacientes.filter((p) => p.fechaDeCreacion.includes(value) || p.nombre.includes(value) || p.apellidos.includes(value) || p.ci.includes(value) || p.direccion.includes(value) || (p.historiaclinica != null ? p.historiaclinica.numerohistoria.includes(value) : false));
+			this.setState({
+				pacientes: pacientes,
+				criteriobusqueda: criteriobusqueda,
+			});
+		}
+		this.setState({
+			criteriobusqueda: criteriobusqueda,
+		});
+	};
+	OnPressEnter = (evt) => {
+		if (evt.keyCode === 13 && !evt.shiftKey) {
+			evt.preventDefault();
+			this.Search(evt);
+		}
+	};
 
 	render() {
 		const data = this.props.global.cookies();
@@ -144,13 +168,16 @@ class ComponentPatients extends Component {
 		//buscar el acceso del menu
 		const accesomenu = permiso.accesos.find((p) => p.opcion === "pacientes");
 		//chequear si es paciente y tengo permiso
+		let pacientes = this.props.pacientes;
+		if (this.state.criteriobusqueda !== "") pacientes = this.state.pacientes;
 		return (
 			<Grid textAlign="center" verticalAlign="top" className="gestionar-allgrid">
 				<Grid.Column className="gestionar-allcolumn">
 					<Label attached="top left" className="div-label-attached" size="large">
 						<Icon name="wheelchair" size="large" inverted /> Gestión de Pacientes
 					</Label>
-					{this.props.pacientes.length > 0 ? (
+					<Input name="buscar" value={this.state.criteriobusqueda} icon={<Icon name="search" inverted circular link onClick={this.Search} />} placeholder="Buscar..." onChange={this.Search} onKeyDown={this.OnPressEnter} />
+					{pacientes.length > 0 ? (
 						<Table compact celled definition attached="top" className="div-table">
 							<Table.Header className="div-table-header-row">
 								<Table.Row>
@@ -177,7 +204,7 @@ class ComponentPatients extends Component {
 							</Table.Header>
 
 							<Table.Body>
-								{this.props.pacientes.map((paciente) => {
+								{pacientes.map((paciente) => {
 									let negative = !paciente.activo;
 									let madre = paciente.madre;
 									let madrenombreyapellido = madre == null ? "Indefinido" : madre.nombre + " " + madre.apellidos;
