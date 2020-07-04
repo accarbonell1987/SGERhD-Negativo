@@ -17,6 +17,7 @@ import ComponentFooter from "./ComponentFooter";
 import ComponentPregnancies from "./embarazo/ComponentPregnancies";
 import ComponentTests from "./examen/ComponentTests";
 import ComponentAnalisis from "./analisis/ComponentAnalisis";
+import ComponentReports from "./reportes/ComponentReports";
 //#endregion
 
 //#region Defincion de la clase
@@ -36,6 +37,13 @@ class ComponentContent extends Component {
 		super(props);
 		this.GetDataFromServer = this.GetDataFromServer.bind(this);
 	}
+
+	reportes = [
+		{ key: 1, nombre: "Distribución por grupos etanios", descripcion: "Muestra un listado de pacientes por grupos de edades." },
+		{ key: 2, nombre: "Clasificación por grupo sanguineo", descripcion: "Muestra un listado de pacientes por grupos sanguineos." },
+		{ key: 3, nombre: "Desglose por número de partos", descripcion: "Muestra un listado de pacientes dependiendo de la clasificación según el número de parto." },
+		{ key: 4, nombre: "Desglose por número de embarazos", descripcion: "Muestra un listado de pacientes dependiendo de la clasificación según el número de parto." },
+	];
 
 	componentDidMount = () => {
 		this.GetDataFromServer();
@@ -322,6 +330,19 @@ class ComponentContent extends Component {
 					) : (
 						<div className="Content">
 							<ComponentAnalisis Deslogin={this.props.Deslogin} global={this.props.global} examenes={this.state.examenes} analisis={this.state.analisis} GetDataFromServer={this.GetDataFromServer} />
+							<ComponentFooter />
+						</div>
+					)}
+				</Fragment>
+			);
+		} else if (this.props.opcionmenu === "reportes" && accesomenu.permisos.menu) {
+			return (
+				<Fragment>
+					{this.state.loading ? (
+						this.GetLoading()
+					) : (
+						<div className="Content">
+							<ComponentReports Deslogin={this.props.Deslogin} global={this.props.global} reportes={this.reportes} GetDataFromServer={this.GetDataFromServer} />
 							<ComponentFooter />
 						</div>
 					)}

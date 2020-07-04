@@ -26,6 +26,7 @@ class ComponentMenu extends Component {
 		{ name: "embarazos", icon: "heartbeat", visible: false, label: "Embarazos", enabled: true },
 		{ name: "examenes", icon: "clipboard list", visible: false, label: "Exámenes", enabled: true },
 		{ name: "analisis", icon: "syringe", visible: false, label: "Analisis", enabled: true },
+		{ name: "reportes", icon: "file", visible: false, label: "Reportes", enabled: true },
 	];
 
 	constructor(props) {

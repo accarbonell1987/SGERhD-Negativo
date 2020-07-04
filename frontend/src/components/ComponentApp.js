@@ -34,6 +34,7 @@ class ComponentApp extends Component {
 				{ opcion: "analisis", permisos: { crear: false, leer: false, modificar: false, eliminar: false, menu: false } },
 				{ opcion: "transfusiones", permisos: { crear: false, leer: false, modificar: false, eliminar: false, menu: false } },
 				{ opcion: "embarazos", permisos: { crear: false, leer: false, modificar: false, eliminar: false, menu: false } },
+				{ opcion: "reportes", permisos: { crear: false, leer: true, modificar: false, eliminar: false, menu: true } },
 			],
 		},
 		{
@@ -46,6 +47,7 @@ class ComponentApp extends Component {
 				{ opcion: "analisis", permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
 				{ opcion: "transfusiones", permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
 				{ opcion: "embarazos", permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
+				{ opcion: "reportes", permisos: { crear: false, leer: true, modificar: false, eliminar: false, menu: true } },
 			],
 		},
 		{
@@ -58,6 +60,7 @@ class ComponentApp extends Component {
 				{ opcion: "analisis", permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
 				{ opcion: "transfusiones", permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
 				{ opcion: "embarazos", permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
+				{ opcion: "reportes", permisos: { crear: false, leer: true, modificar: false, eliminar: false, menu: true } },
 			],
 		},
 		{
@@ -70,6 +73,7 @@ class ComponentApp extends Component {
 				{ opcion: "analisis", permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
 				{ opcion: "transfusiones", permisos: { crear: false, leer: false, modificar: false, eliminar: false, menu: false } },
 				{ opcion: "embarazos", permisos: { crear: false, leer: false, modificar: false, eliminar: false, menu: false } },
+				{ opcion: "reportes", permisos: { crear: false, leer: true, modificar: false, eliminar: false, menu: true } },
 			],
 		},
 		{
@@ -82,6 +86,7 @@ class ComponentApp extends Component {
 				{ opcion: "analisis", permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
 				{ opcion: "transfusiones", permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
 				{ opcion: "embarazos", permisos: { crear: true, leer: true, modificar: true, eliminar: true, menu: true } },
+				{ opcion: "reportes", permisos: { crear: false, leer: true, modificar: false, eliminar: false, menu: true } },
 			],
 		},
 	];
