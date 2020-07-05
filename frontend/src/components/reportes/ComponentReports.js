@@ -1,7 +1,6 @@
 //Importaciones
 import React, { Component } from "react";
-import { Button, Grid, Icon, Label, Table, Image, Checkbox, Input } from "semantic-ui-react";
-import Swal from "sweetalert2";
+import { Button, Grid, Icon, Label, Table, Input } from "semantic-ui-react";
 
 //CSS
 import "../global/css/Gestionar.css";
@@ -94,7 +93,7 @@ class ComponentUsers extends Component {
 											{
 												//acceso a eliminar
 												accesomenu.permisos.leer ? (
-													<Button className="modal-button-action" onClick={() => this.ShowReport(reporte)}>
+													<Button className="modal-button-see" onClick={() => this.ShowReport(reporte)}>
 														<Icon className="modal-icon" name="eye" />
 													</Button>
 												) : (

@@ -19,11 +19,12 @@
 
 .div-table {
 	margin-top: 3.5rem !important;
-	/* max-height: 670px;
-    overflow-y: scroll;
-    display: block; 
-    position: relative !important;
-    border-collapse: collapse !important; */
+	/* overflow-x: scroll;
+	max-width: 1337px; */
+	/* overflow-y: scroll; */
+	/* display: block; */
+	/* position: relative !important; */
+	/* border-collapse: collapse !important; */
 }
 .div-table-detail {
 	margin-top: 0 !important;
@@ -56,6 +57,10 @@
 
 .modal-button-action {
 	color: darkorange !important;
+	padding: 0.78571429em 0.78571429em 0.78571429em !important;
+}
+.modal-button-see {
+	color: teal !important;
 	padding: 0.78571429em 0.78571429em 0.78571429em !important;
 }
 

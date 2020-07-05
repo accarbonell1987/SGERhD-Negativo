@@ -55,7 +55,7 @@ class ComponentSeePatient extends Component {
 	};
 	//cambiar el estado en el MODAL para adicionar paciente
 	ChangeModalState = async (evt) => {
-		if (evt.target.className.includes("button-childs") || evt.target.className.includes("button-icon-childs")) {
+		if (evt.target.className.includes("button-childs") || evt.target.className.includes("button-icon-childs") || evt.target.className.includes("modal-icon") || evt.target.className.includes("modal-button-see")) {
 			this.setState({
 				openModal: true,
 			});
@@ -108,14 +108,21 @@ class ComponentSeePatient extends Component {
 
 	render() {
 		const paciente = this.props.paciente;
+		const detail = this.props.detail;
 		return (
 			<Modal
 				open={this.state.openModal}
 				trigger={
-					<Button icon labelPosition="right" className="button-childs" onClick={this.ChangeModalState}>
-						<Icon name="wheelchair" className="button-icon-childs" onClick={this.ChangeModalState} />
-						{paciente.nombre + " " + paciente.apellidos}
-					</Button>
+					!detail ? (
+						<Button icon labelPosition="right" className="button-childs" onClick={this.ChangeModalState}>
+							<Icon name="wheelchair" className="button-icon-childs" onClick={this.ChangeModalState} />
+							{paciente.nombre + " " + paciente.apellidos}
+						</Button>
+					) : (
+						<Button className="modal-button-see" onClick={this.ChangeModalState}>
+							<Icon name="eye" className="modal-icon" />
+						</Button>
+					)
 				}
 			>
 				<Header icon="wheelchair" content="Detalles Paciente" />

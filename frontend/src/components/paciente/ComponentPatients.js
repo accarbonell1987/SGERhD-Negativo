@@ -16,6 +16,7 @@ import ComponentSeeClinicHistory from "../historiaclinica/ComponentSeeClinicHist
 import ComponentModalTran from "../transfusiones/ComponentModalTrans";
 import ComponentModalPregnancy from "../embarazo/ComponentModalPregnancy";
 import ComponentModalTest from "../examen/ComponentModalTest";
+import ComponentSeePatient from "./ComponentSeePatient";
 //#endregion
 
 //#region Defincion de la clase
@@ -189,10 +190,10 @@ class ComponentPatients extends Component {
 									<Table.HeaderCell>Edad</Table.HeaderCell>
 									<Table.HeaderCell>Nombres y Apellidos</Table.HeaderCell>
 									<Table.HeaderCell>Carnet Identidad</Table.HeaderCell>
-									<Table.HeaderCell>Dirección</Table.HeaderCell>
-									<Table.HeaderCell>Teléfonos</Table.HeaderCell>
+									{/* <Table.HeaderCell>Dirección</Table.HeaderCell> */}
+									{/* <Table.HeaderCell>Teléfonos</Table.HeaderCell> */}
 									<Table.HeaderCell>Madre</Table.HeaderCell>
-									<Table.HeaderCell className="cells-max-witdh-2">Género</Table.HeaderCell>
+									{/* <Table.HeaderCell className="cells-max-witdh-2">Género</Table.HeaderCell> */}
 									<Table.HeaderCell className="cells-max-witdh-2">Hijos</Table.HeaderCell>
 									<Table.HeaderCell className="cells-max-witdh-2">Historia Clínica</Table.HeaderCell>
 									<Table.HeaderCell className="cells-max-witdh-2">Transfusiones</Table.HeaderCell>
@@ -222,27 +223,15 @@ class ComponentPatients extends Component {
 												{paciente.nombre} {paciente.apellidos}
 											</Table.Cell>
 											<Table.Cell>{paciente.ci}</Table.Cell>
-											<Table.Cell>{paciente.direccion}</Table.Cell>
-											<Table.Cell>{paciente.telefono}</Table.Cell>
+											{/* <Table.Cell>{paciente.direccion}</Table.Cell> */}
+											{/* <Table.Cell>{paciente.telefono}</Table.Cell> */}
 											<Table.Cell>
 												<Button icon labelPosition="right" className="button-childs">
 													<Icon name="venus" className="button-icon-childs" />
 													{madrenombreyapellido}
 												</Button>
 											</Table.Cell>
-											<Table.Cell>
-												{paciente.sexo === "M" ? (
-													<Button icon labelPosition="right" className="button-childs">
-														<Icon name="man" className="button-icon-childs" />
-														Masculino
-													</Button>
-												) : (
-													<Button icon labelPosition="right" className="button-childs">
-														<Icon name="woman" className="button-icon-childs" />
-														Femenino
-													</Button>
-												)}
-											</Table.Cell>
+											{/* <Table.Cell textAlign="center">{paciente.sexo === "M" ? <Icon name="man" className="button-icon-childs" /> : <Icon name="woman" className="button-icon-childs" />}</Table.Cell> */}
 											<Table.Cell className="cells-max-witdh-2" collapsing>
 												{accesomenu.permisos.modificar ? (
 													<ComponentChilds Deslogin={this.props.Deslogin} global={this.props.global} paciente={paciente} pacientes={this.props.pacientes} GetDataFromServer={this.props.GetDataFromServer} />
@@ -271,6 +260,7 @@ class ComponentPatients extends Component {
 											<Table.Cell className="cells-max-witdh-2" collapsing>
 												{accesomenu.permisos.eliminar ? <Button icon="remove circle" className="button-remove" onClick={() => this.DeletePatient(paciente)} /> : <Button icon="remove circle" className="button-remove" disabled />}
 												{accesomenu.permisos.modificar ? <ComponentUpdatePatient Deslogin={this.props.Deslogin} GetDataFromServer={this.props.GetDataFromServer} paciente={paciente} global={this.props.global} pacientes={this.props.pacientes} /> : <Button icon="edit" disabled />}
+												<ComponentSeePatient Deslogin={this.props.Deslogin} paciente={paciente} global={this.props.global} roles={this.props.roles} pacientes={this.props.pacientes} detail={true} />
 											</Table.Cell>
 										</Table.Row>
 									);
