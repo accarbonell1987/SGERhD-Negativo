@@ -16,3 +16,14 @@ Para la gestion de roles
 https://blog.soshace.com/implementing-role-based-access-control-in-a-node-js-application/
 
 GET / POST / PUT / PATCH / OPTIONS / HEADERS / DELETE
+
+Dependencias
+
+-> accesscontrol
+-> body-parser
+-> cors
+-> dotenv
+-> express
+-> jsonwebtoken
+-> mongoose
+-> morgan
