@@ -145,7 +145,7 @@ class ComponentPatients extends Component {
 		let criteriobusqueda = value;
 
 		if (criteriobusqueda !== "") {
-			pacientes = this.props.pacientes.filter((p) => p.fechaDeCreacion.includes(value) || p.nombre.includes(value) || p.apellidos.includes(value) || p.ci.includes(value) || p.direccion.includes(value) || (p.historiaclinica != null ? p.historiaclinica.numerohistoria.includes(value) : false));
+			pacientes = this.props.pacientes.filter((p) => p.fechaDeCreacion.includes(value) || p.nombre.includes(value) || p.apellidos.includes(value) || p.ci.includes(value) || p.direccion.includes(value) || p.sexo.includes(value) || (p.historiaclinica != null ? p.historiaclinica.numerohistoria.includes(value) : false));
 			this.setState({
 				pacientes: pacientes,
 				criteriobusqueda: criteriobusqueda,
@@ -192,7 +192,7 @@ class ComponentPatients extends Component {
 									<Table.HeaderCell>Carnet Identidad</Table.HeaderCell>
 									{/* <Table.HeaderCell>Dirección</Table.HeaderCell> */}
 									{/* <Table.HeaderCell>Teléfonos</Table.HeaderCell> */}
-									<Table.HeaderCell>Madre</Table.HeaderCell>
+									<Table.HeaderCell className="cells-max-witdh-2">Madre</Table.HeaderCell>
 									{/* <Table.HeaderCell className="cells-max-witdh-2">Género</Table.HeaderCell> */}
 									<Table.HeaderCell className="cells-max-witdh-2">Hijos</Table.HeaderCell>
 									<Table.HeaderCell className="cells-max-witdh-2">Historia Clínica</Table.HeaderCell>
@@ -225,7 +225,7 @@ class ComponentPatients extends Component {
 											<Table.Cell>{paciente.ci}</Table.Cell>
 											{/* <Table.Cell>{paciente.direccion}</Table.Cell> */}
 											{/* <Table.Cell>{paciente.telefono}</Table.Cell> */}
-											<Table.Cell>
+											<Table.Cell className="cells-max-witdh-2" collapsing>
 												<Button icon labelPosition="right" className="button-childs">
 													<Icon name="venus" className="button-icon-childs" />
 													{madrenombreyapellido}
