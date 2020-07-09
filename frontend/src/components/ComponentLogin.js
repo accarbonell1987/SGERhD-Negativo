@@ -12,6 +12,8 @@ class ComponentLogin extends Component {
 	state = {
 		nombre: "",
 		contraseña: "",
+		contador: 0,
+		sepuedeautenticar: true,
 	};
 
 	constructor(props) {
@@ -63,6 +65,15 @@ class ComponentLogin extends Component {
 				Swal.fire({ position: "center", icon: "error", title: err, showConfirmButton: false, timer: 3000 });
 			});
 	};
+	Sleep = (milliseconds) => {
+		this.setState({ sepuedeautenticar: false });
+		const date = Date.now();
+		let currentDate = null;
+		do {
+			currentDate = Date.now();
+		} while (currentDate - date < milliseconds);
+		this.setState({ contraseña: "", contador: 0, sepuedeautenticar: true });
+	};
 	handleAutenticateClick = (evt) => {
 		evt.preventDefault();
 
@@ -87,8 +98,12 @@ class ComponentLogin extends Component {
 					// this.swalToast.fire({icon:'success', title: message});
 					this.props.Login(data, token);
 				} else {
-					Swal.fire({ position: "center", icon: "error", title: "Usuario o contraseña incorrecto", showConfirmButton: false, timer: 5000 });
-					this.setState({ contraseña: "" });
+					if (this.state.contador === 3) {
+						this.Sleep(10000);
+					} else {
+						Swal.fire({ position: "center", icon: "error", title: "Usuario o contraseña incorrecto", showConfirmButton: false, timer: 5000 });
+						this.setState({ contraseña: "", contador: this.state.contador + 1, sepuedeautenticar: true });
+					}
 				}
 			})
 			.catch((err) => {
@@ -122,7 +137,7 @@ class ComponentLogin extends Component {
 							</Grid>
 						</Grid.Row>
 						<Grid.Row className="contentrowbutton">
-							<Button content="Ingresar" icon="check" primary onClick={this.handleAutenticateClick} type="submit" disabled={!this.state.nombre || !this.state.contraseña} />
+							<Button content="Ingresar" icon="check" primary onClick={this.handleAutenticateClick} type="submit" disabled={!this.state.nombre || !this.state.contraseña || !this.state.sepuedeautenticar} />
 						</Grid.Row>
 					</Form>
 				</Grid.Column>

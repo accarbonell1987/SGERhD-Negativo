@@ -170,7 +170,7 @@ class ComponentApp extends Component {
 		const global = {
 			permisos: this.permisos,
 			roles: this.roles,
-			endpoint: process.env.REACT_APP_API_PATH_LOCAL,
+			endpoint: process.env.REACT_APP_API_PATH,
 			cookies: () => this.GetCookies(),
 		};
 		const menu = this.GetMenuCookies() || "pacientes";
