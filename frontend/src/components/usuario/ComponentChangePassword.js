@@ -112,10 +112,8 @@ class ComponentChangePassword extends Component {
       if (this.HandleSubmit(evt) === false) {
         //chequear si se abrio el componente desde el gestionar o desde el cambiar clave de usuario
         if (!this.props.gestion) {
-          //buscar la contraseña antigua del usuario en caso de que sea igual a null o vacio
-          if (this.state.usuariocontraseña === "") this.getUser(this.props.usuario._id);
           //comparar las contraseñas antiguas == actual
-          if (this.state.usuariocontraseña === this.state.contraseñaanterior) {
+          if (this.props.usuario.contraseña === this.state.contraseñaanterior) {
             //si no hay problemas modificando
             if (await this.updateUser(this.props.usuario._id)) {
               this.ClearModalState();
@@ -167,17 +165,7 @@ class ComponentChangePassword extends Component {
           <Form ref="form" onSubmit={this.ChangeModalState}>
             {!this.props.gestion ? (
               <div>
-                <Form.Input
-                  required
-                  name="contraseñaanterior"
-                  icon="lock"
-                  iconPosition="left"
-                  label="Contraseña Anterior:"
-                  value={this.state.contraseñaanterior}
-                  error={this.state.errorcontraseñaanterior}
-                  type="password"
-                  onChange={this.ChangeModalInput}
-                />
+                <Form.Input required name="contraseñaanterior" icon="lock" iconPosition="left" label="Contraseña Anterior:" value={this.state.contraseñaanterior} error={this.state.errorcontraseñaanterior} type="password" onChange={this.ChangeModalInput} />
                 <Divider hidden />
                 <Divider horizontal>
                   <Header as="h4">
@@ -189,28 +177,8 @@ class ComponentChangePassword extends Component {
             ) : (
               ""
             )}
-            <Form.Input
-              required
-              name="contraseña"
-              icon="lock"
-              iconPosition="left"
-              label="Contraseña:"
-              value={this.state.contraseña}
-              error={this.state.errorcontraseña}
-              type="password"
-              onChange={this.ChangeModalInput}
-            />
-            <Form.Input
-              required
-              name="repetircontraseña"
-              icon="lock"
-              iconPosition="left"
-              label="Repetir Contraseña:"
-              value={this.state.repetircontraseña}
-              error={this.state.errorcontraseñacoincide}
-              type="password"
-              onChange={this.ChangeModalInput}
-            />
+            <Form.Input required name="contraseña" icon="lock" iconPosition="left" label="Contraseña:" value={this.state.contraseña} error={this.state.errorcontraseña} type="password" onChange={this.ChangeModalInput} />
+            <Form.Input required name="repetircontraseña" icon="lock" iconPosition="left" label="Repetir Contraseña:" value={this.state.repetircontraseña} error={this.state.errorcontraseñacoincide} type="password" onChange={this.ChangeModalInput} />
           </Form>
         </Modal.Content>
         <Modal.Actions>
@@ -222,13 +190,7 @@ class ComponentChangePassword extends Component {
               <Icon name="checkmark" /> Aceptar
             </Button>
           ) : (
-            <Button
-              color="green"
-              onClick={this.ChangeModalState}
-              className="modal-button-acept"
-              type="submit"
-              disabled={!this.state.contraseñaanterior || !this.state.contraseña || !this.state.repetircontraseña}
-            >
+            <Button color="green" onClick={this.ChangeModalState} className="modal-button-acept" type="submit" disabled={!this.state.contraseñaanterior || !this.state.contraseña || !this.state.repetircontraseña}>
               <Icon name="checkmark" /> Aceptar
             </Button>
           )}

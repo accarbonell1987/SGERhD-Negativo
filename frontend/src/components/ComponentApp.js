@@ -116,7 +116,7 @@ class ComponentApp extends Component {
     this.setState({ autenticado: auth });
   }
   //Loguearse
-  Login = (usuario, rol, token) => {
+  Login = (userdata, token) => {
     //setear en las cookies los valores que necesito durante todo el life
     const { cookies } = this.props;
     //eliminar las cookies para recomenzar el tiempo de expiracion
@@ -125,8 +125,10 @@ class ComponentApp extends Component {
 
     const data = {
       autenticado: true,
-      usuario: usuario,
-      rol: rol,
+      usuario: userdata.nombre,
+      rol: userdata.rol,
+      id: userdata._id,
+      pass: userdata.contraseña,
       logintime: new Date(),
       token: token,
     };

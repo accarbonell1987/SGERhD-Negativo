@@ -134,7 +134,6 @@ class ComponentPatients extends Component {
     } else {
       confecaño = 1900 + parseInt(año);
     }
-    console.log(paciente.nombre, nowaño, confecaño, año, mes);
     var edad = parseInt(nowaño) - parseInt(confecaño);
     if (nowmes < mes) edad -= 1;
 

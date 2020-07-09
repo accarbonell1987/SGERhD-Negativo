@@ -1,6 +1,6 @@
 //#region Importaciones
 import React, { Component } from "react";
-import { Button, Icon, Header, Image } from "semantic-ui-react";
+import { Header, Image, Dropdown } from "semantic-ui-react";
 import Swal from "sweetalert2";
 //#endregion
 
@@ -8,15 +8,28 @@ import Swal from "sweetalert2";
 import "./global/css/Header.css";
 //#endregion
 
+//#region Componentes
+import ComponentChangePassword from "./usuario/ComponentChangePassword";
+//#endregion
+
 //#region Definicion de la Clase
 class ComponentHeader extends Component {
+  options = [
+    { key: 1, text: "Cambiar Contraseña", icon: "key", value: "1" },
+    { key: 2, text: "Salir", icon: "arrow alternate circle left outline", value: "2" },
+  ];
+  trigger = (
+    <span>
+      <Image avatar src={this.props.userdata.imagen} /> {this.props.userdata.nombrerol}
+    </span>
+  );
+
   constructor(props) {
     super(props);
 
     this.HandleAutenticarClick = this.HandleAutenticarClick.bind(this);
   }
 
-  //componenten mixin
   SwalToast = Swal.mixin({
     toast: true,
     position: "top-right",
@@ -28,7 +41,6 @@ class ComponentHeader extends Component {
       toast.addEventListener("mouseleave", Swal.resumeTimer);
     },
   });
-
   HandleAutenticarClick = () => {
     this.SwalToast.fire({
       icon: "success",
@@ -39,23 +51,26 @@ class ComponentHeader extends Component {
 
   render() {
     const data = this.props.global.cookies();
-
     return (
       <Header className="divheader">
         <a href="http://localhost:3000">
           <Image src={require("./global/images/logohletras.png")} className="logo" alt="logo" />
         </a>
         <div className="divbutton">
-          <Button as="a" inverted animated="right" size="mini" onClick={this.HandleAutenticarClick}>
-            <Button.Content visible>
-              <Icon name="user" />
-              {data.usuario} - {data.rol}
-            </Button.Content>
-            <Button.Content hidden>
-              <Icon name="log out" />
-              Deslogear
-            </Button.Content>
-          </Button>
+          <Dropdown
+            trigger={this.trigger}
+            options={this.options}
+            pointing="top left"
+            icon={null}
+            onChange={(e, { value }) => {
+              if (value === "1") {
+                const usuario = { id: data.id, contraseña: data.pass };
+                <ComponentChangePassword usuario={usuario} gestion={false} global={this.props.global} />;
+              } else {
+                this.HandleAutenticarClick();
+              }
+            }}
+          />
         </div>
       </Header>
     );

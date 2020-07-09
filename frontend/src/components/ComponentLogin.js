@@ -80,7 +80,7 @@ class ComponentLogin extends Component {
         if (status === 200) {
           Swal.fire({ position: "center", icon: "success", title: message, showConfirmButton: false, timer: 1500 });
           // this.swalToast.fire({icon:'success', title: message});
-          this.props.Login(data.nombre, data.rol, token);
+          this.props.Login(data, token);
         } else {
           Swal.fire({ position: "center", icon: "error", title: "Usuario o contraseña incorrecto", showConfirmButton: false, timer: 5000 });
           this.setState({ contraseña: "" });

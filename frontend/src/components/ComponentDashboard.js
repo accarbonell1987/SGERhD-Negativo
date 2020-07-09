@@ -21,6 +21,7 @@ class ComponentDashboard extends Component {
   constructor(props) {
     super(props);
     this.ChangeMenuOption = this.ChangeMenuOption.bind(this);
+    this.GetData = this.GetData.bind(this);
   }
 
   componentDidMount() {
@@ -38,14 +39,22 @@ class ComponentDashboard extends Component {
     this.props.SetMenuCookie(opcion);
     this.setState({ opcionmenu: opcion });
   };
+  GetData = () => {
+    const data = this.props.global.cookies();
+    const rol = this.props.global.roles.find((p) => p.key === data.rol);
+    const imagen = rol.image.src;
+    const nombrerol = data.usuario + " - " + data.rol;
+    return { imagen: imagen, nombrerol: nombrerol };
+  };
 
   render() {
     const data = this.props.global.cookies();
+    const userdata = this.GetData();
     //chequear si esta autenticado
     if (data.autenticado) {
       return (
         <div className="Dashboard">
-          <ComponentHeader global={this.props.global} Deslogin={this.props.Deslogin} />
+          <ComponentHeader global={this.props.global} Deslogin={this.props.Deslogin} userdata={userdata} />
           <ComponentMenu ChangeMenuOption={this.ChangeMenuOption} opcionmenu={this.state.opcionmenu} global={this.props.global} />
           <ComponentContent Deslogin={this.props.Deslogin} opcionmenu={this.state.opcionmenu} global={this.props.global} />
         </div>
