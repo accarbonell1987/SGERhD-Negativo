@@ -105,18 +105,10 @@ class ComponentModalTrans extends Component {
     const headerlabel = "Listado de Transfusiones De: " + this.props.paciente.nombre + " " + this.props.paciente.apellidos;
     //chequear si es transfusiones y tengo permiso
     return (
-      <Modal open={this.state.openModal} trigger={this.ChangeIconInAddButton(accesomenu.permisos.menu, this.props.cambiarIcono)}>
+      <Modal className="modal-windows-pregnancies" open={this.state.openModal} trigger={this.ChangeIconInAddButton(accesomenu.permisos.menu, this.props.cambiarIcono)}>
         <Header icon="wheelchair" content={headerlabel} />
         <Modal.Content>
-          <ComponentTrans
-            middleButtonAdd={true}
-            global={this.props.global}
-            pacientes={this.props.pacientes}
-            transfusiones={this.props.transfusiones}
-            GetDataFromServer={this.props.GetDataFromServer}
-            detail={true}
-            paciente={this.props.paciente}
-          />
+          <ComponentTrans middleButtonAdd={true} global={this.props.global} pacientes={this.props.pacientes} transfusiones={this.props.transfusiones} GetDataFromServer={this.props.GetDataFromServer} detail={true} paciente={this.props.paciente} />
         </Modal.Content>
         <Modal.Actions>
           <Button color="red" onClick={this.ChangeModalState} className="modal-button-cancel" type>
