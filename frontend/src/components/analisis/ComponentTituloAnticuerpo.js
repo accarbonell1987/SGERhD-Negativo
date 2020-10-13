@@ -147,6 +147,7 @@ class ComponentTituloAnticuerpo extends Component {
 			}
 
 			const identificacion = this.props.identificacionesAnticuerpo.filter((p) => p.numeroMuestra === detail.referenciaIdentificacion);
+			console.log(identificacion, detail);
 			//actualizar los states
 			this.setState({
 				openModal: false,
@@ -154,8 +155,8 @@ class ComponentTituloAnticuerpo extends Component {
 				diluciones: detail.diluciones != null ? detail.diluciones : null,
 				bajaconcentracion: detail.bajaconcentracion != null ? detail.bajaconcentracion : null,
 
-				key: identificacion[0]._id,
-				identificacionAnticuerpo: identificacion[0],
+				key: identificacion[0] ? identificacion[0]._id : 0,
+				identificacionAnticuerpo: identificacion[0] ? identificacion[0] : null,
 				opcionIdentificacionAnticuerpo: opcion,
 				opcionPotenciasDos: opcionPotenciasDos,
 				errorform: false,

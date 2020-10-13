@@ -69,7 +69,9 @@ class ComponentUsers extends Component {
             .then((res) => res.json())
             .then((serverdata) => {
               const { status, message } = serverdata;
-              status === 200 ? Swal.fire({ position: "center", icon: "success", title: message, showConfirmButton: false, timer: 3000 }) : Swal.fire({ position: "center", icon: "error", title: message, showConfirmButton: false, timer: 5000 });
+              status === 200
+                ? Swal.fire({ position: "center", icon: "success", title: message, showConfirmButton: false, timer: 3000 })
+                : Swal.fire({ position: "center", icon: "error", title: message, showConfirmButton: false, timer: 5000 });
               //Actualizar el listado
               this.props.GetDataFromServer();
             })
@@ -81,7 +83,15 @@ class ComponentUsers extends Component {
     }
   };
   CheckAndAllowAddButton = (middleButtonAdd, allow) => {
-    if (allow) return <ComponentAddUser middleButtonAdd={middleButtonAdd} Deslogin={this.props.Deslogin} global={this.props.global} GetDataFromServer={this.props.GetDataFromServer} />;
+    if (allow)
+      return (
+        <ComponentAddUser
+          middleButtonAdd={middleButtonAdd}
+          Deslogin={this.props.Deslogin}
+          global={this.props.global}
+          GetDataFromServer={this.props.GetDataFromServer}
+        />
+      );
     else
       return (
         <Button floated="right" icon labelPosition="left" primary size="small" className="modal-button-add" disabled>
@@ -129,7 +139,14 @@ class ComponentUsers extends Component {
           <Label attached="top left" className="div-label-attached" size="large">
             <Icon name="users" size="large" inverted /> Gestión de Usuarios
           </Label>
-          <Input name="buscar" value={this.state.criteriobusqueda} icon={<Icon name="search" inverted circular link onClick={this.Search} />} placeholder="Buscar..." onChange={this.Search} onKeyDown={this.OnPressEnter} />
+          <Input
+            name="buscar"
+            value={this.state.criteriobusqueda}
+            icon={<Icon name="search" inverted circular link onClick={this.Search} />}
+            placeholder="Buscar..."
+            onChange={this.Search}
+            onKeyDown={this.OnPressEnter}
+          />
           <Table compact celled definition attached="top" className="div-table">
             <Table.Header>
               <Table.Row>
@@ -183,10 +200,27 @@ class ComponentUsers extends Component {
                     <Table.Cell className="cell-acciones" collapsing>
                       {
                         //acceso a eliminar
-                        accesomenu.permisos.eliminar && !negative ? <Button icon="remove user" className="button-remove" onClick={() => this.DeleteUser(usuario)} /> : <Button icon="remove user" className="button-remove" disabled />
+                        accesomenu.permisos.eliminar && !negative ? (
+                          <Button icon="remove user" className="button-remove" onClick={() => this.DeleteUser(usuario)} />
+                        ) : (
+                          <Button icon="remove user" className="button-remove" disabled />
+                        )
                       }
-                      {accesomenu.permisos.modificar ? <ComponentUpdateUser usuario={usuario} Deslogin={this.props.Deslogin} global={this.props.global} GetDataFromServer={this.props.GetDataFromServer} /> : <Button icon="edit" disabled />}
-                      {data.rol === "informatico" ? <ComponentChangePassword usuario={usuario} gestion={true} global={this.props.global} /> : <Button icon="key" disabled />}
+                      {accesomenu.permisos.modificar ? (
+                        <ComponentUpdateUser
+                          usuario={usuario}
+                          Deslogin={this.props.Deslogin}
+                          global={this.props.global}
+                          GetDataFromServer={this.props.GetDataFromServer}
+                        />
+                      ) : (
+                        <Button icon="edit" disabled />
+                      )}
+                      {data.rol === "informatico" ? (
+                        <ComponentChangePassword usuario={usuario} gestion={true} global={this.props.global} />
+                      ) : (
+                        <Button icon="key" disabled />
+                      )}
                     </Table.Cell>
                   </Table.Row>
                 );
