@@ -9,7 +9,7 @@
     "dotenv": "^8.2.0",
     "gulp": "^3.9.1",
     "gulp-print": "^5.0.2",
-    "moment": "^2.26.0",
+    "moment": "^2.29.4",
     "moment-range": "^4.0.2",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
